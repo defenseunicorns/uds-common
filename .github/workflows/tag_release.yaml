@@ -11,7 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       release_created: ${{ steps.release-flag.outputs.release_created }}
-      release_tag: ${{ steps.release-tag.outputs.release_tag }}
     steps:
       - name: Create Release Tag
         id: tag
