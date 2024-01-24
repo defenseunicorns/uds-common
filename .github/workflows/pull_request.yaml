@@ -1,0 +1,47 @@
+name: Test Tasks
+
+# This workflow is triggered on pull requests to the main branch.
+on:
+  pull_request:
+
+concurrency:
+  group: test-${{ github.ref }}
+  cancel-in-progress: true
+
+# Permissions for the GITHUB_TOKEN used by the workflow.
+permissions:
+  id-token: write # Needed for OIDC-related operations.
+  contents: read # Allows reading the content of the repository.
+  pull-requests: read # Allows reading pull request metadata.
+
+jobs:
+  run-test:
+    name: Test
+    runs-on: "ubuntu-latest"
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+
+      - name: Environment setup
+        uses: ./.github/actions/setup
+
+      - name: Create test package
+        run: uds run create-package --set FLAVOR=test
+
+      - name: Create test bundle
+        run: uds run create-test-bundle
+
+      - name: Setup cluster
+        run: uds run setup-cluster
+      
+      - name: Deploy test bundle
+        run: uds run deploy-test-bundle
+
+      - name: Validate tasks performed as expected
+        run: uds run validate-tasks
+
+      - name: Save logs
+        if: always()
+        uses: ./.github/actions/save-logs
