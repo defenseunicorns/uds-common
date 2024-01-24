@@ -39,6 +39,9 @@ jobs:
       - name: Deploy test bundle
         run: uds run deploy-test-bundle
 
+      - name: Validate tasks performed as expected
+        run: uds run validate-tasks
+
       - name: Save logs
         if: always()
         uses: ./.github/actions/save-logs
