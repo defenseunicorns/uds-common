@@ -1,0 +1,20 @@
+name: Release Common Tasks
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  tag-new-version:
+    permissions: write-all
+    runs-on: ubuntu-latest
+    outputs:
+      release_created: ${{ steps.release-flag.outputs.release_created }}
+      release_tag: ${{ steps.release-tag.outputs.release_tag }}
+    steps:
+      - name: Create Release Tag
+        id: tag
+        uses: google-github-actions/release-please-action@v4
+      - id: release-flag
+        run: echo "release_created=${{ steps.tag.outputs.release_created || false }}" >> $GITHUB_OUTPUT
