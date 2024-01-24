@@ -1,6 +1,0 @@
-tasks:
-  - name: k3d-test-cluster
-    actions:
-      - description: Create k3d cluster with UDS Core Istio
-        # renovate: datasource=github-tags depName=defenseunicorns/uds-core versioning=semver
-        cmd: uds deploy oci://defenseunicorns/uds/bundles/k3d-core-istio-dev:0.9.2-${UDS_ARCH} --confirm --no-progress
