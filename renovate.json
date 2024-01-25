@@ -39,13 +39,20 @@
     },
     {
       "depNameTemplate": "defenseunicorns/zarf",
-      "fileMatch": ["\\.*\\.ya?ml$","README\\.md"],
+      "fileMatch": ["README\\.md"],
       "matchStrings": [
-        "- Zarf: (?<currentValue>.*)",
-        "# renovate: datasource=github-tags depName=defenseunicorns/zarf versioning=(?<versioning>.*?)\n.*?(version:) (?<currentValue>.*)"
+        "- Zarf: (?<currentValue>.*)"
       ],
       "datasourceTemplate": "github-tags",
       "extractVersionTemplate": "^v(?<version>.*)$"
+    },
+    {
+      "depNameTemplate": "defenseunicorns/zarf",
+      "fileMatch": ["\\.*\\.ya?ml$"],
+      "matchStrings": [
+        "# renovate: datasource=github-tags depName=defenseunicorns/zarf versioning=(?<versioning>.*?)\n.*?(version:) (?<currentValue>.*)"
+      ],
+      "datasourceTemplate": "github-tags",
     }
   ],
   "packageRules": [
