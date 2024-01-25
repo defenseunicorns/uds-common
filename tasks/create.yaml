@@ -1,10 +1,6 @@
 variables:
   - name: FLAVOR
     default: "upstream"
-  
-  - name: ZARF_ARCHITECTURE
-
-  - name: UDS_ARCH
 
 tasks:
   - name: package
