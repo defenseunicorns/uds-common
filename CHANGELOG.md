@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.1.1](https://github.com/defenseunicorns/uds-common-tasks/compare/v0.1.0...v0.1.1) (2024-01-25)
+
+
+### Bug Fixes
+
+* update renovate config to catch zarf action ([f5dac3d](https://github.com/defenseunicorns/uds-common-tasks/commit/f5dac3d1feea70a56c56584c8d3aa0bda890026a))
+* vars on create ([93928e4](https://github.com/defenseunicorns/uds-common-tasks/commit/93928e40ae05fcf45c1919c46c7805a92209a66e))
+* version template for zarf action ([9ae973d](https://github.com/defenseunicorns/uds-common-tasks/commit/9ae973d75ed741643aa917a7cb4303ac83b35966))
+
+
+### Miscellaneous
+
+* **deps:** update dependency defenseunicorns/zarf to v0.32.2 ([22295b9](https://github.com/defenseunicorns/uds-common-tasks/commit/22295b950e3f07c5aa3f350695ac6bf84a36da86))
+
 ## 0.1.0 (2024-01-24)
 
 
