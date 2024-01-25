@@ -39,7 +39,7 @@
     },
     {
       "depNameTemplate": "defenseunicorns/zarf",
-      "fileMatch": ["README\\.md"],
+      "fileMatch": ["\\.*\\.ya?ml$","README\\.md"],
       "matchStrings": [
         "- Zarf: (?<currentValue>.*)",
         "# renovate: datasource=github-tags depName=defenseunicorns/zarf versioning=(?<versioning>.*?)\n.*?(version:) (?<currentValue>.*)"
