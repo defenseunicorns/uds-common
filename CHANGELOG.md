@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.1.2](https://github.com/defenseunicorns/uds-common-tasks/compare/v0.1.1...v0.1.2) (2024-01-30)
+
+
+### Bug Fixes
+
+* prevent publish vars from being blown away ([#15](https://github.com/defenseunicorns/uds-common-tasks/issues/15)) ([3ec6d5e](https://github.com/defenseunicorns/uds-common-tasks/commit/3ec6d5e7656e89d861b95dd37b87c160547f9849))
+
+
+### Miscellaneous
+
+* **deps:** update dependency defenseunicorns/uds-cli to v0.7.0 ([9a8beb2](https://github.com/defenseunicorns/uds-common-tasks/commit/9a8beb277939ccf3fa1a01f4aedf7d9ce0c415d2))
+
 ## [0.1.1](https://github.com/defenseunicorns/uds-common-tasks/compare/v0.1.0...v0.1.1) (2024-01-25)
 
 
