@@ -11,8 +11,6 @@
   "prConcurrentLimit": 0,
   "prHourlyLimit": 0,
   "rebaseStalePrs": true,
-  "platform": "github",
-  "requireConfig": "required",
   "commitBodyTable": true,
   "separateMajorMinor": false,
   "suppressNotifications": ["prIgnoreNotification"],
@@ -52,7 +50,7 @@
       "matchStrings": [
         "# renovate: datasource=github-tags depName=defenseunicorns/zarf versioning=(?<versioning>.*?)\n.*?(version:) (?<currentValue>.*)"
       ],
-      "datasourceTemplate": "github-tags",
+      "datasourceTemplate": "github-tags"
     }
   ],
   "packageRules": [
