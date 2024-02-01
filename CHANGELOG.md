@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.1.4](https://github.com/defenseunicorns/uds-common-tasks/compare/v0.1.3...v0.1.4) (2024-02-01)
+
+
+### Bug Fixes
+
+* renovate for uds core ([a479694](https://github.com/defenseunicorns/uds-common-tasks/commit/a479694aac81ebfac0ff3dbe045ef70a18046587))
+
+
+### Miscellaneous
+
+* **deps:** update dependency defenseunicorns/uds-core to v0.10.0 ([1b45688](https://github.com/defenseunicorns/uds-common-tasks/commit/1b45688eeb3f0e1797550ce615d361aa282fa7f8))
+
 ## [0.1.3](https://github.com/defenseunicorns/uds-common-tasks/compare/v0.1.2...v0.1.3) (2024-02-01)
 
 
