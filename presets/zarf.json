@@ -1,0 +1,90 @@
+{
+  "enabled": true,
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "helm-values": {
+    "fileMatch": ["./.+\\.yaml$"]
+  },
+  "kubernetes": {
+    "fileMatch": ["\\.yaml$"],
+    "ignorePaths": [
+      ".github"
+    ]
+  },
+  "hostRules": [
+    {
+      "matchHost": "registry1.dso.mil",
+      "hostType": "docker",
+      "description": "Encrypted creds for registry1, scoped to this Github org using: https://github.com/renovatebot/renovate/blob/main/docs/usage/configuration-options.md#encrypted",
+      "encrypted": {
+        "username": "wcFMA/xDdHCJBTolAQ//ev0Hr6J2PgtJKeh3/5n8ePmfx6FfwUpzKWPMzf+rZ4e57yXB9jYHu+fjUaFhE3Re0UXFZpZLwx5BRX0NrhpkJwAxtFIpIYSoz/XOhEf2AxtT057iWxBY+efU/26pgMnu+vYYvt2i115MFQKsRAeSQOcDX6iDWUOed3JnlA5zgnBmlqUhktHiUkteiSUBgfCSxC1fueAHZ+0DfOORhUko6bhsyxXpoPowGhGzM4va4RwuibbiVMIUgtcEV1Olmo26XPuDReEWq2b23xI5c6XQ00mPmrP00G2724HC2twcJdil/u4sQLBgboIALhSUv/4t6HAFR70mCbuBn2s8ThvGAoGCz16cRA0GZhAkEWWQnl1ycgIBimol6IklB7c5Ziv6GAUUm2WXtEdwlJ4EypNNoFx5ZCFSV6MZ2aw/L9FTZkpXNnTN4tDp/cSYS52zZ/m4pENsBL8nFCmrE1QHewAZfSThgZDj8KMEwZ0+hb4/2xUBVMkhkeroW2u+8iVKOhGc5jnSrPrL+1Ei2Ow0JKN0ohlYfCHit+63WSzf2IWeq8wA4qX+ypgCD/4dh6zZGNIKDCs8qnLn8+KV45AMTat3vSy1UetVicrXzbSQ456Z9i384QIPuuj2PetMWn4gg4jXHyL0rcX4PTaTNSO7LlsGEIFrGtTdAKQrT10+kDkIJfbSXwEvdzByRdZQgbv30EfU2WW+cf0u86DwNtbZu+zBAPqw/2RJ13FOWPHuaBPv2OmVQR0dsIHaqGoOz4gvHjJ6it1S+ODawMnC9apAGU3W1UKSa0AHZFc46tCuYh9UXcRA",
+        "password": "wcFMA/xDdHCJBTolAQ/9EujXJGbQCHn7UGQrDzjQg2eD5x/KD/cgO1ksDBPiGiu9N4GyKp7sTh8oueN2p32uzT5MockH71mTPD8DjVb0k5psYam9gyaFJX5GzgRqNvJJQbvnHJ2XnjyH48zD9ealMoGWcD1NZa3qTzN5NkZTaMWWXUJnmryFkrbTjEkAIEVEyRnNuEkhW4wyUmv9OhJiGnawPT8JacIka0Mn6GPxkwx544ChRD+gHjz1mGmr/3yOwZL8kUFQuGFy+JeQAKcEf+2/6YF0gOGzkc7LXHTwG9SQL3yIq6npxt5GAYtEz2BKPG5TZfRqeFY8ooV+dSskngnY5RliZ9YdgzQccpGA8jl5zhiGdUcOP2WbhvJkW8Ykn66ipaTyAgVjGoTnBuPDfWYNSmnbvS2aRYnqda/gGVqoDlHFPk5dvVRz3TaUag2Dlp6tg+UTVxxq54gm9+JXToW7yEELhcjhZehRpJom1pRTftBulLuBoGSw/F4hnIoQjNeILhCP1nCPnd3rpjOgOMeWy2Bsipf4Deo+cXqjpKzF2VPlrkBu522boYF00yNCXvQ9RIH/Bd3x/6fVf/ECrWcAHngK/wrEsYTblHSokfM7I/27paoepJypukwYOqB9YUzhtsoetAvMH8tpbFBJ8UyC/RX6TPPm7hpQJfucVXBfeeq6ZGs0TXDYcYJPR0fScwEXiBHubrbJcct57sg/WsaybperV1aemzEjPFgl6Jy60S2z+xSlseFVmUskaq+cFoeU6APu1zLQbj1o4dRRRfaa56IGP5cUwZ/bzsrT1dP3kYBfoSJgdoWTJNg9LX2QQ9yi+PLZqZg/OXbVshn4RDoX18I"
+      }
+    }
+  ],
+  "regexManagers": [
+    {
+      "fileMatch": [".*\\.ya?ml$"],
+      "matchStrings": [
+        "# renovate: datasource=helm\n .*- name: (?<depName>.*?)\n *url: (?<registryUrl>.*?)\n *version: (?<currentValue>.*)\n"
+      ],
+      "datasourceTemplate": "helm",
+      "extractVersionTemplate": "{{#if extractVersion}}{{{extractVersion}}}{{else}}^(?<version>.*)${{/if}}"
+    },
+    {
+      "fileMatch": [".*\\.ya?ml$"],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( extractVersion=(?<extractVersion>.*?))?( registryUrl=(?<registryUrl>.*?))?\\s.*?:\\s*['\"]?(?<currentValue>.*?)['\"]?\\s"
+      ],
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver-coerced{{/if}}",
+      "extractVersionTemplate": "{{#if extractVersion}}{{{extractVersion}}}{{else}}^(?<version>.*)${{/if}}"
+    },
+    {
+      "fileMatch": [".*\\.ya?ml$"],
+      "matchStrings": [
+        "# renovate: zarf-uri datasource=github-tags depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s.*?uri: ['\"]https:\\/\\/github.com\\/defenseunicorns\\/zarf\\/releases\\/download\\/(?<currentValue>.*)\\/zarf_.*_Linux_amd64['\"]",
+        "# renovate: zarf-uri datasource=github-tags depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s.*?uri: ['\"]https:\\/\\/github.com\\/defenseunicorns\\/zarf\\/releases\\/download\\/.*\\/zarf_(?<currentValue>.*)_Linux_amd64['\"]"
+      ],
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver-coerced{{/if}}",
+      "datasourceTemplate": "github-tags"
+    },
+    {
+      "fileMatch": [".*\/?zarf\\.ya?ml$"],
+      "matchStrings": [
+        "- [\\'\"]?(?<depName>[^\"\\'\\s]+):(?<currentValue>[^\"\\'\\s]+)[\\'\"]?"
+      ],
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver-coerced{{/if}}",
+      "datasourceTemplate": "docker",
+      "extractVersionTemplate": "{{#if extractVersion}}{{{extractVersion}}}{{else}}^(?<version>.*)${{/if}}"
+    },
+    {
+      "fileMatch": [
+        "(^|/)zarf.yaml$"
+      ],
+      "matchStringsStrategy": "recursive",
+      "matchStrings": [
+        "(?m)charts:(.|\\n)*?(^\\s{4}[\\w:]+|\\n$|^\\s{2}-)",
+        "(?m)name:(.|\\n)+?(^\\s{4}[\\w\\-:]+|\\n$|^\\s{2}-|^\\s{6}-)",
+        "(?m)name: [\"']?(?<depName>.+?)[\"']?$(.|\\n)*?url: [\"']?(?<registryUrl>.+?)[\"']?$(.|\\n)*?version: [\"']?(?<currentValue>.+?)[\"']?$"
+      ],
+      "datasourceTemplate": "helm"
+    },
+    {
+      "fileMatch": [
+        "(^|/)zarf.yaml$"
+      ],
+      "matchStringsStrategy": "recursive",
+      "matchStrings": [
+        "(?m)charts:(.|\\n)*?(^\\s{4}[\\w:]+|\\n$|^\\s{2}-)",
+        "(?m)name:(.|\\n)+?(^\\s{4}[\\w\\-:]+|\\n$|^\\s{2}-|^\\s{6}-)",
+        "(?m)name: [\"']?(?<depName>.+?)[\"']?$(.|\\n)*?url: [\"']?(?<registryUrl>.+?)[\"']?$(.|\\n)*?version: [\"']?(?<currentValue>.+?)[\"']?$"
+      ],
+      "datasourceTemplate": "helm"
+    }
+  ],
+    "packageRules": [
+    {
+      "matchPackageNames": ["registry1.dso.mil/ironbank/big-bang/base"],
+      "allowedVersions": "!/8.4/"
+    }
+  ]
+}
