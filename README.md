@@ -8,7 +8,7 @@ These tasks are designed to be consumed via remote task includes and GitHub Acti
 
 ```yaml
 includes:
-  - deploy: https://raw.githubusercontent.com/defenseunicorns/uds-common-tasks/main/tasks/deploy.yaml
+  - deploy: https://raw.githubusercontent.com/defenseunicorns/uds-common-tasks/$TAG/tasks/deploy.yaml
 ```
 
 Pinning to a specific tag of these tasks (rather than `main`) with renovate watching for updates is recommended in the future. since these tasks do rely on dependencies like command syntax for `zarf` and `uds` as well as the published versions of `uds-core`.
@@ -25,23 +25,29 @@ There are multiple task files available in this repository with different object
 
 ### setup.yaml
 
-This task file includes a single task `k3d-test-cluster` which sets up a k3d cluster running the `uds-core-istio-dev` package. This provides a baseline cluster with Istio and the UDS Core Pepr capabilities necessary to test against.
+This task file includes two tasks:
+
+-`k3d-test-cluster` sets up a k3d cluster running the `uds-core-istio-dev` package. This provides a baseline cluster with Istio and the UDS Core Pepr capabilities necessary to test against.
+-`registry-login` performs a registry login and retry a max of 10 times at a desired retry interval (in seconds). It reads in environment variables from the system executing the task to use for the registry login parameters.
 
 ### create.yaml
 
 This task file includes two tasks:
+
 - `package`: creates a zarf package located at the base of the repository. It has a required variable of `FLAVOR` which defaults to upstream and an optional variable `ZARF_ARCHITECTURE` to override the default architecture used for creation (useful in publishing workflows).
 - `test-bundle`: creates a test bundle located at the path `bundle/`. It has an optional variable for `UDS_ARCH` which can be used to override the default architecture used for creation (useful in publishing workflows). Note that this task does not create any pre-requisite zarf packages so those tasks must be run first.
 
 ### deploy.yaml
 
 This task file includes two tasks:
+
 - `package`: deploys a zarf package located at the base of the repository (using the regex match `zarf-package-*-${UDS_ARCH}-*.tar.zst`).
 - `test-bundle`: deploys a test bundle located at the path `bundle/` (using the regex match `bundle/uds-bundle-*-${UDS_ARCH}-*.tar.zst`) and the config file located at `bundle/uds-config.yaml`.
 
 ### publish.yaml
 
 This task file includes a single task `package` which publishes zarf package(s) located at the base of the repository. Inputs for this task:
+
 - `FLAVOR`: the flavor of the zarf package to publish, defaults to `upstream`.
 - `TARGET_REPO`: the target OCI repository to publish the zarf package to, defaults to `oci://ghcr.io/defenseunicorns/packages/uds`.
 - `VERSION`: the version of the zarf package to publish with no default. This should typically be version controlled by something like release-please.
