@@ -6,7 +6,7 @@ includes:
 tasks:
   - name: setup-cluster
     actions:
-      - task: setup:k3d-test-cluster
+      - task: setup:k3d-istio-test-cluster
  
   - name: registry-login
     actions:
