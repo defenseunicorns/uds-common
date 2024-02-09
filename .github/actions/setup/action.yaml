@@ -22,21 +22,3 @@ runs:
       shell: bash
       # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
       run: brew install defenseunicorns/tap/uds@0.8.1
-
-    - name: Login to registry1
-      shell: bash
-      run: |
-        echo "REGISTRY=registry1.dso.mil" >> $GITHUB_OUTPUT && \
-        echo "REGISTRY_USERNAME=${{ secrets.IRON_BANK_ROBOT_USERNAME }}" >> $GITHUB_OUTPUT && \
-        echo "REGISTRY_PASSWORD=${{ secrets.IRON_BANK_ROBOT_PASSWORD }}" >> $GITHUB_OUTPUT && \
-        echo "REGISTRY_RETRY_INTERVAL=5" >> $GITHUB_OUTPUT && \
-        uds run registry-login
-
-    - name: Login to ghcr
-      shell: bash
-      run: |
-        echo "REGISTRY=ghcr.io" >> $GITHUB_OUTPUT && \
-        echo "REGISTRY_USERNAME=dummy" >> $GITHUB_OUTPUT && \
-        echo "REGISTRY_PASSWORD=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_OUTPUT && \
-        echo "REGISTRY_RETRY_INTERVAL=5" >> $GITHUB_OUTPUT && \
-        uds run registry-login
