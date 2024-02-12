@@ -21,11 +21,11 @@ jobs:
     timeout-minutes: 20
 
     steps:
-      - name: Clean Runner
-        uses: ./.github/actions/clean-runner
-
       - name: Checkout repository
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+
+      - name: Clean Runner
+        uses: ./.github/actions/clean-runner
 
       - name: Environment setup
         uses: ./.github/actions/setup
