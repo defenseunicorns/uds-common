@@ -6,7 +6,7 @@ tasks:
   - name: package
     description: Create the UDS Zarf Package
     actions:
-      - cmd: zarf package create --confirm --no-progress --architecture=${ZARF_ARCHITECTURE} --flavor ${FLAVOR}
+      - cmd: uds zarf package create --confirm --no-progress --architecture=${ZARF_ARCHITECTURE} --flavor ${FLAVOR}
 
   - name: test-bundle
     description: Create the test UDS Bundle
