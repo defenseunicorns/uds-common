@@ -1,14 +1,13 @@
 includes:
   - setup: ./tasks/setup.yaml
   - create: ./tasks/create.yaml
-  - clean: ./tasks/clean.yaml
   - deploy: ./tasks/deploy.yaml
 
 tasks:
   - name: setup-cluster
     actions:
       - task: setup:k3d-test-cluster
- 
+
   - name: registry-login
     actions:
       - task: setup:registry-login
@@ -17,7 +16,7 @@ tasks:
           registryUsername: ${REGISTRY_USERNAME}
           registryPassword: ${REGISTRY_PASSWORD}
           registryRetryInterval: ${REGISTRY_RETRY_INTERVAL}
- 
+
   - name: create-package
     actions:
       - task: create:package
@@ -26,10 +25,6 @@ tasks:
     actions:
       - task: create:test-bundle
 
-  - name: clean-runner
-    actions:
-      - task: clean:clean-runner
-  
   - name: deploy-package
     actions:
       - task: deploy:package

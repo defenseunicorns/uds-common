@@ -21,6 +21,9 @@ jobs:
     timeout-minutes: 20
 
     steps:
+      - name: Clean Runner
+        uses: ./.github/actions/clean-runner
+
       - name: Checkout repository
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
@@ -35,7 +38,7 @@ jobs:
           REGISTRY_RETRY_INTERVAL: "5"
         run: |
           uds run registry-login
-  
+
       - name: Login to ghcr
         env: 
           REGISTRY: "ghcr.io"
@@ -44,7 +47,7 @@ jobs:
           REGISTRY_RETRY_INTERVAL: "5"
         run: |
           uds run registry-login
-  
+
       - name: Create test package
         run: uds run create-package --set FLAVOR=test
 
@@ -54,9 +57,6 @@ jobs:
       - name: Free GH runner space
         run: uds run clean-runner
 
-      - name: Setup cluster
-        run: uds run setup-cluster
-      
       - name: Deploy test bundle
         run: uds run deploy-test-bundle
 

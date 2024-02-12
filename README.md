@@ -41,12 +41,6 @@ This task file includes two tasks:
 - `package`: creates a zarf package located at the base of the repository. It has a required variable of `FLAVOR` which defaults to upstream and an optional variable `ZARF_ARCHITECTURE` to override the default architecture used for creation (useful in publishing workflows).
 - `test-bundle`: creates a test bundle located at the path `bundle/`. It has an optional variable for `UDS_ARCH` which can be used to override the default architecture used for creation (useful in publishing workflows). Note that this task does not create any pre-requisite zarf packages so those tasks must be run first.
 
-### clean.yaml
-
-This task file includes one task:
-
-- `clean-runner`: Frees up space on the GitHub runner by removing unecessary files.
-
 ### deploy.yaml
 
 This task file includes two tasks:
