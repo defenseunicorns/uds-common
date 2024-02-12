@@ -54,6 +54,9 @@ jobs:
       - name: Create test bundle
         run: uds run create-test-bundle
 
+      - name: Setup cluster
+        run: uds run setup-cluster
+
       - name: Deploy test bundle
         run: uds run deploy-test-bundle
 
