@@ -28,7 +28,7 @@ There are multiple task files available in this repository with different object
 This task file includes two tasks:
 
 - `k3d-test-cluster` sets up a k3d cluster running the `uds-core-istio-dev` package. This provides a baseline cluster with Istio and the UDS Core Pepr capabilities necessary to test against.
-- `registry-login` performs a registry login and retry a max of 10 times at a desired retry interval (in seconds). It reads in environment variables from the system executing the task to use for the registry login parameters.  The environment variable inputs are:
+- `registry-login` performs a registry login and retry a max of 10 times at a desired retry interval (in seconds). It reads in variables for the task to use for the registry login parameters.  The variable inputs are:
   - `REGISTRY`: the target registry
   - `REGISTRY_USERNAME`: the username for the registry
   - `REGISTRY_PASSWORD`: the password for the registry
