@@ -1,5 +1,26 @@
 # Changelog
 
+## [0.2.0](https://github.com/defenseunicorns/uds-common-tasks/compare/v0.1.4...v0.2.0) (2024-02-12)
+
+
+### Features
+
+* add registry-login task ([44e28c4](https://github.com/defenseunicorns/uds-common-tasks/commit/44e28c42a0fd4c036bc3c3eb371558162563a33e))
+
+
+### Bug Fixes
+
+* address issue with registry-login task ([ece666d](https://github.com/defenseunicorns/uds-common-tasks/commit/ece666dc703e2cfbd6be1cfb5dc572d5d7ee0ddf))
+* incorporating PR feedback ([db21d69](https://github.com/defenseunicorns/uds-common-tasks/commit/db21d6918bf47c9f3f68cf3e1d442481a3aabda9))
+
+
+### Miscellaneous
+
+* **deps:** update dependency defenseunicorns/uds-cli to v0.8.1 ([e82fbee](https://github.com/defenseunicorns/uds-common-tasks/commit/e82fbee39bf137abd5015831c062e45eb4ba48ac))
+* **deps:** update dependency defenseunicorns/uds-core to v0.12.0 ([f003bd7](https://github.com/defenseunicorns/uds-common-tasks/commit/f003bd7150b44af5459513c57332cd1cba06f209))
+* **deps:** update githubactions to v4.3.1 ([57a6919](https://github.com/defenseunicorns/uds-common-tasks/commit/57a6919c207baed4b2e2d73f415cdee84bd88f45))
+* switch to uds zarf ([d1fcde7](https://github.com/defenseunicorns/uds-common-tasks/commit/d1fcde70ed8dc19cdb64fc3e4afcfbf6b84ddca4))
+
 ## [0.1.4](https://github.com/defenseunicorns/uds-common-tasks/compare/v0.1.3...v0.1.4) (2024-02-01)
 
 
