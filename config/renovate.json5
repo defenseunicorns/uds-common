@@ -1,0 +1,101 @@
+{
+    "enabled": true,
+    "forkProcessing": "enabled",
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "extends": [
+        ":dependencyDashboard",
+        ":semanticPrefixFixDepsChoreOthers",
+        "config:base",
+        "group:all",
+        "replacements:all",
+        "workarounds:all"
+    ],
+    "timezone": "America/New_York",
+    "rebaseStalePrs": true,
+    "schedule": ["after 7am and before 9am every weekday"],
+    "dependencyDashboard": true,
+    "dependencyDashboardTitle": "Renovate Dashboard 🤖",
+    "rebaseWhen": "conflicted",
+    "commitBodyTable": true,
+    "suppressNotifications": ["prIgnoreNotification"],
+    "pre-commit": {
+        "enabled": true
+    },
+    "helm-values": {
+        "fileMatch": ["./.+\\.yaml$"]
+    },
+    "kubernetes": {
+        "fileMatch": ["\\.yaml$"],
+        "ignorePaths": [
+            ".github"
+        ]
+    },
+    "regexManagers": [
+        // Matches specified datasources where a colon separates the version on the following line (i.e. https://github.com/defenseunicorns/zarf/blob/7e91d3b9823b52fe6d0f563d692c8af57faa6005/examples/big-bang/zarf.yaml#L5)
+        {
+            "fileMatch": [".*\\.ya?ml$"],
+            "matchStrings": [
+                // Test: https://regex101.com/r/d9t0lt/1
+                "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( extractVersion=(?<extractVersion>.*?))?( registryUrl=(?<registryUrl>.*?))?\\s.*:\\s*['\"]?(?<currentValue>[v0-9].*?)['\"]?(\\s|$)"
+            ],
+            "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver-coerced{{/if}}",
+            "extractVersionTemplate": "{{#if extractVersion}}{{{extractVersion}}}{{else}}^(?<version>.*)${{/if}}"
+        },
+        // Matches specified datasources where an @ separates the version on the following line (i.e. https://github.com/defenseunicorns/uds-core/blob/5a2666f6a5ba89686c6dc1fecb0db98512b1b9f8/.github/actions/setup/action.yaml#L32)
+        {
+            "fileMatch": [".*\\.ya?ml$"],
+            "matchStrings": [
+                // Test: https://regex101.com/r/vZkEYD/1
+                "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( extractVersion=(?<extractVersion>.*?))?( registryUrl=(?<registryUrl>.*?))?\\s.*@\\s*['\"]?(?<currentValue>[v0-9].*?)['\"]?(\\s|$)"
+            ],
+            "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver-coerced{{/if}}",
+            "extractVersionTemplate": "{{#if extractVersion}}{{{extractVersion}}}{{else}}^(?<version>.*)${{/if}}"
+        },
+        // Matches individual images in a `zarf.yaml`'s `images:` section that are tagged with a version (allowing for # renovate overrides)
+        {
+            "fileMatch": [ "(^|/)zarf\\.ya?ml$" ],
+            "matchStrings": [
+                // Test: https://regex101.com/r/Bd8IBp/1
+                "- ['\"]?(?<depName>[^\"'\\s]+):(?<currentValue>[^\"'\\s]+)['\"]?( # renovate:( versioning=(?<versioning>.*?))?( extractVersion=(?<extractVersion>.*?))?)?(\\s|$)"
+            ],
+            "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver-coerced{{/if}}",
+            "extractVersionTemplate": "{{#if extractVersion}}{{{extractVersion}}}{{else}}^(?<version>.*)${{/if}}",
+            "datasourceTemplate": "docker"
+        },
+        // Matches individual helm charts in a `zarf.yaml`'s `charts:` section that specify `version` then `url` 
+        {
+            "fileMatch": [ "(^|/)zarf\\.ya?ml$" ],
+            "matchStringsStrategy": "recursive",
+            "matchStrings": [
+                // Test: https://regex101.com/r/1DL0tI/3
+                "(?m)charts:(.|\\n)*?(^\\s{4}[\\w:]+|\\n$|^\\s{2}-)",
+                // Test: https://regex101.com/r/ibpxYd/1
+                "(?m)name:(.|\\n)+?(^\\s{4}[\\w\\-:]+|\\n$|^\\s{2}-|^\\s{6}-)",
+                // Test: https://regex101.com/r/nruXFi/1
+                "(?m)name: [\"']?(?<depName>.+?)[\"']?$(.|\\n)*?url: [\"']?(?<registryUrl>.+?)[\"']?$(.|\\n)*?version: [\"']?(?<currentValue>.+?)[\"']?$"
+            ],
+            "datasourceTemplate": "helm"
+        },
+        // Matches individual helm charts in a `zarf.yaml`'s `charts:` section that specify `url` then `version` 
+        {
+            "fileMatch": [ "(^|/)zarf.yaml$" ],
+            "matchStringsStrategy": "recursive",
+            "matchStrings": [
+                // Test: https://regex101.com/r/1DL0tI/3
+                "(?m)charts:(.|\\n)*?(^\\s{4}[\\w:]+|\\n$|^\\s{2}-)",
+                // Test: https://regex101.com/r/ibpxYd/1
+                "(?m)name:(.|\\n)+?(^\\s{4}[\\w\\-:]+|\\n$|^\\s{2}-|^\\s{6}-)",
+                // Test: https://regex101.com/r/iqP5RJ/1
+                "(?m)name: [\"']?(?<depName>.+?)[\"']?$(.|\\n)*?url: [\"']?(?<registryUrl>.+?)[\"']?$(.|\\n)*?version: [\"']?(?<currentValue>.+?)[\"']?$"
+            ],
+            "datasourceTemplate": "helm"
+        }
+    ],
+    "packageRules": [
+        // Excludes a bad tag in registry1 from when this image was based on UBI
+        {
+            "matchPackageNames": ["registry1.dso.mil/ironbank/big-bang/base"],
+            "allowedVersions": "!/8.4/"
+        }
+    ]
+}
