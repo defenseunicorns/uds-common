@@ -35,4 +35,3 @@ tasks:
           fi 
         description: "Validate registry connection"
         maxRetries: 10
-

@@ -7,7 +7,7 @@ tasks:
   - name: setup-cluster
     actions:
       - task: setup:k3d-test-cluster
- 
+
   - name: registry-login
     actions:
       - task: setup:registry-login
@@ -16,7 +16,7 @@ tasks:
           registryUsername: ${REGISTRY_USERNAME}
           registryPassword: ${REGISTRY_PASSWORD}
           registryRetryInterval: ${REGISTRY_RETRY_INTERVAL}
- 
+
   - name: create-package
     actions:
       - task: create:package
@@ -24,7 +24,7 @@ tasks:
   - name: create-test-bundle
     actions:
       - task: create:test-bundle
-  
+
   - name: deploy-package
     actions:
       - task: deploy:package
