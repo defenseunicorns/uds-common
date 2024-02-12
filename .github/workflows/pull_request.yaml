@@ -54,9 +54,6 @@ jobs:
       - name: Create test bundle
         run: uds run create-test-bundle
 
-      - name: Free GH runner space
-        run: uds run clean-runner
-
       - name: Deploy test bundle
         run: uds run deploy-test-bundle
 
