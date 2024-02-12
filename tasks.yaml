@@ -1,6 +1,7 @@
 includes:
   - setup: ./tasks/setup.yaml
   - create: ./tasks/create.yaml
+  - clean: ./tasks/clean.yaml
   - deploy: ./tasks/deploy.yaml
 
 tasks:
@@ -24,6 +25,10 @@ tasks:
   - name: create-test-bundle
     actions:
       - task: create:test-bundle
+
+  - name: clean-runner
+    actions:
+      - task: clean:clean-runner
   
   - name: deploy-package
     actions:

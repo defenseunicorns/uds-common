@@ -51,6 +51,9 @@ jobs:
       - name: Create test bundle
         run: uds run create-test-bundle
 
+      - name: Free GH runner space
+        run: uds run clean-runner
+
       - name: Setup cluster
         run: uds run setup-cluster
       
