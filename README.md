@@ -16,7 +16,7 @@ Pinning to a specific tag of these tasks (rather than `main`) with renovate watc
 ## Supported Tool Versions
 
 - UDS CLI: 0.8.1
-- Zarf: 0.32.2
+- Zarf: 0.32.3
 - UDS Core: 0.10.0
 
 ## Task Files
