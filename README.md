@@ -1,24 +1,24 @@
-# UDS Common Tasks
+# UDS Common
 
-This repository contains common tasks used in UDS Packages for setup, creation, deployment, and publishing of packages and bundles.
+This repository contains common configuration and tasks used in UDS Packages for management, setup, creation, deployment, and publishing of packages and bundles.
 
-## Usage
+## Task Usage
 
-These tasks are designed to be consumed via remote task includes and GitHub Actions (WIP). It is typically easiest to include these tasks in a single root level `tasks.yaml`. Includes should follow the standard remote include pattern documented by UDS CLI:
+The tasks are designed to be consumed via remote task includes and GitHub Actions (WIP). It is typically easiest to include tasks in a single root level `tasks.yaml`. Includes should follow the standard remote include pattern documented by UDS CLI:
 
 ```yaml
 includes:
   - deploy: https://raw.githubusercontent.com/defenseunicorns/uds-common-tasks/$TAG/tasks/deploy.yaml
 ```
 
-Pinning to a specific tag of these tasks (rather than `main`) with renovate watching for updates is recommended in the future. since these tasks do rely on dependencies like command syntax for `zarf` and `uds` as well as the published versions of `uds-core`.
+Pinning to a specific tag of a task (rather than `main`) with renovate watching for updates is recommended since tasks do rely on dependencies like command syntax for `zarf` and `uds` as well as the published versions of `uds-core`.
 
 ## Supported Tool Versions
 
 - UDS CLI: 0.9.0
 - UDS Core: 0.12.0
 
-NOTE: Zarf is not required for these tasks, the vendored zarf (`uds zarf`) included with UDS CLI is used instead to prevent version issues.
+NOTE: Zarf is not required for tasks in this repo, the vendored zarf (`uds zarf`) included with UDS CLI is used instead to prevent version mismatches.
 
 ## Task Files
 
@@ -58,3 +58,7 @@ This task file includes a single task `package` which publishes zarf package(s) 
 - `VERSION`: the version of the zarf package to publish with no default. This should typically be version controlled by something like release-please.
 
 Note that this task will publish both `arm64` and `amd64` architectures, with the exception of the `registry1` flavor which will skip the `arm64` publish.
+
+## Configuration Usage
+
+Common configuration used between repositories is located in the `config` directory and is imported via specific tool mechanisms (like Renovate's `extends` key).
