@@ -28,7 +28,7 @@ tasks:
             --password-stdin ${{ .inputs.registry }} \
             >/dev/null
         description: "Authenticate to the registry"
-     - cmd: |
+      - cmd: |
           if [ ${{ .inputs.registry }} = "registry1.dso.mil" ]; then
             uds zarf tools registry digest "${REGISTRY1_TEST_IMAGE}" >/dev/null || \
             (sleep ${{ .inputs.registryRetryInterval }}; exit 1)
