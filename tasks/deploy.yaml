@@ -2,7 +2,7 @@ tasks:
   - name: package
     actions:
       - description: Deploy the UDS Zarf Package
-        cmd: zarf package deploy zarf-package-*-${UDS_ARCH}-*.tar.zst --confirm --no-progress
+        cmd: uds zarf package deploy zarf-package-*-${UDS_ARCH}-*.tar.zst --confirm --no-progress
 
   - name: test-bundle
     actions:
