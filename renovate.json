@@ -34,29 +34,12 @@
       ],
       "datasourceTemplate": "github-tags",
       "extractVersionTemplate": "^v(?<version>.*)$"
-    },
-    {
-      "depNameTemplate": "defenseunicorns/zarf",
-      "fileMatch": ["README\\.md"],
-      "matchStrings": [
-        "- Zarf: (?<currentValue>.*)"
-      ],
-      "datasourceTemplate": "github-tags",
-      "extractVersionTemplate": "^v(?<version>.*)$"
-    },
-    {
-      "depNameTemplate": "defenseunicorns/zarf",
-      "fileMatch": ["\\.*\\.ya?ml$"],
-      "matchStrings": [
-        "# renovate: datasource=github-tags depName=defenseunicorns/zarf versioning=(?<versioning>.*?)\n.*?(version:) (?<currentValue>.*)"
-      ],
-      "datasourceTemplate": "github-tags"
     }
   ],
   "packageRules": [
     { 
       "matchFileNames": [".github/**"],
-      "excludePackageNames": ["defenseunicorns/zarf","defenseunicorns/uds-cli"],
+      "excludePackageNames": ["defenseunicorns/uds-cli"],
       "groupName": "githubactions",
       "commitMessageTopic": "githubactions",
       "pinDigests": true
