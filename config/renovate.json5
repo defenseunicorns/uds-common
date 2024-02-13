@@ -151,6 +151,16 @@
                 "(?m)name:(.|\\n)*?url: [\"']?oci:\\/\\/(?<depName>.+?)[\"']?$(.|\\n)*?version: [\"']?(?<currentValue>.+?)[\"']?$"
             ],
             "datasourceTemplate": "docker"
+        },
+        // Matches oci packages in a `uds-bundle.yaml`'s `zarf-packages:` section that specify `repository` then `ref` 
+        {
+            "fileMatch": [ "(^|/)uds-bundle.yaml$" ],
+            "matchStringsStrategy": "recursive",
+            "matchStrings": [
+                // Match the parts of a chart entry. Test: https://regex101.com/r/IFgEw0/1
+                "(?m)repository: [\"']?(?<depName>.+?)[\"']?$(.)*(\n.*){0,2}ref: [\"']?(?<currentValue>.+?)[\"']?$"
+            ],
+            "datasourceTemplate": "docker"
         }
     ],
     "packageRules": [
