@@ -37,7 +37,7 @@
             "versioningTemplate": "semver-coerced",
             "datasourceTemplate": "github-tags"
         },
-        // Matches npm modules in npm install commands (i.e. )
+        // Matches npm modules in npm install commands (i.e. https://github.com/defenseunicorns/uds-core/blob/f8e65159873f87be5912b73cc6f0a5ff26b7bed0/.github/workflows/commitlint.yaml#L26)
         {
             "fileMatch": [".*(\\.ya?ml|\\.json)$"],
             "matchStrings": [
