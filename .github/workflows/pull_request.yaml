@@ -1,8 +1,11 @@
 name: Test Tasks
 
-# This workflow is triggered on pull requests to the main branch.
 on:
+  # This workflow is triggered on pull requests to the main branch.
   pull_request:
+  # A workaround for release-please not triggering PR workflows.
+  pull_request_review:
+    types: [submitted]
 
 concurrency:
   group: test-${{ github.ref }}
