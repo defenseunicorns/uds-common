@@ -72,7 +72,7 @@
                 // Test: https://regex101.com/r/ibpxYd/1
                 "(?m)name:(.|\\n)+?(^\\s{4}[\\w\\-:]+|\\n$|^\\s{2}-|^\\s{6}-)",
                 // Test: https://regex101.com/r/nruXFi/1
-                "(?m)name: [\"']?(?<depName>.+?)[\"']?$(.|\\n)*?url: [\"']?(?<registryUrl>.+?)[\"']?$(.|\\n)*?version: [\"']?(?<currentValue>.+?)[\"']?$"
+                "(?m)name: [\"']?(?<depName>.+?)[\"']?$(.|\\n)*?version: [\"']?(?<currentValue>.+?)[\"']?$(.|\\n)*?url: [\"']?(?<registryUrl>.+?)[\"']?$"
             ],
             "datasourceTemplate": "helm"
         },
