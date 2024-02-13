@@ -42,7 +42,7 @@
             "fileMatch": [".*(\\.ya?ml|\\.json)$"],
             "matchStrings": [
                 // Test: https://regex101.com/r/321nL5/1
-                "npm install [\\w\\- ]+ (?<depName>@?[^\\s]*?)@(?<currentValue>[^\\s]+)"
+                "npm install ([\\w\\- ]+ )?(?<depName>@?[^\\s]*?)@(?<currentValue>[^\\s]+)"
             ],
             "datasourceTemplate": "npm"
         },
