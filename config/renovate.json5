@@ -29,13 +29,22 @@
     "regexManagers": [
         // Matches github-tags pointing to items in githubusercontent (i.e. https://github.com/defenseunicorns/uds-core/blob/e45de0e5917a2ca6c3e30e593e2d9a8d393849a9/.vscode/settings.json#L12)
         {
-            "fileMatch": [".*(\\.ya?ml|.json)$"],
+            "fileMatch": [".*(\\.ya?ml|\\.json)$"],
             "matchStrings": [
                 // Test: https://regex101.com/r/r1nWoZ/1
                 "https:\\/\\/raw\\.githubusercontent\\.com\\/(?<depName>[^\\/]+\\/[^\\/]+)\\/(?<currentValue>[^\\/]+)"
             ],
             "versioningTemplate": "semver-coerced",
             "datasourceTemplate": "github-tags"
+        },
+        // Matches npm modules in npm install commands (i.e. https://github.com/defenseunicorns/uds-core/blob/f8e65159873f87be5912b73cc6f0a5ff26b7bed0/.github/workflows/commitlint.yaml#L26)
+        {
+            "fileMatch": [".*(\\.ya?ml|\\.json)$"],
+            "matchStrings": [
+                // Test: https://regex101.com/r/321nL5/1
+                "npm install ([\\w\\- ]+ )?(?<depName>@?[^\\s]*?)@(?<currentValue>[^\\s]+)"
+            ],
+            "datasourceTemplate": "npm"
         },
         // Matches specified datasources where a colon separates the version on the following line (i.e. https://github.com/defenseunicorns/zarf/blob/7e91d3b9823b52fe6d0f563d692c8af57faa6005/examples/big-bang/zarf.yaml#L5)
         {
