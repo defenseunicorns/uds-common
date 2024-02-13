@@ -8,7 +8,7 @@ The tasks are designed to be consumed via remote task includes and GitHub Action
 
 ```yaml
 includes:
-  - deploy: https://raw.githubusercontent.com/defenseunicorns/uds-common-tasks/$TAG/tasks/deploy.yaml
+  - deploy: https://raw.githubusercontent.com/defenseunicorns/uds-common/$TAG/tasks/deploy.yaml
 ```
 
 Pinning to a specific tag of a task (rather than `main`) with renovate watching for updates is recommended since tasks do rely on dependencies like command syntax for `zarf` and `uds` as well as the published versions of `uds-core`.
