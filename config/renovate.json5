@@ -4,11 +4,7 @@
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
     "extends": [
         ":dependencyDashboard",
-        ":semanticPrefixFixDepsChoreOthers",
         "config:base",
-        "group:all",
-        "replacements:all",
-        "workarounds:all"
     ],
     "timezone": "America/New_York",
     "rebaseStalePrs": true,
@@ -22,10 +18,10 @@
         "enabled": true
     },
     "helm-values": {
-        "fileMatch": ["./.+\\.yaml$"]
+        "fileMatch": [".*\\.ya?ml$"]
     },
     "kubernetes": {
-        "fileMatch": ["\\.yaml$"],
+        "fileMatch": [".*\\.ya?ml$"],
         "ignorePaths": [
             ".github"
         ]
