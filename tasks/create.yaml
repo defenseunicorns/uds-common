@@ -5,8 +5,11 @@ variables:
 tasks:
   - name: package
     description: Create the UDS Zarf Package
+    inputs:
+      options:
+        description: "For setting deploy time variables and flags"
     actions:
-      - cmd: uds zarf package create --confirm --no-progress --architecture=${ZARF_ARCHITECTURE} --flavor ${FLAVOR}
+      - cmd: uds zarf package create --confirm --no-progress --architecture=${ZARF_ARCHITECTURE} --flavor ${FLAVOR} ${{ .inputs.options }}
 
   - name: test-bundle
     description: Create the test UDS Bundle
