@@ -1,0 +1,27 @@
+name: Scan
+
+on:
+  # This workflow is triggered on pull requests
+  pull_request:
+
+  # This allows other repositories to call this workflow in a reusable way
+  workflow_call:
+
+concurrency:
+  group: lint-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs: 
+  validate:
+    runs-on: ubuntu-latest
+    name: Validate Lint
+    permissions:
+      contents: read # Allows reading contents of a repo.
+    steps:
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+
+      - name: Run pre-commit
+        uses: pre-commit/action@2c7b3805fd2a0fd8c1884dcaebf91fc102a13ecd # v3.0.1
+        with:
+          extra_args: --all-files --verbose # pre-commit run --all-files --verbose
