@@ -20,6 +20,8 @@ tasks:
   - name: create-package
     actions:
       - task: create:package
+        with:
+          options: ${CREATE_OPTIONS}
 
   - name: create-test-bundle
     actions:
@@ -28,6 +30,8 @@ tasks:
   - name: deploy-package
     actions:
       - task: deploy:package
+        with:
+          options: ${DEPLOY_OPTIONS}
 
   - name: deploy-test-bundle
     actions:
