@@ -1,0 +1,16 @@
+name: Metadata
+
+# This workflow is triggered on pull requests to the main branch.
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, edited, synchronize]
+
+# Permissions for the GITHUB_TOKEN used by the workflow.
+permissions:
+  pull-requests: read # Allows reading pull request metadata.
+
+jobs:
+  title_check:
+    name: Validate PR Title
+    uses: ./workflows/commitlint.yaml
