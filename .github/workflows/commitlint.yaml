@@ -31,4 +31,6 @@ jobs:
           npm install --save-dev @commitlint/cli@18.6.0
 
       - name: Lint PR title
-        run: echo "${{ github.event.pull_request.title }}" | npx commitlint
+        run: |
+          echo "module.exports = {extends: ['@commitlint/config-conventional']}" > commitlint.config.js
+          echo "${{ github.event.pull_request.title }}" | npx commitlint
