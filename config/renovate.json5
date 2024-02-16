@@ -6,6 +6,8 @@
         ":dependencyDashboard",
         "config:base",
     ],
+    // Disable reviewers getting added by renovate to limit notification noise
+    "reviewersFromCodeOwners": false,
     "timezone": "America/New_York",
     "rebaseStalePrs": true,
     "schedule": ["after 7am and before 9am every weekday"],
