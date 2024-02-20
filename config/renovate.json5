@@ -58,15 +58,15 @@
             "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver-coerced{{/if}}",
             "extractVersionTemplate": "{{#if extractVersion}}{{{extractVersion}}}{{else}}^(?<version>.*)${{/if}}"
         },
-        // Matches specified datasources where an @ separates the version on the following line (i.e. https://github.com/defenseunicorns/uds-core/blob/5a2666f6a5ba89686c6dc1fecb0db98512b1b9f8/.github/actions/setup/action.yaml#L32)
+        // Matches specified datasources for brew where an @ separates the version on the following line (i.e. https://github.com/defenseunicorns/uds-core/blob/5a2666f6a5ba89686c6dc1fecb0db98512b1b9f8/.github/actions/setup/action.yaml#L32)
         {
             "fileMatch": [".*\\.ya?ml$"],
             "matchStrings": [
-                // Test: https://regex101.com/r/vZkEYD/1
-                "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( extractVersion=(?<extractVersion>.*?))?( registryUrl=(?<registryUrl>.*?))?\\s.*@\\s*['\"]?(?<currentValue>[v0-9].*?)['\"]?(\\s|$)"
+                // Test: https://regex101.com/r/p3Cpjx/1
+                "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s.*brew.*@\\s*['\"]?(?<currentValue>[v0-9].*?)['\"]?(\\s|$)"
             ],
             "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver-coerced{{/if}}",
-            "extractVersionTemplate": "{{#if extractVersion}}{{{extractVersion}}}{{else}}^(?<version>.*)${{/if}}"
+            "extractVersionTemplate": "^v(?version.*)$"
         },
         // Matches individual images in a `zarf.yaml`'s `images:` section that are tagged with a version (allowing for # renovate overrides)
         {
