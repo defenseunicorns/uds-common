@@ -5,7 +5,7 @@ on:
   pull_request:
     branches: [main]
     types: [opened, edited, synchronize]
-    
+
   # This allows other repositories to call this workflow in a reusable way
   workflow_call:
 

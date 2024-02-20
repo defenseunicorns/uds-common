@@ -1,8 +1,8 @@
-name: "Setup Environment"
-description: "UDS Environment Setup"
+name: Setup Environment
+description: UDS Environment Setup
 
 runs:
-  using: "composite"
+  using: composite
   steps:
     - name: Install k3d
       shell: bash

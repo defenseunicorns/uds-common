@@ -19,7 +19,7 @@ permissions:
 jobs:
   run-test:
     name: Test
-    runs-on: "ubuntu-latest"
+    runs-on: ubuntu-latest
     timeout-minutes: 20
 
     steps:
@@ -33,19 +33,19 @@ jobs:
         uses: ./.github/actions/setup
 
       - name: Login to registry1
-        env: 
-          REGISTRY: "registry1.dso.mil"
-          REGISTRY_USERNAME: "${{ secrets.IRON_BANK_ROBOT_USERNAME }}"
-          REGISTRY_PASSWORD: "${{ secrets.IRON_BANK_ROBOT_PASSWORD }}"
+        env:
+          REGISTRY: registry1.dso.mil
+          REGISTRY_USERNAME: ${{ secrets.IRON_BANK_ROBOT_USERNAME }}
+          REGISTRY_PASSWORD: ${{ secrets.IRON_BANK_ROBOT_PASSWORD }}
           REGISTRY_RETRY_INTERVAL: "5"
         run: |
           uds run registry-login
 
       - name: Login to ghcr
-        env: 
-          REGISTRY: "ghcr.io"
-          REGISTRY_USERNAME: "dummy"
-          REGISTRY_PASSWORD: "${{ secrets.GITHUB_TOKEN }}"
+        env:
+          REGISTRY: ghcr.io
+          REGISTRY_USERNAME: dummy
+          REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
           REGISTRY_RETRY_INTERVAL: "5"
         run: |
           uds run registry-login

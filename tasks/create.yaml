@@ -1,13 +1,13 @@
 variables:
   - name: FLAVOR
-    default: "upstream"
+    default: upstream
 
 tasks:
   - name: package
     description: Create the UDS Zarf Package
     inputs:
       options:
-        description: "For setting create time variables and flags"
+        description: For setting create time variables and flags
     actions:
       - cmd: uds zarf package create --confirm --no-progress --architecture=${ZARF_ARCHITECTURE} --flavor ${FLAVOR} ${{ .inputs.options }}
 

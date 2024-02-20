@@ -2,7 +2,7 @@ tasks:
   - name: package
     inputs:
       options:
-        description: "For setting deploy time variables and flags"
+        description: For setting deploy time variables and flags
     actions:
       - description: Deploy the UDS Zarf Package
         cmd: uds zarf package deploy zarf-package-*-${UDS_ARCH}-*.tar.zst --confirm --no-progress ${{ .inputs.options }}

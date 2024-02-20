@@ -1,5 +1,5 @@
 name: save-logs
-description: "Save debug logs"
+description: Save debug logs
 
 runs:
   using: composite
