@@ -3,9 +3,9 @@ description: Save debug logs
 
 inputs:
   suffix:
-    description: 'Suffix to append to the debug log'
+    description: Suffix to append to the debug log
     required: false
-    default: ''
+    default: ""
 
 runs:
   using: composite
