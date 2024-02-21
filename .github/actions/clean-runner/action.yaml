@@ -1,5 +1,5 @@
 name: clean-runner
-description: "Free GH Runner Space"
+description: Free GH Runner Space
 
 runs:
   using: composite

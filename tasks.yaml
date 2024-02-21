@@ -2,8 +2,13 @@ includes:
   - setup: ./tasks/setup.yaml
   - create: ./tasks/create.yaml
   - deploy: ./tasks/deploy.yaml
+  - lint: ./tasks/lint.yaml
 
 tasks:
+  - name: install-deps
+    actions:
+      - task: lint:deps
+
   - name: setup-cluster
     actions:
       - task: setup:k3d-test-cluster
@@ -47,3 +52,8 @@ tasks:
             name: podinfo
             namespace: podinfo
             condition: available
+
+  - name: lint-all
+    description: Lint the current repository
+    actions:
+      - task: lint:yaml

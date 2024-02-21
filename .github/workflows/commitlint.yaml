@@ -1,0 +1,38 @@
+name: Metadata
+
+on:
+  # This workflow is triggered on pull requests to the main branch.
+  pull_request:
+    branches: [main]
+    types: [opened, edited, synchronize]
+
+  # This allows other repositories to call this workflow in a reusable way
+  workflow_call:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    name: Validate PR Title
+    permissions:
+      pull-requests: read # Allows reading pull request metadata.
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4.0.0
+
+      - name: Install commitlint
+        run: |
+          npm install --save-dev @commitlint/config-conventional@18.6.0
+          npm install --save-dev @commitlint/cli@18.6.0
+
+      - name: Lint PR title
+        env:
+          pull_request_title: ${{ github.event.pull_request.title }}
+        run: |
+          echo "module.exports = {extends: ['@commitlint/config-conventional']}" > commitlint.config.js
+          echo "$pull_request_title" | npx commitlint

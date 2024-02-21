@@ -1,6 +1,6 @@
 variables:
   - name: REGISTRY1_TEST_IMAGE
-    default: "registry1.dso.mil/ironbank/opensource/defenseunicorns/zarf/zarf-agent"
+    default: registry1.dso.mil/ironbank/opensource/defenseunicorns/zarf/zarf-agent
 
 tasks:
   - name: k3d-test-cluster
@@ -12,14 +12,14 @@ tasks:
   - name: registry-login
     inputs:
       registry:
-        description: "Registry"
+        description: Registry
       registryUsername:
-        description: "Registry username"
+        description: Registry username
       registryPassword:
-        description: "Registry password"
+        description: Registry password
       registryRetryInterval:
         default: "5"
-        description: "Registry retry interval"
+        description: Registry retry interval
     actions:
       - cmd: |
           echo ${{ .inputs.registryPassword }} | \
@@ -27,11 +27,11 @@ tasks:
             --username ${{ .inputs.registryUsername }} \
             --password-stdin ${{ .inputs.registry }} \
             >/dev/null
-        description: "Authenticate to the registry"
+        description: Authenticate to the registry
       - cmd: |
           if [ ${{ .inputs.registry }} = "registry1.dso.mil" ]; then
             uds zarf tools registry digest "${REGISTRY1_TEST_IMAGE}" >/dev/null || \
             (sleep ${{ .inputs.registryRetryInterval }}; exit 1)
-          fi 
-        description: "Validate registry connection"
+          fi
+        description: Validate registry connection
         maxRetries: 10

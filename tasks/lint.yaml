@@ -1,0 +1,13 @@
+tasks:
+  - name: deps
+    description: Install linting tool dependencies
+    actions:
+      - description:
+        cmd: pip install yamllint
+
+  - name: yaml
+    description: Run YAML linting checks
+    actions:
+      # requires yamllint to be installed either from pip or brew
+      - description: Lint YAML files
+        cmd: yamllint . -c .yamllint --no-warnings
