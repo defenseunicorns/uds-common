@@ -9,7 +9,7 @@ tasks:
       options:
         description: For setting create time variables and flags
     actions:
-      - cmd: uds zarf package create --confirm --no-progress --architecture=${ZARF_ARCHITECTURE} --flavor ${FLAVOR} ${{ .inputs.options }}
+      - cmd: uds zarf package create --confirm --no-progress --architecture=${UDS_ARCH} --flavor ${FLAVOR} ${{ .inputs.options }}
 
   - name: test-bundle
     description: Create the test UDS Bundle
