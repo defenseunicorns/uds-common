@@ -29,6 +29,15 @@
       ],
       "datasourceTemplate": "github-tags",
       "extractVersionTemplate": "^v(?<version>.*)$"
+    },
+    {
+      "depNameTemplate": "k3d-io/k3d",
+      "fileMatch": ["README\\.md"],
+      "matchStrings": [
+        "- K3D: (?<currentValue>.*)"
+      ],
+      "datasourceTemplate": "github-tags",
+      "extractVersionTemplate": "^v(?<version>.*)$"
     }
   ],
   "packageRules": [
