@@ -1,0 +1,14 @@
+.cache/
+.idea/
+build/
+.DS_Store
+*.tar.zst
+zarf-sbom
+tmp/
+env.ts
+node_modules
+dist
+insecure*
+.env
+zarf
+tmp-tasks.yaml
