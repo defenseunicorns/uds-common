@@ -7,7 +7,7 @@ on:
     types: [milestoned, opened, reopened, synchronize]
 
 env:
-  flavors: ${{ inputs.flavors || 'test'' }}
+  flavors: ${{ inputs.flavors || 'test' }}
 #  flavors: ${{ inputs.flavors == null && 'test' || inputs.flavors }}
 
 concurrency:
