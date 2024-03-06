@@ -11,9 +11,11 @@ on:
     inputs:
       flavors:
         description: Flavors to use in the strategy matrix to run the workflow
+        type: string
         required: true
       runson:
         description: runs-on setting for the job
+        type: string
         required: true
 
 concurrency:
