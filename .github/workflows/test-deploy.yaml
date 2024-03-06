@@ -18,9 +18,12 @@ permissions:
 
 jobs:
   run-test:
-    name: Test
-    runs-on: ubuntu-latest
+    name: Create and Deploy Flavor ${{ matrix.flavor }}
+    runs-on: ubuntu-latest #todo: this needs to be variable for workflow
     timeout-minutes: 20
+    strategy:
+      matrix:
+        flavor: [test]
 
     steps:
       - name: Checkout repository
@@ -51,10 +54,10 @@ jobs:
           uds run registry-login
 
       - name: Create test package
-        run: uds run create-package --set FLAVOR=test
+        run: uds run create-package --set FLAVOR=${{ matrix.flavor }}
 
       - name: Create test bundle
-        run: uds run create-test-bundle
+        run: uds run create-test-bundle --set FLAVOR=${{ matrix.flavor }}
 
       - name: Setup cluster
         run: uds run setup-cluster
@@ -68,3 +71,5 @@ jobs:
       - name: Save logs
         if: always()
         uses: ./.github/actions/save-logs
+        with:
+          suffix: '${{ matrix.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}'
