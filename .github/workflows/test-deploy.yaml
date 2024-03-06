@@ -9,6 +9,16 @@ on:
   # This allows other repositories to call this workflow in a reusable way
   workflow_call:
 
+inputs:
+  flavors:
+    description: Flavors to use in the strategy matrix to run the workflow
+    required: true
+    default: "test"
+  runson:
+    description: runs-on setting for the job
+    required: true
+    default: "ubuntu-latest"
+
 concurrency:
   group: test-${{ github.ref }}
   cancel-in-progress: true
@@ -22,11 +32,11 @@ permissions:
 jobs:
   run-test:
     name: Create and Deploy Flavor ${{ matrix.flavor }}
-    runs-on: ${{ fromJSON(format('[{0}]', inputs.runson || '"ubuntu-latest"')) }}
+    runs-on: ${{ fromJSON(format('[{0}]', inputs.runson)) }}
     timeout-minutes: 20
     strategy:
       matrix:
-        flavor: ${{ fromJSON(format('[{0}]', inputs.flavors || '"test"')) }}
+        flavor: ${{ fromJSON(format('[{0}]', inputs.flavors)) }}
 
     steps:
       - name: Checkout repository
