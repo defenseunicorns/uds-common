@@ -1,5 +1,9 @@
 name: Test Tasks
 
+env:
+  FLAVORS: ${{ inputs.flavors == null && 'test' || inputs.flavors }}
+
+
 on:
   # This workflow is triggered on pull requests to the main branch.
   pull_request:
@@ -23,7 +27,7 @@ jobs:
     timeout-minutes: 20
     strategy:
       matrix:
-        flavor: [test]
+        flavor: ${FLAVORS}
 
     steps:
       - name: Checkout repository
