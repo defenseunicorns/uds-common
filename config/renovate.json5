@@ -185,7 +185,8 @@
                 // Match the parts of a chart entry. Test: https://regex101.com/r/cumJ2Y/1
                 "(?m)name:(.|\\n)*?kustomizations:(.|\n)*?- [\"']?github.com\\/(?<depName>.+?)\\/\\/.*\\?ref=(?<currentValue>.+?)[\"']?$"
             ],
-            "datasourceTemplate": "git-tags"
+            "versioningTemplate": "semver-coerced",
+            "datasourceTemplate": "github-tags"
         },
         // Matches oci packages in a `uds-bundle.yaml`'s `zarf-packages:` section that specify `repository` then `ref` 
         {
