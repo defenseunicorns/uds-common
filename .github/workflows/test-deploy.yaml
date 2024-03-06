@@ -27,7 +27,7 @@ jobs:
     timeout-minutes: 20
     strategy:
       matrix:
-        flavor: ${FLAVORS}
+        flavor: ${{ env.FLAVORS }}
 
     steps:
       - name: Checkout repository
