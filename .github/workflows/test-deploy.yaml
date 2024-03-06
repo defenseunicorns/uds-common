@@ -6,10 +6,6 @@ on:
     # milestoned is added here as a workaround for release-please not triggering PR workflows (PRs should be added to a milestone to trigger the workflow).
     types: [milestoned, opened, reopened, synchronize]
 
-# env:
-#   flavors: ${{ inputs.flavors || 'test' }}
-#  flavors: ${{ inputs.flavors == null && 'test' || inputs.flavors }}
-
 concurrency:
   group: test-${{ github.ref }}
   cancel-in-progress: true
@@ -27,7 +23,7 @@ jobs:
     timeout-minutes: 20
     strategy:
       matrix:
-        flavor: ${{ inputs.flavors || 'test' }}
+        flavor: ${{ fromJSON(format('[{0}]', inputs.flavors || '"test"')) }}
 
     steps:
       - name: Checkout repository
