@@ -38,6 +38,10 @@ jobs:
         flavor: ${{ fromJSON(format('[{0}]', inputs.flavors || '"test"')) }}
 
     steps:
+      - run: echo "workflow ${{ github.workflow }}"
+      - run: echo "workflow ${{ github.workflow_ref }}"
+      - run: echo "workflow ${{ github.workflow_sha }}"
+
       - name: Checkout repository
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
