@@ -72,4 +72,4 @@ jobs:
         if: always()
         uses: ./.github/actions/save-logs
         with:
-          suffix: '${{ matrix.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}'
+          suffix: ${{ matrix.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}
