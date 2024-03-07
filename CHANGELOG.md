@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.2.2](https://github.com/defenseunicorns/uds-common/compare/v0.2.1...v0.2.2) (2024-03-07)
+
+
+### Miscellaneous
+
+* **deps:** update dependency defenseunicorns/uds-cli to v0.9.3 ([e9757e8](https://github.com/defenseunicorns/uds-common/commit/e9757e87ac98f9a76983c2ff7e92aa57f0ca14cc))
+* **deps:** update dependency defenseunicorns/uds-core to v0.14.3 ([e3461fb](https://github.com/defenseunicorns/uds-common/commit/e3461fb8da51f98e86774fe9a3d742a8dc1d97cf))
+* **deps:** update githubactions ([9f357db](https://github.com/defenseunicorns/uds-common/commit/9f357db418ae5c14fd9a58db1bf379aa60503b26))
+
 ## [0.2.1](https://github.com/defenseunicorns/uds-common/compare/v0.2.0...v0.2.1) (2024-02-27)
 
 
