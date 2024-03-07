@@ -38,17 +38,8 @@ jobs:
       - name: Environment setup
         uses: defenseunicorns/uds-common/.github/actions/setup@417b9c2bc088f664c616c9929a2b3ce448d251f7
 
-      - name: Login to registry1
-        env:
-          REGISTRY: registry1.dso.mil
-          REGISTRY_USERNAME: ${{ secrets.IRON_BANK_ROBOT_USERNAME }}
-          REGISTRY_PASSWORD: ${{ secrets.IRON_BANK_ROBOT_PASSWORD }}
-          REGISTRY_RETRY_INTERVAL: "5"
-        run: |
-          uds run registry-login
-
-      # - name: Iron Bank Login
-      #   run: uds zarf tools registry login -u "${{secrets.IRON_BANK_ROBOT_USERNAME}}" -p "${{secrets.IRON_BANK_ROBOT_PASSWORD}}" registry1.dso.mil
+      - name: Iron Bank Login
+        run: uds zarf tools registry login -u "${{secrets.IRON_BANK_ROBOT_USERNAME}}" -p "${{secrets.IRON_BANK_ROBOT_PASSWORD}}" registry1.dso.mil
 
       - name: Create test bundle
         run: uds run create-test-bundle --set FLAVOR=${{ matrix.flavor }}
