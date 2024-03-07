@@ -1,0 +1,58 @@
+name: Test Tasks
+
+on:
+  # This allows other repositories to call this workflow in a reusable way
+  workflow_call:
+    inputs:
+      flavors:
+        description: Flavors to use in the strategy matrix to run the workflow
+        type: string
+        required: true
+      runson:
+        description: runs-on setting for the job
+        type: string
+        required: true
+
+concurrency:
+  group: shared-test-deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  run-test:
+    name: Create and Deploy Flavor ${{ matrix.flavor }}
+    runs-on: ${{ fromJSON(format('[{0}]', inputs.runson)) }}
+    timeout-minutes: 20
+    strategy:
+      matrix:
+        flavor: ${{ fromJSON(format('[{0}]', inputs.flavors)) }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+
+      - name: Environment setup
+        uses: defenseunicorns/uds-common/.github/actions/setup@417b9c2bc088f664c616c9929a2b3ce448d251f7
+      
+      - name: Iron Bank Login
+        run: uds zarf tools registry login -u "${{secrets.IRON_BANK_ROBOT_USERNAME}}" -p "${{secrets.IRON_BANK_ROBOT_PASSWORD}}" registry1.dso.mil
+
+      - name: Create test bundle
+        run: uds run create-test-bundle --set FLAVOR=${{ matrix.flavor }}
+
+      - name: Setup cluster
+        run: uds run setup-cluster
+      
+      - name: Deploy test bundle
+        run: uds run deploy-test-bundle
+
+      - name: Test package
+        run: uds run test-package
+
+      - name: Save logs
+        if: always()
+        uses: defenseunicorns/uds-common/.github/actions/save-logs@417b9c2bc088f664c616c9929a2b3ce448d251f7
+        with:
+          suffix: '${{ matrix.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}'

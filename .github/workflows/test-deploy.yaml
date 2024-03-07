@@ -6,18 +6,6 @@ on:
     # milestoned is added here as a workaround for release-please not triggering PR workflows (PRs should be added to a milestone to trigger the workflow).
     types: [milestoned, opened, reopened, synchronize]
 
-  # This allows other repositories to call this workflow in a reusable way
-  workflow_call:
-    inputs:
-      flavors:
-        description: Flavors to use in the strategy matrix to run the workflow
-        type: string
-        required: true
-      runson:
-        description: runs-on setting for the job
-        type: string
-        required: true
-
 concurrency:
   group: test-${{ github.ref }}
   cancel-in-progress: true
@@ -30,18 +18,11 @@ permissions:
 
 jobs:
   run-test:
-    name: Create and Deploy Flavor ${{ matrix.flavor }}
-    runs-on: ${{ fromJSON(format('[{0}]', inputs.runson || '"ubuntu-latest"')) }}
+    name: Test
+    runs-on: ubuntu-latest
     timeout-minutes: 20
-    strategy:
-      matrix:
-        flavor: ${{ fromJSON(format('[{0}]', inputs.flavors || '"test"')) }}
 
     steps:
-      - run: echo "workflow ${{ github.workflow }}"
-      - run: echo "workflow ${{ github.workflow_ref }}"
-      - run: echo "workflow ${{ github.workflow_sha }}"
-
       - name: Checkout repository
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
@@ -70,10 +51,10 @@ jobs:
           uds run registry-login
 
       - name: Create test package
-        run: uds run create-package --set FLAVOR=${{ matrix.flavor }}
+        run: uds run create-package --set FLAVOR=test
 
       - name: Create test bundle
-        run: uds run create-test-bundle --set FLAVOR=${{ matrix.flavor }}
+        run: uds run create-test-bundle
 
       - name: Setup cluster
         run: uds run setup-cluster
@@ -87,5 +68,3 @@ jobs:
       - name: Save logs
         if: always()
         uses: ./.github/actions/save-logs
-        with:
-          suffix: ${{ matrix.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}
