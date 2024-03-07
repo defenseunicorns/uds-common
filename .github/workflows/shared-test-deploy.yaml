@@ -35,7 +35,7 @@ jobs:
 
       - name: Environment setup
         uses: defenseunicorns/uds-common/.github/actions/setup@417b9c2bc088f664c616c9929a2b3ce448d251f7
-      
+
       - name: Iron Bank Login
         run: uds zarf tools registry login -u "${{secrets.IRON_BANK_ROBOT_USERNAME}}" -p "${{secrets.IRON_BANK_ROBOT_PASSWORD}}" registry1.dso.mil
 
@@ -44,7 +44,7 @@ jobs:
 
       - name: Setup cluster
         run: uds run setup-cluster
-      
+
       - name: Deploy test bundle
         run: uds run deploy-test-bundle
 
@@ -55,4 +55,4 @@ jobs:
         if: always()
         uses: defenseunicorns/uds-common/.github/actions/save-logs@417b9c2bc088f664c616c9929a2b3ce448d251f7
         with:
-          suffix: '${{ matrix.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}'
+          suffix: ${{ matrix.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}
