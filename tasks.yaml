@@ -6,14 +6,17 @@ includes:
 
 tasks:
   - name: install-deps
+    description: Install linting tool dependencies
     actions:
       - task: lint:deps
 
   - name: setup-cluster
+    description: Create k3d cluster with UDS Core Istio
     actions:
       - task: setup:k3d-test-cluster
 
   - name: registry-login
+    description: Authenticate to registry (registry1 defualt)
     actions:
       - task: setup:registry-login
         with:
@@ -23,26 +26,29 @@ tasks:
           registryRetryInterval: ${REGISTRY_RETRY_INTERVAL}
 
   - name: create-package
+    description: Create the UDS Zarf Package
     actions:
       - task: create:package
         with:
           options: ${CREATE_OPTIONS}
 
   - name: create-test-bundle
+    description: Create the test UDS Bundle
     actions:
       - task: create:test-bundle
 
   - name: deploy-package
+    description: Deploy the UDS Zarf Package
     actions:
       - task: deploy:package
         with:
           options: ${DEPLOY_OPTIONS}
 
   - name: deploy-test-bundle
+    description: Deploy the UDS bundle with the package and its dependencies
     actions:
       - task: deploy:test-bundle
 
-  # Validate all tasks performed as expected
   - name: validate-tasks
     description: Validate cluster is deployed with podinfo
     actions:
