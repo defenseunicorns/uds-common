@@ -4,9 +4,6 @@ description: Test the UDS package
 runs:
   using: composite
   steps:
-    - name: Iron Bank Login
-      run: uds zarf tools registry login -u "${{secrets.IRON_BANK_ROBOT_USERNAME}}" -p "${{secrets.IRON_BANK_ROBOT_PASSWORD}}" registry1.dso.mil
-
     - name: Create test bundle
       run: uds run create-test-bundle --set FLAVOR=${{ matrix.flavor }}
 
