@@ -6,12 +6,16 @@ runs:
   steps:
     - name: Create test bundle
       run: uds run create-test-bundle --set FLAVOR=${{ matrix.flavor }}
+      shell: bash
 
     - name: Setup cluster
       run: uds run setup-cluster
+      shell: bash
 
     - name: Deploy test bundle
       run: uds run deploy-test-bundle
+      shell: bash
 
     - name: Test package
       run: uds run test-package
+      shell: bash
