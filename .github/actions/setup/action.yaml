@@ -3,10 +3,10 @@ description: UDS Environment Setup
 
 inputs:
   username:
-    description: Registry1 user
+    description: registry1 user
     required: true
   password:
-    description: Registry1 PW
+    description: registry1 password
     required: true
 
 runs:
