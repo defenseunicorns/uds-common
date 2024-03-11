@@ -24,3 +24,8 @@ runs:
       shell: bash
       # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
       run: brew install defenseunicorns/tap/uds@0.9.3
+
+    - name: Iron Bank Login
+      run: uds zarf tools registry login -u "${{ inputs.username }}" -p "${{ inputs.password }}" registry1.dso.mil
+      shell: bash
+
