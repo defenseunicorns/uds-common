@@ -1,11 +1,16 @@
 name: Test
 description: Test the UDS package
 
+inputs:
+  flavor:
+    description: Flavor of the package to test
+    required: true
+
 runs:
   using: composite
   steps:
     - name: Create test bundle
-      run: uds run create-test-bundle --set FLAVOR=${{ matrix.flavor }}
+      run: uds run create-test-bundle --set FLAVOR=${{ inputs.flavor }} #todo: make this an input
       shell: bash
 
     - name: Setup cluster
