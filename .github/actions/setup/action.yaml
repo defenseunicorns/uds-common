@@ -1,6 +1,14 @@
 name: Setup Environment
 description: UDS Environment Setup
 
+inputs:
+  username:
+    description: Registry1 user
+    required: true
+  password:
+    description: Registry1 PW
+    required: true
+
 runs:
   using: composite
   steps:
@@ -16,3 +24,7 @@ runs:
       shell: bash
       # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
       run: brew install defenseunicorns/tap/uds@0.9.2
+
+    - name: Iron Bank Login
+      run: uds zarf tools registry login -u "${{ inputs.username }}" -p "${{ inputs.password }}" registry1.dso.mil
+      shell: bash
