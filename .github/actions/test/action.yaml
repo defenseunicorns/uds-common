@@ -10,7 +10,7 @@ runs:
   using: composite
   steps:
     - name: Create test bundle
-      run: uds run create-test-bundle --set FLAVOR=${{ inputs.flavor }} #todo: make this an input
+      run: uds run create-test-bundle --set FLAVOR=${{ inputs.flavor }}
       shell: bash
 
     - name: Setup cluster
