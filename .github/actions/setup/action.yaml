@@ -25,15 +25,6 @@ runs:
       # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
       run: brew install defenseunicorns/tap/uds@0.9.3
 
-      # - name: Login to registry1
-      #   env:
-      #     REGISTRY: registry1.dso.mil
-      #     REGISTRY_USERNAME: ${{ inputs.username }}
-      #     REGISTRY_PASSWORD: ${{ inputs.password }}
-      #     REGISTRY_RETRY_INTERVAL: "5"
-      #   run: |
-      #     uds run registry-login
-
     - name: Iron Bank Login
       env:
         REGISTRY_USERNAME: ${{ inputs.username }}
