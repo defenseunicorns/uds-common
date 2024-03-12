@@ -31,15 +31,9 @@ jobs:
 
       - name: Environment setup
         uses: ./.github/actions/setup
-
-      - name: Login to registry1
-        env:
-          REGISTRY: registry1.dso.mil
-          REGISTRY_USERNAME: ${{ secrets.IRON_BANK_ROBOT_USERNAME }}
-          REGISTRY_PASSWORD: ${{ secrets.IRON_BANK_ROBOT_PASSWORD }}
-          REGISTRY_RETRY_INTERVAL: "5"
-        run: |
-          uds run registry-login
+        with:
+          username: ${{ secrets.IRON_BANK_ROBOT_USERNAME }}
+          password: ${{ secrets.IRON_BANK_ROBOT_PASSWORD }}
 
       - name: Login to ghcr
         env:
