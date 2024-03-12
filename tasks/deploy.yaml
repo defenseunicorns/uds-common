@@ -3,11 +3,21 @@ tasks:
     inputs:
       options:
         description: For setting deploy time variables and flags
+      path:
+        description: path of built zarf package to deploy
+        default: $(pwd)
     actions:
       - description: Deploy the UDS Zarf Package
-        cmd: uds zarf package deploy zarf-package-*-${UDS_ARCH}-*.tar.zst --confirm --no-progress ${{ .inputs.options }}
+        cmd: uds zarf package deploy ${{ .inputs.path }}/zarf-package-*-${UDS_ARCH}-*.tar.zst --confirm --no-progress ${{ .inputs.options }}
 
   - name: test-bundle
+    inputs:
+      path:
+        description: Path relative to the repositories root where the uds-bundle.yaml lives
+        default: bundle
+      config:
+        description: File name of the bundle config file. Defaults to uds-config.yaml. Path is relative to the path input.
+        default: uds-config.yaml
     actions:
       - description: Deploy the UDS bundle with the package and its dependencies
-        cmd: UDS_CONFIG=bundle/uds-config.yaml uds deploy bundle/uds-bundle-*-${UDS_ARCH}-*.tar.zst --confirm --no-progress
+        cmd: UDS_CONFIG=${{ .inputs.path }}/${{ .inputs.config }} uds deploy ${{ .inputs.path }}/uds-bundle-*-${UDS_ARCH}-*.tar.zst --confirm --no-progress
