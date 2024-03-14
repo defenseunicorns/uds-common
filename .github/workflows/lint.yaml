@@ -22,6 +22,9 @@ jobs:
 
       - name: Environment setup
         uses: ./.github/actions/setup
+        with:
+          username: ${{ secrets.IRON_BANK_ROBOT_USERNAME }}
+          password: ${{ secrets.IRON_BANK_ROBOT_PASSWORD }}
 
       - name: Install lint deps
         run: |
