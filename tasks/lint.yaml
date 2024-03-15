@@ -2,7 +2,7 @@ tasks:
   - name: deps
     description: Install linting tool dependencies
     actions:
-      - description:
+      - description: Install yamllint via pip
         cmd: CMD=pip && which $CMD || CMD=pip3 && $CMD install yamllint
 
   - name: yaml
