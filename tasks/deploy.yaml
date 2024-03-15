@@ -1,3 +1,7 @@
+variables:
+  - name: FLAVOR
+    default: upstream
+
 tasks:
   - name: package
     inputs:
@@ -6,6 +10,19 @@ tasks:
     actions:
       - description: Deploy the UDS Zarf Package
         cmd: uds zarf package deploy zarf-package-*-${UDS_ARCH}-*.tar.zst --confirm --no-progress ${{ .inputs.options }}
+
+  - name: latest-package-release
+    actions:
+      - description: Get the current Zarf package name
+        cmd: cat zarf.yaml | yq .metadata.name
+        setVariables:
+          - name: PACKAGE_NAME
+      - description: Get latest tag version from OCI
+        cmd: uds zarf tools registry ls ghcr.io/defenseunicorns/packages/uds/${PACKAGE_NAME} | grep ${FLAVOR} | sort -V | tail -1
+        setVariables:
+          - name: LATEST_VERSION
+      - description: Deploy the latest package release
+        cmd: uds zarf package deploy oci://ghcr.io/defenseunicorns/packages/uds/${PACKAGE_NAME}:${LATEST_VERSION} --confirm --components="metrics-server" # Temporary addition to workaround https://github.com/defenseunicorns/zarf/issues/2320
 
   - name: test-bundle
     actions:
