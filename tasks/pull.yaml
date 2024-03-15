@@ -1,6 +1,8 @@
 variables:
   - name: FLAVOR
     default: upstream
+  - name: TARGET_REPO
+    default: oci://🦄/uds
 
 tasks:
   - name: latest-package-release
@@ -14,8 +16,8 @@ tasks:
         setVariables:
           - name: PACKAGE_NAME
       - description: Get latest tag version from OCI
-        cmd: uds zarf tools registry ls ghcr.io/defenseunicorns/packages/uds/${PACKAGE_NAME} | grep ${FLAVOR} | sort -V | tail -1
+        cmd: uds zarf tools registry ls ${TARGET_REPO}/${PACKAGE_NAME} | grep ${FLAVOR} | sort -V | tail -1
         setVariables:
           - name: LATEST_VERSION
       - description: Deploy the latest package release
-        cmd: uds zarf package pull oci://ghcr.io/defenseunicorns/packages/uds/${PACKAGE_NAME}:${LATEST_VERSION} --no-progress -o ${{ .inputs.path }}
+        cmd: uds zarf package pull ${TARGET_REPO}/${PACKAGE_NAME}:${LATEST_VERSION} --no-progress -o ${{ .inputs.path }}
