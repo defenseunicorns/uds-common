@@ -19,5 +19,5 @@ tasks:
         cmd: uds zarf tools registry ls ${TARGET_REPO}/${PACKAGE_NAME} | grep ${FLAVOR} | sort -V | tail -1
         setVariables:
           - name: LATEST_VERSION
-      - description: Deploy the latest package release
+      - description: Pull the latest package release
         cmd: uds zarf package pull oci://${TARGET_REPO}/${PACKAGE_NAME}:${LATEST_VERSION} --no-progress -o ${{ .inputs.path }}
