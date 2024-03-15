@@ -5,6 +5,9 @@ inputs:
   flavor:
     description: Flavor of the package to test
     required: true
+  upgrade:
+    description: Whether to run upgrade tests
+    default: "false"
 
 runs:
   using: composite
@@ -23,4 +26,9 @@ runs:
 
     - name: Test package
       run: uds run test-package
+      shell: bash
+
+    - name: Test package
+      if: ${{ inputs.upgrade }}
+      run: uds run test-upgrade --set FLAVOR=${{ inputs.flavor }}
       shell: bash

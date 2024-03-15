@@ -9,8 +9,8 @@ tasks:
       options:
         description: For setting create time variables and flags
       path:
-        description: path for the zarf package to be created
-        default: ""
+        description: Path to the zarf package definition being created
+        default: .
     actions:
       - cmd: uds zarf package create ${{ .inputs.path }} --confirm --no-progress --architecture=${UDS_ARCH} --flavor ${FLAVOR} ${{ .inputs.options }}
 
