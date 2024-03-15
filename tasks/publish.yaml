@@ -1,6 +1,6 @@
 variables:
   - name: TARGET_REPO
-    default: oci://🦄/uds
+    default: oci://ghcr.io/defenseunicorns/packages/uds
 
 tasks:
   - name: package

@@ -2,7 +2,7 @@ variables:
   - name: FLAVOR
     default: upstream
   - name: TARGET_REPO
-    default: oci://🦄/uds
+    default: oci://ghcr.io/defenseunicorns/packages/uds
 
 tasks:
   - name: latest-package-release
