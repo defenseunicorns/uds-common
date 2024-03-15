@@ -47,7 +47,7 @@ jobs:
       - name: Test
         uses: ./.github/actions/test
         with:
-          flavor: ""
+          flavor: "test"
 
       - name: Save logs
         if: always()

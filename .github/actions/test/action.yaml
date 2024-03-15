@@ -17,7 +17,7 @@ runs:
 
     - name: Test installing the package
       if: ${{ inputs.type == 'install' }}
-      run: uds run test-package
+      run: uds run test-package --set FLAVOR=${{ inputs.flavor }}
       shell: bash
 
     # === UPGRADE TESTING ===
