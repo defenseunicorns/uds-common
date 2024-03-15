@@ -40,8 +40,8 @@ This task file includes two tasks:
 
 This task file includes two tasks:
 
-- `package`: creates a zarf package located at the base of the repository. It has a required variable of `FLAVOR` which defaults to upstream and an optional variable `ZARF_ARCHITECTURE` to override the default architecture used for creation (useful in publishing workflows).
-- `test-bundle`: creates a test bundle located at the path `bundle/`. It has an optional variable for `UDS_ARCH` which can be used to override the default architecture used for creation (useful in publishing workflows). Note that this task does not create any pre-requisite zarf packages so those tasks must be run first.
+- `package`: creates a zarf package located at the base of the repository. It has a required variable of `FLAVOR` which defaults to `upstream` and inputs to override the default path and options used for creation (useful in publishing workflows).
+- `test-bundle`: creates a test bundle located at the path `bundle/` (by default). It has uses `UDS_ARCH` to override the default architecture used for creation (useful in publishing workflows). Note that this task does not create any pre-requisite zarf packages so those tasks must be run first.
 
 ### deploy.yaml
 
@@ -55,10 +55,23 @@ This task file includes two tasks:
 This task file includes a single task `package` which publishes zarf package(s) located at the base of the repository. Inputs for this task:
 
 - `FLAVOR`: the flavor of the zarf package to publish, defaults to `upstream`.
-- `TARGET_REPO`: the target OCI repository to publish the zarf package to, defaults to `oci://ghcr.io/defenseunicorns/packages/uds`.
+- `TARGET_REPO`: the target OCI repository to publish the zarf package to (without the `oci://` scheme) - this defaults to `ghcr.io/defenseunicorns/packages/uds`.
 - `VERSION`: the version of the zarf package to publish with no default. This should typically be version controlled by something like release-please.
 
 Note that this task will publish both `arm64` and `amd64` architectures, with the exception of the `registry1` flavor which will skip the `arm64` publish.
+
+### pull.yaml
+
+This task file includes one task:
+
+- `latest-package-release`: finds the latest package release for the repo and pulls it into the specified directory path. It has a required variable of `FLAVOR` which defaults to `upstream` and a `TARGET_REPO` variable which is the target OCI repository to publish the zarf package to (without the `oci://` scheme) - this defaults to `ghcr.io/defenseunicorns/packages/uds`.
+
+### lint.yaml
+
+This task file includes two tasks:
+
+- `deps`: installs all of the dependencies for linting the repository.
+- `yaml`: lints all of the `.yaml` files within the repository.
 
 ## Configuration Usage
 

@@ -25,7 +25,7 @@ tasks:
   - name: create-podinfo-test-bundle
     description: Create a local UDS Podinfo bundle
     actions:
-      - task: create-package
+      - task: create-podinfo-package
       - task: create:test-bundle
 
   - name: test
