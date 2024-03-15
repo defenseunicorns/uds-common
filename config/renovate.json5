@@ -28,6 +28,17 @@
             ".github"
         ]
     },
+    "hostRules": [
+        {
+            "matchHost": "registry1.dso.mil",
+            "hostType": "docker",
+            "description": "Encrypted creds for registry1, scoped to this Github org using: https://github.com/renovatebot/renovate/blob/main/docs/usage/configuration-options.md#encrypted",
+            "encrypted": {
+                "username": "wcFMA/xDdHCJBTolAQ//a+5GNAOsD/UOKnqJDdbPRr73EXRgyRdtMOIqDyjGZIKcdVo64StgUb1O37O5bazoyGeYkcISaWjInxRuoBOxqFhdo5cTUIJavjm2Sn75OWCDBUr2Q5/OSluQDbp7QO9g4+cHxcjtldlMswZg0RIoSX8rtAcNvJePvuWDKRHmUSDbWrNoAPaqOUvBIUF+BUR8o2UtKY4c986B9sqz1/ZiyL7vmenuoFi36MPpq123b6xra9/Q8Zb+AGZY6guhI0kmmSvLPwuNpU/W9ocpaUW1jOgJdYDowZqoTC27uozw1rCq38ybL94GMeG+pzWJd7LBVbfpDnU10j5UC5l5coxghh8dBYNzirsRbYW9KMV3CSeRNxOqfUuJ9AfWekCBWQMkueDtop+lzZhpvsPnXYTV6V0+TE+W5lg0wApcGUNM5XsEHV/gchSULZCWUTHpyZfkUoyc3dXax7K9LawrNLLpJg3Oz0c5Y4WXS1SqfY3U6n84Q95URZC+uRl5BqzBwQSQYbWsnon+g3My+GukdhHlynoiJwQo/ch5gIfgiA59VrL/H9L/ABAyYzQ7KUEguQrNh8hbNG0dfpMLMIrdUDhno5vTeccx2k5R/EOQopxZCY+k2Xfqgg5okAG9eQKhhGKcQD+A8y6X2V0cPkHQ35TCi5AObrcQiiemBZUy3G6IJIrSdQFEs+WcBPT4GPgOAsZWUJKU4RU3qdhdUGZy/VwJSsB05/E65fRTGl5i0e5PhIoIbh4uaPgWnbJyvKi87bIIJhe9bxP/m2lDs5GPeXSrvBb0GT3t9l3aHUYW3uKp5GABwmvX6ptMbNoYoQRSLptR/gE80RPFSQ",
+                "password": "wcFMA/xDdHCJBTolAQ//bu2ZFKmMysjpkOkwQSgLigvUMDw1SHpp1YN8y1LerOqMfTocdswihRFbB/FFRP/bYG1ByhnAvxqhbdV0TRQqYTRXZehrlT+SDEVEJyK9eGS+ozClbccG64ebZSJ4y9rMFW3sK4Ja9ZyAEsX0S4vO88XwJhtOYmMGTXLlcSfiANQB8a9jISzov27FQOzdPx6cEd19FGxmX5vAdH9FWDwhVA6QSTrip4h5tZ6THylNc3md2TGRYUVTxMtsZdp/bnhv+I3LqmodR0vEP9Or/dbhtqnMy2sdS6HsANUaZ+7j4D0qDL7EEcxk+CHM5lM2sSz6u4+J4u01XDkn0HJ/mShPDSWUoU01Va/ZpRL8zw/bjKApDBSgvBOwF7eXfUKqLrg2zURm2quUf7XwuVTXmBMg3DSEuRBlW8kM0rGWGyv7U62sx+2zjK0v2uNHJz0hzWaEfriOQu4B7/avb+CIupfVYGNllyMTuB2ySDMLKN3Q/EB7q97apWqwcnThxRhK7t3e59ea4JDxodxeeTG3m/UgBLBlXCutk7BsC7NQPaSeOzV7mw6AOVQz+Bn0DAGd1x03ITYAcgfYvSW7VCfhrvnmuSVICHA7GTYevC7RBYhexWdgHZb98mIt1vVA2C+h7eqsx+xWhHQFE2+lNRTRmj9ccU/6qz1+3zqHdMQ/WD8MLofSdgFLU/A7qljUm/dk1MEVMtGznukdRpJJV4PsEcwh2OV/9is5KPyFQ83M7sl3/fY+CBaHFEiT4j/bSBznmxL3TuAjMdIT7j0cNsOxnsHllgRHL1qG3S2ZmAQ0Ex4gIUUGn2VbZLyRogJspsjxx5ZYuuYVfhtSaTU"
+            }
+        }
+    ],
     "regexManagers": [
         // Matches github-tags pointing to items in githubusercontent (i.e. https://github.com/defenseunicorns/uds-core/blob/e45de0e5917a2ca6c3e30e593e2d9a8d393849a9/.vscode/settings.json#L12)
         {
@@ -129,7 +140,9 @@
                 // Match the parts of a chart entry. Test: https://regex101.com/r/PIIH1p/1
                 "(?m)name:(.|\\n)*?version: [\"']?(?<currentValue>.+?)[\"']?$(.|\\n)*?url: [\"']?(?<depName>.+?\\.git)[\"']?$"
             ],
-            "datasourceTemplate": "git-tags"
+            "datasourceTemplate": "git-tags",
+            // Match the version from the tag. Test: https://regex101.com/r/dzQZiE/1
+            "versioningTemplate": "regex:^v?(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)(-[\\w\\.]+\\.(?<build>\\d+))?"
         },
         // Matches individual helm git charts in a `zarf.yaml`'s `charts:` section that specify `url` then `version` 
         {
@@ -143,7 +156,9 @@
                 // Match the parts of a chart entry. Test: https://regex101.com/r/m71Sn5/1
                 "(?m)name:(.|\\n)*?url: [\"']?(?<depName>.+?\\.git)[\"']?$(.|\\n)*?version: [\"']?(?<currentValue>.+?)[\"']?$"
             ],
-            "datasourceTemplate": "git-tags"
+            "datasourceTemplate": "git-tags",
+            // Match the version from the tag. Test: https://regex101.com/r/dzQZiE/1
+            "versioningTemplate": "regex:^v?(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)(-[\\w\\.]+\\.(?<build>\\d+))?"
         },
         // Matches individual helm oci charts in a `zarf.yaml`'s `charts:` section that specify `version` then `url` 
         {

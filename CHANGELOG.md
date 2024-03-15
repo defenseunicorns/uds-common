@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.3.0](https://github.com/defenseunicorns/uds-common/compare/v0.2.2...v0.3.0) (2024-03-13)
+
+
+### Features
+
+* update uds-core to 14.5 ([a7d9b06](https://github.com/defenseunicorns/uds-common/commit/a7d9b06bcbe1e1e24fd40148e89ab62672f9178b))
+
+
+### Miscellaneous
+
+* hotfix the renovate config to properly pickup git chart versions and registry 1 images ([3f7d5ec](https://github.com/defenseunicorns/uds-common/commit/3f7d5ec09597764fadb794b604f509f34079d511))
+
 ## [0.2.2](https://github.com/defenseunicorns/uds-common/compare/v0.2.1...v0.2.2) (2024-03-07)
 
 

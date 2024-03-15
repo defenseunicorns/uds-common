@@ -8,10 +8,20 @@ tasks:
     inputs:
       options:
         description: For setting create time variables and flags
+      path:
+        description: path for the zarf package to be created
+        default: ""
     actions:
-      - cmd: uds zarf package create --confirm --no-progress --architecture=${UDS_ARCH} --flavor ${FLAVOR} ${{ .inputs.options }}
+      - cmd: uds zarf package create ${{ .inputs.path }} --confirm --no-progress --architecture=${UDS_ARCH} --flavor ${FLAVOR} ${{ .inputs.options }}
 
   - name: test-bundle
     description: Create the test UDS Bundle
+    inputs:
+      path:
+        description: Path relative to the repositories root where the uds-bundle.yaml lives
+        default: bundle
+      config:
+        description: File name of the bundle config file. Defaults to uds-config.yaml. Path is relative to the path input.
+        default: uds-config.yaml
     actions:
-      - cmd: uds create bundle --confirm --no-progress --architecture=${UDS_ARCH}
+      - cmd: UDS_CONFIG=${{ .inputs.path }}/${{ .inputs.config }} uds create ${{ .inputs.path }} --confirm --no-progress --architecture=${UDS_ARCH}
