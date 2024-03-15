@@ -9,7 +9,7 @@ tasks:
     inputs:
       path:
         description: Path relative to the repositories root where the package needs to go
-        default: "."
+        default: .
     actions:
       - description: Get the current Zarf package name
         cmd: cat zarf.yaml | yq .metadata.name
