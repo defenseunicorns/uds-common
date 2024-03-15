@@ -20,7 +20,7 @@ tasks:
     actions:
       - task: create:package
         with:
-          options: "--skip-sbom"
+          options: --skip-sbom
 
   - name: create-podinfo-test-bundle
     description: Create a local UDS Podinfo bundle
