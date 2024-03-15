@@ -2,7 +2,7 @@ variables:
   - name: FLAVOR
     default: upstream
   - name: TARGET_REPO
-    default: oci://ghcr.io/defenseunicorns/packages/uds
+    default: ghcr.io/defenseunicorns/packages/uds
 
 tasks:
   - name: latest-package-release
@@ -20,4 +20,4 @@ tasks:
         setVariables:
           - name: LATEST_VERSION
       - description: Deploy the latest package release
-        cmd: uds zarf package pull ${TARGET_REPO}/${PACKAGE_NAME}:${LATEST_VERSION} --no-progress -o ${{ .inputs.path }}
+        cmd: uds zarf package pull oci://${TARGET_REPO}/${PACKAGE_NAME}:${LATEST_VERSION} --no-progress -o ${{ .inputs.path }}

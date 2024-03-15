@@ -1,6 +1,6 @@
 variables:
   - name: TARGET_REPO
-    default: oci://ghcr.io/defenseunicorns/packages/uds
+    default: ghcr.io/defenseunicorns/packages/uds
 
 tasks:
   - name: package
@@ -9,8 +9,8 @@ tasks:
       - description: Publish the packages
         cmd: |
           set -e
-          uds zarf package publish zarf-package-*-amd64-${VERSION}.tar.zst ${TARGET_REPO}
+          uds zarf package publish zarf-package-*-amd64-${VERSION}.tar.zst oci://${TARGET_REPO}
           if [ ${FLAVOR} != "registry1" ]; then
-            uds zarf package publish zarf-package-*-arm64-${VERSION}.tar.zst ${TARGET_REPO}
+            uds zarf package publish zarf-package-*-arm64-${VERSION}.tar.zst oci://${TARGET_REPO}
           fi
           set +e
