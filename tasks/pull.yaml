@@ -1,0 +1,21 @@
+variables:
+  - name: FLAVOR
+    default: upstream
+
+tasks:
+  - name: latest-package-release
+    inputs:
+      path:
+        description: Path relative to the repositories root where the uds-bundle.yaml lives
+        default: bundle
+    actions:
+      - description: Get the current Zarf package name
+        cmd: cat zarf.yaml | yq .metadata.name
+        setVariables:
+          - name: PACKAGE_NAME
+      - description: Get latest tag version from OCI
+        cmd: uds zarf tools registry ls ghcr.io/defenseunicorns/packages/uds/${PACKAGE_NAME} | grep ${FLAVOR} | sort -V | tail -1
+        setVariables:
+          - name: LATEST_VERSION
+      - description: Deploy the latest package release
+        cmd: uds zarf package pull oci://ghcr.io/defenseunicorns/packages/uds/${PACKAGE_NAME}:${LATEST_VERSION} --no-progress -o ${{ .inputs.path }}

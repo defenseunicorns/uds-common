@@ -14,22 +14,6 @@ tasks:
       - description: Deploy the UDS Zarf Package
         cmd: uds zarf package deploy ${{ .inputs.path }}/zarf-package-*-${UDS_ARCH}-*.tar.zst --confirm --no-progress ${{ .inputs.options }}
 
-  - name: latest-package-release
-    inputs:
-      options:
-        description: For setting deploy time variables and flags
-    actions:
-      - description: Get the current Zarf package name
-        cmd: cat zarf.yaml | yq .metadata.name
-        setVariables:
-          - name: PACKAGE_NAME
-      - description: Get latest tag version from OCI
-        cmd: uds zarf tools registry ls ghcr.io/defenseunicorns/packages/uds/${PACKAGE_NAME} | grep ${FLAVOR} | sort -V | tail -1
-        setVariables:
-          - name: LATEST_VERSION
-      - description: Deploy the latest package release
-        cmd: uds zarf package deploy oci://ghcr.io/defenseunicorns/packages/uds/${PACKAGE_NAME}:${LATEST_VERSION} --confirm --no-progress ${{ .inputs.options }}
-
   - name: test-bundle
     inputs:
       path:
