@@ -44,20 +44,10 @@ jobs:
         run: |
           uds run registry-login
 
-      - name: Create test package
-        run: uds run create-package --set FLAVOR=test
-
-      - name: Create test bundle
-        run: uds run create-test-bundle
-
-      - name: Setup cluster
-        run: uds run setup-cluster
-
-      - name: Deploy test bundle
-        run: uds run deploy-test-bundle
-
-      - name: Validate tasks performed as expected
-        run: uds run validate-tasks
+      - name: Test
+        uses: ./.github/actions/test
+        with:
+          flavor: test
 
       - name: Save logs
         if: always()

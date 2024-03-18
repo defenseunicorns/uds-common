@@ -5,16 +5,6 @@ includes:
   - lint: ./tasks/lint.yaml
 
 tasks:
-  - name: install-deps
-    description: Install linting tool dependencies
-    actions:
-      - task: lint:deps
-
-  - name: setup-cluster
-    description: Create k3d cluster with UDS Core Istio
-    actions:
-      - task: setup:k3d-test-cluster
-
   - name: registry-login
     description: Authenticate to registry (registry1 defualt)
     actions:
@@ -25,32 +15,21 @@ tasks:
           registryPassword: ${REGISTRY_PASSWORD}
           registryRetryInterval: ${REGISTRY_RETRY_INTERVAL}
 
-  - name: create-package
-    description: Create the UDS Zarf Package
+  - name: create-podinfo-package
+    description: Create UDS Podinfo Package
     actions:
       - task: create:package
         with:
-          options: ${CREATE_OPTIONS}
+          options: --skip-sbom
 
-  - name: create-test-bundle
-    description: Create the test UDS Bundle
+  - name: create-podinfo-test-bundle
+    description: Create a local UDS Podinfo bundle
     actions:
+      - task: create-podinfo-package
       - task: create:test-bundle
 
-  - name: deploy-package
-    description: Deploy the UDS Zarf Package
-    actions:
-      - task: deploy:package
-        with:
-          options: ${DEPLOY_OPTIONS}
-
-  - name: deploy-test-bundle
-    description: Deploy the UDS bundle with the package and its dependencies
-    actions:
-      - task: deploy:test-bundle
-
-  - name: validate-tasks
-    description: Validate cluster is deployed with podinfo
+  - name: test
+    description: Test and validate cluster is deployed with podinfo
     actions:
       - wait:
           cluster:
@@ -59,7 +38,10 @@ tasks:
             namespace: podinfo
             condition: available
 
-  - name: lint-all
-    description: Lint the current repository
+  - name: test-package
+    description: Test the Podinfo package from the current branch
     actions:
-      - task: lint:yaml
+      - task: create-podinfo-test-bundle
+      - task: setup:k3d-test-cluster
+      - task: deploy:test-bundle
+      - task: test

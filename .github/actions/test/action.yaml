@@ -5,30 +5,24 @@ inputs:
   flavor:
     description: Flavor of the package to test
     required: true
-  upgrade:
+  type:
     description: Whether to run upgrade tests
-    default: "false"
+    default: install
 
 runs:
   using: composite
   steps:
-    - name: Create test bundle
-      run: uds run create-test-bundle --set FLAVOR=${{ inputs.flavor }}
+
+    # === INSTALL TESTING ===
+
+    - name: Test installing the package
+      if: ${{ inputs.type == 'install' }}
+      run: uds run test-package --set FLAVOR=${{ inputs.flavor }}
       shell: bash
 
-    - name: Setup cluster
-      run: uds run setup-cluster
-      shell: bash
+    # === UPGRADE TESTING ===
 
-    - name: Deploy test bundle
-      run: uds run deploy-test-bundle
-      shell: bash
-
-    - name: Test package
-      run: uds run test-package
-      shell: bash
-
-    - name: Test package
-      if: ${{ inputs.upgrade }}
+    - name: Test upgrading the package
+      if: ${{ inputs.type == 'upgrade' }}
       run: uds run test-upgrade --set FLAVOR=${{ inputs.flavor }}
       shell: bash

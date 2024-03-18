@@ -28,8 +28,8 @@ jobs:
 
       - name: Install lint deps
         run: |
-          uds run install-deps
+          uds run lint:deps
 
       - name: Lint the repository
         run: |
-          uds run lint-all
+          uds run lint:yaml
