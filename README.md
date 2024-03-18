@@ -41,7 +41,7 @@ This task file includes two tasks:
 This task file includes two tasks:
 
 - `package`: creates a zarf package located at the base of the repository. It has a required variable of `FLAVOR` which defaults to `upstream` and inputs to override the default path and options used for creation (useful in publishing workflows).
-- `test-bundle`: creates a test bundle located at the path `bundle/` (by default). It has uses `UDS_ARCH` to override the default architecture used for creation (useful in publishing workflows). Note that this task does not create any pre-requisite zarf packages so those tasks must be run first.
+- `test-bundle`: creates a test bundle located at the path `bundle/` (by default). It uses `UDS_ARCH` to override the default architecture used for creation (useful in publishing workflows). Note that this task does not create any pre-requisite zarf packages so those tasks must be run first.
 
 ### deploy.yaml
 
