@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.3.1](https://github.com/defenseunicorns/uds-common/compare/v0.3.0...v0.3.1) (2024-03-18)
+
+
+### ⚠ BREAKING CHANGES
+
+* improve how tests are called ([#71](https://github.com/defenseunicorns/uds-common/issues/71))
+
+### Bug Fixes
+
+* fix UDS path ([#67](https://github.com/defenseunicorns/uds-common/issues/67)) ([259136d](https://github.com/defenseunicorns/uds-common/commit/259136d43b961d3f2e7c608d74d45d6f708c75fd))
+
+
+### Miscellaneous
+
+* add a pull task to get the latest package release ([#70](https://github.com/defenseunicorns/uds-common/issues/70)) ([e534793](https://github.com/defenseunicorns/uds-common/commit/e5347932c20cffe103bf015c2762b345a2ea30bb))
+* **deps:** update dependency defenseunicorns/uds-core to v0.15.1 ([#66](https://github.com/defenseunicorns/uds-common/issues/66)) ([3ab4e04](https://github.com/defenseunicorns/uds-common/commit/3ab4e04ad219db0beae73c5b0f35fda147217382))
+* improve how tests are called ([#71](https://github.com/defenseunicorns/uds-common/issues/71)) ([043b297](https://github.com/defenseunicorns/uds-common/commit/043b297012f926e571a657d7a2abbe8c7413144d))
+
 ## [0.3.0](https://github.com/defenseunicorns/uds-common/compare/v0.2.2...v0.3.0) (2024-03-13)
 
 
