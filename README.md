@@ -64,7 +64,7 @@ Note that this task will publish both `arm64` and `amd64` architectures, with th
 
 This task file includes one task:
 
-- `latest-package-release`: finds the latest package release for the repo and pulls it into the specified directory path. It has a required variable of `FLAVOR` which defaults to `upstream` and a `TARGET_REPO` variable which is the target OCI repository to publish the zarf package to (without the `oci://` scheme) - this defaults to `ghcr.io/defenseunicorns/packages/uds`.
+- `latest-package-release`: finds the latest package release for the repo and pulls it into the specified directory path. It has a required variable of `FLAVOR` which defaults to `upstream` and a `TARGET_REPO` variable which is the target OCI repository to pull the zarf package from (without the `oci://` scheme) - this defaults to `ghcr.io/defenseunicorns/packages/uds`.
 
 ### lint.yaml
 
