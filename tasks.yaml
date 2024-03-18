@@ -39,7 +39,7 @@ tasks:
             condition: available
 
   - name: test-package
-    description: Test the GitLab package from the current branch
+    description: Test the Podinfo package from the current branch
     actions:
       - task: create-podinfo-test-bundle
       - task: setup:k3d-test-cluster
