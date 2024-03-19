@@ -10,6 +10,7 @@ inputs:
     default: install
   options:
     description: Additional CLI options for test workflows
+    default: ""
 
 runs:
   using: composite
