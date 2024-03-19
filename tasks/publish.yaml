@@ -1,16 +1,35 @@
 variables:
   - name: TARGET_REPO
     default: ghcr.io/defenseunicorns/packages/uds
+  - name: FLAVOR
+    default: upstream
+  - name: VERSION
 
 tasks:
   - name: package
-    description: Publish the packages
+    description: Publish packages for the amd64 and arm64 architectures
     actions:
-      - description: Publish the packages
+      - description: Publish packages for the amd64 and arm64 architectures
         cmd: |
           set -e
           uds zarf package publish zarf-package-*-amd64-${VERSION}.tar.zst oci://${TARGET_REPO}
           if [ ${FLAVOR} != "registry1" ]; then
             uds zarf package publish zarf-package-*-arm64-${VERSION}.tar.zst oci://${TARGET_REPO}
+          fi
+          set +e
+
+  - name: bundle
+    description: Publish bundles for the amd64 and arm64 architectures
+    inputs:
+      path:
+        description: Path relative to the repositories root where the uds-bundle.yaml lives
+        default: bundle
+    actions:
+      - description: Publish bundles for the amd64 and arm64 architectures
+        cmd: |
+          set -e
+          uds publish bundles/uds-bundle-*-amd64-${VERSION}.tar.zst oci://${TARGET_REPO}/bundles --no-progress
+          if [ ${FLAVOR} != "registry1" ]; then
+            uds publish bundles/uds-bundle-*-arm64-${VERSION}.tar.zst oci://${TARGET_REPO}/bundles --no-progress
           fi
           set +e

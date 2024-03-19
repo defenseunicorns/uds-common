@@ -18,6 +18,8 @@ tasks:
       config:
         description: File name of the bundle config file. Defaults to uds-config.yaml. Path is relative to the path input.
         default: uds-config.yaml
+      options:
+        description: For setting deploy time variables and flags
     actions:
       - description: Deploy the UDS bundle with the package and its dependencies
-        cmd: UDS_CONFIG=${{ .inputs.path }}/${{ .inputs.config }} uds deploy ${{ .inputs.path }}/uds-bundle-*-${UDS_ARCH}-*.tar.zst --confirm --no-progress
+        cmd: UDS_CONFIG=${{ .inputs.path }}/${{ .inputs.config }} uds deploy ${{ .inputs.path }}/uds-bundle-*-${UDS_ARCH}-*.tar.zst --confirm --no-progress ${{ .inputs.options }}
