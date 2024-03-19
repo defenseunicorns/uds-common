@@ -8,6 +8,8 @@ inputs:
   type:
     description: Whether to run upgrade tests
     default: install
+  bundle_path:
+    description: Path that contains the bundle and its definition
 
 runs:
   using: composite
@@ -17,12 +19,12 @@ runs:
 
     - name: Test installing the package
       if: ${{ inputs.type == 'install' }}
-      run: uds run test-package --set FLAVOR=${{ inputs.flavor }}
+      run: uds run test-package --set FLAVOR=${{ inputs.flavor }} --set BUNDLE_PATH=${{ inputs.bundle_path }}
       shell: bash
 
     # === UPGRADE TESTING ===
 
     - name: Test upgrading the package
       if: ${{ inputs.type == 'upgrade' }}
-      run: uds run test-upgrade --set FLAVOR=${{ inputs.flavor }}
+      run: uds run test-upgrade --set FLAVOR=${{ inputs.flavor }} --set BUNDLE_PATH=${{ inputs.bundle_path }}
       shell: bash
