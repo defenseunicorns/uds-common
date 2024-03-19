@@ -3,18 +3,24 @@ variables:
     default: ghcr.io/defenseunicorns/packages/uds
   - name: FLAVOR
     default: upstream
-  - name: VERSION
 
 tasks:
   - name: package
     description: Publish packages for the amd64 and arm64 architectures
+    inputs:
+      path:
+        description: Path to the zarf package being published
+        default: .
+      version:
+        description: The version of the package to publish
+        required: true
     actions:
       - description: Publish packages for the amd64 and arm64 architectures
         cmd: |
           set -e
-          uds zarf package publish zarf-package-*-amd64-${VERSION}.tar.zst oci://${TARGET_REPO}
+          uds zarf package publish ${{ .inputs.path }}/zarf-package-*-amd64-${{ .inputs.version }}.tar.zst oci://${TARGET_REPO}
           if [ ${FLAVOR} != "registry1" ]; then
-            uds zarf package publish zarf-package-*-arm64-${VERSION}.tar.zst oci://${TARGET_REPO}
+            uds zarf package publish ${{ .inputs.path }}/zarf-package-*-arm64-${{ .inputs.version }}.tar.zst oci://${TARGET_REPO}
           fi
           set +e
 
@@ -22,14 +28,17 @@ tasks:
     description: Publish bundles for the amd64 and arm64 architectures
     inputs:
       path:
-        description: Path relative to the repositories root where the uds-bundle.yaml lives
+        description: Path to the UDS bundle being published
         default: bundle
+      version:
+        description: The version of the bundle to publish
+        required: true
     actions:
       - description: Publish bundles for the amd64 and arm64 architectures
         cmd: |
           set -e
-          uds publish ${{ .inputs.path }}/uds-bundle-*-amd64-${VERSION}.tar.zst oci://${TARGET_REPO}/bundles --no-progress
+          uds publish ${{ .inputs.path }}/uds-bundle-*-amd64-${{ .inputs.version }}.tar.zst oci://${TARGET_REPO}/bundles --no-progress
           if [ ${FLAVOR} != "registry1" ]; then
-            uds publish ${{ .inputs.path }}/uds-bundle-*-arm64-${VERSION}.tar.zst oci://${TARGET_REPO}/bundles --no-progress
+            uds publish ${{ .inputs.path }}/uds-bundle-*-arm64-${{ .inputs.version }}.tar.zst oci://${TARGET_REPO}/bundles --no-progress
           fi
           set +e
