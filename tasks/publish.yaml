@@ -28,8 +28,8 @@ tasks:
       - description: Publish bundles for the amd64 and arm64 architectures
         cmd: |
           set -e
-          uds publish bundles/uds-bundle-*-amd64-${VERSION}.tar.zst oci://${TARGET_REPO}/bundles --no-progress
+          uds publish ${{ .inputs.path }}/uds-bundle-*-amd64-${VERSION}.tar.zst oci://${TARGET_REPO}/bundles --no-progress
           if [ ${FLAVOR} != "registry1" ]; then
-            uds publish bundles/uds-bundle-*-arm64-${VERSION}.tar.zst oci://${TARGET_REPO}/bundles --no-progress
+            uds publish ${{ .inputs.path }}/uds-bundle-*-arm64-${VERSION}.tar.zst oci://${TARGET_REPO}/bundles --no-progress
           fi
           set +e
