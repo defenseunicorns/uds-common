@@ -17,6 +17,8 @@ tasks:
   - name: test-bundle
     description: Create the test UDS Bundle
     inputs:
+      options:
+        description: For setting create time variables and flags
       path:
         description: Path relative to the repositories root where the uds-bundle.yaml lives
         default: bundle
@@ -24,4 +26,4 @@ tasks:
         description: File name of the bundle config file. Defaults to uds-config.yaml. Path is relative to the path input.
         default: uds-config.yaml
     actions:
-      - cmd: UDS_CONFIG=${{ .inputs.path }}/${{ .inputs.config }} uds create ${{ .inputs.path }} --confirm --no-progress --architecture=${UDS_ARCH}
+      - cmd: UDS_CONFIG=${{ .inputs.path }}/${{ .inputs.config }} uds create ${{ .inputs.path }} --confirm --no-progress --architecture=${UDS_ARCH} ${{ .inputs.options }}
