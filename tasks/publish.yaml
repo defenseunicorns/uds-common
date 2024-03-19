@@ -1,6 +1,4 @@
 variables:
-  - name: TARGET_REPO
-    default: ghcr.io/defenseunicorns/packages/uds
   - name: FLAVOR
     default: upstream
 
@@ -14,6 +12,9 @@ tasks:
       version:
         description: The version of the package to publish
         required: true
+      target_repo:
+        description: The repository to publish into
+        default: ghcr.io/defenseunicorns/packages/uds
     actions:
       - description: Publish packages for the amd64 and arm64 architectures
         cmd: |
@@ -33,12 +34,15 @@ tasks:
       version:
         description: The version of the bundle to publish
         required: true
+      target_repo:
+        description: The repository to publish into
+        default: ghcr.io/defenseunicorns/packages/uds/bundles
     actions:
       - description: Publish bundles for the amd64 and arm64 architectures
         cmd: |
           set -e
-          uds publish ${{ .inputs.path }}/uds-bundle-*-amd64-${{ .inputs.version }}.tar.zst oci://${TARGET_REPO}/bundles --no-progress
+          uds publish ${{ .inputs.path }}/uds-bundle-*-amd64-${{ .inputs.version }}.tar.zst oci://${TARGET_REPO} --no-progress
           if [ ${FLAVOR} != "registry1" ]; then
-            uds publish ${{ .inputs.path }}/uds-bundle-*-arm64-${{ .inputs.version }}.tar.zst oci://${TARGET_REPO}/bundles --no-progress
+            uds publish ${{ .inputs.path }}/uds-bundle-*-arm64-${{ .inputs.version }}.tar.zst oci://${TARGET_REPO} --no-progress
           fi
           set +e
