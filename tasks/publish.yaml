@@ -25,7 +25,7 @@ tasks:
           fi
           set +e
 
-  - name: bundle
+  - name: test-bundle
     description: Publish bundles for the amd64 and arm64 architectures
     inputs:
       path:
