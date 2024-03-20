@@ -18,12 +18,10 @@ tasks:
     actions:
       - description: Publish packages for the amd64 and arm64 architectures
         cmd: |
-          set -e
           uds zarf package publish ${{ .inputs.path }}/zarf-package-*-amd64-${{ .inputs.version }}.tar.zst oci://${{ .inputs.target_repo }}
           if [ ${FLAVOR} != "registry1" ]; then
             uds zarf package publish ${{ .inputs.path }}/zarf-package-*-arm64-${{ .inputs.version }}.tar.zst oci://${{ .inputs.target_repo }}
           fi
-          set +e
 
   - name: test-bundle
     description: Publish bundles for the amd64 and arm64 architectures
@@ -40,9 +38,7 @@ tasks:
     actions:
       - description: Publish bundles for the amd64 and arm64 architectures
         cmd: |
-          set -e
           uds publish ${{ .inputs.path }}/uds-bundle-*-amd64-${{ .inputs.version }}.tar.zst oci://${{ .inputs.target_repo }} --no-progress
           if [ ${FLAVOR} != "registry1" ]; then
             uds publish ${{ .inputs.path }}/uds-bundle-*-arm64-${{ .inputs.version }}.tar.zst oci://${{ .inputs.target_repo }} --no-progress
           fi
-          set +e

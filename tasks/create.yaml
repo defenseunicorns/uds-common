@@ -15,7 +15,10 @@ tasks:
         description: The architecture of the package to create
         default: ${UDS_ARCH}
     actions:
-      - cmd: uds zarf package create ${{ .inputs.path }} --confirm --no-progress --architecture=${{ .inputs.architecture }} --flavor ${FLAVOR} ${{ .inputs.options }}
+      - cmd: |
+          if [ ${FLAVOR} != "registry1" ] || [ ${{ .inputs.architecture }} != "arm64"]; then
+            uds zarf package create ${{ .inputs.path }} --confirm --no-progress --architecture=${{ .inputs.architecture }} --flavor ${FLAVOR} ${{ .inputs.options }}
+          fi
 
   - name: test-bundle
     description: Create the test UDS Bundle
@@ -32,4 +35,7 @@ tasks:
         description: The architecture of the bundle to create
         default: ${UDS_ARCH}
     actions:
-      - cmd: UDS_CONFIG=${{ .inputs.path }}/${{ .inputs.config }} uds create ${{ .inputs.path }} --confirm --no-progress --architecture=${{ .inputs.architecture }} ${{ .inputs.options }}
+      - cmd: |
+          if [ ${FLAVOR} != "registry1" ] || [ ${{ .inputs.architecture }} != "arm64"]; then
+            UDS_CONFIG=${{ .inputs.path }}/${{ .inputs.config }} uds create ${{ .inputs.path }} --confirm --no-progress --architecture=${{ .inputs.architecture }} ${{ .inputs.options }}
+          fi
