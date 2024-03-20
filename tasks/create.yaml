@@ -11,8 +11,11 @@ tasks:
       path:
         description: Path to the zarf package definition being created
         default: .
+      architecture:
+        description: The architecture of the package to create
+        default: ${UDS_ARCH}
     actions:
-      - cmd: uds zarf package create ${{ .inputs.path }} --confirm --no-progress --architecture=${UDS_ARCH} --flavor ${FLAVOR} ${{ .inputs.options }}
+      - cmd: uds zarf package create ${{ .inputs.path }} --confirm --no-progress --architecture=${{ .inputs.architecture }} --flavor ${FLAVOR} ${{ .inputs.options }}
 
   - name: test-bundle
     description: Create the test UDS Bundle
@@ -23,5 +26,8 @@ tasks:
       config:
         description: File name of the bundle config file. Defaults to uds-config.yaml. Path is relative to the path input.
         default: uds-config.yaml
+      architecture:
+        description: The architecture of the bundle to create
+        default: ${UDS_ARCH}
     actions:
-      - cmd: UDS_CONFIG=${{ .inputs.path }}/${{ .inputs.config }} uds create ${{ .inputs.path }} --confirm --no-progress --architecture=${UDS_ARCH}
+      - cmd: UDS_CONFIG=${{ .inputs.path }}/${{ .inputs.config }} uds create ${{ .inputs.path }} --confirm --no-progress --architecture=${{ .inputs.architecture }}
