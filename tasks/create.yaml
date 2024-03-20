@@ -18,6 +18,8 @@ tasks:
       - cmd: |
           if [ ${FLAVOR} != "registry1" ] || [ ${{ .inputs.architecture }} != "arm64"]; then
             uds zarf package create ${{ .inputs.path }} --confirm --no-progress --architecture=${{ .inputs.architecture }} --flavor ${FLAVOR} ${{ .inputs.options }}
+          else
+            echo "Registry1 Bundles cannot be made for 'arm64'"
           fi
 
   - name: test-bundle
@@ -38,4 +40,6 @@ tasks:
       - cmd: |
           if [ ${FLAVOR} != "registry1" ] || [ ${{ .inputs.architecture }} != "arm64"]; then
             UDS_CONFIG=${{ .inputs.path }}/${{ .inputs.config }} uds create ${{ .inputs.path }} --confirm --no-progress --architecture=${{ .inputs.architecture }} ${{ .inputs.options }}
+          else
+            echo "Registry1 Bundles cannot be made for 'arm64'"
           fi
