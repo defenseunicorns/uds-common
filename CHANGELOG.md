@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.2](https://github.com/defenseunicorns/uds-common/compare/v0.3.1...v0.3.2) (2024-03-19)
+
+
+### Miscellaneous
+
+* add a publish job for dev bundles ([#73](https://github.com/defenseunicorns/uds-common/issues/73)) ([37b0d08](https://github.com/defenseunicorns/uds-common/commit/37b0d08f2c67b13ae58741a52dabaabab90396ce))
+
 ## [0.3.1](https://github.com/defenseunicorns/uds-common/compare/v0.3.0...v0.3.1) (2024-03-18)
 
 

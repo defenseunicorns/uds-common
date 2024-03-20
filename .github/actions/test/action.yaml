@@ -8,6 +8,9 @@ inputs:
   type:
     description: Whether to run upgrade tests
     default: install
+  options:
+    description: Additional CLI options for test workflows
+    default: ""
 
 runs:
   using: composite
@@ -17,12 +20,12 @@ runs:
 
     - name: Test installing the package
       if: ${{ inputs.type == 'install' }}
-      run: uds run test-package --set FLAVOR=${{ inputs.flavor }}
+      run: uds run test-package --set FLAVOR=${{ inputs.flavor }} ${{ inputs.options }}
       shell: bash
 
     # === UPGRADE TESTING ===
 
     - name: Test upgrading the package
       if: ${{ inputs.type == 'upgrade' }}
-      run: uds run test-upgrade --set FLAVOR=${{ inputs.flavor }}
+      run: uds run test-upgrade --set FLAVOR=${{ inputs.flavor }} ${{ inputs.options }}
       shell: bash
