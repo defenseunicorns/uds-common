@@ -10,6 +10,9 @@ tasks:
       path:
         description: Path relative to the repositories root where the package needs to go
         default: .
+      spoof-release:
+        description: Whether to spoof the pulled package version to the current repo version
+        default: "false"
     actions:
       - description: Get the current Zarf package name
         cmd: cat zarf.yaml | yq .metadata.name
@@ -21,3 +24,11 @@ tasks:
           - name: LATEST_VERSION
       - description: Pull the latest package release
         cmd: uds zarf package pull oci://${TARGET_REPO}/${PACKAGE_NAME}:${LATEST_VERSION} --no-progress -o ${{ .inputs.path }}
+      # TODO (@WSTARR): This is currently needed to get around the chicken+egg condition when release please updates the version in GH
+      - description: Spoof the latest release to the current version
+        cmd: |
+          if [ ${{ .inputs.spoof-release }} != "false" ]; then
+            CURRENT_VERSION=$(cat zarf.yaml | yq .metadata.version)
+            CURRENT_PKG_NAME=$(cat zarf.yaml | yq .metadata.name)
+            test -f zarf-package-${CURRENT_PKG_NAME}-${UDS_ARCH}-${CURRENT_VERSION}.tar.zst || mv zarf-package-${CURRENT_PKG_NAME}-${UDS_ARCH}-*.tar.zst zarf-package-${CURRENT_PKG_NAME}-${UDS_ARCH}-${CURRENT_VERSION}.tar.zst
+          fi
