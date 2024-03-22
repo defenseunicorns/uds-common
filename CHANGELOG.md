@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.5](https://github.com/defenseunicorns/uds-common/compare/v0.3.4...v0.3.5) (2024-03-22)
+
+
+### Miscellaneous
+
+* fix spoof to not include a dash ([#79](https://github.com/defenseunicorns/uds-common/issues/79)) ([5d1738b](https://github.com/defenseunicorns/uds-common/commit/5d1738ba0ca2cd19c7fdf6dfe6873339e129c3bb))
+
 ## [0.3.4](https://github.com/defenseunicorns/uds-common/compare/v0.3.3...v0.3.4) (2024-03-22)
 
 
