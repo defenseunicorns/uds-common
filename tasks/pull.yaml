@@ -10,7 +10,7 @@ tasks:
       path:
         description: Path relative to the repositories root where the package needs to go
         default: .
-      spoof-release:
+      spoof_release:
         description: Whether to spoof the pulled package version to the current repo version
         default: "false"
     actions:
