@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.4](https://github.com/defenseunicorns/uds-common/compare/v0.3.3...v0.3.4) (2024-03-22)
+
+
+### Miscellaneous
+
+* add the ability to spoof to common ([#77](https://github.com/defenseunicorns/uds-common/issues/77)) ([49634e1](https://github.com/defenseunicorns/uds-common/commit/49634e1b69c6b2eadcc2497f6baba8bd349f3d38))
+* **deps:** update dependency defenseunicorns/uds-core to v0.16.1 ([#72](https://github.com/defenseunicorns/uds-common/issues/72)) ([32d1ad6](https://github.com/defenseunicorns/uds-common/commit/32d1ad6812a3ef6ad750447296f5644b14ff2855))
+
 ## [0.3.3](https://github.com/defenseunicorns/uds-common/compare/v0.3.2...v0.3.3) (2024-03-20)
 
 
