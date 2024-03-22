@@ -27,7 +27,7 @@ tasks:
       # TODO (@WSTARR): This is currently needed to get around the chicken+egg condition when release please updates the version in GH
       - description: Spoof the latest release to the current version
         cmd: |
-          if [ ${{ .inputs.spoof-release }} != "false" ]; then
+          if [ ${{ .inputs.spoof_release }} != "false" ]; then
             CURRENT_VERSION=$(cat zarf.yaml | yq .metadata.version)
             CURRENT_PKG_NAME=$(cat zarf.yaml | yq .metadata.name)
             test -f zarf-package-${CURRENT_PKG_NAME}-${UDS_ARCH}-${CURRENT_VERSION}.tar.zst || mv zarf-package-${CURRENT_PKG_NAME}-${UDS_ARCH}-*.tar.zst zarf-package-${CURRENT_PKG_NAME}-${UDS_ARCH}-${CURRENT_VERSION}.tar.zst
