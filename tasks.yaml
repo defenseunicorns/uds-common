@@ -3,6 +3,7 @@ includes:
   - create: ./tasks/create.yaml
   - deploy: ./tasks/deploy.yaml
   - lint: ./tasks/lint.yaml
+  - publish: ./tasks/publish.yaml
 
 tasks:
   - name: registry-login
@@ -28,6 +29,26 @@ tasks:
       - task: create-podinfo-package
       - task: create:test-bundle
 
+  - name: publish-podinfo
+    description: Build and publish the packages
+    actions:
+      - description: Create the AMD64 package
+        task: create:package
+        with:
+          architecture: amd64
+
+      - description: Create the ARM64 package
+        task: create:package
+        with:
+          architecture: arm64
+
+      - description: Publish the packages
+        task: publish:package
+        with:
+          # x-release-please-start-version
+          version: 0.3.5
+          # x-release-please-end
+
   - name: test
     description: Test and validate cluster is deployed with podinfo
     actions:
@@ -37,6 +58,8 @@ tasks:
             name: podinfo
             namespace: podinfo
             condition: available
+
+# CI will execute the following (via .github/actions/test) so they need to be here with these names
 
   - name: test-package
     description: Test the Podinfo package from the current branch

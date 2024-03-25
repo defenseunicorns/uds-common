@@ -2,9 +2,13 @@ kind: UDSBundle
 metadata:
   name: test
   description: The testing UDS bundle
-  version: 0.0.1
+  # x-release-please-start-version
+  version: 0.3.5
+  # x-release-please-end
 
 packages:
   - name: podinfo
     path: ../
-    ref: 0.0.1
+    # x-release-please-start-version
+    ref: 0.3.5
+    # x-release-please-end

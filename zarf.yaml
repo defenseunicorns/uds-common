@@ -1,7 +1,9 @@
 kind: ZarfPackageConfig
 metadata:
   name: podinfo
-  version: 0.0.1
+  # x-release-please-start-version
+  version: 0.3.5
+  # x-release-please-end
 
 components:
   - name: podinfo-kustomize
