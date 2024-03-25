@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.6](https://github.com/defenseunicorns/uds-common/compare/v0.3.5...v0.3.6) (2024-03-25)
+
+
+### Miscellaneous
+
+* hotfix the spoof containing a dash in the input and add a publish step ([#81](https://github.com/defenseunicorns/uds-common/issues/81)) ([f9c7aac](https://github.com/defenseunicorns/uds-common/commit/f9c7aac4a30e5c3e627c44946f2f212af1573b39))
+
 ## [0.3.5](https://github.com/defenseunicorns/uds-common/compare/v0.3.4...v0.3.5) (2024-03-22)
 
 
