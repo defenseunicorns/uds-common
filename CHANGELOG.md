@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.7](https://github.com/defenseunicorns/uds-common/compare/v0.3.6...v0.3.7) (2024-03-26)
+
+
+### Miscellaneous
+
+* remove schedule on renovate ([#85](https://github.com/defenseunicorns/uds-common/issues/85)) ([fda7e57](https://github.com/defenseunicorns/uds-common/commit/fda7e57ad878cc70bf3905948911daa84c67db27))
+* update k3d-core-istio-dev to k3d-core-slim-dev ([#86](https://github.com/defenseunicorns/uds-common/issues/86)) ([aa0e6da](https://github.com/defenseunicorns/uds-common/commit/aa0e6dad40126ead465b102ea28a3ac961883493))
+
 ## [0.3.6](https://github.com/defenseunicorns/uds-common/compare/v0.3.5...v0.3.6) (2024-03-25)
 
 

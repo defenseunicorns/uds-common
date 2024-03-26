@@ -10,7 +10,6 @@
     "reviewersFromCodeOwners": false,
     "timezone": "America/New_York",
     "rebaseStalePrs": true,
-    "schedule": ["after 7am and before 9am every weekday"],
     "dependencyDashboard": true,
     "dependencyDashboardTitle": "Renovate Dashboard 🤖",
     "rebaseWhen": "conflicted",
