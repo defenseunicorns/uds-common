@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.7](https://github.com/defenseunicorns/uds-common/compare/v0.3.6...v0.3.7) (2024-03-26)
+
+
+### Miscellaneous
+
+* remove schedule on renovate ([#85](https://github.com/defenseunicorns/uds-common/issues/85)) ([fda7e57](https://github.com/defenseunicorns/uds-common/commit/fda7e57ad878cc70bf3905948911daa84c67db27))
+
 ## [0.3.6](https://github.com/defenseunicorns/uds-common/compare/v0.3.5...v0.3.6) (2024-03-25)
 
 
