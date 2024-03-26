@@ -26,7 +26,7 @@ runs:
       run: brew install defenseunicorns/tap/uds@0.9.4
 
     - name: Iron Bank Login
-      if: ${{ inputs.registry1Username != "" }}
+      if: ${{ inputs.registry1Username != '' }}
       env:
         REGISTRY_USERNAME: ${{ inputs.registry1Username }}
         REGISTRY_PASSWORD: ${{ inputs.registry1Password }}
@@ -34,7 +34,7 @@ runs:
       shell: bash
 
     - name: GHCR Login
-      if: ${{ inputs.ghToken != "" }}
+      if: ${{ inputs.ghToken != '' }}
       env:
         GH_TOKEN: ${{ inputs.ghToken }}
       run: echo "${{ env.GH_TOKEN }}" | uds zarf tools registry login -u "dummy" --password-stdin ghcr.io
