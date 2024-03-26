@@ -6,16 +6,6 @@ includes:
   - publish: ./tasks/publish.yaml
 
 tasks:
-  - name: registry-login
-    description: Authenticate to registry (registry1 defualt)
-    actions:
-      - task: setup:registry-login
-        with:
-          registry: ${REGISTRY}
-          registryUsername: ${REGISTRY_USERNAME}
-          registryPassword: ${REGISTRY_PASSWORD}
-          registryRetryInterval: ${REGISTRY_RETRY_INTERVAL}
-
   - name: create-podinfo-package
     description: Create UDS Podinfo Package
     actions:
