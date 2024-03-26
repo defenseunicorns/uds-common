@@ -3,13 +3,13 @@ description: UDS Environment Setup
 
 inputs:
   registry1Username:
-    description: registry1 user
+    description: Registry1 Username
     required: true
   registry1Password:
-    description: registry1 password
+    description: Registry1 Password
     required: true
   ghToken:
-    description: registry1 password
+    description: GitHub Token
     required: true
 
 runs:
