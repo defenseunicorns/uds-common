@@ -32,17 +32,9 @@ jobs:
       - name: Environment setup
         uses: ./.github/actions/setup
         with:
-          username: ${{ secrets.IRON_BANK_ROBOT_USERNAME }}
-          password: ${{ secrets.IRON_BANK_ROBOT_PASSWORD }}
-
-      - name: Login to ghcr
-        env:
-          REGISTRY: ghcr.io
-          REGISTRY_USERNAME: dummy
-          REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-          REGISTRY_RETRY_INTERVAL: "5"
-        run: |
-          uds run registry-login
+          registry1Username: ${{ secrets.IRON_BANK_ROBOT_USERNAME }}
+          registry1Password: ${{ secrets.IRON_BANK_ROBOT_PASSWORD }}
+          ghToken: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Test
         uses: ./.github/actions/test
