@@ -8,22 +8,22 @@ on:
       - "**.png"
       - "**.gif"
       - "**.svg"
-      - "adr/**"
-      - "docs/**"
-      - ".gitignore"
-      - "renovate.json"
-      - ".release-please-config.json"
-      - "release-please-config.json"
-      - "oscal-component.yaml"
-      - "CODEOWNERS"
-      - "LICENSE"
-      - "CONTRIBUTING.md"
-      - "SECURITY.md"
+      - adr/**
+      - docs/**
+      - .gitignore
+      - renovate.json
+      - .release-please-config.json
+      - release-please-config.json
+      - oscal-component.yaml
+      - CODEOWNERS
+      - LICENSE
+      - CONTRIBUTING.md
+      - SECURITY.md
 
 jobs:
   run-test:
     name: ${{ matrix.type }} ${{ matrix.flavor }}
-    runs-on: "ubuntu-latest"
+    runs-on: ubuntu-latest
     timeout-minutes: 20
     strategy:
       matrix:

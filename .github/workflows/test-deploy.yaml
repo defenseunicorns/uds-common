@@ -11,17 +11,17 @@ on:
       - "**.png"
       - "**.gif"
       - "**.svg"
-      - "adr/**"
-      - "docs/**"
-      - ".gitignore"
-      - "renovate.json"
-      - ".release-please-config.json"
-      - "release-please-config.json"
-      - "oscal-component.yaml"
-      - "CODEOWNERS"
-      - "LICENSE"
-      - "CONTRIBUTING.md"
-      - "SECURITY.md"
+      - adr/**
+      - docs/**
+      - .gitignore
+      - renovate.json
+      - .release-please-config.json
+      - release-please-config.json
+      - oscal-component.yaml
+      - CODEOWNERS
+      - LICENSE
+      - CONTRIBUTING.md
+      - SECURITY.md
 
 concurrency:
   group: test-${{ github.ref }}
