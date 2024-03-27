@@ -48,7 +48,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish Package
-        run: uds run publish-podinfo --set FLAVOR=${{ matrix.flavor }}
+        run: uds run publish-podinfo --set FLAVOR=${{ matrix.flavor }} --no-progress
 
       - name: Save logs
         if: always()
