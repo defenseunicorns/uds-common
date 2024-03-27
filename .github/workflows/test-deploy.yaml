@@ -1,10 +1,27 @@
-name: Test Tasks
+name: Test
 
 on:
   # This workflow is triggered on pull requests to the main branch.
   pull_request:
     # milestoned is added here as a workaround for release-please not triggering PR workflows (PRs should be added to a milestone to trigger the workflow).
     types: [milestoned, opened, reopened, synchronize]
+    paths-ignore:
+      - "**.md"
+      - "**.jpg"
+      - "**.png"
+      - "**.gif"
+      - "**.svg"
+      - "adr/**"
+      - "docs/**"
+      - ".gitignore"
+      - "renovate.json"
+      - ".release-please-config.json"
+      - "release-please-config.json"
+      - "oscal-component.yaml"
+      - "CODEOWNERS"
+      - "LICENSE"
+      - "CONTRIBUTING.md"
+      - "SECURITY.md"
 
 concurrency:
   group: test-${{ github.ref }}
@@ -12,15 +29,17 @@ concurrency:
 
 # Permissions for the GITHUB_TOKEN used by the workflow.
 permissions:
-  id-token: write # Needed for OIDC-related operations.
   contents: read # Allows reading the content of the repository.
-  pull-requests: read # Allows reading pull request metadata.
 
 jobs:
   run-test:
-    name: Test
+    name: ${{ matrix.type }} ${{ matrix.flavor }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    strategy:
+      matrix:
+        flavor: [test]
+        type: [install, upgrade]
 
     steps:
       - name: Checkout repository
@@ -39,8 +58,11 @@ jobs:
       - name: Test
         uses: ./.github/actions/test
         with:
-          flavor: test
+          flavor: ${{ matrix.flavor }}
+          type: ${{ matrix.type }}
 
       - name: Save logs
         if: always()
         uses: ./.github/actions/save-logs
+        with:
+          suffix: ${{ matrix.type }}-${{ matrix.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}
