@@ -39,7 +39,7 @@ tasks:
     actions:
       - cmd: |
           if [ ${FLAVOR} != "registry1" ] || [ ${{ .inputs.architecture }} != "arm64" ]; then
-            UDS_CONFIG=${{ .inputs.path }}/${{ .inputs.config }} uds create ${{ .inputs.path }} --confirm --no-progress --architecture=${{ .inputs.architecture }} ${{ .inputs.options }}
+            UDS_CONFIG=${{ .inputs.path }}/${{ .inputs.config }} uds create ${{ .inputs.path }} --confirm --no-progress --architecture=${{ .inputs.architecture }} ${{ .inputs.options }} --no-tea
           else
             echo "Registry1 bundles cannot be made for 'arm64'"
           fi
