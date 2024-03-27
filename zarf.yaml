@@ -25,4 +25,4 @@ components:
                 namespace: podinfo
                 condition: available
     images:
-      - ghcr.io/stefanprodan/podinfo:6.4.0
+      - ghcr.io/stefanprodan/podinfo:6.6.1
