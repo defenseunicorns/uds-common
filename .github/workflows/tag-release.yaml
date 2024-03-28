@@ -7,6 +7,7 @@ on:
 
 jobs:
   tag-new-version:
+    name: Tag New Version
     permissions: write-all
     runs-on: ubuntu-latest
     outputs:
@@ -22,10 +23,10 @@ jobs:
     needs: tag-new-version
     if: ${{ needs.tag-new-version.outputs.release_created == 'true' }}
     runs-on: ubuntu-latest
+    name: Publish ${{ matrix.flavor }}
     strategy:
       matrix:
         flavor: [test]
-    name: Publish ${{ matrix.flavor }}
 
     permissions:
       contents: read
@@ -37,15 +38,9 @@ jobs:
       - name: Environment setup
         uses: ./.github/actions/setup
         with:
-          username: ${{secrets.IRON_BANK_ROBOT_USERNAME}}
-          password: ${{secrets.IRON_BANK_ROBOT_PASSWORD}}
-
-      - name: Login to GHCR
-        uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3
-        with:
-          registry: ghcr.io
-          username: dummy
-          password: ${{ secrets.GITHUB_TOKEN }}
+          registry1Username: ${{ secrets.IRON_BANK_ROBOT_USERNAME }}
+          registry1Password: ${{ secrets.IRON_BANK_ROBOT_PASSWORD }}
+          ghToken: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish Package
         run: uds run publish-podinfo --set FLAVOR=${{ matrix.flavor }} --no-progress
