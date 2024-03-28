@@ -38,7 +38,7 @@ tasks:
     actions:
       - description: Publish bundles for the amd64 and arm64 architectures
         cmd: |
-          uds publish ${{ .inputs.path }}/uds-bundle-*-amd64-${{ .inputs.version }}.tar.zst oci://${{ .inputs.target_repo }} --no-progress
+          uds publish ${{ .inputs.path }}/uds-bundle-*-amd64-${{ .inputs.version }}.tar.zst oci://${{ .inputs.target_repo }} --no-progress --no-tea
           if [ ${FLAVOR} != "registry1" ]; then
-            uds publish ${{ .inputs.path }}/uds-bundle-*-arm64-${{ .inputs.version }}.tar.zst oci://${{ .inputs.target_repo }} --no-progress
+            uds publish ${{ .inputs.path }}/uds-bundle-*-arm64-${{ .inputs.version }}.tar.zst oci://${{ .inputs.target_repo }} --no-progress --no-tea
           fi

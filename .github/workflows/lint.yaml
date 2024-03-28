@@ -29,8 +29,8 @@ jobs:
 
       - name: Install lint deps
         run: |
-          uds run lint:deps
+          uds run lint:deps --no-progress
 
       - name: Lint the repository
         run: |
-          uds run lint:yaml
+          uds run lint:yaml --no-progress

@@ -20,12 +20,12 @@ runs:
 
     - name: Test installing the package
       if: ${{ inputs.type == 'install' }}
-      run: uds run test-package --set FLAVOR=${{ inputs.flavor }} ${{ inputs.options }}
+      run: uds run test-package --set FLAVOR=${{ inputs.flavor }} ${{ inputs.options }} --no-progress
       shell: bash
 
     # === UPGRADE TESTING ===
 
     - name: Test upgrading the package
       if: ${{ inputs.type == 'upgrade' }}
-      run: uds run test-upgrade --set FLAVOR=${{ inputs.flavor }} ${{ inputs.options }}
+      run: uds run test-upgrade --set FLAVOR=${{ inputs.flavor }} ${{ inputs.options }} --no-progress
       shell: bash

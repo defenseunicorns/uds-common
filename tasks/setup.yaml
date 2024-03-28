@@ -7,4 +7,4 @@ tasks:
     actions:
       - description: Create k3d cluster with UDS Core Istio
         # renovate: datasource=github-tags depName=defenseunicorns/uds-core versioning=semver
-        cmd: uds deploy oci://defenseunicorns/uds/bundles/k3d-core-slim-dev:0.17.0 --confirm --no-progress
+        cmd: uds deploy oci://defenseunicorns/uds/bundles/k3d-core-slim-dev:0.17.0 --confirm --no-progress --no-tea

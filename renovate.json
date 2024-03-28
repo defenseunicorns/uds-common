@@ -41,12 +41,17 @@
     }
   ],
   "packageRules": [
-    { 
-      "matchFileNames": [".github/**"],
-      "excludePackageNames": ["defenseunicorns/uds-cli"],
-      "groupName": "githubactions",
-      "commitMessageTopic": "githubactions",
-      "pinDigests": true
+    {
+      "groupName": "UDS Common Support Dependencies",
+      "labels": ["support-deps"],
+      "commitMessageTopic": "support-deps",
+      "packagePatterns": ["*"]
+    },
+    {
+      "groupName": "UDS Common Package Dependencies",
+      "labels": ["package-deps"],
+      "commitMessageTopic": "package-deps",
+      "matchPackagePatterns": [".*podinfo.*"]
     }
   ]
 }
