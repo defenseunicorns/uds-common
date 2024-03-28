@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.3.8](https://github.com/defenseunicorns/uds-common/compare/v0.3.7...v0.3.8) (2024-03-28)
+
+
+### Miscellaneous
+
+* add upgrade tests to common ([#91](https://github.com/defenseunicorns/uds-common/issues/91)) ([bb2e590](https://github.com/defenseunicorns/uds-common/commit/bb2e59021355172db2cfcca7dbf5a2434ce41b6d))
+* **deps:** update dependency defenseunicorns/uds-cli to v0.10.1 ([#84](https://github.com/defenseunicorns/uds-common/issues/84)) ([6b455b7](https://github.com/defenseunicorns/uds-common/commit/6b455b7cef8ddab022c758a6309d8993f0a564b7))
+* **deps:** update dependency defenseunicorns/uds-core to v0.17.0 ([#83](https://github.com/defenseunicorns/uds-common/issues/83)) ([b8d8181](https://github.com/defenseunicorns/uds-common/commit/b8d818165c7c676f56898c2d15ae14a2f7ff5f0c))
+* **deps:** update uds common package dependencies to v6.6.1 ([#92](https://github.com/defenseunicorns/uds-common/issues/92)) ([862b635](https://github.com/defenseunicorns/uds-common/commit/862b63512b4b53ff963b85e25e8011818bb8e4e3))
+* update registry login to happen in the common env setup action ([#88](https://github.com/defenseunicorns/uds-common/issues/88)) ([b7bce88](https://github.com/defenseunicorns/uds-common/commit/b7bce888d1d62c5d382d7d88a54e59da72e0d3ae))
+
 ## [0.3.7](https://github.com/defenseunicorns/uds-common/compare/v0.3.6...v0.3.7) (2024-03-26)
 
 
