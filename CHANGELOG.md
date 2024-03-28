@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.9](https://github.com/defenseunicorns/uds-common/compare/v0.3.8...v0.3.9) (2024-03-28)
+
+
+### Miscellaneous
+
+* fix missing keys in setup actions ([#93](https://github.com/defenseunicorns/uds-common/issues/93)) ([39d7395](https://github.com/defenseunicorns/uds-common/commit/39d73955ebb35f4e844a45fe23a7acf7d65d239a))
+
 ## [0.3.8](https://github.com/defenseunicorns/uds-common/compare/v0.3.7...v0.3.8) (2024-03-28)
 
 

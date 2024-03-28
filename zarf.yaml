@@ -2,7 +2,7 @@ kind: ZarfPackageConfig
 metadata:
   name: podinfo
   # x-release-please-start-version
-  version: 0.3.8
+  version: 0.3.9
   # x-release-please-end
 
 components:
