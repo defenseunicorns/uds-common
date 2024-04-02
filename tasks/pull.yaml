@@ -18,7 +18,7 @@ tasks:
         default: ghcr.io/defenseunicorns/packages/uds
     actions:
       - description: Get the current Zarf package name
-        cmd: cat zarf.yaml | yq .metadata.name
+        cmd: cat ${{ .inputs.path }}/zarf.yaml | yq .metadata.name
         setVariables:
           - name: PACKAGE_NAME
       - description: Get latest tag version from OCI
@@ -31,9 +31,8 @@ tasks:
       - description: Spoof the latest release to the current version
         cmd: |
           if [ ${{ .inputs.spoof_release }} != "false" ]; then
-            CURRENT_VERSION=$(cat zarf.yaml | yq .metadata.version)
-            CURRENT_PKG_NAME=$(cat zarf.yaml | yq .metadata.name)
-            test -f zarf-package-${CURRENT_PKG_NAME}-${UDS_ARCH}-${CURRENT_VERSION}.tar.zst || mv zarf-package-${CURRENT_PKG_NAME}-${UDS_ARCH}-*.tar.zst zarf-package-${CURRENT_PKG_NAME}-${UDS_ARCH}-${CURRENT_VERSION}.tar.zst
+            CURRENT_VERSION=$(cat ${{ .inputs.path }}/zarf.yaml | yq .metadata.version)
+            test -f ${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${UDS_ARCH}-${CURRENT_VERSION}.tar.zst || mv ${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${UDS_ARCH}-*.tar.zst ${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${UDS_ARCH}-${CURRENT_VERSION}.tar.zst
           fi
 
   - name: latest-bundle-release
@@ -63,6 +62,5 @@ tasks:
         cmd: |
           if [ ${{ .inputs.spoof_release }} != "false" ]; then
             CURRENT_VERSION=$(cat ${{ .inputs.path }}/uds-bundle.yaml | yq .metadata.version)
-            CURRENT_PKG_NAME=$(cat ${{ .inputs.path }}/uds-bundle.yaml | yq .metadata.name)
-            test -f ${{ .inputs.path }}/uds-bundle-${CURRENT_PKG_NAME}-${UDS_ARCH}-${CURRENT_VERSION}.tar.zst || mv ${{ .inputs.path }}/uds-bundle-${CURRENT_PKG_NAME}-${UDS_ARCH}-*.tar.zst ${{ .inputs.path }}/uds-bundle-${CURRENT_PKG_NAME}-${UDS_ARCH}-${CURRENT_VERSION}.tar.zst
+            test -f ${{ .inputs.path }}/uds-bundle-${BUNDLE_NAME}-${UDS_ARCH}-${CURRENT_VERSION}.tar.zst || mv ${{ .inputs.path }}/uds-bundle-${BUNDLE_NAME}-${UDS_ARCH}-*.tar.zst ${{ .inputs.path }}/uds-bundle-${BUNDLE_NAME}-${UDS_ARCH}-${CURRENT_VERSION}.tar.zst
           fi
