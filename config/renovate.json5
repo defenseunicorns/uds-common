@@ -72,8 +72,8 @@
         {
             "fileMatch": [".*\\.ya?ml$"],
             "matchStrings": [
-                // Test: https://regex101.com/r/b53bEF/1
-                "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( extractVersion=(?<extractVersion>.*?))?( registryUrl=(?<registryUrl>.*?))?\\s.*[A-Z]*=\\s*['\"]?(?<currentValue>[v0-9].*?)['\"]?(\\s|$)"
+                // Test: https://regex101.com/r/b53bEF/2
+                "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( extractVersion=(?<extractVersion>.*?))?( registryUrl=(?<registryUrl>.*?))?\\s.*[A-Z]+=['\"]?(?<currentValue>[v0-9].*?)['\"]?(\\s|$)"
             ],
             "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver-coerced{{/if}}",
             "extractVersionTemplate": "^v(?<version>.*)$"
