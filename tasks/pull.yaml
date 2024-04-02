@@ -45,18 +45,18 @@ tasks:
         default: "false"
       target_repo:
         description: The repository to pull from
-        default: ghcr.io/defenseunicorns/packages/uds
+        default: ghcr.io/defenseunicorns/packages/uds/bundles
     actions:
       - description: Get the current uds bundle name
         cmd: cat ${{ .inputs.path }}/uds-bundle.yaml | yq .metadata.name
         setVariables:
           - name: BUNDLE_NAME
       - description: Get latest tag version from OCI
-        cmd: ./uds zarf tools registry ls ${{ .inputs.target_repo }}/bundles/${BUNDLE_NAME} | sort -V | tail -1
+        cmd: ./uds zarf tools registry ls ${{ .inputs.target_repo }}/${BUNDLE_NAME} | sort -V | tail -1
         setVariables:
           - name: LATEST_VERSION
       - description: Pull the latest bundle release
-        cmd: ./uds pull oci://${{ .inputs.target_repo }}/bundles/${BUNDLE_NAME}:${LATEST_VERSION} --no-progress -o ${{ .inputs.path }}
+        cmd: ./uds pull oci://${{ .inputs.target_repo }}/${BUNDLE_NAME}:${LATEST_VERSION} --no-progress -o ${{ .inputs.path }}
       # TODO (@ZMILLER): This is currently needed to get around the chicken+egg condition when release please updates the version in GH
       - description: Spoof the latest release to the current version
         cmd: |
