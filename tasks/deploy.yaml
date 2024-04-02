@@ -8,7 +8,7 @@ tasks:
         default: .
     actions:
       - description: Deploy the UDS Zarf Package
-        cmd: uds zarf package deploy ${{ .inputs.path }}/zarf-package-*-${UDS_ARCH}-*.tar.zst --confirm --no-progress ${{ .inputs.options }}
+        cmd: ./uds zarf package deploy ${{ .inputs.path }}/zarf-package-*-${UDS_ARCH}-*.tar.zst --confirm --no-progress ${{ .inputs.options }}
 
   - name: test-bundle
     inputs:
@@ -22,4 +22,4 @@ tasks:
         description: For setting deploy time variables and flags
     actions:
       - description: Deploy the UDS bundle with the package and its dependencies
-        cmd: UDS_CONFIG=${{ .inputs.path }}/${{ .inputs.config }} uds deploy ${{ .inputs.path }}/uds-bundle-*-${UDS_ARCH}-*.tar.zst --confirm --no-progress ${{ .inputs.options }} --no-tea
+        cmd: UDS_CONFIG=${{ .inputs.path }}/${{ .inputs.config }} ./uds deploy ${{ .inputs.path }}/uds-bundle-*-${UDS_ARCH}-*.tar.zst --confirm --no-progress ${{ .inputs.options }} --no-tea
