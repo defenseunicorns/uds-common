@@ -5,6 +5,7 @@
     "extends": [
         ":dependencyDashboard",
         "config:base",
+        "helpers:pinGitHubActionDigests",
     ],
     // Disable reviewers getting added by renovate to limit notification noise
     "reviewersFromCodeOwners": false,
@@ -218,13 +219,6 @@
         {
             "matchPackageNames": ["registry1.dso.mil/ironbank/big-bang/base"],
             "allowedVersions": "!/8.4/"
-        },
-        {
-            "matchFileNames": [".github/**"],
-            "excludePackageNames": ["defenseunicorns/uds-cli"],
-            "groupName": "githubactions",
-            "commitMessageTopic": "githubactions",
-            "pinDigests": true
         }
     ]
 }
