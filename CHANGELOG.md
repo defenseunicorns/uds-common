@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.3.10](https://github.com/defenseunicorns/uds-common/compare/v0.3.9...v0.3.10) (2024-04-03)
+
+
+### Miscellaneous
+
+* add a full uds task and inputs ([#95](https://github.com/defenseunicorns/uds-common/issues/95)) ([7e15fd2](https://github.com/defenseunicorns/uds-common/commit/7e15fd2ba4629ee1fae31e87f946ca32138df73c))
+* add latest-bundle-release task ([#97](https://github.com/defenseunicorns/uds-common/issues/97)) ([2662f6a](https://github.com/defenseunicorns/uds-common/commit/2662f6a697a97b2a202a128040a487f2d2e117d7))
+* attempt to fix renovate ([#98](https://github.com/defenseunicorns/uds-common/issues/98)) ([8155ecc](https://github.com/defenseunicorns/uds-common/commit/8155ecc62968e342110b0598a2d57de17b5e3914))
+* **deps:** update uds common support dependencies ([#101](https://github.com/defenseunicorns/uds-common/issues/101)) ([dfdf927](https://github.com/defenseunicorns/uds-common/commit/dfdf927b2367a0592a54fa8a97d4ee84e118e2e0))
+* fix renovate env var rule overmatching ([#99](https://github.com/defenseunicorns/uds-common/issues/99)) ([480497f](https://github.com/defenseunicorns/uds-common/commit/480497f4a72c3f25fcb87823c5902192d4e5befb))
+* fix the renovate config github digest pinning ([#100](https://github.com/defenseunicorns/uds-common/issues/100)) ([4603448](https://github.com/defenseunicorns/uds-common/commit/4603448ce94c22c614ec7e87b9520e9681e618e2))
+
 ## [0.3.9](https://github.com/defenseunicorns/uds-common/compare/v0.3.8...v0.3.9) (2024-03-28)
 
 
