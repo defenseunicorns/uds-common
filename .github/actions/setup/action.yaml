@@ -23,7 +23,7 @@ runs:
     - name: Install UDS CLI
       shell: bash
       # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
-      run: brew install defenseunicorns/tap/uds@0.10.1
+      run: brew install defenseunicorns/tap/uds@0.10.3
 
     - name: Iron Bank Login
       if: ${{ inputs.registry1Username != '' }}
