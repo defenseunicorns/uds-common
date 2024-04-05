@@ -4,16 +4,24 @@ tasks:
       options:
         description: For setting deploy time variables and flags
       path:
-        description: Path of built zarf package to deploy
+        description: Path relative to the repositories root where the zarf.yaml and .tar.zst lives
         default: .
     actions:
+      - description: Get the current Zarf package name
+        cmd: cat ${{ .inputs.path }}/zarf.yaml | yq .metadata.name
+        setVariables:
+          - name: PACKAGE_NAME
+      - description: Get the current Zarf package version
+        cmd: cat ${{ .inputs.path }}/zarf.yaml | yq .metadata.version
+        setVariables:
+          - name: PACKAGE_VERSION
       - description: Deploy the UDS Zarf Package
-        cmd: ./uds zarf package deploy ${{ .inputs.path }}/zarf-package-*-${UDS_ARCH}-*.tar.zst --confirm --no-progress ${{ .inputs.options }}
+        cmd: ./uds zarf package deploy ${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${UDS_ARCH}-${PACKAGE_VERSION}.tar.zst --confirm --no-progress ${{ .inputs.options }}
 
   - name: test-bundle
     inputs:
       path:
-        description: Path relative to the repositories root where the uds-bundle.yaml lives
+        description: Path relative to the repositories root where the uds-bundle.yaml and .tar.zst lives
         default: bundle
       config:
         description: File name of the bundle config file. Defaults to uds-config.yaml. Path is relative to the path input.
@@ -21,5 +29,13 @@ tasks:
       options:
         description: For setting deploy time variables and flags
     actions:
+      - description: Get the current UDS Bundle name
+        cmd: cat ${{ .inputs.path }}/uds-bundle.yaml | yq .metadata.name
+        setVariables:
+          - name: BUNDLE_NAME
+      - description: Get the current UDS Bundle version
+        cmd: cat ${{ .inputs.path }}/uds-bundle.yaml | yq .metadata.version
+        setVariables:
+          - name: BUNDLE_VERSION
       - description: Deploy the UDS bundle with the package and its dependencies
-        cmd: UDS_CONFIG=${{ .inputs.path }}/${{ .inputs.config }} ./uds deploy ${{ .inputs.path }}/uds-bundle-*-${UDS_ARCH}-*.tar.zst --confirm --no-progress ${{ .inputs.options }} --no-tea
+        cmd: UDS_CONFIG=${{ .inputs.path }}/${{ .inputs.config }} ./uds deploy ${{ .inputs.path }}/uds-bundle-${BUNDLE_NAME}-${UDS_ARCH}-${BUNDLE_VERSION}.tar.zst --confirm --no-progress ${{ .inputs.options }} --no-tea
