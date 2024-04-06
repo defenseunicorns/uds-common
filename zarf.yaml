@@ -11,7 +11,7 @@ components:
     only:
       flavor: test
     charts:
-      - name: podinfo
+      - name: uds-podinfo
         version: 6.6.1
         namespace: podinfo
         url: oci://ghcr.io/stefanprodan/charts/podinfo
@@ -19,7 +19,7 @@ components:
           - values/common-values.yaml
     manifests:
       - name: podinfo-config
-        namespace: podinfo
+        namespace: uds-podinfo
         files:
           - manifests/uds-package.yaml
     actions:
@@ -29,7 +29,7 @@ components:
               cluster:
                 kind: deployment
                 name: podinfo
-                namespace: podinfo
+                namespace: uds-podinfo
                 condition: available
     images:
       - ghcr.io/stefanprodan/podinfo:6.6.1

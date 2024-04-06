@@ -2,7 +2,7 @@ apiVersion: uds.dev/v1alpha1
 kind: Package
 metadata:
   name: podinfo
-  namespace: podinfo
+  namespace: uds-podinfo
 spec:
   network:
     expose:

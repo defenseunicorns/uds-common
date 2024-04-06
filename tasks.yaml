@@ -55,7 +55,7 @@ tasks:
           cluster:
             kind: Deployment
             name: podinfo
-            namespace: podinfo
+            namespace: uds-podinfo
             condition: available
       - wait:
           network:
