@@ -11,9 +11,9 @@ components:
     only:
       flavor: test
     charts:
-      - name: uds-podinfo
+      - name: podinfo
         version: 6.6.1
-        namespace: podinfo
+        namespace: uds-podinfo
         url: oci://ghcr.io/stefanprodan/charts/podinfo
         valuesFiles:
           - values/common-values.yaml
