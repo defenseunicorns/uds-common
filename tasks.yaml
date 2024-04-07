@@ -55,8 +55,18 @@ tasks:
           cluster:
             kind: Deployment
             name: podinfo
-            namespace: podinfo
+            namespace: uds-podinfo
             condition: available
+      - wait:
+          network:
+            protocol: https
+            address: podinfo.uds.dev
+            code: 200
+      - wait:
+          network:
+            protocol: https
+            address: podinfo.uds.dev/echo
+            code: 200
 
 # CI will execute the following (via .github/actions/test) so they need to be here with these names
 

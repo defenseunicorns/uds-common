@@ -6,15 +6,22 @@ metadata:
   # x-release-please-end
 
 components:
-  - name: podinfo-kustomize
+  - name: podinfo
     required: true
     only:
       flavor: test
+    charts:
+      - name: podinfo
+        version: 6.6.1
+        namespace: uds-podinfo
+        url: oci://ghcr.io/stefanprodan/charts/podinfo
+        valuesFiles:
+          - values/common-values.yaml
     manifests:
-      - name: simple-podinfo-deployment
-        namespace: podinfo
-        kustomizations:
-          - github.com/stefanprodan/podinfo//kustomize?ref=6.6.1
+      - name: podinfo-config
+        namespace: uds-podinfo
+        files:
+          - manifests/uds-package.yaml
     actions:
       onDeploy:
         after:
@@ -22,7 +29,7 @@ components:
               cluster:
                 kind: deployment
                 name: podinfo
-                namespace: podinfo
+                namespace: uds-podinfo
                 condition: available
     images:
       - ghcr.io/stefanprodan/podinfo:6.6.1

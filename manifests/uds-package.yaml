@@ -1,0 +1,21 @@
+apiVersion: uds.dev/v1alpha1
+kind: Package
+metadata:
+  name: podinfo
+  namespace: uds-podinfo
+spec:
+  network:
+    expose:
+      - service: podinfo
+        podLabels:
+          app: podinfo
+        host: podinfo
+        gateway: tenant
+        port: 9898
+
+    allow:
+      - direction: Egress
+        selector:
+          app.kubernetes.io/name: podinfo
+        remoteGenerated: Anywhere
+        port: 443
