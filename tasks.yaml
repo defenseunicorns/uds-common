@@ -7,6 +7,13 @@ includes:
   - pull: ./tasks/pull.yaml
 
 tasks:
+  - name: default
+    description: Create and deploy the podinfo package on a fresh cluster
+    actions:
+      - task: create-podinfo-test-bundle
+      - task: setup:k3d-test-cluster
+      - task: deploy:test-bundle
+
   - name: create-podinfo-package
     description: Create UDS Podinfo Package
     actions:
