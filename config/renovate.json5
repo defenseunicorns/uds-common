@@ -71,7 +71,7 @@
         },
         // Matches specified datasources where an environment variable separates the version on the following line (i.e. https://github.com/defenseunicorns/uds-common/blob/ce3ba974ef3ff88058809f4b9a78da281a65ffa0/.github/actions/setup/action.yaml#L9)
         {
-            "fileMatch": [".*\\.ya?ml$"],
+            "fileMatch": [".*\\.ya?ml$", ".*\\.sh$"],
             "matchStrings": [
                 // Test: https://regex101.com/r/b53bEF/2
                 "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( extractVersion=(?<extractVersion>.*?))?( registryUrl=(?<registryUrl>.*?))?\\s.*[A-Z]+=['\"]?(?<currentValue>[v0-9].*?)['\"]?(\\s|$)"
