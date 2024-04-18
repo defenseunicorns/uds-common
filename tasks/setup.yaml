@@ -10,7 +10,7 @@ tasks:
         default: "true"
     actions:
       - description: Create k3d cluster with slim UDS Core
-        cmd: ./uds deploy oci://defenseunicorns/uds/bundles/k3d-core-slim-dev:${{ .inputs.version }} --set INSECURE_ADMIN_PASSWORD_GENERATION={{ .inputs.insecure_keycloak_admin }} --confirm --no-progress --no-tea 
+        cmd: ./uds deploy oci://defenseunicorns/uds/bundles/k3d-core-slim-dev:${{ .inputs.version }} --set INSECURE_ADMIN_PASSWORD_GENERATION={{ .inputs.insecure_keycloak_admin }} --confirm --no-progress --no-tea
 
   - name: k3d-full-cluster
     inputs:
