@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.3.11](https://github.com/defenseunicorns/uds-common/compare/v0.3.10...v0.3.11) (2024-04-17)
+
+
+### Miscellaneous
+
+* add a default uds task to deploy podinfo ([#108](https://github.com/defenseunicorns/uds-common/issues/108)) ([c60e1ba](https://github.com/defenseunicorns/uds-common/commit/c60e1ba4888635ace4839e158b4dc476c11a8e7c))
+* add a UDS package CR to make the package better for testing ([#102](https://github.com/defenseunicorns/uds-common/issues/102)) ([cf74934](https://github.com/defenseunicorns/uds-common/commit/cf749343a72db09f46cc054ff463454cdb8c4b74))
+* **deps:** update uds common package dependencies to v6.6.2 ([#107](https://github.com/defenseunicorns/uds-common/issues/107)) ([b6a18b0](https://github.com/defenseunicorns/uds-common/commit/b6a18b039711998bb6d3c90db25a4f42f49c5eb3))
+* pull the current bundle and package names when deploying ([#103](https://github.com/defenseunicorns/uds-common/issues/103)) ([4b27106](https://github.com/defenseunicorns/uds-common/commit/4b27106a55775b725be217818f4be8d711340e95))
+* update codeowners ([#105](https://github.com/defenseunicorns/uds-common/issues/105)) ([2e23ae3](https://github.com/defenseunicorns/uds-common/commit/2e23ae3a9a70189ca7d9671f3454158bb71a7ed6))
+
 ## [0.3.10](https://github.com/defenseunicorns/uds-common/compare/v0.3.9...v0.3.10) (2024-04-03)
 
 
