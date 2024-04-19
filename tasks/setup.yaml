@@ -40,7 +40,7 @@ tasks:
             --data-urlencode "username=admin" \
             --data-urlencode "password=${KEYCLOAK_ADMIN_PASSWORD}" \
             --data-urlencode "client_id=admin-cli" \
-            --data-urlencode "grant_type=password" | yq .access_token)
+            --data-urlencode "grant_type=password" | ./uds zarf tools yq .access_token)
 
           # Create the doug user in the UDS Realm
           curl --location "https://keycloak.admin.uds.dev/admin/realms/uds/users" \
@@ -65,7 +65,7 @@ tasks:
 
           # Disable 2FA
           CONDITIONAL_OTP_ID=$(curl --location "https://keycloak.admin.uds.dev/admin/realms/uds/authentication/flows/Authentication/executions" \
-            --header "Authorization: Bearer ${KEYCLOAK_ADMIN_TOKEN}" | yq '.[] | select(.displayName == "Conditional OTP") | .id')
+            --header "Authorization: Bearer ${KEYCLOAK_ADMIN_TOKEN}" | ./uds zarf tools yq '.[] | select(.displayName == "Conditional OTP") | .id')
 
           curl --location --request PUT "https://keycloak.admin.uds.dev/admin/realms/uds/authentication/flows/Authentication/executions" \
           --header "Content-Type: application/json" \
