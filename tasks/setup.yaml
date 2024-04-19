@@ -50,7 +50,7 @@ tasks:
               "username": "doug",
               "firstName": "Doug",
               "lastName": "Unicorn",
-              "email": "doug@defenseunicorns.com",
+              "email": "doug@uds.dev",
               "emailVerified": true,
               "enabled": true,
               "requiredActions": [],
