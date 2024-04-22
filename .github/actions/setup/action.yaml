@@ -15,7 +15,7 @@ runs:
     - name: Install k3d
       shell: bash
       # renovate: datasource=github-tags depName=k3d-io/k3d versioning=semver
-      run: curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | TAG=v5.6.0 bash
+      run: curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | TAG=v5.6.3 bash
 
     - name: Set up Homebrew
       uses: Homebrew/actions/setup-homebrew@master
@@ -23,7 +23,7 @@ runs:
     - name: Install UDS CLI
       shell: bash
       # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
-      run: brew install defenseunicorns/tap/uds@0.10.3
+      run: brew install defenseunicorns/tap/uds@0.10.4
 
     - name: Iron Bank Login
       if: ${{ inputs.registry1Username != '' }}
