@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.4.0](https://github.com/defenseunicorns/uds-common/compare/v0.3.11...v0.4.0) (2024-04-22)
+
+
+### Features
+
+* adds renovate to sh files ([#110](https://github.com/defenseunicorns/uds-common/issues/110)) ([b604d2e](https://github.com/defenseunicorns/uds-common/commit/b604d2e1b3fc69f29122f9a709c605f5ecf4da18))
+
+
+### Miscellaneous
+
+* add a default to setup to create an admin keycloak user ([#111](https://github.com/defenseunicorns/uds-common/issues/111)) ([7fe0dd4](https://github.com/defenseunicorns/uds-common/commit/7fe0dd49a9b7032f9c06a83c5a1c6adbb17e8d63))
+* **deps:** update uds common support dependencies ([#106](https://github.com/defenseunicorns/uds-common/issues/106)) ([ab06724](https://github.com/defenseunicorns/uds-common/commit/ab067245249e63065d2c266fe3b1a45b155e9de2))
+* fix the extract version template for env vars ([#115](https://github.com/defenseunicorns/uds-common/issues/115)) ([72d5d26](https://github.com/defenseunicorns/uds-common/commit/72d5d263ce850eac20728eb9330c7b3e26143a2b))
+
 ## [0.3.11](https://github.com/defenseunicorns/uds-common/compare/v0.3.10...v0.3.11) (2024-04-17)
 
 
