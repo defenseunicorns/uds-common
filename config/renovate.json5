@@ -77,7 +77,7 @@
                 "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( extractVersion=(?<extractVersion>.*?))?( registryUrl=(?<registryUrl>.*?))?\\s.*[A-Z]+=['\"]?(?<currentValue>[v0-9].*?)['\"]?(\\s|$)"
             ],
             "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver-coerced{{/if}}",
-            "extractVersionTemplate": "^v(?<version>.*)$"
+            "extractVersionTemplate": "{{#if extractVersion}}{{{extractVersion}}}{{else}}^(?<version>.*)${{/if}}"
         },
         // Matches specified datasources for brew where an @ separates the version on the following line (i.e. https://github.com/defenseunicorns/uds-core/blob/5a2666f6a5ba89686c6dc1fecb0db98512b1b9f8/.github/actions/setup/action.yaml#L32)
         {
