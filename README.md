@@ -1,6 +1,6 @@
 # UDS Common
 
-This repository contains common configuration and tasks used in UDS Packages for management, setup, creation, deployment, and publishing of packages and bundles.
+This repository contains common configuration and tasks used in UDS Packages for management, setup, creation, deployment, and publishing of packages and bundles.  It is useful to help implement [UDS package practices](./docs/uds-package-practices.md).
 
 ## Task Usage
 
