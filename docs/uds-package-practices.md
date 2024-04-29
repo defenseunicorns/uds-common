@@ -9,7 +9,7 @@ This document describes the practices that a UDS package **must**, **should**, a
 
 ## Integrations
 
-Below are the minimal services that a UDS package **must** integrate with:
+Below are the minimal services that a UDS package **must** integrate with, using the UDS `Package` custom resource:
 
 ### Istio
 
