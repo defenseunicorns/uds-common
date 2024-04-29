@@ -58,4 +58,3 @@ To help maintain a UDS Package, it:
 - **Must** have a dependency management bot (such as renovate) configured to open PRs to update core package and support dependencies.
 
 - **Must** release its package to the `ghcr.io/defenseunicorns/packages/<group>` namespace as the application's name (i.e. `ghcr.io/defenseunicorns/packages/uds/mattermost`)
-  > This allows for different images or configurations to be delivered consistently to customers.
