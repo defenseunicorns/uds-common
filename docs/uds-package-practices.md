@@ -9,7 +9,7 @@ This document describes the practices that a UDS package **must**, **should**, a
 
 ## Integrations
 
-Below are the minimal services that a UDS package **must** integrate with, using the UDS `Package` custom resource:
+Below are the minimal services that a UDS package **must** integrate with, using the [UDS `Package` custom resource](https://github.com/defenseunicorns/uds-core/blob/main/src/pepr/operator/README.md#example-uds-package-cr):
 
 ### Istio
 
@@ -25,16 +25,23 @@ Below are the minimal services that a UDS package **must** integrate with, using
 
 ### Keycloak
 
-- **Must** create a client through the `sso` key and use that client for any provided user login.
+- **Must** use and create a Keycloak client through the `sso` key if the application provides a user login.
 - **Should** consider security options during implementation to provide the most secure default possible.
 - **Should** name the client `<App> Login` (i.e. `Mattermost Login`) to provide UX consistency.
 - **May** template Keycloak fields to provide flexibility for delivery customers to configure.
+
+## Exemptions
+
+UDS Packages **may** make use of the [UDS `Exemption` custom resource](https://github.com/defenseunicorns/uds-core/blob/main/src/pepr/operator/README.md) for extempting any Pepr policies, but in doing so they:
+
+- **Must** minimize the scope and number of the exemptions to only what is absolutely required by the application
+- **Must** have documented rationale for any exemptions present
 
 ## Structure
 
 Packages also follow structural guidelines to ensure consistency and flexibility for configuration, they:
 
-- **Should** expose configuration through a chart (ideally in a `chart` or `charts` directory).
+- **Should** expose all configuration (`uds.dev` CRs, additional `Secrets`/`ConfigMaps`, etc) through a Helm chart (ideally in a `chart` or `charts` directory).
   > This allows UDS bundles to override configuration with Helm overrides and enables downstream teams to fully control their bundle configurations.
 
 - **Should** implement or allow for multiple flavors (ideally with common definitions in a `common` directory)
