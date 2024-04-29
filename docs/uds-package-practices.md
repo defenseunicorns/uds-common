@@ -13,7 +13,7 @@ Below are the minimal services that a UDS package **must** integrate with:
 
 ### Istio
 
-- **Must** define external interfaces under the `expose` key **_(if applicable - i.e. has a web interface)_**.
+- **Must** define any external interfaces under the `expose` key.
 - **Must** deploy and operate successfully with Istio injection enabled in the namespace.
 - **Should** avoid workarounds such as disabling strict mTLS peer authentication.
 
@@ -25,7 +25,7 @@ Below are the minimal services that a UDS package **must** integrate with:
 
 ### Keycloak
 
-- **Must** create a client through the `sso` key and use that client for user login **_(if applicable - i.e. allows user login)_**.
+- **Must** create a client through the `sso` key and use that client for any provided user login.
 - **Should** consider security options during implementation to provide the most secure default possible.
 - **Should** name the client `<App> Login` (i.e. `Mattermost Login`) to provide UX consistency.
 - **May** template Keycloak fields to provide flexibility for delivery customers to configure.
@@ -35,7 +35,7 @@ Below are the minimal services that a UDS package **must** integrate with:
 Packages also follow structural guidelines to ensure consistency and flexibility for configuration, they:
 
 - **Should** expose configuration through a chart (ideally in a `chart` or `charts` directory).
-  > This allows UDS bundles to override configuration with Helm overrides.
+  > This allows UDS bundles to override configuration with Helm overrides and enables downstream teams to fully control their bundle configurations.
 
 - **Should** implement or allow for multiple flavors (ideally with common definitions in a `common` directory)
   > This allows for different images or configurations to be delivered consistently to customers.
@@ -48,7 +48,7 @@ A UDS Package will also have testing and quality checks to ensure that updates /
 
 - **Must** implement Upgrade Testing to ensure that the current development package works when deployed over the previously released one.
 
-- **Should** lint their configurations with appropriate tooling such as `yamllint` and `zarf dev lint`.
+- **Should** lint their configurations with appropriate tooling such as [`yamllint`](https://github.com/adrienverge/yamllint) and [`zarf dev lint`](https://docs.zarf.dev/commands/zarf_dev_lint/).
 
 
 ## Maintenance
@@ -58,3 +58,4 @@ To help maintain a UDS Package, it:
 - **Must** have a dependency management bot (such as renovate) configured to open PRs to update core package and support dependencies.
 
 - **Must** release its package to the `ghcr.io/defenseunicorns/packages/<group>` namespace as the application's name (i.e. `ghcr.io/defenseunicorns/packages/uds/mattermost`)
+  > This allows for different images or configurations to be delivered consistently to customers.
