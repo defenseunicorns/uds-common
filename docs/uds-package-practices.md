@@ -4,14 +4,16 @@ This document describes the practices that a UDS package **must**, **should**, a
 
 [<img alt="Made for UDS" src="./made-for-uds.svg" height="20px"/>](https://github.com/defenseunicorns/uds-core)
 
+> [!NOTE]
+> This badge should link to the `uds-core` repo and be displayed alongside any other badges on the README and should match their height (i.e. `20px`).
+
 ## Integrations
 
 Below are the minimal services that a UDS package will integrate with at some level and they:
 
-
 ### Istio
 
-- **Must** define external interfaces under the `expose` key **_(if applicable)_**.
+- **Must** define external interfaces under the `expose` key **_(if applicable - i.e. has a web interface)_**.
 - **Must** deploy and operate successfully with Istio injection enabled in the namespace.
 - **Should** avoid workarounds such as disabling strict mTLS peer authentication.
 
@@ -23,7 +25,7 @@ Below are the minimal services that a UDS package will integrate with at some le
 
 ### Keycloak
 
-- **Must** create a client through the `sso` key and use that client for user login **_(if applicable)_**.
+- **Must** create a client through the `sso` key and use that client for user login **_(if applicable - i.e. allows user login)_**.
 - **Should** consider security options during implementation to provide the most secure default possible.
 - **Should** name the client `<App> Login` (i.e. `Mattermost Login`) to provide UX consistency.
 - **May** template Keycloak fields to provide flexibility for delivery customers to configure.
