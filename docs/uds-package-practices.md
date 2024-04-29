@@ -42,7 +42,7 @@ Packages also follow structural guidelines to ensure consistency and flexibility
 
 ## Testing
 
-A UDS Package will also have testing and quality checks to ensure that updates / changes to them will flow smoothly over time.  Packages:
+A UDS Package will also have testing and quality checks to ensure that updates / changes to them result in minimal churn.  Packages:
 
 - **Must** implement Journey Testing to cover the basic user flows and features of the application, especially where an application interacts with an external service / interface.
 
