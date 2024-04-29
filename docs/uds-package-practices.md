@@ -5,7 +5,7 @@ This document describes the practices that a UDS package **must**, **should**, a
 [<img alt="Made for UDS" src="./made-for-uds.svg" height="20px"/>](https://github.com/defenseunicorns/uds-core)
 
 > [!NOTE]
-> This badge should link to the `uds-core` repo and be displayed alongside any other badges on the README and should match their height (i.e. `20px`).
+> This badge should link to the `uds-core` repo and should match the height of any other badges (i.e. `20px`).
 
 ## Integrations
 
