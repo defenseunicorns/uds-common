@@ -32,7 +32,7 @@ Below are the minimal services that a UDS package **must** integrate with, using
 
 ## Exemptions
 
-UDS Packages **may** make use of the [UDS `Exemption` custom resource](https://github.com/defenseunicorns/uds-core/blob/main/src/pepr/operator/README.md) for extempting any Pepr policies, but in doing so they:
+UDS Packages **may** make use of the [UDS `Exemption` custom resource](https://github.com/defenseunicorns/uds-core/blob/main/src/pepr/operator/README.md#example-uds-exemption-cr) for extempting any Pepr policies, but in doing so they:
 
 - **Must** minimize the scope and number of the exemptions to only what is absolutely required by the application
 - **Must** have documented rationale for any exemptions present
