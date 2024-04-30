@@ -29,7 +29,7 @@ Below are the minimal services that a UDS package **must** integrate with, using
 - **Should** consider security options during implementation to provide the most secure default possible.
 - **Should** name the client `<App> Login` (i.e. `Mattermost Login`) to provide login UX consistency.
 - **Should** clearly mark the client id with the group and app name `uds-<group>-<application>` (i.e. `uds-swf-mattermost`) to provide consistency in the Keycloak UI.
-- **Should** end any generated secrets with `-sso` to easily locate them when querying the cluster.
+- **May** end any generated secrets with `-sso` to easily locate them when querying the cluster.
 - **May** template Keycloak fields to provide flexibility for delivery customers to configure.
 
 ## Exemptions
