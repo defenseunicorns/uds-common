@@ -1,11 +1,14 @@
 # UDS Package Practices
 
-This document describes the practices that a UDS package **must**, **should**, and **may** follow to be considered officially supported as a UDS package and to be able to display the "Made for UDS" badge on its GitHub repository README.md file:
+This document describes the practices that a UDS package **must**, **should** and **may** follow to be considered officially supported as a UDS package and to be able to display the "Made for UDS" badge on its GitHub repository README.md file :
 
 [<img alt="Made for UDS" src="./made-for-uds.svg" height="20px"/>](https://github.com/defenseunicorns/uds-core)
 
 > [!NOTE]
 > This badge should link to the `uds-core` repo and should match the height of any other badges (i.e. `20px`).
+
+> [!TIP]
+> See [RFC-2119](https://datatracker.ietf.org/doc/html/rfc2119) for definitions of **must**, **should** and **may**
 
 ## Integrations
 
