@@ -8,7 +8,7 @@ This document describes the practices that a UDS package **must**, **should** an
 > This badge should link to the `uds-core` repo and should match the height of any other badges (i.e. `20px`).
 
 > [!TIP]
-> See [RFC-2119](https://datatracker.ietf.org/doc/html/rfc2119) for definitions of **must**, **should** and **may**
+> This document follows [RFC-2119](https://datatracker.ietf.org/doc/html/rfc2119) for definitions of requirement levels (e.g. **must**, **should** and **may**)
 
 ## Integrations
 
