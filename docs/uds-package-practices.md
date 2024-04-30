@@ -12,7 +12,7 @@ This document describes the practices that a UDS package **must**, **should** an
 
 ## Integrations
 
-Below are the minimal services that a UDS package **must** integrate with, using the [UDS `Package` custom resource](https://github.com/defenseunicorns/uds-core/blob/main/src/pepr/operator/README.md#example-uds-package-cr):
+Below are the minimal services that a UDS package **must** integrate with, using the [UDS `Package` custom resource](https://github.com/defenseunicorns/uds-core/blob/main/src/pepr/operator/README.md#example-uds-package-cr).  These integrations **must** be automated without requiring click-ops from the person deploying the package.
 
 ### Istio
 
