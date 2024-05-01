@@ -19,7 +19,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4.1.4
         with:
           fetch-depth: 0
 
@@ -29,7 +29,7 @@ jobs:
       - name: Install commitlint
         run: |
           npm install --save-dev @commitlint/config-conventional@19.2.2
-          npm install --save-dev @commitlint/cli@19.2.2
+          npm install --save-dev @commitlint/cli@19.3.0
 
       - name: Lint PR title
         env:
