@@ -51,6 +51,9 @@ tasks:
               "firstName": "Doug",
               "lastName": "Unicorn",
               "email": "doug@uds.dev",
+              "attributes": {
+                "mattermostid": "1"
+              },
               "emailVerified": true,
               "enabled": true,
               "requiredActions": [],
