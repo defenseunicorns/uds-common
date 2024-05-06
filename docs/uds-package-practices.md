@@ -59,7 +59,7 @@ Packages also follow structural guidelines to ensure consistency and flexibility
 
 A UDS Package will also have testing and quality checks to ensure that updates / changes to them result in minimal churn.  Packages:
 
-- **Must** implement Journey Testing to cover the basic user flows and features of the application, especially where an application interacts with an external service / interface.
+- **Must** implement Journey Testing to cover the basic user flows and features of the application, especially where an application interacts with an external service / interface.  This can by something like Playwright / [Cypress](https://github.com/defenseunicorns/uds-identity-config/tree/main/src/test/cypress) tests for services with a Web UI or something like [Jest](https://github.com/defenseunicorns/uds-package-gitlab-runner/tree/main/test) tests for headless services.
 
 - **Must** implement Upgrade Testing to ensure that the current development package works when deployed over the previously released one.
 
