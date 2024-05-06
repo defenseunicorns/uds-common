@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.4.2](https://github.com/defenseunicorns/uds-common/compare/v0.4.1...v0.4.2) (2024-05-03)
+
+
+### Miscellaneous
+
+* give doug a mattermostid attribute and update uds version ([#120](https://github.com/defenseunicorns/uds-common/issues/120)) ([4a85172](https://github.com/defenseunicorns/uds-common/commit/4a851720a8ac7e62826efda9e92200ba3a5b6709))
+
+## [0.4.1](https://github.com/defenseunicorns/uds-common/compare/v0.4.0...v0.4.1) (2024-05-01)
+
+
+### Miscellaneous
+
+* **deps:** update uds common support dependencies ([#116](https://github.com/defenseunicorns/uds-common/issues/116)) ([8aed1e0](https://github.com/defenseunicorns/uds-common/commit/8aed1e0ae8b4d65f7418664e8f2c73a16bf42801))
+
 ## [0.4.0](https://github.com/defenseunicorns/uds-common/compare/v0.3.11...v0.4.0) (2024-04-22)
 
 
