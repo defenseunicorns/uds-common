@@ -29,7 +29,7 @@ Below are the minimal services that a UDS package **must** integrate with, using
 ### Keycloak
 
 - **Must** use and create a Keycloak client through the `sso` key if the application provides a user login.
-- **Should** consider security options during implementation to provide the most secure default possible.
+- **Should** consider security options during implementation to provide the most secure default possible (i.e. SAML w/SCIM vs OIDC).
 - **Should** name the client `<App> Login` (i.e. `Mattermost Login`) to provide login UX consistency.
 - **Should** clearly mark the client id with the group and app name `uds-<group>-<application>` (i.e. `uds-swf-mattermost`) to provide consistency in the Keycloak UI.
 - **May** end any generated secrets with `-sso` to easily locate them when querying the cluster.
@@ -48,6 +48,9 @@ Packages also follow structural guidelines to ensure consistency and flexibility
 
 - **Should** expose all configuration (`uds.dev` CRs, additional `Secrets`/`ConfigMaps`, etc) through a Helm chart (ideally in a `chart` or `charts` directory).
   > This allows UDS bundles to override configuration with Helm overrides and enables downstream teams to fully control their bundle configurations.
+
+- **Should** limit the use of Zarf variable templates and prioritize configuring packages via Helm value overrides
+  > This ensures that the package is configured the same way that the bundle would be and avoids any side effect issues of Zarf's `###` templating
 
 - **Should** implement or allow for multiple flavors (ideally with common definitions in a `common` directory)
   > This allows for different images or configurations to be delivered consistently to customers.
