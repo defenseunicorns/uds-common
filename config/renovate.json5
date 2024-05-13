@@ -96,7 +96,7 @@
                 // Test: https://regex101.com/r/Bd8IBp/1
                 "- ['\"]?(?<depName>[^\"'\\s]+):(?<currentValue>[^\"'\\s]+)['\"]?( # renovate:( versioning=(?<versioning>.*?))?( extractVersion=(?<extractVersion>.*?))?)?(\\s|$)"
             ],
-            "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver-coerced{{/if}}",
+            "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}docker{{/if}}",
             "extractVersionTemplate": "{{#if extractVersion}}{{{extractVersion}}}{{else}}^(?<version>.*)${{/if}}",
             "datasourceTemplate": "docker"
         },
