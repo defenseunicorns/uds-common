@@ -12,7 +12,7 @@ This document describes the practices that a UDS package **must**, **should** an
 
 ## Integrations
 
-Below are the minimal services that a UDS package **must** integrate with, using the [UDS `Package` custom resource](https://github.com/defenseunicorns/uds-core/blob/main/src/pepr/operator/README.md#example-uds-package-cr).  These integrations **must** be declarative and automated without requiring click-ops from the person deploying the package.
+Below are the minimal services that a UDS package **must** integrate with, using the [UDS `Package` custom resource](https://github.com/defenseunicorns/uds-core/blob/main/src/pepr/operator/README.md#example-uds-package-cr).  These integrations **must** be declarative and automated without requiring click-ops from the person deploying the package.  Packages also **should** consider integrations with any additional UDS services that are relevant to that application.
 
 ### Istio
 
@@ -34,6 +34,13 @@ Below are the minimal services that a UDS package **must** integrate with, using
 - **Should** clearly mark the client id with the group and app name `uds-<group>-<application>` (i.e. `uds-swf-mattermost`) to provide consistency in the Keycloak UI.
 - **May** end any generated secrets with `-sso` to easily locate them when querying the cluster.
 - **May** template Keycloak fields to provide flexibility for delivery customers to configure.
+
+### Prometheus
+
+- **Must** implement monitors for each application metrics endpoint using the `monitor` key as required.
+
+> [!NOTE]
+> Additional services will be added and integration requirements will change as `uds-core` continues to evolve.  UDS Package implementers **should** keep up with `uds-core` releases and changes to this document.  The "Made for UDS" badge **may** be requested to be removed if a package is not updated in a timely fashion.
 
 ## Exemptions
 
@@ -80,3 +87,5 @@ To help maintain a UDS Package, it:
 And in addition to the above, packages generally:
 
 - **Must** be capable of operating within an internet-disconnected (air-gapped) environment
+
+- **Must** be maintained by a resourced team that is explicitly defined as maintaining the project (i.e. in `CODEOWNERS`)
