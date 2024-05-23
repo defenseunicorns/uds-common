@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.4.3](https://github.com/defenseunicorns/uds-common/compare/v0.4.2...v0.4.3) (2024-05-23)
+
+
+### Bug Fixes
+
+* update renovate config to use docker versioning for zarf images ([#128](https://github.com/defenseunicorns/uds-common/issues/128)) ([c18e125](https://github.com/defenseunicorns/uds-common/commit/c18e12507384328bb53b81c096bc9827f96ba114))
+
+
+### Miscellaneous
+
+* add an airgap note to UDS Package Practices (clarity is kindness) ([#126](https://github.com/defenseunicorns/uds-common/issues/126)) ([b70e1fe](https://github.com/defenseunicorns/uds-common/commit/b70e1fe165a521a33789298a7e69aa6a59d54968))
+* adjust UDS package practice formatting ([#123](https://github.com/defenseunicorns/uds-common/issues/123)) ([f351d04](https://github.com/defenseunicorns/uds-common/commit/f351d04732a6e6e6fc2c62eff13f625a613effcc))
+* **deps:** update uds common package dependencies to v6.6.3 ([#132](https://github.com/defenseunicorns/uds-common/issues/132)) ([0ebdd1f](https://github.com/defenseunicorns/uds-common/commit/0ebdd1f5f2aa32720c88347027215305573bc716))
+* **deps:** update uds common support dependencies ([#125](https://github.com/defenseunicorns/uds-common/issues/125)) ([e014724](https://github.com/defenseunicorns/uds-common/commit/e01472454d2b3ef9665546fbb24c9980f090d238))
+* **deps:** update uds common support dependencies to v0.22.0 ([#133](https://github.com/defenseunicorns/uds-common/issues/133)) ([2cf903d](https://github.com/defenseunicorns/uds-common/commit/2cf903d41d0dbfda1baaa9629d1fa3c5d1a88110))
+* initial package practices ([#117](https://github.com/defenseunicorns/uds-common/issues/117)) ([d292b21](https://github.com/defenseunicorns/uds-common/commit/d292b216da73493743cd0a67b9763549c87c1819))
+* update package practices with a bit more feedback ([#129](https://github.com/defenseunicorns/uds-common/issues/129)) ([af34fc9](https://github.com/defenseunicorns/uds-common/commit/af34fc90104c57d11a08678186b8b2aeaaac135d))
+
 ## [0.4.2](https://github.com/defenseunicorns/uds-common/compare/v0.4.1...v0.4.2) (2024-05-03)
 
 
