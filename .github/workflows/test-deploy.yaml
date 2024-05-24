@@ -61,8 +61,12 @@ jobs:
           flavor: ${{ matrix.flavor }}
           type: ${{ matrix.type }}
 
+      - name: Debug Output
+        if: ${{ always() }}
+        uses: ./.github/actions/debug-output
+
       - name: Save logs
-        if: always()
+        if: ${{ always() }}
         uses: ./.github/actions/save-logs
         with:
           suffix: ${{ matrix.type }}-${{ matrix.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}

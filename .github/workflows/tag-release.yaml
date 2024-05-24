@@ -46,7 +46,7 @@ jobs:
         run: uds run publish-podinfo --set FLAVOR=${{ matrix.flavor }} --no-progress
 
       - name: Save logs
-        if: always()
+        if: ${{ always() }}
         uses: ./.github/actions/save-logs
         with:
           suffix: ${{ matrix.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}
