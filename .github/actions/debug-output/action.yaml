@@ -1,5 +1,5 @@
 name: debug-output
-description: "Print out basic debug info for a k8s cluster"
+description: Print out basic debug info for a k8s cluster
 
 runs:
   using: composite
