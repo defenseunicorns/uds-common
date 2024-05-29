@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.4](https://github.com/defenseunicorns/uds-common/compare/v0.4.3...v0.4.4) (2024-05-24)
+
+
+### Miscellaneous
+
+* pull debug / log actions from uds-core ([#135](https://github.com/defenseunicorns/uds-common/issues/135)) ([b3c9928](https://github.com/defenseunicorns/uds-common/commit/b3c99286e4200c98a61d86484030f2be5ebb5c70))
+
 ## [0.4.3](https://github.com/defenseunicorns/uds-common/compare/v0.4.2...v0.4.3) (2024-05-23)
 
 
