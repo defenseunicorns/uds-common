@@ -123,8 +123,8 @@
                 "(?m)charts:(.|\\n)*?(^\\s{4}[\\w:]+|\\n$|^\\s{2}-)",
                 // Match a chart entry. Test: https://regex101.com/r/ibpxYd/1
                 "(?m)name:(.|\\n)+?(^\\s{4}[\\w\\-:]+|\\n$|^\\s{2}-|^\\s{6}-)",
-                // Match the parts of a chart entry. Test: https://regex101.com/r/GgGbkM/1
-                "(?m)name: [\"']?(?<depName>.+?)[\"']?$(.|\\n)*?url: [\"']?(?<registryUrl>(https|http|file|git):\\/\\/.+?)[\"']?$(.|\\n)*?version: [\"']?(?<currentValue>.+?)[\"']?$"
+                // Match the parts of a chart entry. Test: https://regex101.com/r/ehfBW6/1
+                "(?m)name: [\"']?(?<depName>.+?)[\"']?$(.|\\n)*?url: [\"']?(?<registryUrl>(https|http|file):\\/\\/.+?)[\"']?$(.|\\n)*?version: [\"']?(?<currentValue>.+?)[\"']?$"
             ],
             "datasourceTemplate": "helm"
         },
