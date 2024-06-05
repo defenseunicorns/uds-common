@@ -52,11 +52,28 @@ This task file includes two tasks:
 
 ### publish.yaml
 
-This task file includes a single task `package` which publishes zarf package(s) located at the base of the repository. Inputs for this task:
+This task file includes two tasks:
 
-- `FLAVOR`: the flavor of the zarf package to publish, defaults to `upstream`.
-- `TARGET_REPO`: the target OCI repository to publish the zarf package to (without the `oci://` scheme) - this defaults to `ghcr.io/defenseunicorns/packages/uds`.
-- `VERSION`: the version of the zarf package to publish with no default. This should typically be version controlled by something like release-please.
+- `package`: which publishes a zarf package. Inputs for this task:
+
+  - `PATH`: the path to the directory in which to look for the package. Defaults to `.`
+  - `FLAVOR`: the flavor of the zarf package to publish, defaults to `upstream`.
+  - `ARCHITECTURE`: the architecture of the zarf package to publish, defaults to `${UDS_ARCH}`
+  - `TARGET_REPO`: the target OCI repository to publish the zarf package to (without the `oci://` scheme) - this defaults to `ghcr.io/defenseunicorns/packages/uds`.
+  - `VERSION`: the version of the zarf package to publish with no default. This should typically be version controlled by something like release-please.
+
+  The package will be matched based on the pattern `${PATH}/zarf-package-*-${ARCHITECTURE}-${VERSION}.tar.zst` and published to `oci://${TARGET_REPO}`
+
+- `test-bundle`: which publishes a UDS bundle. Inputs for this task:
+
+  - `PATH`: the path to the directory in which to look for the package. Defaults to `bundle`
+  - `VERSION`: the version of the bundle to publish with no default. This should typically be version controlled by something like release-please.
+  - `ARCHITECTURE`: the architecture of the bundle to publish, defaults to `${UDS_ARCH}`
+  - `TARGET_REPO`: the target OCI repository to publish the bundle (without the `oci://` scheme) - this defaults to `ghcr.io/defenseunicorns/packages/uds`.
+
+  The bundle will be matched based on the pattern `${PATH}/uds-bundle-*-${ARCHITECTURE}-${VERSION}.tar.zst` and published to `oci://${TARGET_REPO}`
+
+
 
 Note that this task will publish both `arm64` and `amd64` architectures, with the exception of the `registry1` flavor which will skip the `arm64` publish.
 
