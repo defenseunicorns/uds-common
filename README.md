@@ -59,7 +59,7 @@ This task file includes two tasks:
   - `PATH`: the path to the directory in which to look for the package. Defaults to `.`
   - `FLAVOR`: the flavor of the zarf package to publish, defaults to `upstream`.
   - `ARCHITECTURE`: the architecture of the zarf package to publish, defaults to `${UDS_ARCH}`
-  - `TARGET_REPO`: the target OCI repository to publish the zarf package to (without the `oci://` scheme) - this defaults to `ghcr.io/defenseunicorns/packages/uds`.
+  - `TARGET_REPO`: the target OCI repository to publish the zarf package to (without the `oci://` scheme) - this defaults to `ghcr.io/defenseunicorns/packages/uds/bundles`.
   - `VERSION`: the version of the zarf package to publish with no default. This should typically be version controlled by something like release-please.
 
   The package will be matched based on the pattern `${PATH}/zarf-package-*-${ARCHITECTURE}-${VERSION}.tar.zst` and published to `oci://${TARGET_REPO}`
