@@ -4,7 +4,7 @@ variables:
 
 tasks:
   - name: package
-    description: Publish packages for the amd64 and arm64 architectures
+    description: Publish package for the supplied architecture
     inputs:
       path:
         description: Path to the zarf package being published
@@ -12,19 +12,19 @@ tasks:
       version:
         description: The version of the package to publish
         required: true
+      architecture:
+        description: The architecture of the package to publish
+        default: ${UDS_ARCH}
       target_repo:
         description: The repository to publish into
         default: ghcr.io/defenseunicorns/packages/uds
     actions:
-      - description: Publish packages for the amd64 and arm64 architectures
+      - description: Publish package for the supplied architecture
         cmd: |
-          ./uds zarf package publish ${{ .inputs.path }}/zarf-package-*-amd64-${{ .inputs.version }}.tar.zst oci://${{ .inputs.target_repo }}
-          if [ ${FLAVOR} != "registry1" ]; then
-            ./uds zarf package publish ${{ .inputs.path }}/zarf-package-*-arm64-${{ .inputs.version }}.tar.zst oci://${{ .inputs.target_repo }}
-          fi
+          ./uds zarf package publish ${{ .inputs.path }}/zarf-package-*-${{ .inputs.architecture }}-${{ .inputs.version }}.tar.zst oci://${{ .inputs.target_repo }}
 
   - name: test-bundle
-    description: Publish bundles for the amd64 and arm64 architectures
+    description: Publish bundle for the supplied architecture
     inputs:
       path:
         description: Path to the UDS bundle being published
@@ -32,13 +32,13 @@ tasks:
       version:
         description: The version of the bundle to publish
         required: true
+      architecture:
+        description: The architecture of the bundle to publish
+        default: ${UDS_ARCH}
       target_repo:
         description: The repository to publish into
         default: ghcr.io/defenseunicorns/packages/uds/bundles
     actions:
-      - description: Publish bundles for the amd64 and arm64 architectures
+      - description: Publish bundle for the supplied architecture
         cmd: |
-          ./uds publish ${{ .inputs.path }}/uds-bundle-*-amd64-${{ .inputs.version }}.tar.zst oci://${{ .inputs.target_repo }} --no-progress
-          if [ ${FLAVOR} != "registry1" ]; then
-            ./uds publish ${{ .inputs.path }}/uds-bundle-*-arm64-${{ .inputs.version }}.tar.zst oci://${{ .inputs.target_repo }} --no-progress
-          fi
+          ./uds publish ${{ .inputs.path }}/uds-bundle-*-${{ .inputs.architecture }}-${{ .inputs.version }}.tar.zst oci://${{ .inputs.target_repo }} --no-progress
