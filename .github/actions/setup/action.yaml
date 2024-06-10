@@ -21,7 +21,7 @@ runs:
       # renovate: datasource=github-tags depName=k3d-io/k3d versioning=semver
       run: curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | TAG=v5.6.3 bash
 
-      # Homebrew is the preferred installation method for UDS 
+      # Homebrew is the preferred installation method for UDS
       # but homebrew currently doesn't support ARM64 on linux
       # https://docs.brew.sh/Homebrew-on-Linux#arm-unsupported
     - name: Set up Homebrew
