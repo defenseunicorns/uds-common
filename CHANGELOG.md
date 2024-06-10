@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.4.6](https://github.com/defenseunicorns/uds-common/compare/v0.4.5...v0.4.6) (2024-06-10)
+
+
+### Bug Fixes
+
+* renovate incorrectly matching oci helm charts for helm datasources ([#141](https://github.com/defenseunicorns/uds-common/issues/141)) ([2761f2a](https://github.com/defenseunicorns/uds-common/commit/2761f2a5f69bae3967bb8a9ff6d392007f90a21b))
+
+
+### Miscellaneous
+
+* allow debug logs to continue through failure ([#146](https://github.com/defenseunicorns/uds-common/issues/146)) ([bec4fc3](https://github.com/defenseunicorns/uds-common/commit/bec4fc330d720673f645bda7e56006218ec96aad))
+* **deps:** update uds common support dependencies to v0.22.1 ([#144](https://github.com/defenseunicorns/uds-common/issues/144)) ([d618bd2](https://github.com/defenseunicorns/uds-common/commit/d618bd2be3f75d62346594cb8d6d8c339b074f93))
+
 ## [0.4.5](https://github.com/defenseunicorns/uds-common/compare/v0.4.4...v0.4.5) (2024-05-30)
 
 
