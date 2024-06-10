@@ -8,7 +8,8 @@ inputs:
     description: Registry1 Password
   ghToken:
     description: GitHub Token
-  udsVersion:
+  udsCliVersion:
+    description: The uds-cli version to install
     # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
     default: 0.11.0
 
@@ -20,9 +21,22 @@ runs:
       # renovate: datasource=github-tags depName=k3d-io/k3d versioning=semver
       run: curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | TAG=v5.6.3 bash
 
+      # Homebrew is the preferred installation method for UDS 
+      # but homebrew currently doesn't support ARM64 on linux
+      # https://docs.brew.sh/Homebrew-on-Linux#arm-unsupported
+    - name: Set up Homebrew
+      if: ${{ runner.arch != 'ARM64' }}
+      uses: Homebrew/actions/setup-homebrew@master
+
     - name: Install UDS CLI
+      if: ${{ runner.arch != 'ARM64' }}
       shell: bash
-      run: curl -o /usr/local/bin/uds -L https://github.com/defenseunicorns/uds-cli/releases/download/v${{ inputs.udsVersion }}/uds-cli_v${{ inputs.udsVersion }}_Linux_${{ runner.arch }} && chmod +x /usr/local/bin/uds
+      run: brew install defenseunicorns/tap/uds@${{ inputs.udsCliVersion }}
+
+    - name: Install UDS CLI
+      if: ${{ runner.arch == 'ARM64' }}
+      shell: bash
+      run: curl -o /usr/local/bin/uds -L https://github.com/defenseunicorns/uds-cli/releases/download/v${{ inputs.udsCliVersion }}/uds-cli_v${{ inputs.udsCliVersion }}_Linux_arm64 && chmod +x /usr/local/bin/uds
 
     - name: Iron Bank Login
       if: ${{ inputs.registry1Username != '' }}
