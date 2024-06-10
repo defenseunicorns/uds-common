@@ -8,6 +8,9 @@ inputs:
     description: Registry1 Password
   ghToken:
     description: GitHub Token
+  udsVersion:
+    # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
+    default: 0.11.0
 
 runs:
   using: composite
@@ -17,21 +20,9 @@ runs:
       # renovate: datasource=github-tags depName=k3d-io/k3d versioning=semver
       run: curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | TAG=v5.6.3 bash
 
-    - name: Set up Homebrew
-      if: ${{ runner.arch != 'ARM64' }}
-      uses: Homebrew/actions/setup-homebrew@master
-
     - name: Install UDS CLI
-      if: ${{ runner.arch != 'ARM64' }}
       shell: bash
-      # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
-      run: brew install defenseunicorns/tap/uds@0.11.0
-
-    - name: Install UDS CLI
-      if: ${{ runner.arch == 'ARM64' }}
-      shell: bash
-      # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
-      run: curl -o /usr/local/bin/uds -L https://github.com/defenseunicorns/uds-cli/releases/download/v0.11.0/uds-cli_v0.11.0_Linux_arm64 && chmod +x /usr/local/bin/uds
+      run: curl -o /usr/local/bin/uds -L https://github.com/defenseunicorns/uds-cli/releases/download/v${{ inputs.udsVersion }}/uds-cli_v${{ inputs.udsVersion }}_Linux_${{ runner.arch }} && chmod +x /usr/local/bin/uds
 
     - name: Iron Bank Login
       if: ${{ inputs.registry1Username != '' }}
