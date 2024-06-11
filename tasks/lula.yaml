@@ -2,32 +2,31 @@ variables:
   - name: OSCAL_FILE
 
 tasks:
-  - name: default
+  - name: lula-lint
     description: Validating OSCAL against Schema
     actions:
       - description: Runs Lula Lint command
-        cmd: |
-         OSCAL_FILE=$(git diff --name-only origin/main HEAD | grep '.*oscal.*\.yaml')
-
-         IFS=' ' read -r -a targets <<< "${OSCAL_FILE}"
+      - cmd: |
+          OSCAL_FILES_LIST=$(echo "$OSCAL_FILE")
 
           lint_errors=0
 
           # Loop through each file and lint
-          for target in "${targets[@]}"; do
-            # Check if the file exists
-            if [ ! -f "$target" ]; then
-                echo "File $target does not exist"
-                lint_errors=$((lint_errors + 1))
-                continue
-            fi
+          for target in $OSCAL_FILES_LIST; do
+              # Check if the file exists
+              if [ ! -f "$target" ]; then
+                  echo "File $target does not exist"
+                  lint_errors=$(($lint_errors + 1))
+                  continue
+              fi
 
-          # Lint the file with Lula
-            echo "Linting $target"
-            lula tools lint -f "$target" || {
-                echo "Linting failed for $target"
-                lint_errors=$((lint_errors + 1))
-            }
+              # Lint the file with Lula
+              echo "Linting $target"
+              lula tools lint -f "$target"
+              if [ $? -ne 0 ]; then
+                  echo "Linting failed for $target"
+                  lint_errors=$(($lint_errors + 1))
+              fi
           done
 
           # Check if there were any lint errors
@@ -38,8 +37,42 @@ tasks:
               echo "All files linted successfully."
           fi
 
-  - name: test-lint
+
+  - name: test-lula-lint
     description: Testing Lula Lint validates correctly against OSCAL Schema
     actions:
-      - description: Runs Lula Lint command against known good OSCAL file
-        cmd: lula tools lint -f ./tasks/tests/lula-test/oscal.yaml
+      - description: Runs a test on Lula Lint command against known good OSCAL file
+      - cmd: echo ./tasks/tests/lula-test/oscal.yaml
+        mute: true
+        setVariables:
+          - name: OSCAL_FILE
+      - cmd: |
+          OSCAL_FILES_LIST=$(echo "$OSCAL_FILE")
+
+          lint_errors=0
+
+          # Loop through each file and lint
+          for target in $OSCAL_FILES_LIST; do
+              # Check if the file exists
+              if [ ! -f "$target" ]; then
+                  echo "File $target does not exist"
+                  lint_errors=$(($lint_errors + 1))
+                  continue
+              fi
+
+              # Lint the file with Lula
+              echo "Linting $target"
+              lula tools lint -f "$target"
+              if [ $? -ne 0 ]; then
+                  echo "Linting failed for $target"
+                  lint_errors=$(($lint_errors + 1))
+              fi
+          done
+
+          # Check if there were any lint errors
+          if [ "$lint_errors" -ne 0 ]; then
+              echo "Linting failed for one or more files."
+              exit 1
+          else
+              echo "All files linted successfully."
+          fi

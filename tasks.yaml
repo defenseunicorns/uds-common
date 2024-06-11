@@ -5,6 +5,7 @@ includes:
   - lint: ./tasks/lint.yaml
   - publish: ./tasks/publish.yaml
   - pull: ./tasks/pull.yaml
+  - lula: ./tasks/lula.yaml
 
 tasks:
   - name: default
@@ -94,3 +95,8 @@ tasks:
       - task: create-podinfo-test-bundle
       - task: deploy:test-bundle
       - task: test
+
+  - name: test-lula
+    description: Tests Lula functionality to confirm it is working properly
+    actions:
+      - task: lula:test-lula-lint
