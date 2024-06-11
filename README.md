@@ -74,7 +74,6 @@ This task file includes two tasks:
 
 
 
-Note that this task will publish both `arm64` and `amd64` architectures, with the exception of the `registry1` flavor which will skip the `arm64` publish.
 
 ### pull.yaml
 
