@@ -22,7 +22,8 @@ runs:
 
     - name: Set UDS CLI Arch
       id: setUdsCliArch
-      run: INPUT=${{ runner.arch == 'ARM64' && 'arm64' || 'amd64' }} echo "::set-output name=arch::${INPUT,,}"
+      shell: bash
+      run: INPUT=${{ runner.arch == 'X64' && 'amd64' || runner.arch }} echo "::set-output name=arch::${INPUT,,}"
 
     - name: Install UDS CLI
       shell: bash
