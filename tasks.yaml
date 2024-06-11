@@ -52,7 +52,7 @@ tasks:
         task: publish:package
         with:
           # x-release-please-start-version
-          version: 0.4.6
+          version: 0.5.0
           # x-release-please-end
 
   - name: test
