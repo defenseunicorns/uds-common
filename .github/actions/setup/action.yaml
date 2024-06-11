@@ -27,7 +27,7 @@ runs:
 
     - name: Install UDS CLI
       shell: bash
-      run: curl -o /usr/local/bin/uds -L https://github.com/defenseunicorns/uds-cli/releases/download/v${{ inputs.udsCliVersion }}/uds-cli_v${{ inputs.udsCliVersion }}_Linux_${{steps.setUdsCliArch.outputs.udsCliArch}} && chmod +x /usr/local/bin/uds
+      run: curl -o /usr/local/bin/uds -L https://github.com/defenseunicorns/uds-cli/releases/download/v${{ inputs.udsCliVersion }}/uds-cli_v${{ inputs.udsCliVersion }}_Linux_${{steps.setUdsCliArch.outputs.arch}} && chmod +x /usr/local/bin/uds
 
     - name: Iron Bank Login
       if: ${{ inputs.registry1Username != '' }}
