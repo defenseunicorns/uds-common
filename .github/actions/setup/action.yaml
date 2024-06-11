@@ -25,6 +25,11 @@ runs:
       # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
       run: brew install defenseunicorns/tap/uds@0.11.0
 
+    - name: Install Lula
+      uses: defenseunicorns/lula/setup@095636b7880051e11b05f10a582fdd911526161c
+      with:
+        version: ${{ inputs.lulaVersion }}
+
     - name: Iron Bank Login
       if: ${{ inputs.registry1Username != '' }}
       env:

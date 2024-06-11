@@ -1,0 +1,45 @@
+# add the descriptions inline
+component-definition:
+  uuid: e6a291a4-2bc8-43a0-b4b2-fd67caae1f8f
+  metadata:
+    title: OSCAL Demo Tool
+    last-modified: "2022-09-13T12:00:00Z"
+    version: "20220913"
+    oscal-version: 1.1.2
+    parties:
+      # Should be consistent across all of the packages, but where is ground truth?
+      - uuid: c18f4a9f-a402-415b-8d13-b51739d689ff
+        type: organization
+        name: Defense Unicorns
+        links:
+          - href: https://github.com/defenseunicorns/lula
+            rel: website
+  components:
+    - uuid: a9d5204c-7e5b-4c43-bd49-34df759b9f04
+      type: software
+      title: lula
+      description: |
+        Defense Unicorns lula
+      purpose: Validate compliance controls
+      responsible-roles:
+        - role-id: provider
+          party-uuids:
+            - c18f4a9f-a402-415b-8d13-b51739d689ff # matches parties entry for Defense Unicorns
+      control-implementations:
+        - uuid: a584fedc-8cea-4b0c-9f07-85c2c4ae751a
+          source: https://github.com/defenseunicorns/lula
+          description: Validate generic security requirements
+          implemented-requirements:
+            - uuid: 42c2ffdc-5f05-44df-a67f-eec8660aeffd
+              control-id: ID-1
+              description: >-
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
+                dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+  back-matter:
+    resources:
+      - uuid: 10008ad4-9d08-445b-a2fb-e20e4394ba42
+        title: Defense Unicorns Lula
+        rlinks:
+          - href: https://github.com/defenseunicorns/lula
