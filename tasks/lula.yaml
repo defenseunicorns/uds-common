@@ -43,4 +43,3 @@ tasks:
     actions:
       - description: Runs Lula Lint command against known good OSCAL file
         cmd: lula tools lint -f ./tasks/tests/lula-test/oscal.yaml
-
