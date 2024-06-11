@@ -27,8 +27,6 @@ runs:
 
     - name: Install Lula
       uses: defenseunicorns/lula/setup@095636b7880051e11b05f10a582fdd911526161c
-      with:
-        version: ${{ inputs.lulaVersion }}
 
     - name: Iron Bank Login
       if: ${{ inputs.registry1Username != '' }}
