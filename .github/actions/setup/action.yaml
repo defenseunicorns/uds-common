@@ -20,9 +20,13 @@ runs:
       shell: bash
       run: curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | TAG=v5.6.3 bash
 
+    - name: Set UDS CLI Arch
+      id: setUdsCliArch
+      run: INPUT=${{ runner.arch == 'ARM64' && 'arm64' || 'amd64' }} echo "::set-output name=arch::${INPUT,,}"
+
     - name: Install UDS CLI
       shell: bash
-      run: curl -o /usr/local/bin/uds -L https://github.com/defenseunicorns/uds-cli/releases/download/v${{ inputs.udsCliVersion }}/uds-cli_v${{ inputs.udsCliVersion }}_Linux_${{ matrix.architecture == 'arm64' && 'arm64' || 'amd64' }} && chmod +x /usr/local/bin/uds
+      run: curl -o /usr/local/bin/uds -L https://github.com/defenseunicorns/uds-cli/releases/download/v${{ inputs.udsCliVersion }}/uds-cli_v${{ inputs.udsCliVersion }}_Linux_${{steps.setUdsCliArch.outputs.udsCliArch}} && chmod +x /usr/local/bin/uds
 
     - name: Iron Bank Login
       if: ${{ inputs.registry1Username != '' }}
