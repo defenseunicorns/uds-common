@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.5.0](https://github.com/defenseunicorns/uds-common/compare/v0.4.6...v0.5.0) (2024-06-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* update publish to take architecture as an input ([#143](https://github.com/defenseunicorns/uds-common/issues/143))
+
+### Miscellaneous
+
+* update publish to take architecture as an input ([#143](https://github.com/defenseunicorns/uds-common/issues/143)) ([62620f5](https://github.com/defenseunicorns/uds-common/commit/62620f59c14c773e5f6f07aaafc70ae34cff36bd))
+
 ## [0.4.6](https://github.com/defenseunicorns/uds-common/compare/v0.4.5...v0.4.6) (2024-06-10)
 
 
