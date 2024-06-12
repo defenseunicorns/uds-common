@@ -11,7 +11,7 @@ inputs:
   udsCliVersion:
     description: The uds-cli version to install
     # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
-    default: 0.10.4
+    default: 0.11.2
 
 runs:
   using: composite
