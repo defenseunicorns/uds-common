@@ -12,31 +12,25 @@
   "prHourlyLimit": 0,
   "schedule": ["after 7am and before 9am every weekday"],
   "separateMajorMinor": false,
-  "regexManagers":[
+  "regexManagers": [
     {
       "depNameTemplate": "defenseunicorns/uds-core",
       "fileMatch": ["README\\.md"],
-      "matchStrings": [
-        "- UDS Core: (?<currentValue>.*)"
-      ],
+      "matchStrings": ["- UDS Core: (?<currentValue>.*)"],
       "datasourceTemplate": "github-tags",
       "extractVersionTemplate": "^v(?<version>.*)$"
     },
     {
       "depNameTemplate": "defenseunicorns/uds-cli",
       "fileMatch": ["README\\.md"],
-      "matchStrings": [
-        "- UDS CLI: (?<currentValue>.*)"
-      ],
+      "matchStrings": ["- UDS CLI: (?<currentValue>.*)"],
       "datasourceTemplate": "github-tags",
       "extractVersionTemplate": "^v(?<version>.*)$"
     },
     {
       "depNameTemplate": "k3d-io/k3d",
       "fileMatch": ["README\\.md"],
-      "matchStrings": [
-        "- K3D: (?<currentValue>.*)"
-      ],
+      "matchStrings": ["- K3D: (?<currentValue>.*)"],
       "datasourceTemplate": "github-tags",
       "extractVersionTemplate": "^v(?<version>.*)$"
     },
@@ -47,11 +41,11 @@
       "datasourceTemplate": "github-tags",
       "extractVersionTemplate": "^v(?<version>.*)$"
     },
-        {
-      "fileMatch": [".github/workflows/.*\\.yaml"],
+    {
+      "fileMatch": [".github/actions/setup/action\\.yaml"],
       "matchStrings": [
-        "uses: defenseunicorns/lula/setup@[0-9a-fA-F]{40}",
-        "version: v(?<currentValue>.*)"
+        "uses: defenseunicorns/lula-action/setup@(?<currentValue>[a-f0-9]{40})",
+        "version: v(?<currentValue>\\d+\\.\\d+\\.\\d+)"
       ],
       "depNameTemplate": "defenseunicorns/lula",
       "datasourceTemplate": "github-tags",
