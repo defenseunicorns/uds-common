@@ -21,5 +21,3 @@ tasks:
     actions:
       - description: Lint OSCAL files
         cmd: lula tools lint -f ${OSCALFILES}
-        setVariables:
-          - name: OSCALFILES
