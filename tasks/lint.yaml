@@ -1,7 +1,3 @@
-variables:
-  - name: OSCALFILES
-    default: ./oscal.yaml
-
 tasks:
   - name: deps
     description: Install linting tool dependencies
@@ -18,6 +14,15 @@ tasks:
 
   - name: oscal
     description: Run linting checks on OSCAL
+    inputs:
+      oscalfiles:
+        description: The path to the OSCAL files
+        default: ./oscal.yaml
     actions:
       - description: Lint OSCAL files
-        cmd: lula tools lint -f ${OSCALFILES}
+        cmd: lula tools lint -f $INPUT_OSCALFILES
+
+  - name: use-oscal
+    description: Invoke OSCAL linting
+    actions:
+      - task: oscal

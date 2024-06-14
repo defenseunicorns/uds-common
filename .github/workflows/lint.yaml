@@ -35,4 +35,4 @@ jobs:
       - name: Lint the repository
         run: |
           uds run lint:yaml --no-progress
-          uds run lint:oscal --no-progress
+          uds run lint:use-oscal --no-progress
