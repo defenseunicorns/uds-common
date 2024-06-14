@@ -9,7 +9,7 @@ on:
   workflow_call:
     inputs:
       oscalfiles:
-        default: './oscal.yaml'
+        default: "./oscal.yaml"
         description: "Location of the OSCAL file"
         required: true
         type: string
