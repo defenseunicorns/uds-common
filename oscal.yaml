@@ -46,7 +46,7 @@ component-definition:
                 (d) Have been inactive for [Assignment: organization-defined time period]."
 
               links:
-                - href: '#35d926df-efbb-445a-b26b-2917199ec558'
+                - href: "#35d926df-efbb-445a-b26b-2917199ec558"
                   rel: lula
                   text: Check that podinfo is healthy
 
@@ -96,4 +96,3 @@ component-definition:
             type: opa
         title: podinfo-health-check
         uuid: 35d926df-efbb-445a-b26b-2917199ec558
-

@@ -16,4 +16,4 @@ tasks:
     description: Run linting checks on OSCAL
     actions:
       - description: Lint OSCAL files
-        cmd: lula tools lint -f ${{ .inputs.oscalfiles }}
+        cmd: lula tools lint -f $OSCALFILES
