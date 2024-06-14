@@ -40,16 +40,6 @@
       "matchStrings": ["- Lula: (?<currentValue>.*)"],
       "datasourceTemplate": "github-tags",
       "extractVersionTemplate": "^v(?<version>.*)$"
-    },
-    {
-      "fileMatch": [".github/actions/setup/action\\.yaml"],
-      "matchStrings": [
-        "uses: defenseunicorns/lula-action/setup@(?<currentValue>[a-f0-9]{40})",
-        "version: v(?<currentValue>\\d+\\.\\d+\\.\\d+)"
-      ],
-      "depNameTemplate": "defenseunicorns/lula",
-      "datasourceTemplate": "github-tags",
-      "extractVersionTemplate": "^v(?<version>.*)$"
     }
   ],
   "packageRules": [

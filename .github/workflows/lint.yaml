@@ -33,8 +33,6 @@ jobs:
           uds run lint:deps --no-progress
 
       - name: Lint the repository
-        env:
-          OSCALFILES: ./oscal.yaml
         run: |
           uds run lint:yaml --no-progress
           uds run lint:oscal --no-progress
