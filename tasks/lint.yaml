@@ -11,3 +11,9 @@ tasks:
       # requires yamllint to be installed either from pip or brew
       - description: Lint YAML files
         cmd: yamllint . -c .yamllint --no-warnings
+
+  - name: oscal
+    description: Run linting checks on OSCAL
+    actions:
+      - description: Lint OSCAL files
+        cmd: lula tools lint -f ${{ .inputs.oscalfiles }}

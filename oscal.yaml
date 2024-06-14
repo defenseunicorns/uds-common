@@ -1,0 +1,99 @@
+# add the descriptions inline
+component-definition:
+  uuid: fae03d9e-4cfc-47ca-b0e9-05dae10c557b
+  metadata:
+    title: Podinfo
+    last-modified: "2024-06-14T12:00:00Z"
+    version: "20240614"
+    oscal-version: 1.1.2
+    parties:
+      # Should be consistent across all of the packages, but where is ground truth?
+      - uuid: c18f4a9f-a402-415b-8d13-b51739d689ff
+        type: organization
+        name: Defense Unicorns
+        links:
+          - href: https://github.com/defenseunicorns
+            rel: website
+  components:
+    - uuid: a9d5204c-7e5b-4c43-bd49-34df759b9f04
+      type: software
+      title: Podinfo
+      description: |
+        Defense Unicorns UDS Common Podinfo
+      purpose: Common tasks for UDS Packages
+      responsible-roles:
+        - role-id: provider
+          party-uuids:
+            - c18f4a9f-a402-415b-8d13-b51739d689ff # matches parties entry for Defense Unicorns
+      control-implementations:
+        - uuid: d2afb4c4-2cd8-5305-a6cc-d1bc7b388d0c
+          source: https://raw.githubusercontent.com/GSA/fedramp-automation/93ca0e20ff5e54fc04140613476fba80f08e3c7d/dist/content/rev5/baselines/json/FedRAMP_rev5_HIGH-baseline-resolved-profile_catalog.json
+          description: Validate generic security requirements
+          implemented-requirements:
+            - uuid: 7faf6742-a23d-41c1-9ba7-2072494aedc2
+              control-id: ac-2.3
+              description: >-
+                # Control Implementation
+
+                User accounts that have expired, no longer in use, in violation of policy, or have been inactive for 35 days are disabled within 24 hours.
+
+              remarks: >-
+                # Control Description
+                "Disable accounts within [Assignment: organization-defined time period] when the accounts:
+                (a) Have expired;
+                (b) Are no longer associated with a user or individual;
+                (c) Are in violation of organizational policy; or
+                (d) Have been inactive for [Assignment: organization-defined time period]."
+
+              links:
+                - href: '#35d926df-efbb-445a-b26b-2917199ec558'
+                  rel: lula
+                  text: Check that podinfo is healthy
+
+  back-matter:
+    resources:
+      - rlinks:
+          - href: https://github.com/defenseunicorns/uds-common/
+        title: Podinfo
+        uuid: 17270293-6feb-4131-bb05-9742ce47e468
+      - description: |
+          domain:
+            kubernetes-spec:
+              resources:
+              - description: ""
+                name: deployments
+                resource-rule:
+                  group: apps
+                  name: ""
+                  namespaces: []
+                  resource: deployments
+                  version: v1
+            type: kubernetes
+          lula-version: ""
+          metadata:
+            name: account-disable
+            uuid: 8855374d-7f9b-4718-b505-25ac596741c1
+          provider:
+            opa-spec:
+              output:
+                validation: validate.validate
+              rego: |
+                package validate
+                import future.keywords.every
+
+                default validate = false
+                default msg = "Not evaluated"
+
+                # Validation
+                validate {
+                every deployment in input.deployments {
+                  deployment.kind == "Deployment"
+                  podsRequired := deployment.status.replicas
+                  podsReady := deployment.status.readyReplicas
+                  podsReady == podsRequired
+                }
+              }
+            type: opa
+        title: podinfo-health-check
+        uuid: 35d926df-efbb-445a-b26b-2917199ec558
+

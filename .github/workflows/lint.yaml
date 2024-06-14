@@ -7,6 +7,12 @@ on:
     types: [milestoned, opened, synchronize]
   # This allows other repositories to call this workflow in a reusable way
   workflow_call:
+    inputs:
+      oscalfiles:
+        default: './oscal.yaml'
+        description: "Location of the OSCAL file"
+        required: true
+        type: string
 
 jobs:
   validate:
@@ -35,3 +41,4 @@ jobs:
       - name: Lint the repository
         run: |
           uds run lint:yaml --no-progress
+          uds run lint:oscal --no-progress
