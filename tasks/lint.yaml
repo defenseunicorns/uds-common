@@ -20,7 +20,7 @@ tasks:
         default: ./oscal.yaml
     actions:
       - description: Lint OSCAL files
-        cmd: lula tools lint -f $INPUT_OSCALFILES
+        cmd: lula tools lint -f ${{ .inputs.oscalfiles }}
 
   - name: use-oscal
     description: Invoke OSCAL linting
