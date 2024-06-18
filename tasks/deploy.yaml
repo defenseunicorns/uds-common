@@ -8,11 +8,11 @@ tasks:
         default: .
     actions:
       - description: Get the current Zarf package name
-        cmd: cat ${{ .inputs.path }}/zarf.yaml | yq .metadata.name
+        cmd: cat ${{ .inputs.path }}/zarf.yaml | ./uds zarf tools yq .metadata.name
         setVariables:
           - name: PACKAGE_NAME
       - description: Get the current Zarf package version
-        cmd: cat ${{ .inputs.path }}/zarf.yaml | yq .metadata.version
+        cmd: cat ${{ .inputs.path }}/zarf.yaml | ./uds zarf tools yq .metadata.version
         setVariables:
           - name: PACKAGE_VERSION
       - description: Deploy the UDS Zarf Package
@@ -30,11 +30,11 @@ tasks:
         description: For setting deploy time variables and flags
     actions:
       - description: Get the current UDS Bundle name
-        cmd: cat ${{ .inputs.path }}/uds-bundle.yaml | yq .metadata.name
+        cmd: cat ${{ .inputs.path }}/uds-bundle.yaml | ./uds zarf tools yq .metadata.name
         setVariables:
           - name: BUNDLE_NAME
       - description: Get the current UDS Bundle version
-        cmd: cat ${{ .inputs.path }}/uds-bundle.yaml | yq .metadata.version
+        cmd: cat ${{ .inputs.path }}/uds-bundle.yaml | ./uds zarf tools yq .metadata.version
         setVariables:
           - name: BUNDLE_VERSION
       - description: Deploy the UDS bundle with the package and its dependencies
