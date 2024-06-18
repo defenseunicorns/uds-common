@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.6.0](https://github.com/defenseunicorns/uds-common/compare/v0.5.1...v0.6.0) (2024-06-18)
+
+
+### Features
+
+* lula lint integration ([#147](https://github.com/defenseunicorns/uds-common/issues/147)) ([7f357e0](https://github.com/defenseunicorns/uds-common/commit/7f357e0b42859b0178e90047885494ee03542be7))
+
+
+### Miscellaneous
+
+* add a common bundle remove task ([#153](https://github.com/defenseunicorns/uds-common/issues/153)) ([f3b287c](https://github.com/defenseunicorns/uds-common/commit/f3b287c909c626e9f11d47b9e13d79312d3f3a99))
+* **deps:** update uds common support dependencies ([#148](https://github.com/defenseunicorns/uds-common/issues/148)) ([b5854de](https://github.com/defenseunicorns/uds-common/commit/b5854de37ccb9e46751c17cecd8101411f9fac32))
+
 ## [0.5.1](https://github.com/defenseunicorns/uds-common/compare/v0.5.0...v0.5.1) (2024-06-12)
 
 
