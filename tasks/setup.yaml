@@ -4,7 +4,7 @@ tasks:
       version:
         description: The version of k3d-core-slim-dev to deploy
         # renovate: datasource=github-tags depName=defenseunicorns/uds-core versioning=semver
-        default: 0.22.1
+        default: 0.22.2
       insecure_keycloak_admin:
         description: Automatically set a keycloak admin username / password
         default: "true"
@@ -17,7 +17,7 @@ tasks:
       version:
         description: The version of k3d-core-demo to deploy
         # renovate: datasource=github-tags depName=defenseunicorns/uds-core versioning=semver
-        default: 0.22.1
+        default: 0.22.2
       insecure_keycloak_admin:
         description: Automatically set a keycloak admin username / password
         default: "true"
