@@ -1,0 +1,22 @@
+tasks:
+  - name: test-bundle
+    inputs:
+      path:
+        description: Path relative to the repositories root where the uds-bundle.yaml and .tar.zst lives
+        default: bundle
+      config:
+        description: File name of the bundle config file. Defaults to uds-config.yaml. Path is relative to the path input.
+        default: uds-config.yaml
+      options:
+        description: For setting deploy time variables and flags
+    actions:
+      - description: Get the current UDS Bundle name
+        cmd: cat ${{ .inputs.path }}/uds-bundle.yaml | ./uds zarf tools yq .metadata.name
+        setVariables:
+          - name: BUNDLE_NAME
+      - description: Get the current UDS Bundle version
+        cmd: cat ${{ .inputs.path }}/uds-bundle.yaml | ./uds zarf tools yq .metadata.version
+        setVariables:
+          - name: BUNDLE_VERSION
+      - description: Deploy the UDS bundle with the package and its dependencies
+        cmd: UDS_CONFIG=${{ .inputs.path }}/${{ .inputs.config }} ./uds remove ${{ .inputs.path }}/uds-bundle-${BUNDLE_NAME}-${UDS_ARCH}-${BUNDLE_VERSION}.tar.zst --confirm --no-progress ${{ .inputs.options }}
