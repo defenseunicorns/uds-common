@@ -29,6 +29,12 @@ runs:
       shell: bash
       run: curl -o /usr/local/bin/uds -L https://github.com/defenseunicorns/uds-cli/releases/download/v${{ inputs.udsCliVersion }}/uds-cli_v${{ inputs.udsCliVersion }}_Linux_${{steps.setUdsCliArch.outputs.ARCH}} && chmod +x /usr/local/bin/uds
 
+    - name: Install Lula
+      uses: defenseunicorns/lula-action/setup@095636b7880051e11b05f10a582fdd911526161c
+      with:
+        # renovate: datasource=github-tags depName=defenseunicorns/lula versioning=semver-coerced
+        version: v0.3.0
+
     - name: Iron Bank Login
       if: ${{ inputs.registry1Username != '' }}
       env:
