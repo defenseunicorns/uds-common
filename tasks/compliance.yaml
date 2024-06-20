@@ -1,0 +1,30 @@
+tasks:
+  - name: validate
+    description: Lula Validate OSCAL Compliance
+    inputs:
+      oscalfile:
+        description: OSCAL File to Validate
+        default: ./oscal.yaml
+      assessment-results:
+        description: Path for the output Assessment Results from Validate
+        default: ./oscal-assessment-results.yaml
+    actions:
+      - cmd: lula validate -f ${{ .inputs.oscalfile }} -o ${{ .inputs.assessment-results }}
+
+  - name: evaluate
+    description: Lula Evaluate multiple OSCAL Assessment Results
+    inputs:
+      assessment-result-threshold:
+        description: File path to the Assessment Results Threshold
+      assessment-result-new:
+        description: File path to the New Assessment Results file
+      assessment-results:
+        description: File path to the single Assessment Results file that contains the array of Assessment Results
+        default: ./oscal-assessment-results.yaml
+    actions:
+      - cmd: |
+          if [ -n ${{ .inputs.assessment_result_threshold }} ] && [ -n ${{ .inputs.assessment_result_new }} ]; then
+            lula evaluate -f ${{ .inputs.assessment_result_threshold }} -f ${{ .inputs.assessment_result_new }}
+          else
+            lula evaluate -f ${{ .inputs.assessment_results }}
+          fi
