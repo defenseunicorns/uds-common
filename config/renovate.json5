@@ -50,6 +50,26 @@
             "versioningTemplate": "semver-coerced",
             "datasourceTemplate": "github-tags"
         },
+        // Matches github-tags pointing to items in github.com/<org>/<repo>/raw/<tag> (i.e. https://github.com/defenseunicorns/uds-package-postgres-operator/blob/c88f9fd47c2fbc85e86c86c26b2d6948f6220898/zarf.yaml#L17)
+        {
+            "fileMatch": [".*(\\.ya?ml|\\.json)$"],
+            "matchStrings": [
+                // Test: https://regex101.com/r/huQrD4/1
+                "https:\\/\\/github\\.com\\/(?<depName>[^\\/]+\\/[^\\/]+)\\/raw\\/(?<currentValue>[^\\/]+)"
+            ],
+            "versioningTemplate": "semver-coerced",
+            "datasourceTemplate": "github-tags"
+        },
+        // Matches github-tags pointing to items in github.com/<org>/<repo>/releases/download/<tag> (i.e. https://github.com/defenseunicorns/zarf/blob/c8abe31a5c4bbed933d692fcdeeefdc4b31701a5/packages/distros/k3s/zarf.yaml#L17)
+        {
+            "fileMatch": [".*(\\.ya?ml|\\.json)$"],
+            "matchStrings": [
+                // Test: https://regex101.com/r/oGP4dI/1
+                "https:\\/\\/github\\.com\\/(?<depName>[^\\/]+\\/[^\\/]+)\\/releases\\/download\\/(?<currentValue>[^\\/]+)"
+            ],
+            "versioningTemplate": "semver-coerced",
+            "datasourceTemplate": "github-tags"
+        },
         // Matches npm modules in npm install commands (i.e. https://github.com/defenseunicorns/uds-core/blob/f8e65159873f87be5912b73cc6f0a5ff26b7bed0/.github/workflows/commitlint.yaml#L26)
         {
             "fileMatch": [".*(\\.ya?ml|\\.json)$"],
