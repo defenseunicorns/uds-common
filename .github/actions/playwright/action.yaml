@@ -11,8 +11,8 @@ runs:
   steps:
     - name: Get installed Playwright version
       id: playwright-version
-      run: echo "PLAYWRIGHT_VERSION=$(node -e "console.log(require('./package-lock.json').dependencies['@playwright/test'].version)")" >> $GITHUB_ENV
-      working-directory: ./tests
+      run: echo "PLAYWRIGHT_VERSION=$(node -e "console.log(require('./package-lock.json').packages['node_modules/@playwright/test'].version)")" >> $GITHUB_ENV
+      working-directory: ./${{ inputs.testDir }}
       shell: bash
 
     - name: Cache playwright binaries
@@ -25,11 +25,11 @@ runs:
 
     - name: Install npm packages
       run: npm ci
-      working-directory: ./tests
+      working-directory: ./${{ inputs.testDir }}
       shell: bash
 
     - name: Install playwright (and its dependencies) if needed
       run: npx playwright install --with-deps
       if: steps.playwright-cache.outputs.cache-hit != 'true'
-      working-directory: ./tests
+      working-directory: ./${{ inputs.testDir }}
       shell: bash
