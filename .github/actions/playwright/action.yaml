@@ -1,0 +1,35 @@
+name: Setup Playwright
+description: UDS Playwright Setup
+
+inputs:
+  testDir:
+    description: The directory that contains the playwright tests
+    default: tests
+
+runs:
+  using: composite
+  steps:
+    - name: Get installed Playwright version
+      id: playwright-version
+      run: echo "PLAYWRIGHT_VERSION=$(node -e "console.log(require('./package-lock.json').packages['node_modules/@playwright/test'].version)")" >> $GITHUB_ENV
+      working-directory: ./${{ inputs.testDir }}
+      shell: bash
+
+    - name: Cache playwright binaries
+      uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+      id: playwright-cache
+      with:
+        path: |
+          ~/.cache/ms-playwright
+        key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
+
+    - name: Install npm packages
+      run: npm ci
+      working-directory: ./${{ inputs.testDir }}
+      shell: bash
+
+    - name: Install playwright (and its dependencies) if needed
+      run: npx playwright install --with-deps
+      if: steps.playwright-cache.outputs.cache-hit != 'true'
+      working-directory: ./${{ inputs.testDir }}
+      shell: bash
