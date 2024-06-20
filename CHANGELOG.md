@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.6.1](https://github.com/defenseunicorns/uds-common/compare/v0.6.0...v0.6.1) (2024-06-20)
+
+
+### Miscellaneous
+
+* add a playwright setup action ([#155](https://github.com/defenseunicorns/uds-common/issues/155)) ([93720d9](https://github.com/defenseunicorns/uds-common/commit/93720d91189fc54c5f5302bb6af769621bc21b27))
+* add the second raw URL and releases URL for GitHub to renovate config ([#154](https://github.com/defenseunicorns/uds-common/issues/154)) ([bdda4dc](https://github.com/defenseunicorns/uds-common/commit/bdda4dcbd201e279b83361d72ea448114af26522))
+
 ## [0.6.0](https://github.com/defenseunicorns/uds-common/compare/v0.5.1...v0.6.0) (2024-06-18)
 
 
