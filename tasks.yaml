@@ -87,7 +87,6 @@ tasks:
       - task: deploy:test-bundle
       - task: test
       - task: compliance:validate
-      - task: commmit:commit
 
   - name: test-upgrade
     description: Test an upgrade from the latest released package to the current branch
