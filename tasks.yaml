@@ -6,7 +6,6 @@ includes:
   - publish: ./tasks/publish.yaml
   - pull: ./tasks/pull.yaml
   - compliance: ./tasks/compliance.yaml
-  - commit: ./tasks/commit.yaml
 
 tasks:
   - name: default
