@@ -1,0 +1,37 @@
+domain:
+            kubernetes-spec:
+              resources:
+              - description: ""
+                name: deployments
+                resource-rule:
+                  group: apps
+                  name: ""
+                  namespaces: [uds-podinfo]
+                  resource: deployments
+                  version: v1
+            type: kubernetes
+          lula-version: ""
+          metadata:
+            name: podinfo-health-check
+            uuid: 8855374d-7f9b-4718-b505-25ac596741c1
+          provider:
+            opa-spec:
+              output:
+                validation: validate.validate
+              rego: |
+                package validate
+                import future.keywords.every
+
+                default validate = false
+                default msg = "Not evaluated"
+
+                # Validation
+                validate {
+                every deployment in input.deployments {
+                  deployment.kind == "Deployment"
+                  podsRequired := deployment.status.replicas
+                  podsReady := deployment.status.readyReplicas
+                  podsReady == podsRequired
+                }
+              }
+            type: opa

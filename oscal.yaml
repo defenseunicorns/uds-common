@@ -61,8 +61,7 @@ component-definition:
           domain:
             kubernetes-spec:
               resources:
-              - description: ""
-                name: deployments
+              - name: deployments
                 resource-rule:
                   group: apps
                   name: ""
@@ -72,7 +71,7 @@ component-definition:
             type: kubernetes
           lula-version: ""
           metadata:
-            name: account-disable
+            name: podinfo-health-check
             uuid: 8855374d-7f9b-4718-b505-25ac596741c1
           provider:
             opa-spec:
@@ -83,17 +82,16 @@ component-definition:
                 import future.keywords.every
 
                 default validate = false
-                default msg = "Not evaluated"
 
                 # Validation
                 validate {
-                every deployment in input.deployments {
-                  deployment.kind == "Deployment"
-                  podsRequired := deployment.status.replicas
-                  podsReady := deployment.status.readyReplicas
-                  podsReady == podsRequired
+                  every deployment in input.deployments {
+                    deployment.kind == "Deployment"
+                    podsRequired := deployment.status.replicas
+                    podsReady := deployment.status.readyReplicas
+                    podsReady == podsRequired
+                  }
                 }
-              }
             type: opa
         title: podinfo-health-check
         uuid: 35d926df-efbb-445a-b26b-2917199ec558
