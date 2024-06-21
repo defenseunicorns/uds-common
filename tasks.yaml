@@ -97,4 +97,5 @@ tasks:
       - task: create-podinfo-test-bundle
       - task: deploy:test-bundle
       - task: test
+      - task: compliance:validate
       - task: compliance:evaluate
