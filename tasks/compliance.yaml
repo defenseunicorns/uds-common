@@ -14,17 +14,10 @@ tasks:
   - name: evaluate
     description: Lula Evaluate multiple OSCAL Assessment Results
     inputs:
-      assessment_result_threshold:
-        description: File path to the Assessment Results Threshold
-      assessment_result_new:
-        description: File path to the New Assessment Results file
       assessment_results:
         description: File path to the single Assessment Results file that contains the array of Assessment Results
         default: ./oscal-assessment-results.yaml
     actions:
       - cmd: |
-          if [ -n ${{ .inputs.assessment_result_threshold }} ] && [ -n ${{ .inputs.assessment_result_new }} ]; then
-            lula evaluate -f ${{ .inputs.assessment_result_threshold }} -f ${{ .inputs.assessment_result_new }}
-          else
-            lula evaluate -f ${{ .inputs.assessment_results }}
-          fi
+          lula evaluate -f ${{ .inputs.assessment_results }}
+
