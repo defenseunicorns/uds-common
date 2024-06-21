@@ -4,10 +4,10 @@ tasks:
     inputs:
       oscalfile:
         description: OSCAL File to Validate
-        default: ./oscal.yaml
+        default: ./oscal-component.yaml
       assessment_results:
         description: Path for the output Assessment Results from Validate
-        default: ./assessment-results.yaml
+        default: ./oscal-assessment-results.yaml
     actions:
       - cmd: lula validate -f ${{ .inputs.oscalfile }} -o ${{ .inputs.assessment_results }}
 
@@ -16,6 +16,6 @@ tasks:
     inputs:
       assessment_results:
         description: File path to the single Assessment Results file that contains the array of Assessment Results
-        default: ./assessment-results.yaml
+        default: ./oscal-assessment-results.yaml
     actions:
       - cmd: lula evaluate -f ${{ .inputs.assessment_results }}
