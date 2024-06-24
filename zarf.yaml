@@ -12,7 +12,7 @@ components:
       flavor: test
     charts:
       - name: podinfo
-        version: 6.6.3
+        version: 6.7.0
         namespace: uds-podinfo
         url: oci://ghcr.io/stefanprodan/charts/podinfo
         valuesFiles:
@@ -32,4 +32,4 @@ components:
                 namespace: uds-podinfo
                 condition: available
     images:
-      - ghcr.io/stefanprodan/podinfo:6.6.3
+      - ghcr.io/stefanprodan/podinfo:6.7.0
