@@ -74,8 +74,6 @@ This task file includes two tasks:
   The bundle will be matched based on the pattern `${PATH}/uds-bundle-*-${ARCHITECTURE}-${VERSION}.tar.zst` and published to `oci://${TARGET_REPO}`
 
 
-
-
 ### pull.yaml
 
 This task file includes one task:
@@ -88,6 +86,14 @@ This task file includes two tasks:
 
 - `deps`: installs all of the dependencies for linting the repository.
 - `yaml`: lints all of the `.yaml` files within the repository.
+- `oscal`: lints targeted OSCAL files within the repository.
+
+### compliance.yaml 
+
+This task file includes two tasks:
+
+- `validate`: performs a compliance assessment of the repository against the identified OSCAL standard.
+- `evaluate`: Compares the results (when present) to evaluate compliance.
 
 ## Configuration Usage
 

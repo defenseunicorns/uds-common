@@ -17,7 +17,6 @@ on:
       - renovate.json
       - .release-please-config.json
       - release-please-config.json
-      - oscal-component.yaml
       - CODEOWNERS
       - LICENSE
       - CONTRIBUTING.md
