@@ -86,6 +86,8 @@ tasks:
       - task: deploy:test-bundle
       - task: test
       - task: compliance:validate
+        with:
+          assessment_results: /tmp/oscal-assessment-results.yaml
 
   - name: test-upgrade
     description: Test an upgrade from the latest released package to the current branch
@@ -94,8 +96,14 @@ tasks:
       - task: setup:k3d-test-cluster
       - task: deploy:test-bundle
       - task: compliance:validate
+        with:
+          assessment_results: /tmp/oscal-assessment-results.yaml
       - task: create-podinfo-test-bundle
       - task: deploy:test-bundle
       - task: test
       - task: compliance:validate
+        with:
+          assessment_results: /tmp/oscal-assessment-results.yaml
       - task: compliance:evaluate
+        with:
+          assessment_results: /tmp/oscal-assessment-results.yaml
