@@ -91,7 +91,7 @@
         },
         // Matches specified datasources where an environment variable separates the version on the following line (i.e. https://github.com/defenseunicorns/uds-common/blob/ce3ba974ef3ff88058809f4b9a78da281a65ffa0/.github/actions/setup/action.yaml#L9)
         {
-            "fileMatch": [".*\\.ya?ml$", ".*\\.sh$"],
+            "fileMatch": [".*\\.ya?ml$", ".*\\.sh$", ".*\\.?Dockerfile$"],
             "matchStrings": [
                 // Test: https://regex101.com/r/b53bEF/2
                 "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( extractVersion=(?<extractVersion>.*?))?( registryUrl=(?<registryUrl>.*?))?\\s.*[A-Z]+=['\"]?(?<currentValue>[v0-9].*?)['\"]?(\\s|$)"
@@ -129,7 +129,7 @@
             "extractVersionTemplate": "{{#if extractVersion}}{{{extractVersion}}}{{else}}^(?<version>.*)${{/if}}",
             "datasourceTemplate": "docker"
         },
-        // Matches individual helm repo charts in a `zarf.yaml`'s `charts:` section that specify `version` then `url` 
+        // Matches individual helm repo charts in a `zarf.yaml`'s `charts:` section that specify `version` then `url`
         {
             "fileMatch": [ "(^|/)zarf\\.ya?ml$" ],
             "matchStringsStrategy": "recursive",
@@ -143,7 +143,7 @@
             ],
             "datasourceTemplate": "helm"
         },
-        // Matches individual helm repo charts in a `zarf.yaml`'s `charts:` section that specify `url` then `version` 
+        // Matches individual helm repo charts in a `zarf.yaml`'s `charts:` section that specify `url` then `version`
         {
             "fileMatch": [ "(^|/)zarf.yaml$" ],
             "matchStringsStrategy": "recursive",
@@ -157,7 +157,7 @@
             ],
             "datasourceTemplate": "helm"
         },
-        // Matches individual helm git charts in a `zarf.yaml`'s `charts:` section that specify `version` then `url` 
+        // Matches individual helm git charts in a `zarf.yaml`'s `charts:` section that specify `version` then `url`
         {
             "fileMatch": [ "(^|/)zarf\\.ya?ml$" ],
             "matchStringsStrategy": "recursive",
@@ -173,7 +173,7 @@
             // Match the version from the tag. Test: https://regex101.com/r/dzQZiE/1
             "versioningTemplate": "regex:^v?(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)(-[\\w\\.]+\\.(?<build>\\d+))?"
         },
-        // Matches individual helm git charts in a `zarf.yaml`'s `charts:` section that specify `url` then `version` 
+        // Matches individual helm git charts in a `zarf.yaml`'s `charts:` section that specify `url` then `version`
         {
             "fileMatch": [ "(^|/)zarf.yaml$" ],
             "matchStringsStrategy": "recursive",
@@ -189,7 +189,7 @@
             // Match the version from the tag. Test: https://regex101.com/r/dzQZiE/1
             "versioningTemplate": "regex:^v?(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)(-[\\w\\.]+\\.(?<build>\\d+))?"
         },
-        // Matches individual helm oci charts in a `zarf.yaml`'s `charts:` section that specify `version` then `url` 
+        // Matches individual helm oci charts in a `zarf.yaml`'s `charts:` section that specify `version` then `url`
         {
             "fileMatch": [ "(^|/)zarf\\.ya?ml$" ],
             "matchStringsStrategy": "recursive",
@@ -203,7 +203,7 @@
             ],
             "datasourceTemplate": "docker"
         },
-        // Matches individual helm oci charts in a `zarf.yaml`'s `charts:` section that specify `url` then `version` 
+        // Matches individual helm oci charts in a `zarf.yaml`'s `charts:` section that specify `url` then `version`
         {
             "fileMatch": [ "(^|/)zarf.yaml$" ],
             "matchStringsStrategy": "recursive",
@@ -232,7 +232,7 @@
             "versioningTemplate": "semver-coerced",
             "datasourceTemplate": "github-tags"
         },
-        // Matches oci packages in a `uds-bundle.yaml`'s `zarf-packages:` section that specify `repository` then `ref` 
+        // Matches oci packages in a `uds-bundle.yaml`'s `zarf-packages:` section that specify `repository` then `ref`
         {
             "fileMatch": [ "(^|/)uds-bundle.yaml$" ],
             "matchStringsStrategy": "recursive",
