@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.7.0](https://github.com/defenseunicorns/uds-common/compare/v0.6.1...v0.7.0) (2024-06-28)
+
+
+### Features
+
+* add an image override to the renovate config ([#160](https://github.com/defenseunicorns/uds-common/issues/160)) ([ea2fcf1](https://github.com/defenseunicorns/uds-common/commit/ea2fcf105bb7bf6a560042191ee8b7f33757c785))
+* **compliance:** lula validate and evaluate capability definitions ([#157](https://github.com/defenseunicorns/uds-common/issues/157)) ([b615d90](https://github.com/defenseunicorns/uds-common/commit/b615d90389523763d08b03f793abe5cdeeee55fc))
+
+
+### Miscellaneous
+
+* add dockerfile `ADD` support ([#162](https://github.com/defenseunicorns/uds-common/issues/162)) ([6854284](https://github.com/defenseunicorns/uds-common/commit/685428477abea23a2a20c311a135acc517558fc3))
+* **deps:** update uds common package dependencies to v6.7.0 ([#158](https://github.com/defenseunicorns/uds-common/issues/158)) ([ef9c567](https://github.com/defenseunicorns/uds-common/commit/ef9c567a5aea13ba2dbf22b2790b78cacb113ab1))
+
 ## [0.6.1](https://github.com/defenseunicorns/uds-common/compare/v0.6.0...v0.6.1) (2024-06-20)
 
 
