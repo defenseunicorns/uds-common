@@ -16,6 +16,7 @@ jobs:
     name: Validate PR Title
     permissions:
       pull-requests: read # Allows reading pull request metadata.
+      contents: read  # Allows pulling repo contents.
 
     steps:
       - name: Checkout

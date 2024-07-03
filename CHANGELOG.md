@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.1](https://github.com/defenseunicorns/uds-common/compare/v0.7.0...v0.7.1) (2024-07-03)
+
+
+### Miscellaneous
+
+* fix commitlint workflow permissions ([#166](https://github.com/defenseunicorns/uds-common/issues/166)) ([d701196](https://github.com/defenseunicorns/uds-common/commit/d701196ed2b7b1507f6b7ad946e4a3e030fa3ca5))
+
 ## [0.7.0](https://github.com/defenseunicorns/uds-common/compare/v0.6.1...v0.7.0) (2024-06-28)
 
 
