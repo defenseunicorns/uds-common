@@ -20,9 +20,9 @@ In our business model we have a distinct advantage because of our ability to
 delivery better OSS value than nearly any other defense contractor and better
 OSS financial outlook than most OSS companies due to our trust we have built
 with various government organizations. However, in some ways, the DoD Primes are
-our hyper-scaler equivalents, they are in the same markets with considerable
+our hyper-scaler equivalents, they are in the same markets with considerably
 more resources and deeper relationships. This means our moat, when looking at
-other successful defense contractors in particular, is really around out ability
+other successful defense contractors in particular, is really around our ability
 to
 
 1. Create compelling FOSS technology
@@ -32,7 +32,7 @@ to
 
 Copy-left is still Open Source, but it does cause many organizations to be
 hesitant to adopt. Because we believe so deeply in wide adoption of FOSS and
-mission impact is still what drives us, we are choosing to keeping everything
+mission impact is still what drives us, we are choosing to keep everything
 Apache-2.0 to avoid hindering adoption by our competitors. I believe this aligns
 very well with our culture and is the kind of company I want to be a part of.
 
