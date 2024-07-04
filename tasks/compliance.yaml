@@ -8,8 +8,10 @@ tasks:
       assessment_results:
         description: Path for the output Assessment Results from Validate
         default: ./oscal-assessment-results.yaml
+      options:
+        description: For setting additional flags
     actions:
-      - cmd: lula validate -f ${{ .inputs.oscalfile }} -o ${{ .inputs.assessment_results }}
+      - cmd: lula validate -f ${{ .inputs.oscalfile }} -o ${{ .inputs.assessment_results }} ${{ .inputs.options }}
 
   - name: evaluate
     description: Lula Evaluate multiple OSCAL Assessment Results
