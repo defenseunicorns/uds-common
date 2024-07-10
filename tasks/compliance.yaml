@@ -19,5 +19,7 @@ tasks:
       assessment_results:
         description: File path to the single Assessment Results file that contains the array of Assessment Results
         default: ./oscal-assessment-results.yaml
+      options:
+        description: For setting additional flags
     actions:
-      - cmd: lula evaluate -f ${{ .inputs.assessment_results }}
+      - cmd: lula evaluate -f ${{ .inputs.assessment_results }} ${{ .inputs.options }}
