@@ -15,10 +15,10 @@ Pinning to a specific tag of a task (rather than `main`) with renovate watching 
 
 ## Supported Tool Versions
 
-- UDS CLI: 0.12.0
-- UDS Core: 0.22.2
-- K3D: 5.6.3
-- Lula: 0.4.1
+- UDS CLI: 0.13.0
+- UDS Core: 0.24.0
+- K3D: 5.7.1
+- Lula: 0.4.2
 
 NOTE: Zarf is not required for tasks in this repo, the vendored zarf (`uds zarf`) included with UDS CLI is used instead to prevent version mismatches.
 
