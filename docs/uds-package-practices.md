@@ -31,7 +31,7 @@ Below are the minimal services that a UDS package **must** integrate with, using
 
 ### Keycloak
 
-- **Must** use and create a Keycloak client through the `sso` key if the application provides a user login.
+- **Must** use and create a Keycloak client through the `sso` key if the application provides an end-user login.
 - **Should** consider security options during implementation to provide the most secure default possible (i.e. SAML w/SCIM vs OIDC).
 - **Should** name the client `<App> Login` (i.e. `Mattermost Login`) to provide login UX consistency.
 - **Should** clearly mark the client id with the group and app name `uds-<group>-<application>` (i.e. `uds-swf-mattermost`) to provide consistency in the Keycloak UI.
