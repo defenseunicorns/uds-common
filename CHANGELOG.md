@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.8.0](https://github.com/defenseunicorns/uds-common/compare/v0.7.1...v0.8.0) (2024-07-12)
+
+
+### Features
+
+* **compliance:** add support for extra options on compliance validate ([#170](https://github.com/defenseunicorns/uds-common/issues/170)) ([d191505](https://github.com/defenseunicorns/uds-common/commit/d19150566784e51f7c8d31b7d37b6915cdacc410))
+
+
+### Bug Fixes
+
+* chainguard creds/renovate match ([#173](https://github.com/defenseunicorns/uds-common/issues/173)) ([49401cc](https://github.com/defenseunicorns/uds-common/commit/49401cc5c8000a661c6e1bc9e10e42fa6f6e2389))
+
+
+### Miscellaneous
+
+* add cgr.dev renovate rule ([#171](https://github.com/defenseunicorns/uds-common/issues/171)) ([68497f9](https://github.com/defenseunicorns/uds-common/commit/68497f95ffdccf5802da81f2f0c9a8f7f8fe912c))
+* **deps:** update uds common support dependencies ([#164](https://github.com/defenseunicorns/uds-common/issues/164)) ([6c50f47](https://github.com/defenseunicorns/uds-common/commit/6c50f47ecd9c75483ab70953d5c31682362377c2))
+* **deps:** update uds common support dependencies ([#169](https://github.com/defenseunicorns/uds-common/issues/169)) ([b6a4232](https://github.com/defenseunicorns/uds-common/commit/b6a4232cb030f3ea7e66041306b5cfcd9a488a98))
+* update CODEOWNERS with more specific permissions ([#175](https://github.com/defenseunicorns/uds-common/issues/175)) ([f2b7220](https://github.com/defenseunicorns/uds-common/commit/f2b722051014d64d350bd34ea087e6ffb3daf428))
+
 ## [0.7.1](https://github.com/defenseunicorns/uds-common/compare/v0.7.0...v0.7.1) (2024-07-03)
 
 
