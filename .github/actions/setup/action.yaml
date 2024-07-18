@@ -13,7 +13,7 @@ inputs:
     # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
     default: 0.13.0
   chainguardIdentity:
-    description: "ID for Chainguard Identity to assume"
+    description: ID for Chainguard Identity to assume
 
 runs:
   using: composite
