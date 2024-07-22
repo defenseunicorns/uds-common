@@ -249,8 +249,8 @@
                 "(?m)repository: [\"']?(?<depName>.+?)[\"']?$(.)*(\n.*){0,2}ref: [\"']?(?<currentValue>.+?)[\"']?$"
             ],
             "datasourceTemplate": "docker",
-            // Match versioning used on UDS packages. Test: https://regex101.com/r/BGkYHX/3
-            "versioning": "regex:^v?(?<major>\\d+)(\\.(?<minor>\\d+))?(\\.(?<patch>\\d+))?(-uds\\.(?<build>\\d)(-.*?)?)?(.*?)?$"
+            // Match versioning used on UDS packages. Test: https://regex101.com/r/BGkYHX/4
+            "versioningTemplate": "regex:^v?(?<major>\\d+)(\\.(?<minor>\\d+))?(\\.(?<patch>\\d+))?(-uds\\.(?<build>\\d))?(-(?<compatibility>\\w+)?)?(.*?)?$"
         }
     ],
     "packageRules": [
