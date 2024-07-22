@@ -11,7 +11,7 @@ inputs:
   udsCliVersion:
     description: The uds-cli version to install
     # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
-    default: 0.13.0
+    default: 0.13.1
   chainguardIdentity:
     description: ID for Chainguard Identity to assume
 
@@ -32,10 +32,10 @@ runs:
       run: curl -o /usr/local/bin/uds -L https://github.com/defenseunicorns/uds-cli/releases/download/v${{ inputs.udsCliVersion }}/uds-cli_v${{ inputs.udsCliVersion }}_Linux_${{steps.setUdsCliArch.outputs.ARCH}} && chmod +x /usr/local/bin/uds
 
     - name: Install Lula
-      uses: defenseunicorns/lula-action/setup@69144c85bc2122af8cbba8a494085fd1190ba38a
+      uses: defenseunicorns/lula-action/setup@939e0a3d3a5f72321245a040207152dced5238f2
       with:
         # renovate: datasource=github-tags depName=defenseunicorns/lula versioning=semver-coerced
-        version: v0.4.2
+        version: v0.4.3
 
     - name: Iron Bank Login
       if: ${{ inputs.registry1Username != '' }}
