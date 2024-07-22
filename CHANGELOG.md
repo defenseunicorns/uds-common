@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.8.1](https://github.com/defenseunicorns/uds-common/compare/v0.8.0...v0.8.1) (2024-07-18)
+
+
+### Miscellaneous
+
+* add cgr identity assume to setup action ([#180](https://github.com/defenseunicorns/uds-common/issues/180)) ([2ec74fb](https://github.com/defenseunicorns/uds-common/commit/2ec74fbe496c5cdcc88cd3f424951f11271fe5d6))
+* fix version matching for UDS packages ([#176](https://github.com/defenseunicorns/uds-common/issues/176)) ([e068b6a](https://github.com/defenseunicorns/uds-common/commit/e068b6a255cc856e313485826a2140a3977c6b03))
+
 ## [0.8.0](https://github.com/defenseunicorns/uds-common/compare/v0.7.1...v0.8.0) (2024-07-12)
 
 
