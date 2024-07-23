@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.9.0](https://github.com/defenseunicorns/uds-common/compare/v0.8.2...v0.9.0) (2024-07-23)
+
+
+### ⚠ BREAKING CHANGES
+
+* update doug ci credential for new identity config req
+
+### Bug Fixes
+
+* update doug ci credential for new identity config req ([71340f7](https://github.com/defenseunicorns/uds-common/commit/71340f7d4fc0cd8fd6c44335b54e0b12769965d1))
+
 ## [0.8.2](https://github.com/defenseunicorns/uds-common/compare/v0.8.1...v0.8.2) (2024-07-23)
 
 
