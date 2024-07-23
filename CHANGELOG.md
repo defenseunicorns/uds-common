@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.8.2](https://github.com/defenseunicorns/uds-common/compare/v0.8.1...v0.8.2) (2024-07-23)
+
+
+### Miscellaneous
+
+* add additional install step to playwright install ([#183](https://github.com/defenseunicorns/uds-common/issues/183)) ([41855e4](https://github.com/defenseunicorns/uds-common/commit/41855e42bd73c67109ed42935f1e67ab7305ddda))
+* **deps:** update uds common support dependencies ([#179](https://github.com/defenseunicorns/uds-common/issues/179)) ([e1a0d5a](https://github.com/defenseunicorns/uds-common/commit/e1a0d5acba2c0cc083af6ac2823d9cf068008453))
+* fix the Zarf package renovate regex to the correct versionTemplate ([#181](https://github.com/defenseunicorns/uds-common/issues/181)) ([272b502](https://github.com/defenseunicorns/uds-common/commit/272b502fa2f36b3703f9cdcbdbfb579ce437a0d7))
+
 ## [0.8.1](https://github.com/defenseunicorns/uds-common/compare/v0.8.0...v0.8.1) (2024-07-18)
 
 
