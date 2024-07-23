@@ -33,3 +33,9 @@ runs:
       if: steps.playwright-cache.outputs.cache-hit != 'true'
       working-directory: ./${{ inputs.testDir }}
       shell: bash
+
+    - name: Install playwright dependencies if needed
+      run: npx playwright install-deps
+      if: steps.playwright-cache.outputs.cache-hit == 'true'
+      working-directory: ./${{ inputs.testDir }}
+      shell: bash
