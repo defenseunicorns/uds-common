@@ -15,7 +15,7 @@ tasks:
         description: Whether this is a snapshot release
         default: "false"
     actions:
-      - description: "Determine repository for the given flavor/type of release"
+      - description: Determine repository for the given flavor/type of release
         cmd: |
           repo="${{.inputs.base_repo}}"
           # unicorn flavor = private repository
