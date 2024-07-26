@@ -1,0 +1,33 @@
+variables:
+  - name: FLAVOR
+    default: upstream
+
+tasks:
+  - name: determine-repo
+    inputs:
+      base_repo:
+        description: The base repository to publish into
+        default: ghcr.io/defenseunicorns/packages
+      flavor:
+        description: The flavor of the package to publish
+        default: ${FLAVOR}
+      snapshot:
+        description: Whether this is a snapshot release
+        default: "false"
+    actions:
+      - description: "Determine repository for the given flavor/type of release"
+        cmd: |
+          repo="${{.inputs.base_repo}}"
+          # unicorn flavor = private repository
+          if [ "${{.inputs.flavor}}" = "unicorn" ]; then
+            repo="${repo}/private"
+          fi
+          repo="${repo}/uds"
+          # snapshots = snapshot repository
+          if [ "${{.inputs.snapshot}}" = "true" ]; then
+            repo="${repo}/snapshots"
+          fi
+          echo "${repo}"
+        mute: true
+        setVariables:
+          - name: TARGET_REPO
