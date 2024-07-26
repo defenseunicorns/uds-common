@@ -14,8 +14,13 @@ tasks:
       spoof_release:
         description: Whether to spoof the pulled package version to the current repo version
         default: "false"
+      team:
+        description: The team you want to pull the package from
+        default: uds
     actions:
       - task: utils:determine-repo
+        with:
+          team: ${{.inputs.team}}
       - description: Get the current Zarf package name
         cmd: cat ${{ .inputs.path }}/zarf.yaml | yq .metadata.name
         setVariables:

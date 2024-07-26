@@ -8,6 +8,9 @@ tasks:
       base_repo:
         description: The base repository to publish into
         default: ghcr.io/defenseunicorns/packages
+      team:
+        description: The team publishing the package
+        default: uds
       flavor:
         description: The flavor of the package to publish
         default: ${FLAVOR}
@@ -22,7 +25,7 @@ tasks:
           if [ "${{.inputs.flavor}}" = "unicorn" ]; then
             repo="${repo}/private"
           fi
-          repo="${repo}/uds"
+          repo="${repo}/${{.inputs.team}}"
           # snapshots = snapshot repository
           if [ "${{.inputs.snapshot}}" = "true" ]; then
             repo="${repo}/snapshots"

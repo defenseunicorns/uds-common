@@ -18,8 +18,13 @@ tasks:
       architecture:
         description: The architecture of the package to publish
         default: ${UDS_ARCH}
+      team:
+        description: The team publishing the package
+        default: uds
     actions:
       - task: utils:determine-repo
+        with:
+          team: ${{.inputs.team}}
       - description: Publish package for the supplied architecture
         cmd: |
           ./uds zarf package publish ${{ .inputs.path }}/zarf-package-*-${{ .inputs.architecture }}-${{ .inputs.version }}.tar.zst oci://${TARGET_REPO}
