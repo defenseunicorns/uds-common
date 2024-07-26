@@ -1,9 +1,3 @@
-variables:
-  - name: FLAVOR
-    default: upstream
-  - name: TARGET_REPO
-    default: ghcr.io/defenseunicorns/packages/uds
-
 tasks:
   - name: package
     description: Publish package for the supplied architecture
@@ -17,11 +11,13 @@ tasks:
       architecture:
         description: The architecture of the package to publish
         default: ${UDS_ARCH}
+      target_repo:
+        description: The repository to publish into
+        default: ghcr.io/defenseunicorns/packages/uds
     actions:
-      - task: utils:determine-repo
       - description: Publish package for the supplied architecture
         cmd: |
-          ./uds zarf package publish ${{ .inputs.path }}/zarf-package-*-${{ .inputs.architecture }}-${{ .inputs.version }}.tar.zst oci://${TARGET_REPO}
+          ./uds zarf package publish ${{ .inputs.path }}/zarf-package-*-${{ .inputs.architecture }}-${{ .inputs.version }}.tar.zst oci://${{ .inputs.target_repo }}
 
   - name: test-bundle
     description: Publish bundle for the supplied architecture

@@ -1,0 +1,81 @@
+variables:
+  - name: FLAVOR
+    default: upstream
+  - name: TARGET_REPO
+    default: ghcr.io/defenseunicorns/packages/uds
+
+tasks:
+  - name: determine-repo
+    inputs:
+      base_repo:
+        description: The base repository to publish into
+        default: ghcr.io/defenseunicorns/packages
+      flavor:
+        description: The flavor of the package to publish
+        default: ${FLAVOR}
+      snapshot:
+        description: Whether this is a snapshot release
+        default: "false"
+    actions:
+      - description: "Determine repository for the given flavor/type of release"
+        cmd: |
+          repo="${{.inputs.base_repo}}"
+          # unicorn flavor = private repository
+          if [ "${{.inputs.flavor}}" = "unicorn" ]; then
+            repo="${repo}/private"
+          fi
+          repo="${repo}/uds"
+          # snapshots = snapshot repository
+          if [ "${{.inputs.snapshot}}" = "true" ]; then
+            repo="${repo}/snapshots"
+          fi
+          echo "${repo}"
+        mute: true
+        setVariables:
+          - name: TARGET_REPO
+
+  - name: publish
+    description: Publish package for the supplied architecture
+    inputs:
+      path:
+        description: Path to the zarf package being published
+        default: .
+      version:
+        description: The version of the package to publish
+        required: true
+      architecture:
+        description: The architecture of the package to publish
+        default: ${UDS_ARCH}
+    actions:
+      - task: determine-repo
+      - description: Publish package for the supplied architecture
+        cmd: |
+          ./uds zarf package publish ${{ .inputs.path }}/zarf-package-*-${{ .inputs.architecture }}-${{ .inputs.version }}.tar.zst oci://${TARGET_REPO}
+
+  - name: pull-latest
+    inputs:
+      path:
+        description: Path relative to the repositories root where the package needs to go
+        default: .
+      spoof_release:
+        description: Whether to spoof the pulled package version to the current repo version
+        default: "false"
+    actions:
+      - task: determine-repo
+      - description: Get the current Zarf package name
+        cmd: cat ${{ .inputs.path }}/zarf.yaml | yq .metadata.name
+        setVariables:
+          - name: PACKAGE_NAME
+      - description: Get latest tag version from OCI
+        cmd: ./uds zarf tools registry ls ${TARGET_REPO}/${PACKAGE_NAME} | grep ${FLAVOR} | sort -V | tail -1
+        setVariables:
+          - name: LATEST_VERSION
+      - description: Pull the latest package release
+        cmd: ./uds zarf package pull oci://${TARGET_REPO}/${PACKAGE_NAME}:${LATEST_VERSION} --no-progress -o ${{ .inputs.path }}
+      # TODO (@WSTARR): This is currently needed to get around the chicken+egg condition when release please updates the version in GH
+      - description: Spoof the latest release to the current version
+        cmd: |
+          if [ ${{ .inputs.spoof_release }} != "false" ]; then
+            CURRENT_VERSION=$(cat ${{ .inputs.path }}/zarf.yaml | yq .metadata.version)
+            test -f ${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${UDS_ARCH}-${CURRENT_VERSION}.tar.zst || mv ${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${UDS_ARCH}-*.tar.zst ${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${UDS_ARCH}-${CURRENT_VERSION}.tar.zst
+          fi
