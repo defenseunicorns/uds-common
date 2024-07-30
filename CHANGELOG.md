@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.0](https://github.com/defenseunicorns/uds-common/compare/v0.9.0...v0.10.0) (2024-07-29)
+
+
+### Features
+
+* add task for determining target repo based on flavor ([#188](https://github.com/defenseunicorns/uds-common/issues/188)) ([6810324](https://github.com/defenseunicorns/uds-common/commit/681032402a315c8db80975571242ed8db73e78bf))
+
 ## [0.9.0](https://github.com/defenseunicorns/uds-common/compare/v0.8.2...v0.9.0) (2024-07-23)
 
 
