@@ -60,6 +60,10 @@ jobs:
           flavor: ${{ matrix.flavor }}
           type: ${{ matrix.type }}
 
+      - name: UDS Badge Verification
+        uses: ./.github/actions/verify-badge
+        continue-on-error: true
+
       - name: Debug Output
         if: ${{ always() }}
         uses: ./.github/actions/debug-output

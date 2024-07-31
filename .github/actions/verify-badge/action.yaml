@@ -1,0 +1,257 @@
+name: Verify-Badge
+description: Perform verification to assist with UDS badge certification 
+
+runs:
+  using: composite
+  steps:
+    - name: Test installing the package
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        # Validate UDS Package/Config chart is valid
+
+        echo "ℹ️ Installing kubectl-validate..."
+        go install sigs.k8s.io/kubectl-validate@latest
+
+        echo "ℹ️ Validating uds-config chart..."
+        kubectl validate <(helm template chart chart/)
+        echo
+
+        # Setup
+
+        NAMESPACE=$(yq '.components[].charts[].namespace' common/zarf.yaml | uniq)
+        echo "ℹ️ Namespace: $NAMESPACE"
+
+        UDS_PACKAGE_JSON=$(kubectl get Packages -n "${NAMESPACE}" -o jsonpath='{.items[]}')
+        echo "ℹ️ Retrieved UDS Package JSON"
+
+        UDS_PACKAGE_NAME=$(echo "$UDS_PACKAGE_JSON" | jq -r '.metadata.name')
+        echo "ℹ️ Package Name: $UDS_PACKAGE_NAME"
+        echo
+
+        # Istio
+
+        ## Must define any external interfaces under the expose key.
+
+        ENDPOINTS="$(echo "$UDS_PACKAGE_JSON" | jq -r '.status.endpoints[]')"
+        echo "ℹ️ Endpoints: $ENDPOINTS"
+
+        for ENDPOINT in $ENDPOINTS; do
+          # Curl endpoint and check that status isn't 404 or 5XX
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "https://$ENDPOINT")
+          if [ "$STATUS" -eq 404 ] || [[ $STATUS == 5* ]]; then
+            echo "❌ Endpoint $ENDPOINT is returning $STATUS"
+            exit 1
+          fi
+          echo "✅ Endpoint $ENDPOINT was successfully curl'd"
+        done
+
+        echo
+
+        ## Must deploy and operate successfully with Istio injection enabled in the namespace.
+
+        POD_COUNT=$(kubectl get pods -n "${NAMESPACE}" --no-headers | wc -l)
+
+        POD_SIDECAR_COUNT=$(kubectl get pods -n "${NAMESPACE}" -o json | jq '.items[].spec.containers[] | select(.name=="istio-proxy") | length' | wc -l)
+
+        if [ "$POD_COUNT" -ne "$POD_SIDECAR_COUNT" ]; then
+          echo "❌ Not all pods have the istio sidecar"
+          exit 1
+        fi
+        echo "✅ All pods have the istio sidecar"
+
+        echo
+
+        ## Should avoid workarounds such as disabling strict mTLS peer authentication.
+
+        PEERAUTH=$(kubectl get Peerauthentication -n "${NAMESPACE}" -o=json | jq -r '.items[].spec.mtls.mode')
+
+        if [ "$PEERAUTH" != "STRICT" ] && [ "$PEERAUTH" != "" ]; then
+          echo "❌ Peerauth is not strict"
+          exit 1
+        fi
+        echo "✅ Peerauthentication is set to strict"
+
+        echo
+
+        # Network Policies
+
+        ## Must define network policies under the allow key as required.
+
+        NETPOL_AMOUNT=$(echo "$UDS_PACKAGE_JSON" | jq -r '.spec.network.allow | length')
+
+        if [ "$NETPOL_AMOUNT" -eq 0 ]; then
+          echo "❌ No network policies defined"
+          exit 1
+        fi
+        echo "✅ Network policies are defined"
+
+        ## Should minimize network policies to specific selectors needed for Ingress/Egress traffic.
+
+        NETPOL_EXT_COUNT=$(echo "$UDS_PACKAGE_JSON" | jq -r '.spec.network.allow[] | select(.remoteGenerated != "IntraNamespace") | length' | wc -l)
+        echo "ℹ️ Non-IntraNamespace network policies: $NETPOL_EXT_COUNT"
+
+        NETPOL_EXT_SELECTOR_COUNT=$(echo "$UDS_PACKAGE_JSON" | jq -r '.spec.network.allow[] | select(.remoteGenerated != "IntraNamespace") | select(.selector != null) | length' | wc -l)
+        echo "ℹ️ Non-IntraNamespace network policies with selectors: $NETPOL_EXT_SELECTOR_COUNT"
+
+        if [ "$NETPOL_EXT_COUNT" -ne "$NETPOL_EXT_SELECTOR_COUNT" ]; then
+          echo "❌ Not all applicable network policies are using selectors"
+          exit 1
+        fi
+        echo "✅ All applicable network policies are using selectors"
+
+        NETPOL_EXT_NOTKUBE_COUNT=$(echo "$UDS_PACKAGE_JSON" | jq -r '.spec.network.allow[] | select(.remoteGenerated != "IntraNamespace") | select(.remoteGenerated != "KubeAPI") | length' | wc -l)
+        echo "ℹ️ Non-IntraNamespace, non-KubeAPI network policies: $NETPOL_EXT_NOTKUBE_COUNT"
+
+        NETPOL_EXT_NOTKUBE_PORT_COUNT=$(echo "$UDS_PACKAGE_JSON" | jq -r '.spec.network.allow[] | select(.remoteGenerated != "IntraNamespace") | select(.remoteGenerated != "KubeAPI") | select(.ports != null or .port != null) | length' | wc -l)
+        echo "ℹ️ Non-IntraNamespace, non-KubeAPI network policies with ports: $NETPOL_EXT_NOTKUBE_PORT_COUNT"
+
+        if [ "$NETPOL_EXT_NOTKUBE_COUNT" -ne "$NETPOL_EXT_NOTKUBE_PORT_COUNT" ]; then
+          echo "❌ Not all applicable network policies are using ports"
+          exit 1
+        fi
+        echo "✅ All applicable network policies are using ports"
+
+        echo
+
+        # Keycloak
+
+        SSO_CLIENT_COUNT=$(echo "$UDS_PACKAGE_JSON" |  jq -r '.spec.sso | length')
+
+        ## Must use and create a Keycloak client through the sso key if the application provides a user login.
+        if [ "$SSO_CLIENT_COUNT" -gt 0 ]; then
+          echo "ℹ️ There are $SSO_CLIENT_COUNT SSO clients defined"
+
+          # Should consider security options during implementation to provide the most secure default possible (i.e. SAML w/SCIM vs OIDC).
+          SSO_CLIENT_PROTOCOL=$(echo "$UDS_PACKAGE_JSON" | jq -r '.spec.sso[].protocol')
+          if [ "$SSO_CLIENT_PROTOCOL" != "saml" ]; then
+            echo "❌ SAML is not the default protocol"
+            exit 1
+          fi
+          echo "✅ Default protocol is SAML"
+
+          # Should name the client <App> Login (i.e. Mattermost Login) to provide login UX consistency.
+          SSO_CLIENT_NAME=$(echo "$UDS_PACKAGE_JSON" | jq -r '.spec.sso[].name')
+          if [ "$SSO_CLIENT_NAME" != "${UDS_PACKAGE_NAME^} Login" ]; then
+            echo "❌ SSO client name not in correct format"
+            exit 1
+          fi
+          echo "✅ SSO client name is correct"
+
+          # Should clearly mark the client id with the group and app name uds-<group>-<application> (i.e. uds-swf-mattermost) to provide consistency in the Keycloak UI.
+          SSO_CLIENT_ID=$(echo "$UDS_PACKAGE_JSON" | jq -r '.spec.sso[].clientId')
+          if [ "$SSO_CLIENT_ID" != "uds-package-${UDS_PACKAGE_NAME}-${SSO_CLIENT_PROTOCOL}" ]; then
+            echo "❌ SSO client id not in the format uds-<group>-<application>-protocol"
+            exit 1
+          fi
+          echo "✅ SSO client id is correct"
+
+          ## May end any generated secrets with -sso to easily locate them when querying the cluster.
+          SSO_SECRET_NAME=$(echo "$UDS_PACKAGE_JSON" | jq -r '.spec.sso[].secretName')
+          if [ "$SSO_SECRET_NAME" != "" ]; then
+            echo "ℹ️ SSO secret name is defined"
+            if [[ "$SSO_SECRET_NAME" != *-sso ]]; then
+              echo "❌ SSO secret name not in the format <application>-sso"
+              exit 1
+            fi
+            echo "✅ SSO secret name is in the correct format"
+          fi
+        else
+          echo "::warning ::⚠️ No SSO configuration found, review needed"
+        fi
+
+        echo
+
+        # Prometheus
+
+        ## Must implement monitors for each application metrics endpoint using it's built-in chart monitors, the Package CR monitor key, or manual monitors in the config chart.
+
+        PKG_MONITOR_COUNT=$(echo "$UDS_PACKAGE_JSON" | jq -r '.spec.monitor | length')
+
+        if [ "$PKG_MONITOR_COUNT" -eq 0 ]; then
+          echo "ℹ️ No monitors defined in the package, checking for ServiceMonitors"
+          
+          # Check for built-in serviceMonitors
+          SERVICE_MONITOR_COUNT=$(kubectl get ServiceMonitor -n "${NAMESPACE}" -o json | jq -r '.items | length')
+          if [ "$SERVICE_MONITOR_COUNT" -eq 0 ]; then
+            echo "ℹ️ No ServiceMonitors defined, checking for PodMonitors"
+
+            # Check for built-in podMonitors
+            POD_MONITOR_COUNT=$(kubectl get PodMonitor -n "${NAMESPACE}" -o json | jq -r '.items | length')
+            if [ "$POD_MONITOR_COUNT" -eq 0 ]; then
+              echo "❌ No monitors defined"
+              exit 1
+            else
+              echo "✅ PodMonitor found"
+            fi
+          else
+            echo "✅ ServiceMonitor found"
+          fi
+        else
+          echo "✅ Monitor defined in UDS Package"
+        fi
+
+        echo
+
+        # Exemptions
+
+        ## Must minimize the scope and number of the exemptions to only what is absolutely required by the application
+
+        EXEMPTION_COUNT=$(kubectl get Exemptions -n "${NAMESPACE}" -o json | jq -r '.items | length')
+        if [ "$EXEMPTION_COUNT" -gt 0 ]; then
+          echo "::warning ::⚠️ Exemptions are present, review needed"
+        fi
+        echo "✅ No exemptions present"
+
+        echo
+
+        # Structure
+
+        ## Should expose all configuration (uds.dev CRs, additional Secrets/ConfigMaps, etc) through a Helm chart (ideally in a chart or charts directory).
+
+        COMMON_ZARF_MANIFEST_COUNT=$(cat common/zarf.yaml | yq '.components[] | select(.manifests != null) | length' | wc -l)
+        if [ "$COMMON_ZARF_MANIFEST_COUNT" -gt 0 ]; then
+          echo "❌ Manifests present in common/zarf.yaml"
+          exit 1
+        fi
+        echo "✅ No manifests present in common/zarf.yaml"
+
+        MAIN_ZARF_MANIFEST_COUNT=$(cat zarf.yaml | yq '.components[] | select(.manifests != null) | length' | wc -l)
+        if [ "$MAIN_ZARF_MANIFEST_COUNT" -gt 0 ]; then
+          echo "❌ Manifests present in zarf.yaml"
+          exit 1
+        fi
+        echo "✅ No manifests present in zarf.yaml"
+        ## Should implement or allow for multiple flavors (ideally with common definitions in a common directory)
+
+        ZARF_COMPONENTS_FLAVOR_COUNT=$(cat zarf.yaml | yq '.components[] | select(.only.flavor != null) | length' | wc -l)
+        if [ "$ZARF_COMPONENTS_FLAVOR_COUNT" -eq 0 ]; then
+          echo "❌ No flavors defined in zarf.yaml"
+          exit 1
+        fi
+        echo "✅ At least one flavor defined in zarf.yaml"
+
+        echo
+
+        # Testing
+
+        ## Must implement Journey Testing to cover the basic user flows and features of the application, especially where an application interacts with an external service / interface.
+
+        if [ -d "tests" ]; then
+          if [ "$(ls -A tests)" ]; then
+            echo "✅ Tests folder exists and has files"
+          else
+            echo "❌ Tests folder exists but is empty"
+            exit 1
+          fi
+        else
+          echo "❌ Tests folder does not exist"
+          exit 1
+        fi
+
+        echo
+
+        ## Should lint their configurations with appropriate tooling such as yamllint and zarf dev lint.
+
+        pre-commit run -a
