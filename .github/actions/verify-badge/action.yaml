@@ -1,5 +1,5 @@
 name: Verify-Badge
-description: Perform verification to assist with UDS badge certification 
+description: Perform verification to assist with UDS badge certification
 
 runs:
   using: composite
@@ -171,7 +171,7 @@ runs:
 
         if [ "$PKG_MONITOR_COUNT" -eq 0 ]; then
           echo "ℹ️ No monitors defined in the package, checking for ServiceMonitors"
-          
+
           # Check for built-in serviceMonitors
           SERVICE_MONITOR_COUNT=$(kubectl get ServiceMonitor -n "${NAMESPACE}" -o json | jq -r '.items | length')
           if [ "$SERVICE_MONITOR_COUNT" -eq 0 ]; then
