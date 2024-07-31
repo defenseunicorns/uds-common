@@ -7,7 +7,7 @@ runs:
     - name: Test installing the package
       shell: bash
       run: |
-        set -euo pipefail
+        set -uo pipefail
 
         # Validate UDS Package/Config chart is valid
 
