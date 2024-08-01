@@ -20,7 +20,7 @@ runs:
       with:
         go-version: 1.22
         check-latest: true
-    
+
     - name: Helm tool installer
       uses: Azure/setup-helm@v4.2.0
 
@@ -94,7 +94,7 @@ runs:
         PEERAUTH=$(kubectl get Peerauthentication -n "${NAMESPACE}" -o=json | jq -r '.items[].spec.mtls.mode')
 
         if [ "$PEERAUTH" != "STRICT" ] && [ "$PEERAUTH" != "" ]; then
-          echo "::warning::⚠️ Peerauth is not strict"
+          echo "::warning::⚠️ Peerauth is not strict or inherited, review needed"
         else
           echo "::notice::✅ Peerauthentication is set to strict"
         fi
@@ -108,7 +108,7 @@ runs:
         NETPOL_AMOUNT=$(echo "$UDS_PACKAGE_JSON" | jq -r '.spec.network.allow | length')
 
         if [ "$NETPOL_AMOUNT" -eq 0 ]; then
-          echo "::warning::⚠️ No network policies defined"
+          echo "::warning::⚠️ No network policies defined, review needed"
         else
           echo "::notice::✅ Network policies are defined"
         fi
@@ -141,9 +141,9 @@ runs:
 
         NETPOL_ANYWHERE_COUNT=$(echo "$UDS_PACKAGE_JSON" | jq -r '.spec.network.allow[] | select(.remoteGenerated == "Anywhere") | length' | wc -l)
         if [ "$NETPOL_ANYWHERE_COUNT" -gt 0 ]; then
-          echo "::warning::⚠️ Network policies with `remoteGenerated: Anywhere` are present"
+          echo "::warning::⚠️ Network policies with 'remoteGenerated: Anywhere' are present, review needed"
         else
-          echo "::notice::✅ No network policies with `remoteGenerated: Anywhere` are present"
+          echo "::notice::✅ No network policies with 'remoteGenerated: Anywhere' are present"
         fi
 
         echo
@@ -159,7 +159,7 @@ runs:
           # Should consider security options during implementation to provide the most secure default possible (i.e. SAML w/SCIM vs OIDC).
           SSO_CLIENT_PROTOCOL=$(echo "$UDS_PACKAGE_JSON" | jq -r '.spec.sso[].protocol')
           if [ "$SSO_CLIENT_PROTOCOL" != "saml" ]; then
-            echo "::warning::⚠️ SAML is not the default protocol"
+            echo "::warning::⚠️ SAML is not the default protocol, review needed"
           else
             echo "::notice::✅ Default protocol is SAML"
           fi
@@ -167,7 +167,7 @@ runs:
           # Should name the client <App> Login (i.e. Mattermost Login) to provide login UX consistency.
           SSO_CLIENT_NAME=$(echo "$UDS_PACKAGE_JSON" | jq -r '.spec.sso[].name')
           if [ "$SSO_CLIENT_NAME" != "${UDS_PACKAGE_NAME^} Login" ]; then
-            echo "::warning::⚠️ SSO client name not in correct format"
+            echo "::warning::⚠️ SSO client name not in preferred format, review needed"
           else
             echo "::notice::✅ SSO client name is correct"
           fi
@@ -175,7 +175,7 @@ runs:
           # Should clearly mark the client id with the group and app name uds-<group>-<application> (i.e. uds-swf-mattermost) to provide consistency in the Keycloak UI.
           SSO_CLIENT_ID=$(echo "$UDS_PACKAGE_JSON" | jq -r '.spec.sso[].clientId')
           if [ "$SSO_CLIENT_ID" != "uds-${{ inputs.groupName }})-${UDS_PACKAGE_NAME}-${SSO_CLIENT_PROTOCOL}" ]; then
-            echo "::warning::⚠️ SSO client id not in the format uds-<group>-<application>-protocol"
+            echo "::warning::⚠️ SSO client id not in the format uds-<group>-<application>-protocol, review needed"
           else
             echo "::notice::✅ SSO client id is correct"
           fi
@@ -185,7 +185,7 @@ runs:
           if [ "$SSO_SECRET_NAME" != "" ]; then
             echo "::notice::ℹ️ SSO secret name is defined"
             if [[ "$SSO_SECRET_NAME" != *-sso ]]; then
-              echo "::warning::⚠️ SSO secret name not in the format <application>-sso"
+              echo "::warning::⚠️ SSO secret name not in the format <application>-sso, review needed"
             else
               echo "::notice::✅ SSO secret name is in the correct format"
             fi
@@ -286,5 +286,3 @@ runs:
         else
           echo "::error::❌ Tests folder does not exist"
         fi
-
-        echo
