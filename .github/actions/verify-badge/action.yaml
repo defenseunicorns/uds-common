@@ -1,33 +1,40 @@
 name: Verify-Badge
 description: Perform verification to assist with UDS badge certification
 
+inputs:
+  chartPath:
+    description: Relative path to the directory with the uds-config chart
+    default: "chart/"
+
 runs:
   using: composite
   steps:
+    - name: Setup Go environment
+      uses: actions/setup-go@v5.0.2
+            
     - name: Test installing the package
       shell: bash
       run: |
-        set -uo pipefail
 
         # Validate UDS Package/Config chart is valid
 
-        echo "ℹ️ Installing kubectl-validate..."
+        echo "::notice::ℹ️ Installing kubectl-validate..."
         go install sigs.k8s.io/kubectl-validate@latest
 
-        echo "ℹ️ Validating uds-config chart..."
-        kubectl-validate <(helm template chart chart/)
+        echo "::notice::ℹ️ Validating uds-config chart..."
+        kubectl-validate <(helm template chart ${{ inputs.chartPath }})
         echo
 
         # Setup
 
         NAMESPACE=$(yq '.components[].charts[].namespace' common/zarf.yaml | uniq)
-        echo "ℹ️ Namespace: $NAMESPACE"
+        echo "::notice::ℹ️ Namespace: $NAMESPACE"
 
         UDS_PACKAGE_JSON=$(kubectl get Packages -n "${NAMESPACE}" -o jsonpath='{.items[]}')
-        echo "ℹ️ Retrieved UDS Package JSON"
+        echo "::notice::ℹ️ Retrieved UDS Package JSON"
 
         UDS_PACKAGE_NAME=$(echo "$UDS_PACKAGE_JSON" | jq -r '.metadata.name')
-        echo "ℹ️ Package Name: $UDS_PACKAGE_NAME"
+        echo "::notice::ℹ️ Package Name: $UDS_PACKAGE_NAME"
         echo
 
         # Istio
@@ -35,16 +42,16 @@ runs:
         ## Must define any external interfaces under the expose key.
 
         ENDPOINTS="$(echo "$UDS_PACKAGE_JSON" | jq -r '.status.endpoints[]')"
-        echo "ℹ️ Endpoints: $ENDPOINTS"
+        echo "::notice::ℹ️ Endpoints: $ENDPOINTS"
 
         for ENDPOINT in $ENDPOINTS; do
           # Curl endpoint and check that status isn't 404 or 5XX
           STATUS=$(curl -s -o /dev/null -w "%{http_code}" "https://$ENDPOINT")
           if [ "$STATUS" -eq 404 ] || [[ $STATUS == 5* ]]; then
-            echo "❌ Endpoint $ENDPOINT is returning $STATUS"
-            exit 1
+            echo "::error::❌ Endpoint $ENDPOINT is returning $STATUS"
+          else
+            echo "::notice::✅ Endpoint $ENDPOINT was successfully curl'd"
           fi
-          echo "✅ Endpoint $ENDPOINT was successfully curl'd"
         done
 
         echo
@@ -56,10 +63,10 @@ runs:
         POD_SIDECAR_COUNT=$(kubectl get pods -n "${NAMESPACE}" -o json | jq '.items[].spec.containers[] | select(.name=="istio-proxy") | length' | wc -l)
 
         if [ "$POD_COUNT" -ne "$POD_SIDECAR_COUNT" ]; then
-          echo "❌ Not all pods have the istio sidecar"
-          exit 1
+          echo "::error::❌ Not all pods have the istio sidecar"
+        else
+          echo "::notice::✅ All pods have the istio sidecar"
         fi
-        echo "✅ All pods have the istio sidecar"
 
         echo
 
@@ -68,10 +75,10 @@ runs:
         PEERAUTH=$(kubectl get Peerauthentication -n "${NAMESPACE}" -o=json | jq -r '.items[].spec.mtls.mode')
 
         if [ "$PEERAUTH" != "STRICT" ] && [ "$PEERAUTH" != "" ]; then
-          echo "❌ Peerauth is not strict"
-          exit 1
+          echo "::error::❌ Peerauth is not strict"
+        else
+          echo "::notice::✅ Peerauthentication is set to strict"
         fi
-        echo "✅ Peerauthentication is set to strict"
 
         echo
 
@@ -82,36 +89,36 @@ runs:
         NETPOL_AMOUNT=$(echo "$UDS_PACKAGE_JSON" | jq -r '.spec.network.allow | length')
 
         if [ "$NETPOL_AMOUNT" -eq 0 ]; then
-          echo "❌ No network policies defined"
-          exit 1
+          echo "::error::❌ No network policies defined"
+        else
+          echo "::notice::✅ Network policies are defined"
         fi
-        echo "✅ Network policies are defined"
 
         ## Should minimize network policies to specific selectors needed for Ingress/Egress traffic.
 
         NETPOL_EXT_COUNT=$(echo "$UDS_PACKAGE_JSON" | jq -r '.spec.network.allow[] | select(.remoteGenerated != "IntraNamespace") | length' | wc -l)
-        echo "ℹ️ Non-IntraNamespace network policies: $NETPOL_EXT_COUNT"
+        echo "::notice::ℹ️ Non-IntraNamespace network policies: $NETPOL_EXT_COUNT"
 
         NETPOL_EXT_SELECTOR_COUNT=$(echo "$UDS_PACKAGE_JSON" | jq -r '.spec.network.allow[] | select(.remoteGenerated != "IntraNamespace") | select(.selector != null) | length' | wc -l)
-        echo "ℹ️ Non-IntraNamespace network policies with selectors: $NETPOL_EXT_SELECTOR_COUNT"
+        echo "::notice::ℹ️ Non-IntraNamespace network policies with selectors: $NETPOL_EXT_SELECTOR_COUNT"
 
         if [ "$NETPOL_EXT_COUNT" -ne "$NETPOL_EXT_SELECTOR_COUNT" ]; then
-          echo "❌ Not all applicable network policies are using selectors"
-          exit 1
+          echo "::error::❌ Not all applicable network policies are using selectors"
+        else
+          echo "::notice::✅ All applicable network policies are using selectors"
         fi
-        echo "✅ All applicable network policies are using selectors"
 
         NETPOL_EXT_NOTKUBE_COUNT=$(echo "$UDS_PACKAGE_JSON" | jq -r '.spec.network.allow[] | select(.remoteGenerated != "IntraNamespace") | select(.remoteGenerated != "KubeAPI") | length' | wc -l)
-        echo "ℹ️ Non-IntraNamespace, non-KubeAPI network policies: $NETPOL_EXT_NOTKUBE_COUNT"
+        echo "::notice::ℹ️ Non-IntraNamespace, non-KubeAPI network policies: $NETPOL_EXT_NOTKUBE_COUNT"
 
         NETPOL_EXT_NOTKUBE_PORT_COUNT=$(echo "$UDS_PACKAGE_JSON" | jq -r '.spec.network.allow[] | select(.remoteGenerated != "IntraNamespace") | select(.remoteGenerated != "KubeAPI") | select(.ports != null or .port != null) | length' | wc -l)
-        echo "ℹ️ Non-IntraNamespace, non-KubeAPI network policies with ports: $NETPOL_EXT_NOTKUBE_PORT_COUNT"
+        echo "::notice::ℹ️ Non-IntraNamespace, non-KubeAPI network policies with ports: $NETPOL_EXT_NOTKUBE_PORT_COUNT"
 
         if [ "$NETPOL_EXT_NOTKUBE_COUNT" -ne "$NETPOL_EXT_NOTKUBE_PORT_COUNT" ]; then
-          echo "❌ Not all applicable network policies are using ports"
-          exit 1
+          echo "::error::❌ Not all applicable network policies are using ports"
+        else
+          echo "::notice::✅ All applicable network policies are using ports"
         fi
-        echo "✅ All applicable network policies are using ports"
 
         echo
 
@@ -121,41 +128,41 @@ runs:
 
         ## Must use and create a Keycloak client through the sso key if the application provides a user login.
         if [ "$SSO_CLIENT_COUNT" -gt 0 ]; then
-          echo "ℹ️ There are $SSO_CLIENT_COUNT SSO clients defined"
+          echo "::notice::ℹ️ There are $SSO_CLIENT_COUNT SSO clients defined"
 
           # Should consider security options during implementation to provide the most secure default possible (i.e. SAML w/SCIM vs OIDC).
           SSO_CLIENT_PROTOCOL=$(echo "$UDS_PACKAGE_JSON" | jq -r '.spec.sso[].protocol')
           if [ "$SSO_CLIENT_PROTOCOL" != "saml" ]; then
-            echo "❌ SAML is not the default protocol"
-            exit 1
+            echo "::error::❌ SAML is not the default protocol"
+          else
+            echo "::notice::✅ Default protocol is SAML"
           fi
-          echo "✅ Default protocol is SAML"
 
           # Should name the client <App> Login (i.e. Mattermost Login) to provide login UX consistency.
           SSO_CLIENT_NAME=$(echo "$UDS_PACKAGE_JSON" | jq -r '.spec.sso[].name')
           if [ "$SSO_CLIENT_NAME" != "${UDS_PACKAGE_NAME^} Login" ]; then
-            echo "❌ SSO client name not in correct format"
-            exit 1
+            echo "::error::❌ SSO client name not in correct format"
+          else
+            echo "::notice::✅ SSO client name is correct"
           fi
-          echo "✅ SSO client name is correct"
 
           # Should clearly mark the client id with the group and app name uds-<group>-<application> (i.e. uds-swf-mattermost) to provide consistency in the Keycloak UI.
           SSO_CLIENT_ID=$(echo "$UDS_PACKAGE_JSON" | jq -r '.spec.sso[].clientId')
           if [ "$SSO_CLIENT_ID" != "uds-package-${UDS_PACKAGE_NAME}-${SSO_CLIENT_PROTOCOL}" ]; then
-            echo "❌ SSO client id not in the format uds-<group>-<application>-protocol"
-            exit 1
+            echo "::error::❌ SSO client id not in the format uds-<group>-<application>-protocol"
+          else
+            echo "::notice::✅ SSO client id is correct"
           fi
-          echo "✅ SSO client id is correct"
 
           ## May end any generated secrets with -sso to easily locate them when querying the cluster.
           SSO_SECRET_NAME=$(echo "$UDS_PACKAGE_JSON" | jq -r '.spec.sso[].secretName')
           if [ "$SSO_SECRET_NAME" != "" ]; then
-            echo "ℹ️ SSO secret name is defined"
+            echo "::notice::ℹ️ SSO secret name is defined"
             if [[ "$SSO_SECRET_NAME" != *-sso ]]; then
-              echo "❌ SSO secret name not in the format <application>-sso"
-              exit 1
+              echo "::error::❌ SSO secret name not in the format <application>-sso"
+            else
+              echo "::notice::✅ SSO secret name is in the correct format"
             fi
-            echo "✅ SSO secret name is in the correct format"
           fi
         else
           echo "::warning ::⚠️ No SSO configuration found, review needed"
@@ -170,26 +177,25 @@ runs:
         PKG_MONITOR_COUNT=$(echo "$UDS_PACKAGE_JSON" | jq -r '.spec.monitor | length')
 
         if [ "$PKG_MONITOR_COUNT" -eq 0 ]; then
-          echo "ℹ️ No monitors defined in the package, checking for ServiceMonitors"
+          echo "::notice::ℹ️ No monitors defined in the package, checking for ServiceMonitors"
 
           # Check for built-in serviceMonitors
           SERVICE_MONITOR_COUNT=$(kubectl get ServiceMonitor -n "${NAMESPACE}" -o json | jq -r '.items | length')
           if [ "$SERVICE_MONITOR_COUNT" -eq 0 ]; then
-            echo "ℹ️ No ServiceMonitors defined, checking for PodMonitors"
+            echo "::notice::ℹ️ No ServiceMonitors defined, checking for PodMonitors"
 
             # Check for built-in podMonitors
             POD_MONITOR_COUNT=$(kubectl get PodMonitor -n "${NAMESPACE}" -o json | jq -r '.items | length')
             if [ "$POD_MONITOR_COUNT" -eq 0 ]; then
-              echo "❌ No monitors defined"
-              exit 1
+              echo "::error::❌ No monitors defined"
             else
-              echo "✅ PodMonitor found"
+              echo "::notice::✅ PodMonitor found"
             fi
           else
-            echo "✅ ServiceMonitor found"
+            echo "::notice::✅ ServiceMonitor found"
           fi
         else
-          echo "✅ Monitor defined in UDS Package"
+          echo "::notice::✅ Monitor defined in UDS Package"
         fi
 
         echo
@@ -201,8 +207,9 @@ runs:
         EXEMPTION_COUNT=$(kubectl get Exemptions -n "${NAMESPACE}" -o json | jq -r '.items | length')
         if [ "$EXEMPTION_COUNT" -gt 0 ]; then
           echo "::warning ::⚠️ Exemptions are present, review needed"
+        else
+          echo "::notice::✅ No exemptions present"
         fi
-        echo "✅ No exemptions present"
 
         echo
 
@@ -212,25 +219,26 @@ runs:
 
         COMMON_ZARF_MANIFEST_COUNT=$(cat common/zarf.yaml | yq '.components[] | select(.manifests != null) | length' | wc -l)
         if [ "$COMMON_ZARF_MANIFEST_COUNT" -gt 0 ]; then
-          echo "❌ Manifests present in common/zarf.yaml"
-          exit 1
+          echo "::error::❌ Manifests present in common/zarf.yaml"
+        else
+          echo "::notice::✅ No manifests present in common/zarf.yaml"
         fi
-        echo "✅ No manifests present in common/zarf.yaml"
 
         MAIN_ZARF_MANIFEST_COUNT=$(cat zarf.yaml | yq '.components[] | select(.manifests != null) | length' | wc -l)
         if [ "$MAIN_ZARF_MANIFEST_COUNT" -gt 0 ]; then
-          echo "❌ Manifests present in zarf.yaml"
-          exit 1
+          echo "::error::❌ Manifests present in zarf.yaml"
+        else
+          echo "::notice::✅ No manifests present in zarf.yaml"
         fi
-        echo "✅ No manifests present in zarf.yaml"
+
         ## Should implement or allow for multiple flavors (ideally with common definitions in a common directory)
 
         ZARF_COMPONENTS_FLAVOR_COUNT=$(cat zarf.yaml | yq '.components[] | select(.only.flavor != null) | length' | wc -l)
         if [ "$ZARF_COMPONENTS_FLAVOR_COUNT" -eq 0 ]; then
-          echo "❌ No flavors defined in zarf.yaml"
-          exit 1
+          echo "::error::❌ No flavors defined in zarf.yaml"
+        else
+          echo "::notice::✅ At least one flavor defined in zarf.yaml"
         fi
-        echo "✅ At least one flavor defined in zarf.yaml"
 
         echo
 
@@ -240,14 +248,12 @@ runs:
 
         if [ -d "tests" ]; then
           if [ "$(ls -A tests)" ]; then
-            echo "✅ Tests folder exists and has files"
+            echo "::notice::✅ Tests folder exists and has files"
           else
-            echo "❌ Tests folder exists but is empty"
-            exit 1
+            echo "::error::❌ Tests folder exists but is empty"
           fi
         else
-          echo "❌ Tests folder does not exist"
-          exit 1
+          echo "::error::❌ Tests folder does not exist"
         fi
 
         echo
