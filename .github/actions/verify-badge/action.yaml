@@ -8,6 +8,9 @@ inputs:
   groupName:
     description: The name of the niche/group that the package fits into. E.g. package,swf,lfai
     default: package
+  commonZarf:
+    description: Whether or not there is a common zarf.yaml file
+    default: "true"
 
 runs:
   using: composite
@@ -32,13 +35,18 @@ runs:
         go install sigs.k8s.io/kubectl-validate@latest
 
         echo "::notice::ℹ️ Validating uds-config chart..."
-        echo "::notice::ℹ️ TODO: skipping since podinfo doesn't use config chart (shame)"
+        echo "::warning::⚠️ TODO: skipping since podinfo doesn't use config chart (shame)"
         # kubectl-validate <(helm template chart ${{ inputs.chartPath }})
         echo
 
         # Setup
 
-        NAMESPACE=$(yq '.components[].charts[].namespace' common/zarf.yaml | uniq)
+        if [ "${{ inputs.commonZarf }}" == "true" ]; then
+          NAMESPACE=$(yq '.components[].charts[].namespace' common/zarf.yaml | uniq)
+        else
+          echo "::warning::⚠️ There is no common zarf.yaml file"
+          NAMESPACE=$(yq '.components[].charts[].namespace' zarf.yaml | uniq)
+        fi
         echo "::notice::ℹ️ Namespace: $NAMESPACE"
 
         UDS_PACKAGE_JSON=$(kubectl get Packages -n "${NAMESPACE}" -o jsonpath='{.items[]}')
@@ -238,11 +246,13 @@ runs:
 
         ## Should expose all configuration (uds.dev CRs, additional Secrets/ConfigMaps, etc) through a Helm chart (ideally in a chart or charts directory).
 
-        COMMON_ZARF_MANIFEST_COUNT=$(cat common/zarf.yaml | yq '.components[] | select(.manifests != null) | length' | wc -l)
-        if [ "$COMMON_ZARF_MANIFEST_COUNT" -gt 0 ]; then
-          echo "::error::❌ Manifests present in common/zarf.yaml"
-        else
-          echo "::notice::✅ No manifests present in common/zarf.yaml"
+        if [ "${{ inputs.commonZarf }}" == "true" ]; then
+          COMMON_ZARF_MANIFEST_COUNT=$(cat common/zarf.yaml | yq '.components[] | select(.manifests != null) | length' | wc -l)
+          if [ "$COMMON_ZARF_MANIFEST_COUNT" -gt 0 ]; then
+            echo "::error::❌ Manifests present in common/zarf.yaml"
+          else
+            echo "::notice::✅ No manifests present in common/zarf.yaml"
+          fi
         fi
 
         MAIN_ZARF_MANIFEST_COUNT=$(cat zarf.yaml | yq '.components[] | select(.manifests != null) | length' | wc -l)
