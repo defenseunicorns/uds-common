@@ -62,7 +62,6 @@ jobs:
 
       - name: UDS Badge Verification
         uses: ./.github/actions/verify-badge
-        continue-on-error: true
 
       - name: Debug Output
         if: ${{ always() }}

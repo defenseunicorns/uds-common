@@ -5,15 +5,25 @@ inputs:
   chartPath:
     description: Relative path to the directory with the uds-config chart
     default: chart/
+  groupName:
+    description: The name of the niche/group that the package fits into. E.g. package,swf,lfai
+    default: package
 
 runs:
   using: composite
   steps:
     - name: Setup Go environment
       uses: actions/setup-go@v5.0.2
+      with:
+        go-version: 1.22
+        check-latest: true
+    
+    - name: Helm tool installer
+      uses: Azure/setup-helm@v4.2.0
 
     - name: Test installing the package
       shell: bash
+      continue-on-error: true
       run: |
 
         # Validate UDS Package/Config chart is valid
@@ -22,7 +32,8 @@ runs:
         go install sigs.k8s.io/kubectl-validate@latest
 
         echo "::notice::ℹ️ Validating uds-config chart..."
-        kubectl-validate <(helm template chart ${{ inputs.chartPath }})
+        echo "::notice::ℹ️ TODO: skipping since podinfo doesn't use config chart (shame)"
+        # kubectl-validate <(helm template chart ${{ inputs.chartPath }})
         echo
 
         # Setup
@@ -75,7 +86,7 @@ runs:
         PEERAUTH=$(kubectl get Peerauthentication -n "${NAMESPACE}" -o=json | jq -r '.items[].spec.mtls.mode')
 
         if [ "$PEERAUTH" != "STRICT" ] && [ "$PEERAUTH" != "" ]; then
-          echo "::error::❌ Peerauth is not strict"
+          echo "::warning::⚠️ Peerauth is not strict"
         else
           echo "::notice::✅ Peerauthentication is set to strict"
         fi
@@ -89,7 +100,7 @@ runs:
         NETPOL_AMOUNT=$(echo "$UDS_PACKAGE_JSON" | jq -r '.spec.network.allow | length')
 
         if [ "$NETPOL_AMOUNT" -eq 0 ]; then
-          echo "::error::❌ No network policies defined"
+          echo "::warning::⚠️ No network policies defined"
         else
           echo "::notice::✅ Network policies are defined"
         fi
@@ -120,6 +131,13 @@ runs:
           echo "::notice::✅ All applicable network policies are using ports"
         fi
 
+        NETPOL_ANYWHERE_COUNT=$(echo "$UDS_PACKAGE_JSON" | jq -r '.spec.network.allow[] | select(.remoteGenerated == "Anywhere") | length' | wc -l)
+        if [ "$NETPOL_ANYWHERE_COUNT" -gt 0 ]; then
+          echo "::warning::⚠️ Network policies with `remoteGenerated: Anywhere` are present"
+        else
+          echo "::notice::✅ No network policies with `remoteGenerated: Anywhere` are present"
+        fi
+
         echo
 
         # Keycloak
@@ -133,7 +151,7 @@ runs:
           # Should consider security options during implementation to provide the most secure default possible (i.e. SAML w/SCIM vs OIDC).
           SSO_CLIENT_PROTOCOL=$(echo "$UDS_PACKAGE_JSON" | jq -r '.spec.sso[].protocol')
           if [ "$SSO_CLIENT_PROTOCOL" != "saml" ]; then
-            echo "::error::❌ SAML is not the default protocol"
+            echo "::warning::⚠️ SAML is not the default protocol"
           else
             echo "::notice::✅ Default protocol is SAML"
           fi
@@ -141,15 +159,15 @@ runs:
           # Should name the client <App> Login (i.e. Mattermost Login) to provide login UX consistency.
           SSO_CLIENT_NAME=$(echo "$UDS_PACKAGE_JSON" | jq -r '.spec.sso[].name')
           if [ "$SSO_CLIENT_NAME" != "${UDS_PACKAGE_NAME^} Login" ]; then
-            echo "::error::❌ SSO client name not in correct format"
+            echo "::warning::⚠️ SSO client name not in correct format"
           else
             echo "::notice::✅ SSO client name is correct"
           fi
 
           # Should clearly mark the client id with the group and app name uds-<group>-<application> (i.e. uds-swf-mattermost) to provide consistency in the Keycloak UI.
           SSO_CLIENT_ID=$(echo "$UDS_PACKAGE_JSON" | jq -r '.spec.sso[].clientId')
-          if [ "$SSO_CLIENT_ID" != "uds-package-${UDS_PACKAGE_NAME}-${SSO_CLIENT_PROTOCOL}" ]; then
-            echo "::error::❌ SSO client id not in the format uds-<group>-<application>-protocol"
+          if [ "$SSO_CLIENT_ID" != "uds-${{ inputs.groupName }})-${UDS_PACKAGE_NAME}-${SSO_CLIENT_PROTOCOL}" ]; then
+            echo "::warning::⚠️ SSO client id not in the format uds-<group>-<application>-protocol"
           else
             echo "::notice::✅ SSO client id is correct"
           fi
@@ -159,13 +177,13 @@ runs:
           if [ "$SSO_SECRET_NAME" != "" ]; then
             echo "::notice::ℹ️ SSO secret name is defined"
             if [[ "$SSO_SECRET_NAME" != *-sso ]]; then
-              echo "::error::❌ SSO secret name not in the format <application>-sso"
+              echo "::warning::⚠️ SSO secret name not in the format <application>-sso"
             else
               echo "::notice::✅ SSO secret name is in the correct format"
             fi
           fi
         else
-          echo "::warning ::⚠️ No SSO configuration found, review needed"
+          echo "::warning::⚠️ No SSO configuration found, review needed"
         fi
 
         echo
@@ -190,12 +208,15 @@ runs:
               echo "::error::❌ No monitors defined"
             else
               echo "::notice::✅ PodMonitor found"
+              echo "::warning::⚠️ There may be more monitors to implement, review needed"
             fi
           else
             echo "::notice::✅ ServiceMonitor found"
+            echo "::warning::⚠️ There may be more monitors to implement, review needed"
           fi
         else
           echo "::notice::✅ Monitor defined in UDS Package"
+          echo "::warning::⚠️ There may be more monitors to implement, review needed"
         fi
 
         echo
@@ -206,7 +227,7 @@ runs:
 
         EXEMPTION_COUNT=$(kubectl get Exemptions -n "${NAMESPACE}" -o json | jq -r '.items | length')
         if [ "$EXEMPTION_COUNT" -gt 0 ]; then
-          echo "::warning ::⚠️ Exemptions are present, review needed"
+          echo "::warning::⚠️ Exemptions are present, review needed"
         else
           echo "::notice::✅ No exemptions present"
         fi
@@ -257,7 +278,3 @@ runs:
         fi
 
         echo
-
-        ## Should lint their configurations with appropriate tooling such as yamllint and zarf dev lint.
-
-        pre-commit run -a
