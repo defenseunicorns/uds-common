@@ -4,14 +4,14 @@ description: Perform verification to assist with UDS badge certification
 inputs:
   chartPath:
     description: Relative path to the directory with the uds-config chart
-    default: "chart/"
+    default: chart/
 
 runs:
   using: composite
   steps:
     - name: Setup Go environment
       uses: actions/setup-go@v5.0.2
-            
+
     - name: Test installing the package
       shell: bash
       run: |
