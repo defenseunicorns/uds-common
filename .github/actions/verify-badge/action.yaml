@@ -15,7 +15,7 @@ runs:
         go install sigs.k8s.io/kubectl-validate@latest
 
         echo "ℹ️ Validating uds-config chart..."
-        kubectl validate <(helm template chart chart/)
+        kubectl-validate <(helm template chart chart/)
         echo
 
         # Setup
