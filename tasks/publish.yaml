@@ -1,3 +1,10 @@
+includes:
+  - utils: https://raw.githubusercontent.com/defenseunicorns/uds-common/7d5f445a50b19e97b9a8bed0d2445654ae05bab6/tasks/utils.yaml
+
+variables:
+  - name: FLAVOR
+    default: upstream
+
 tasks:
   - name: package
     description: Publish package for the supplied architecture
@@ -11,13 +18,16 @@ tasks:
       architecture:
         description: The architecture of the package to publish
         default: ${UDS_ARCH}
-      target_repo:
-        description: The repository to publish into
-        default: ghcr.io/defenseunicorns/packages/uds
+      team:
+        description: The team publishing the package
+        default: uds
     actions:
+      - task: utils:determine-repo
+        with:
+          team: ${{.inputs.team}}
       - description: Publish package for the supplied architecture
         cmd: |
-          ./uds zarf package publish ${{ .inputs.path }}/zarf-package-*-${{ .inputs.architecture }}-${{ .inputs.version }}.tar.zst oci://${{ .inputs.target_repo }}
+          ./uds zarf package publish ${{ .inputs.path }}/zarf-package-*-${{ .inputs.architecture }}-${{ .inputs.version }}.tar.zst oci://${TARGET_REPO}
 
   - name: test-bundle
     description: Publish bundle for the supplied architecture
@@ -31,10 +41,8 @@ tasks:
       architecture:
         description: The architecture of the bundle to publish
         default: ${UDS_ARCH}
-      target_repo:
-        description: The repository to publish into
-        default: ghcr.io/defenseunicorns/packages/uds/bundles
     actions:
+      - task: utils:determine-repo
       - description: Publish bundle for the supplied architecture
         cmd: |
-          ./uds publish ${{ .inputs.path }}/uds-bundle-*-${{ .inputs.architecture }}-${{ .inputs.version }}.tar.zst oci://${{ .inputs.target_repo }} --no-progress
+          ./uds publish ${{ .inputs.path }}/uds-bundle-*-${{ .inputs.architecture }}-${{ .inputs.version }}.tar.zst oci://${TARGET_REPO}/bundles --no-progress
