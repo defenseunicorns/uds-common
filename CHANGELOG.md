@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.11.0](https://github.com/defenseunicorns/uds-common/compare/v0.10.0...v0.11.0) (2024-08-02)
+
+
+### Features
+
+* add support for uds-core snapshots ([#193](https://github.com/defenseunicorns/uds-common/issues/193)) ([7a39915](https://github.com/defenseunicorns/uds-common/commit/7a39915ceff7a1a9e319846042ab74390fda6f2b))
+
+
+### Miscellaneous
+
+* **deps:** update uds common support dependencies ([#187](https://github.com/defenseunicorns/uds-common/issues/187)) ([a0bbfb0](https://github.com/defenseunicorns/uds-common/commit/a0bbfb043e670a175fbdc44585e2bbb5b695acf7))
+
 ## [0.10.0](https://github.com/defenseunicorns/uds-common/compare/v0.9.0...v0.10.0) (2024-07-29)
 
 
