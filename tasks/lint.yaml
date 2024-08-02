@@ -21,3 +21,15 @@ tasks:
     actions:
       - description: Lint OSCAL files
         cmd: lula tools lint -f $OSCALFILES
+
+  - name: helm
+    description: Run helm lint checks
+    inputs:
+      path:
+        description: Path to the helm chart
+        default: chart
+    actions:
+      - description: Helm lint
+        cmd: helm lint --strict ${{ .inputs.path }}
+      - description: Helm template
+        cmd: helm template ${{ .inputs.path }}
