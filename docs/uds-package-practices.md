@@ -82,6 +82,24 @@ To help maintain a UDS Package, it:
 
 - **Must** release its package to the `ghcr.io/defenseunicorns/packages/<group>` namespace as the application's name (i.e. `ghcr.io/defenseunicorns/packages/uds/mattermost`)
 
+## Versioning
+
+- **Must** be versioned as follows:
+```
+<upstream-app-version>-uds.<uds-sub-version>
+```
+
+Where,
+
+- `upstream-app-version`: is the version of the main application in the package (i.e. `17.2.1` for GitLab)
+- `uds-sub-version`: is the number of releases since the last main application version bump (starting at `0`)
+
+In practice, this results in the following for the second release of a package for version `17.2.1` of GitLab:
+
+```
+17.2.1-uds.1
+```
+
 ## General
 
 And in addition to the above, packages generally:
