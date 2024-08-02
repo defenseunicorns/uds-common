@@ -1,0 +1,44 @@
+apiVersion: uds.dev/v1alpha1
+kind: Package
+metadata:
+  name: nginx
+  namespace: {{ .Release.Namespace }}
+spec:
+  monitor:
+    - selector:
+        app.kubernetes.io/name: nginx
+      targetPort: 8080
+      portName: http
+      path: /fakemetrics/
+      description: Metrics
+
+  network:
+    expose:
+      - service: nginx
+        selector:
+          app.kubernetes.io/name: nginx
+        gateway: tenant
+        host: nginx
+        port: 8080
+    allow:
+      - direction: Ingress
+        remoteGenerated: IntraNamespace
+
+      - direction: Egress
+        remoteGenerated: IntraNamespace
+
+      # Custom rules for unanticipated scenarios
+      {{- range .Values.customNetworkPolicies }}
+      - direction: {{ .direction }}
+        selector:
+          {{ .selector | toYaml | nindent 10 }}
+        {{- if not .remoteGenerated }}
+        remoteNamespace: {{ .remoteNamespace }}
+        remoteSelector:
+          {{ .remoteSelector | toYaml | nindent 10 }}
+        port: {{ .port }}
+        {{- else }}
+        remoteGenerated: {{ .remoteGenerated }}
+        {{- end }}
+        description: {{ .description }}
+      {{- end }}

@@ -1,0 +1,18 @@
+domain: "###ZARF_VAR_DOMAIN###"
+
+# customNetworkPolicies:
+#    # Notice no `remoteGenerated` field here on custom internal rule
+#   - direction: Ingress
+#     selector:
+#       app: nginx
+#     remoteNamespace: nginx
+#     remoteSelector:
+#       app: nginx
+#     port: 8180
+#     description: "Ingress from nginx"
+#   # No `remoteNamespace`, `remoteSelector`, or `port` fields on rule to `remoteGenerated`
+#   - direction: Egress
+#     selector:
+#       app: webservice
+#     remoteGenerated: Anywhere
+#     description: "Egress from Mattermost"

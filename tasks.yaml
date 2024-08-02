@@ -9,34 +9,40 @@ includes:
 
 tasks:
   - name: default
-    description: Create and deploy the podinfo package on a fresh cluster
+    description: Create and deploy the nginx package on a fresh cluster
     actions:
-      - task: create-podinfo-test-bundle
+      - task: create-nginx-test-bundle
       - task: setup:k3d-test-cluster
       - task: deploy:test-bundle
 
-  - name: create-podinfo-package
-    description: Create UDS Podinfo Package
+  - name: create-nginx-package
+    description: Create UDS nginx Package
     actions:
       - task: create:package
         with:
           options: --skip-sbom
 
-  - name: create-podinfo-test-bundle
-    description: Create a local UDS Podinfo bundle
+  - name: create-nginx-test-bundle
+    description: Create a local UDS nginx bundle
     actions:
-      - task: create-podinfo-package
+      - task: create-nginx-package
       - task: create:test-bundle
 
-  - name: create-podinfo-latest-release-bundle
-    description: Create UDS Podinfo bundle based on the latest release
+  - name: create-nginx-latest-release-bundle
+    description: Create UDS nginx bundle based on the latest release
     actions:
       - task: pull:latest-package-release
         with:
           spoof_release: "true"
       - task: create:test-bundle
 
-  - name: publish-podinfo
+  - name: dev
+    description: Create and deploy the bundle against an existing cluster
+    actions:
+      - task: create-nginx-test-bundle
+      - task: deploy:test-bundle
+
+  - name: publish-nginx
     description: Build and publish the packages
     actions:
       - description: Create the AMD64 package
@@ -57,31 +63,31 @@ tasks:
           # x-release-please-end
 
   - name: test
-    description: Test and validate cluster is deployed with podinfo
+    description: Test and validate cluster is deployed with nginx
     actions:
       - wait:
           cluster:
             kind: Deployment
-            name: podinfo
-            namespace: uds-podinfo
+            name: nginx
+            namespace: uds-nginx
             condition: available
       - wait:
           network:
             protocol: https
-            address: podinfo.uds.dev
+            address: nginx.uds.dev
             code: 200
       - wait:
           network:
             protocol: https
-            address: podinfo.uds.dev/echo
+            address: nginx.uds.dev/echo
             code: 200
 
 # CI will execute the following (via .github/actions/test) so they need to be here with these names
 
   - name: test-package
-    description: Test the Podinfo package from the current branch
+    description: Test the nginx package from the current branch
     actions:
-      - task: create-podinfo-test-bundle
+      - task: create-nginx-test-bundle
       - task: setup:k3d-test-cluster
       - task: deploy:test-bundle
       - task: test
@@ -92,13 +98,13 @@ tasks:
   - name: test-upgrade
     description: Test an upgrade from the latest released package to the current branch
     actions:
-      - task: create-podinfo-latest-release-bundle
+      - task: create-nginx-latest-release-bundle
       - task: setup:k3d-test-cluster
       - task: deploy:test-bundle
       - task: compliance:validate
         with:
           assessment_results: /tmp/oscal-assessment-results.yaml
-      - task: create-podinfo-test-bundle
+      - task: create-nginx-test-bundle
       - task: deploy:test-bundle
       - task: test
       - task: compliance:validate
