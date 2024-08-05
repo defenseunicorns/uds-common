@@ -251,6 +251,16 @@
             "datasourceTemplate": "docker",
             // Match versioning used on UDS packages. Test: https://regex101.com/r/BGkYHX/4
             "versioningTemplate": "regex:^v?(?<major>\\d+)(\\.(?<minor>\\d+))?(\\.(?<patch>\\d+))?(-uds\\.(?<build>\\d))?(-(?<compatibility>\\w+)?)?(.*?)?$"
+        },
+        // Matches images in any yaml file that specifies `jmxExporterImageRepo` then `jmxExporterImageTag`
+        {
+            "fileMatch": [ "\\.*\\.ya?ml$" ],
+            "matchStringsStrategy": "recursive",
+            "matchStrings": [
+                // Match the parts of a chart entry. Test: https://regex101.com/r/7Alxok/1
+                "(?m)jmxExporterImageRepo: (?<depName>.*)\n  jmxExporterImageTag: (?<currentValue>.*)\n$"
+            ],
+            "datasourceTemplate": "docker"
         }
     ],
     "packageRules": [
