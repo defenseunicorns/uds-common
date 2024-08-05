@@ -38,7 +38,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        flavor: [test]
+        flavor: [upstream, registry1, unicorn]
         type: [install, upgrade]
 
     steps:
