@@ -88,7 +88,7 @@ This task file includes two tasks:
 - `yaml`: lints all of the `.yaml` files within the repository.
 - `oscal`: lints targeted OSCAL files within the repository.
 
-### compliance.yaml 
+### compliance.yaml
 
 This task file includes two tasks:
 

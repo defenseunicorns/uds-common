@@ -1,4 +1,4 @@
-securityContext: 
+securityContext:
   capabilities:
     drop:
     - ALL
@@ -16,7 +16,7 @@ volumes:
 - name: run
   emptyDir: {}
 
-volumeMounts: 
+volumeMounts:
 - name: nginx-cache
   mountPath: "/var/cache/nginx"
   readOnly: false
