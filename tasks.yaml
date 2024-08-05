@@ -15,6 +15,13 @@ tasks:
       - task: setup:k3d-test-cluster
       - task: deploy:test-bundle
 
+  - name: default-full
+    description: Create and deploy the nginx package on a fresh cluster with full uds-core
+    actions:
+      - task: create-nginx-test-bundle
+      - task: setup:k3d-full-cluster
+      - task: deploy:test-bundle
+
   - name: create-nginx-package
     description: Create UDS nginx Package
     actions:
@@ -69,17 +76,12 @@ tasks:
           cluster:
             kind: Deployment
             name: nginx
-            namespace: uds-nginx
+            namespace: nginx
             condition: available
       - wait:
           network:
             protocol: https
             address: nginx.uds.dev
-            code: 200
-      - wait:
-          network:
-            protocol: https
-            address: nginx.uds.dev/echo
             code: 200
 
 # CI will execute the following (via .github/actions/test) so they need to be here with these names

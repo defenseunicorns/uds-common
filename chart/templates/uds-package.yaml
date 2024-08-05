@@ -9,8 +9,16 @@ spec:
         app.kubernetes.io/name: nginx
       targetPort: 8080
       portName: http
-      path: /fakemetrics/
+      path: /metrics.txt
       description: Metrics
+
+  sso:
+    - name: Nginx Authservice
+      clientId: uds-package-nginx
+      redirectUris:
+        - https://nginx.uds.dev/login
+      enableAuthserviceSelector:
+        app.kubernetes.io/name: nginx
 
   network:
     expose:
