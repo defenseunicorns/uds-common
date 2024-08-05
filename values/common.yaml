@@ -1,7 +1,7 @@
 securityContext:
   capabilities:
     drop:
-    - ALL
+      - ALL
   readOnlyRootFilesystem: true
   allowPrivilegeEscalation: false
   privileged: false
@@ -11,15 +11,15 @@ securityContext:
 
 
 volumes:
-- name: nginx-cache
-  emptyDir: {}
-- name: run
-  emptyDir: {}
+  - name: nginx-cache
+    emptyDir: {}
+  - name: run
+    emptyDir: {}
 
 volumeMounts:
-- name: nginx-cache
-  mountPath: "/var/cache/nginx"
-  readOnly: false
-- name: run
-  mountPath: "/var/run"
-  readOnly: false
+  - name: nginx-cache
+    mountPath: /var/cache/nginx
+    readOnly: false
+  - name: run
+    mountPath: /var/run
+    readOnly: false

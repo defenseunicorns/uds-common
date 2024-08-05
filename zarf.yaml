@@ -2,7 +2,7 @@
 kind: ZarfPackageConfig
 metadata:
   name: nginx
-  description: "UDS nginx package"
+  description: UDS nginx package
   # x-release-please-start-version
   version: 0.10.0
   # x-release-please-end
@@ -10,12 +10,12 @@ metadata:
 
 variables:
   - name: DOMAIN
-    default: "uds.dev"
+    default: uds.dev
 
 components:
   - name: nginx
     required: true
-    description: "Deploy nginx with upstream images"
+    description: Deploy nginx with upstream images
     import:
       path: common
     only:
@@ -29,7 +29,7 @@ components:
 
   - name: nginx
     required: true
-    description: "Deploy nginx with registry1 images"
+    description: Deploy nginx with registry1 images
     import:
       path: common
     only:
@@ -45,7 +45,7 @@ components:
 
   - name: nginx
     required: true
-    description: "Deploy nginx with unicorn images"
+    description: Deploy nginx with unicorn images
     import:
       path: common
     only:
