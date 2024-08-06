@@ -16,16 +16,31 @@ runs:
   using: composite
   steps:
 
+    - name: Get branch name
+      shell: bash
+      id: get_branch
+      run: |
+        BRANCH_NAME=${GITHUB_REF#refs/heads/}
+        echo "branch_name=$BRANCH_NAME" >> $GITHUB_ENV
+
+    - name: Get latest tag
+      shell: bash
+      id: get_tag
+      run: |
+        git fetch --tags
+        LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
+        echo "latest_tag=$LATEST_TAG" >> $GITHUB_ENV
+
     # === INSTALL TESTING ===
 
     - name: Test installing the package
       if: ${{ inputs.type == 'install' }}
-      run: uds run test-package --set FLAVOR=${{ inputs.flavor }} ${{ inputs.options }} --no-progress
+      run: uds run test-package --set FLAVOR=${{ inputs.flavor }} --set BRANCH_NAME=${{ env.branch_name }} --set LATEST_TAG=${{ env.latest_tag }} ${{ inputs.options }} --no-progress
       shell: bash
 
     # === UPGRADE TESTING ===
 
     - name: Test upgrading the package
       if: ${{ inputs.type == 'upgrade' }}
-      run: uds run test-upgrade --set FLAVOR=${{ inputs.flavor }} ${{ inputs.options }} --no-progress
+      run: uds run test-upgrade --set FLAVOR=${{ inputs.flavor }} --set BRANCH_NAME=${{ env.branch_name }} --set LATEST_TAG=${{ env.latest_tag }} ${{ inputs.options }} --no-progress
       shell: bash
