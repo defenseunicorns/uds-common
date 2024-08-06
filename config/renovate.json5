@@ -32,19 +32,22 @@
         {
             "matchHost": "registry1.dso.mil",
             "hostType": "docker",
-            "description": "Encrypted creds for registry1, scoped to this Github org using: https://github.com/renovatebot/renovate/blob/main/docs/usage/configuration-options.md#encrypted",
-            "encrypted": {
-                "username": "wcFMA/xDdHCJBTolAQ/+PxbkYaUY7kT7zKPQtr36yJkmEOprPC6HnehmYLopwvpFYTiUmiVkWxNpsec7+Mrujx4avodXIyLPM2hUHRKZl2C/KEjJmoMbp0hh4p8kEFpd+0KZidI5xRe1JxLmUYS6g53jiN7yO6P8OGXabPZt3+8t33AL6PzNkaUXUmSpRl6InXqMbwIlNq0GG0ud2bB1OOXUPzCl1ANfhYKwNLLdDDOHr+kYupExAyp1z2pWSO5KJ0RbIWymKJyTIbRN9Pl/7guZGneZXv6neWP8WxaiN1gBQMiHWeUW9AHNuKcZEmHWvL0gCVP9DXlAKpoy5fcZfEQj9xy1mwO4+cfg1aYEnImECgVryCWjt2+ZJNYx+/JlUQJYimDwUt3OJ74mAPxsdNM5HTj5m7F3bNTFkl2ss8LnJ2oP3IzV8bsmdIF+KsB8aFeMm/SjGUDH+tmtwwtZXVJzJEmBRGw5jsPvOwb1KmEGvT/zNPP19cR57syKBhCw09fXzMC4FV7esfTtakcG9gGlM7mGaj5yyoCVKeeuMFueFpc2zASi1udm7DA9vn9gDbgfD3EpE1Gx6n/7Bp4uIhwlJU1ymqQ3W1Hke7iIe3OSaffbqxfZV0MFFwxvNnocwyWAxD/4KqA4+N8G2KmyU/sj/nG15UFQnU9CMTqJU2xsbZ1QnoUxIbIuYPa/Wv7SdgFcY6qiXySvuoUoPf7YSZ+z8mkKRWTGVW6FchbjfcgWQ7e//a6BY8gHA+i/JCKjhb8iGupUVNS64X9D1A1bIOgPLQmR4GKc4pj3ihGpssscvBjcbeRmvgy03iY3jIb7JTXC2EVgObao64bNJwyVfBepqYMRS88",
-                "password": "wcFMA/xDdHCJBTolAQ/8DgMyRTHUFZCU4bb5pz0475W1AcyUglR1a8aXgDJdYXgcNxWDirm1+ZUg4c9fyC1NaGn8S+a4eUzax2Qhh4tE8/yjoqgtDgf4XHpu7biI0Sej8t+4GSjg+x2mlaQXX3RX8meHCyXB6bp1W6QQZzLzIDi69ZFRGnfm+WcgH7OjX2PYwDexr0kWMItYClSwlfQSoLmkDhFfjlYoUkIh5O2UiqlXhUkECyNvFBIUTm9lCqOksB8nJ2LkJP5sjOcvxtXtANdBhlAWMndSla+Q635/L3HJ9aR/25+Bz4JhWdtP3nVU0NYRmqMx7ZrwqlIAylSSFyL9DHi6nUuV4/zwe3vcQxIMuJLVwuTqi5svkFm4g7JkDP+O7hteuH+0H4QkWvd8Ubifi6cpgLBlS46yPTP4vaF8POmtw51Ui0A1SgQkbh3x2Nf6P3BcT2forb1kxj3fVbqTiki64k8ry/JHsMA2uCU4YNz4kk4W2wL2DA6k8k3HIswgvKvrrcJV3HpDrjWKzxdTCxFgf0HbSELdH9bhdxWF91Kmg4uHnMttowvzqTHP+Z0RCX1nhlf/uIIkPRnxbDLV1HnN7RFsffl9TcObrSHfx0bJdB8TJQJ95oM7/HZt3BGFtUuXRJTkbYDgyBJjwmJUPJLVGHCW8v2RmBrLKxMyGJQWyZU0o3ruGFv8UGvSdgG/+jTnvXrU2PjdxgjcjH7Y8sZ9UBEsjN4kOF898pH7hTbNX7nhMsGWHCEQvSkAobnJkGQjJFWHZ5qZybuTXHFu/Z7bgdbGvhDoo3L4aHCNpk7s5Zbtt2YKBJgQTNttb2UGNl6CVuQ1souWQCKuPc+kEEo9mJY"
-            }
+            "description": "Encrypted creds for registry1, scoped to this Github org using: https://docs.renovatebot.com/getting-started/migrating-secrets/#migrate-your-secrets-in-encrypted-form",
+            "username": "{{ secrets.IRONBANK_USERNAME }}",
+            "password": "{{ secrets.IRONBANK_PASSWORD }}"
         },
         {
             "matchHost": "cgr.dev",
-            "description": "Encrypted creds for cgr.dev, scoped to this Github org using: https://github.com/renovatebot/renovate/blob/main/docs/usage/configuration-options.md#encrypted",
-            "encrypted": {
-                "username": "wcFMA/xDdHCJBTolAQ//UwgwvxniKenqcBHxKs/7bBUFGBbfQRyo0dmvbMVmEWqByTPAEUAPT/l92D6gtgEZC5cP4pejuUQD/GIXmbGfBfWneqyierrWRaY/zX/zJHHiTbg2cZ2fz7kwItN82mQOT58V2bnFnsrPlE+LZUiqHAIvXrHIW4+waO4CxE7gpv0YucQn2FVXmtkJgiA5e1WQDskwq1BeIbL6/rB5Wl7HrNAU2rUoGVGQUqZFZ/fysFNLEeXsegvgO200AWZHNb65FdfUIbt7JFubnOxlFGVNRRxr4z65idFkVmYBcjwtNbiLR0hkhTKruQOVZ3fB5gJYl1xx28U2z84Kew9YYvW02oWGj3sQZHHdLq3CIAJvBTbcgKVwi5FFh0CWwMyVUW8F5m5M7qitCHpL9gqGUfBP7Wjo2fxhkg+bqg3NAcJuMehZT5bquwOav7L+wz+UnfwwiV9IS64Q9byMF9KZjt/H30+XTuIYaNjAUtjCrlwcUunZ7SQ9Say1LYE1+WQVCdRxQrFSFu1nFD3HD07ZagczgOQ++BnixFqRM9W1vfUTaWdNTNidDRfiKcb1lvmnKGd0sJgit+P80rY+mrlmvjUx3GFpBo9IPfAX0IqHEmgRrX2fm3og0ar4X6QTbIWxnR4p0mBhzyLO0D9rEjbQ9mK5KlWQxbQAfyooIwNspDoeUnbSjwGYTpNgiXJnAyQoWs1FlGQnyQqLLFrWleilpaePIAwxOkHFCrIclDf1+eF5nNMr/UmIsMMr6DUnfejoMhc+YgYqqL6qRifJkXu45qmbv311oE5c0tEFIIeEMpibuDHdYGhfwMI/noLg5aFG4wISd8oo9IVFq5o49KZ7GdueStu5cwjUfPPvvgWfNm17+tT0",
-                "password": "wcFMA/xDdHCJBTolAQ/+KkOoTiOvcbbwnh2x9y/IxmKJo/VhilCLjQY5PpR52n/RlO09Y6PaiXZgEeiC8leO3pxppySY1aAlulmjCq6+0UFCzb3QoMdlS1nL4cX3C2U4IS2sy4XBKm90pFBavVXOzcIghaatdfI8aaE/WlI4+cIkqfttx97dExMoW6skm7duUb0n/DHyNltRFzAwDy+ik0JL76LhLqgEvUcc+ii9h34Bw17CG/4lhjocAfED1LeIgI5lRwKk4jkA5U61LNTCkGkfo8HOMYgmS4LJ46VTaSvgPJ3y+rPhlTl4xawhTSulg+TJIzo1+71k1QOEcKZ0Vya8jWdgYJbeALqRwXCCFYcTWU4i2XbLrnuV3IjNNMzaZx5LV7f2ucA5c30npshYjQj/X/pdb/4TFrZriDLW3050mNsDzobNNUPV/fRLFD1vA5v04Lor9kUOJMZ3A5wC/fc7m4sbhobu9tDOxITXuVkqhCX9gbXxjtsr1WeSn8xNTQv6CmkrfCaSrZN3m6bCXveP7eVfYnQbCBZCIXXz/wGrMrS8VhS/uCAWOhlpv7c5hGdZz7WCbMhmmzv4NdHpwQh702TNKMwM8IfFFqu/fdTEaL7KRmCo1O6xq+F1TAd9dXatMTSexdNdaZNWhXfcLsLbX7/BD1AoYj+DnWmk3j0Nr+S81zIJACx1wY2jL93Sw0YB4Y4f5IjNLt8YFJQPJ9l32JGnNaFT13AiFNfBgYcZweNw5gjdXI0FMwM9Cb39/6p8J1ZgqpeDulJOVCzZABk0pwC9f79ZQJkOTKl23OCo0fY5c3vc0QMpz305VhwnrLHLYX4vxZVLWQT7BGsnb8slu9Or4q8NzEG66GfYOtW++yIEDV6we3mg9xRVn8T5mNnaYQ0rveFtk+g4uiwuXGiHw17lEJLOifLdgkXUjxLHShi/Ogtar/3gxnp8DBprueCqqsjxgYbkJwjur3GACcAj7/HNG2y/4xTjleGVwF7Aq9hK56vqgJ+LqZUNqd/l93slLvOT9Lfyd1e498aD3IZGjis4Nnz3YVYyCd4vCWMHI2ta+xu5h7OJn9yKy9DJeS0uR6IEfc4mquOPFFqZoes0w2gyKlSaPRNY96wyAfsngLp2rTpV9k6LrOPaLRGXj9ZWY8nW8mUtGRWpCro6tohN/nlmzRAkVWXklBbDfimA2X91O5lEwwUW4tDQD5SBLJeKQhUd0lIbAtAgZ8qSLEKqUrHI0Jv3GLLJTbgoR8hg9zOKSrKhnvBwpHbJOAYWDin5o5evEdXNbNJNcpGQfZ+Jr0mdxqn+m1onP30LKsExXIV75XatmGvNeWfWtU09SMjUYdEhCziYNnAFUPezQ2OwGv8J4nBAJVi9RJLhs049ySbxPcRwvRNbwtbIaqOY9doeEE2iX1oU1z4XTo3OW91La4FbRRDKHu16I24XolqwcdqpqXHPDV8IFcoVrV2rewIEGoFiScr/RgKs6gC4P8d7jb6EwfZlCMATLy3PwUBycGJg3XSzBTkxGE9WN6W8JAaemaYQdS9+GDST9d+5xSzq2cgcZAQDr2CJF0Q95EWZMuaSCDNnzWAFovV07kTqGg9k+oO21qUnhfyQLAMsgv8sj2AaWY2j+ePFkjzX6iZb2gjSjEsB49r49kHJzVuiA8W2YGSAG0XEzBvrCk9TwsvklZU/4GYItX/T1lOkzQLwfjD5kgo7Qm9TKDnLvDRotkCeoNwxfLnJG9N0oWnyJOAh6jdFeJYONhUQwCTBnhI6JfnWCUwb/Rv0nVFaauQ4g0yOg/4YHynF5tbx7PNgna8Nks5ynx0SVBs2GZyHhD9u5OVIJZL17PEnKYnHIsjJudB12RYfBmPaBO+WTm6J13+AU3cFLaEzo/DLxG/tbdLKmDiCn/rTbto4RISkutn1k5GoF5Du8RUIyqgV5xRz4HengXSkyvWtT76VPa+onplQNnWHCl6TdcRgcfTpeWHXfKx/bMAFtanbuJmciFvU6SEMCdwRcOsgGiRMys9C8nJlfIOqgWkZGSEq4swgQdvXoQLHbc+c5QlMvlEx35Tn9mh5PYc3mFMJ"
-            }
+            "description": "Encrypted creds for cgr.dev, scoped to this Github org using: https://docs.renovatebot.com/getting-started/migrating-secrets/#migrate-your-secrets-in-encrypted-form",
+            "username": "{{ secrets.CHAINGUARD_USERNAME }}",
+            "password": "{{ secrets.CHAINGUARD_PASSWORD }}"
+        },
+        {
+            "matchHost": "ghcr.io",
+            "hostType": "docker",
+            "description": "Encrypted creds for ghcr.io, scoped to this Github org using: https://docs.renovatebot.com/getting-started/migrating-secrets/#migrate-your-secrets-in-encrypted-form",
+            "username": "renovate",
+            "password": "{{ secrets.DEFENSEUNICORNS_PACKAGE_READ_PAT }}"
         }
     ],
     "regexManagers": [

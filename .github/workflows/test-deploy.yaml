@@ -21,6 +21,7 @@ on:
       - LICENSE
       - CONTRIBUTING.md
       - SECURITY.md
+      - config/renovate.json5
 
 concurrency:
   group: test-${{ github.ref }}
