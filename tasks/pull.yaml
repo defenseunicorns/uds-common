@@ -32,8 +32,8 @@ tasks:
       - description: Checkout the latest branch
         cmd: git checkout ${LATEST_TAG}
 
-      - description: Build that tag's package
-        cmd: ./uds run create-package --set FLAVOR=${FLAVOR}
+      - description: Build the tag's package
+        cmd: ./uds run create-${PACKAGE_NAME}-package --set FLAVOR=${FLAVOR}
 
       - description: Checkout the current branch
         cmd: git checkout ${BRANCH_NAME}
@@ -67,8 +67,8 @@ tasks:
       - description: Checkout the latest branch
         cmd: git checkout ${LATEST_TAG}
 
-      - description: Build that tag's bundle
-        cmd: ./uds run create-test-bundle --set FLAVOR=${FLAVOR}
+      - description: Build the tag's bundle
+        cmd: ./uds run create-${PACKAGE_NAME}-test-bundle --set FLAVOR=${FLAVOR}
 
       - description: Checkout the current branch
         cmd: git checkout ${BRANCH_NAME}
