@@ -53,13 +53,16 @@ UDS Packages **may** make use of the [UDS `Exemption` custom resource](https://g
 
 Packages also follow structural guidelines to ensure consistency and flexibility for configuration, they:
 
+- **Must** contain documentation under a `docs` folder at the root that describes how to configure the package and outlines package dependencies.
+  > This allows users of the package to learn more about exposed configuration - it is recommended to make the entrypoint for configuration `configuration.md`.
+
 - **Should** expose all configuration (`uds.dev` CRs, additional `Secrets`/`ConfigMaps`, etc) through a Helm chart (ideally in a `chart` or `charts` directory).
   > This allows UDS bundles to override configuration with Helm overrides and enables downstream teams to fully control their bundle configurations.
 
-- **Should** limit the use of Zarf variable templates and prioritize configuring packages via Helm value overrides
-  > This ensures that the package is configured the same way that the bundle would be and avoids any side effect issues of Zarf's `###` templating
+- **Should** limit the use of Zarf variable templates and prioritize configuring packages via Helm value overrides.
+  > This ensures that the package is configured the same way that the bundle would be and avoids any side effect issues of Zarf's `###` templating.
 
-- **Should** implement or allow for multiple flavors (ideally with common definitions in a `common` directory)
+- **Should** implement or allow for multiple flavors (ideally with common definitions in a `common` directory).
   > This allows for different images or configurations to be delivered consistently to customers.
 
 ## Testing
@@ -80,12 +83,14 @@ To help maintain a UDS Package, it:
 
 - **Must** have a dependency management bot (such as renovate) configured to open PRs to update core package and support dependencies.
 
-- **Must** release its package to the `ghcr.io/defenseunicorns/packages/<group>` namespace as the application's name (i.e. `ghcr.io/defenseunicorns/packages/uds/mattermost`)
+- **Must** release its package to the `ghcr.io/defenseunicorns/packages/<group>` namespace as the application's name (i.e. `ghcr.io/defenseunicorns/packages/uds/mattermost`).
 
 ## General
 
 And in addition to the above, packages generally:
 
-- **Must** be capable of operating within an internet-disconnected (air-gapped) environment
+- **Must** be capable of operating within an internet-disconnected (air-gapped) environment.
 
-- **Must** be maintained by a resourced team that is explicitly defined as maintaining the project (i.e. in `CODEOWNERS`)
+- **Must** not make the assumption that the `expose` interfaces are accessible to the bastion or pipeline deploying the package (i.e. `*.uds.dev`).  If web requests need to be made they should be done through a `Job` or `./uds zarf tools kubectl exec` as appropriate.
+
+- **Must** be maintained by a resourced team that is explicitly defined as maintaining the project (i.e. in `CODEOWNERS`).
