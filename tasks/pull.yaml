@@ -29,16 +29,6 @@ tasks:
         setVariables:
           - name: PACKAGE_NAME
 
-      - description: Get the most recent repo tag
-        cmd: git tag --sort=-creatordate | head -n 1
-        setVariables:
-          - name: LATEST_TAG
-
-      - description: Get the current branch
-        cmd: git rev-parse --abbrev-ref HEAD
-        setVariables:
-          - name: BRANCH_NAME
-
       - description: Checkout the latest branch
         cmd: git checkout ${LATEST_TAG}
 
@@ -73,16 +63,6 @@ tasks:
         cmd: cat ${{ .inputs.path }}/uds-bundle.yaml | yq .metadata.name
         setVariables:
           - name: BUNDLE_NAME
-
-      - description: Get the most recent repo tag
-        cmd: git describe --tags --abbrev=0
-        setVariables:
-          - name: LATEST_TAG
-
-      - description: Get the current branch
-        cmd: git rev-parse --abbrev-ref HEAD
-        setVariables:
-          - name: BRANCH_NAME
 
       - description: Checkout the latest branch
         cmd: git checkout ${LATEST_TAG}
