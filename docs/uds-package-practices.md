@@ -73,6 +73,8 @@ A UDS Package will also have testing and quality checks to ensure that updates /
 
 - **Should** lint their configurations with appropriate tooling such as [`yamllint`](https://github.com/adrienverge/yamllint) and [`zarf dev lint`](https://docs.zarf.dev/commands/zarf_dev_lint/).
 
+For more detailed guidelines on implementing these testing practices, please refer to the [Testing Guidelines for UDS Marketplace Apps](docs/testing-guidelines.md).
+
 
 ## Maintenance
 
