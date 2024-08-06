@@ -21,16 +21,31 @@ tasks:
       - task: utils:determine-repo
         with:
           team: ${{.inputs.team}}
+
       - description: Get the current Zarf package name
         cmd: cat ${{ .inputs.path }}/zarf.yaml | yq .metadata.name
         setVariables:
           - name: PACKAGE_NAME
-      - description: Get latest tag version from OCI
-        cmd: ./uds zarf tools registry ls ${TARGET_REPO}/${PACKAGE_NAME} | grep ${FLAVOR} | sort -V | tail -1
+
+      - description: Get the most recent repo tag
+        cmd: git describe --tags --abbrev=0
         setVariables:
-          - name: LATEST_VERSION
-      - description: Pull the latest package release
-        cmd: ./uds zarf package pull oci://${TARGET_REPO}/${PACKAGE_NAME}:${LATEST_VERSION} --no-progress -o ${{ .inputs.path }}
+          - name: LATEST_TAG
+
+      - description: Get the current branch
+        cmd: git rev-parse --abbrev-ref HEAD
+        setVariables:
+          - name: CURRENT_BRANCH
+
+      - description: Checkout the latest branch
+        cmd: git checkout ${LATEST_TAG}
+
+      - description: Build that tag's package
+        cmd: ./uds run create-package --set FLAVOR=${FLAVOR}
+
+      - description: Checkout the current branch
+        cmd: git checkout ${CURRENT_BRANCH}
+
       # TODO (@WSTARR): This is currently needed to get around the chicken+egg condition when release please updates the version in GH
       - description: Spoof the latest release to the current version
         cmd: |
@@ -52,16 +67,29 @@ tasks:
         default: ghcr.io/defenseunicorns/packages/uds/bundles
     actions:
       - task: utils:determine-repo
-      - description: Get the current uds bundle name
+        description: Get the current uds bundle name
         cmd: cat ${{ .inputs.path }}/uds-bundle.yaml | yq .metadata.name
         setVariables:
           - name: BUNDLE_NAME
-      - description: Get latest tag version from OCI
-        cmd: ./uds zarf tools registry ls ${TARGET_REPO}/bundles/${BUNDLE_NAME} | sort -V | tail -1
+
+      - description: Get the most recent repo tag
+        cmd: git describe --tags --abbrev=0
         setVariables:
-          - name: LATEST_VERSION
-      - description: Pull the latest bundle release
-        cmd: ./uds pull oci://${TARGET_REPO}/bundles/${BUNDLE_NAME}:${LATEST_VERSION} --no-progress -o ${{ .inputs.path }}
+          - name: LATEST_TAG
+
+      - description: Get the current branch
+        cmd: git rev-parse --abbrev-ref HEAD
+        setVariables:
+          - name: CURRENT_BRANCH
+
+      - description: Checkout the latest branch
+        cmd: git checkout ${LATEST_TAG}
+
+      - description: Build that tag's bundle
+        cmd: ./uds run create-test-bundle --set FLAVOR=${FLAVOR}
+
+      - description: Checkout the current branch
+        cmd: git checkout ${CURRENT_BRANCH}
       # TODO (@ZMILLER): This is currently needed to get around the chicken+egg condition when release please updates the version in GH
       - description: Spoof the latest release to the current version
         cmd: |
