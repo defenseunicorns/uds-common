@@ -86,6 +86,7 @@ To help maintain a UDS Package, it:
 You can use this section to decide how best to version a UDS Package.
 
 - **Must** be versioned using the below example versioning scheme, or if this scheme doesn't make sense for the use case (i.e. a monorepo like [uds core](https://github.com/defenseunicorns/uds-core)) fall back to using [semantic versioning](https://semver.org/)
+- **Should** prepend `git` tags representing versions with a `v` to distinguish them from other tags with OCI tags left as the raw version.
 
 #### Example Versioning Scheme
 When A UDS Package is clearly representing a single overarching application, even if it consists of many, and that application contains a canonical app version to track, use this scheme.
