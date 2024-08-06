@@ -28,7 +28,7 @@ tasks:
           - name: PACKAGE_NAME
 
       - description: Get the most recent repo tag
-        cmd: git describe --tags --abbrev=0
+        cmd: git tag --sort=-creatordate | head -n 1
         setVariables:
           - name: LATEST_TAG
 
