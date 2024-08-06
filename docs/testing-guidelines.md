@@ -42,6 +42,7 @@ Use appropriate tooling to ensure code quality and consistency.
 #### **Recommended Tools**
 - YAML Linting: `yamllint`
 - Zarf Package Linting: `zarf dev lint`
+- Shellcheck (https://www.shellcheck.net/) for any bash scripts
 
 ## **Best Practices**
 
