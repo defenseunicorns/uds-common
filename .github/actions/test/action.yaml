@@ -20,7 +20,7 @@ runs:
       shell: bash
       id: get_branch
       run: |
-        BRANCH_NAME=${GITHUB_HEAD_REF}
+        BRANCH_NAME=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
         echo "branch_name=$BRANCH_NAME" >> $GITHUB_ENV
 
     - name: Get latest tag
