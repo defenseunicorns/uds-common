@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This document outlines the testing guidelines and best practices for UDS Marketplace Apps. These guidelines aim to ensure consistency, reliability, and quality across all UDS packages.
+This document outlines the testing guidelines and best practices for UDS Packages. These guidelines aim to ensure consistency, reliability, and quality across all of our packages.
 
 ## 1. Journey Testing
 
