@@ -41,5 +41,5 @@ runs:
 
     - name: Test upgrading the package
       if: ${{ inputs.type == 'upgrade' }}
-      run: uds run test-upgrade --set FLAVOR=${{ inputs.flavor }} --set BRANCH_NAME=${{ env.branch_name }} --set LATEST_TAG=${{ env.latest_tag }} ${{ inputs.options }} --no-progress
+      run: uds run test-upgrade --set FLAVOR=${{ inputs.flavor }} --set LATEST_TAG=${{ env.latest_tag }} --set REPO_URL=${{ env.repo_url }} --set REPO=${{ env.repository }} ${{ inputs.options }} --no-progress
       shell: bash
