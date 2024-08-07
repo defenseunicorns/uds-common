@@ -43,4 +43,3 @@ tasks:
 
       - description: Remove cloned repo
         cmd: rm -rf upgrade-test
-
