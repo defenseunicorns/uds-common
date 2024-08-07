@@ -3,12 +3,12 @@ metadata:
   name: test
   description: The testing UDS bundle
   # x-release-please-start-version
-  version: 0.11.0
+  version: 0.11.2
   # x-release-please-end
 
 packages:
   - name: podinfo
     path: ../
     # x-release-please-start-version
-    ref: 0.11.0
+    ref: 0.11.2
     # x-release-please-end
