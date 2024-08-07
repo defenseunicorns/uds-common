@@ -1,0 +1,46 @@
+includes:
+  - utils: https://raw.githubusercontent.com/defenseunicorns/uds-common/7d5f445a50b19e97b9a8bed0d2445654ae05bab6/tasks/utils.yaml
+
+variables:
+  - name: FLAVOR
+    default: upstream
+
+tasks:
+  - name: deploy-latest-tag-bundle
+    inputs:
+      path:
+        description: Path relative to the repositories root where the bundle things happen
+        default: .
+
+      spoof_release:
+        description: Whether to spoof the pulled bundle version to the current repo version
+        default: "false"
+
+      target_repo:
+        description: The repository to pull from
+        default: ghcr.io/defenseunicorns/packages/uds/bundles
+
+    actions:
+      - description: Remove cloned repo
+        cmd: rm -rf upgrade-test
+
+      - description: Clone latest tag
+        cmd: git clone --depth 1 --branch $(git describe --tags `git rev-list --tags --max-count=1`) $(git remote get-url origin) upgrade-test
+
+      - description: CD into cloned repo
+        cmd: cd upgrade-test
+
+      - description: Create and deploy test bundle
+        cmd: |
+          if cat zarf.yaml | grep -q ${FLAVOR}; then
+            ./uds run default --set FLAVOR=${FLAVOR} --no-progress
+          else
+            echo "::warning::⚠️ Latest tag does not have flavor:${FLAVOR}"
+          fi
+
+      - description: Move up a directory
+        cmd: cd ../
+
+      - description: Remove cloned repo
+        cmd: rm -rf upgrade-test
+
