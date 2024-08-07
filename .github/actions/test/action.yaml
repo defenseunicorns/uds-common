@@ -27,7 +27,7 @@ runs:
       shell: bash
       id: get_repo_url
       run: |
-        REPO_URL=https://${{ github.server_url }}/${{ github.repository }}
+        REPO_URL=${{ github.server_url }}/${{ github.repository }}
         echo "repo_url=$REPO_URL" >> $GITHUB_ENV
 
     # === INSTALL TESTING ===
