@@ -15,14 +15,6 @@ inputs:
 runs:
   using: composite
   steps:
-
-    - name: Get branch name
-      shell: bash
-      id: get_branch
-      run: |
-        BRANCH_NAME=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
-        echo "branch_name=$BRANCH_NAME" >> $GITHUB_ENV
-
     - name: Get latest tag
       shell: bash
       id: get_tag
@@ -31,11 +23,18 @@ runs:
         LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
         echo "latest_tag=$LATEST_TAG" >> $GITHUB_ENV
 
+    - name: Get Repo Url
+      shell: bash
+      id: get_repo_url
+      run: |
+        REPO_URL=https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@${{ github.server_url }}/${{ github.repository }}
+        echo "repo_url=$REPO_URL" >> $GITHUB_ENV
+
     # === INSTALL TESTING ===
 
     - name: Test installing the package
       if: ${{ inputs.type == 'install' }}
-      run: uds run test-package --set FLAVOR=${{ inputs.flavor }} --set BRANCH_NAME=${{ env.branch_name }} --set LATEST_TAG=${{ env.latest_tag }} ${{ inputs.options }} --no-progress
+      run: uds run test-package --set FLAVOR=${{ inputs.flavor }} --set LATEST_TAG=${{ env.latest_tag }} --set REPO_URL=${{ env.repo_url }} --set REPO=${{ env.repository }} ${{ inputs.options }} --no-progress
       shell: bash
 
     # === UPGRADE TESTING ===
