@@ -33,7 +33,7 @@ tasks:
         cmd: git clone --depth 1 --branch ${LATEST_TAG} ${REPO_URL}
 
       - description: CD into cloned repo
-        cmd: cd uds-package-${REPO}
+        cmd: cd ${REPO}
 
       - description: Build the tag's package
         cmd: ./uds run create-${PACKAGE_NAME}-package --set FLAVOR=${FLAVOR}
@@ -77,7 +77,7 @@ tasks:
         cmd: git clone --depth 1 --branch ${LATEST_TAG} ${REPO_URL}
 
       - description: CD into cloned repo
-        cmd: cd uds-package-${REPO}
+        cmd: cd ${REPO}
 
       - description: Build the tag's bundle
         cmd: ./uds run create-${PACKAGE_NAME}-test-bundle --set FLAVOR=${FLAVOR}

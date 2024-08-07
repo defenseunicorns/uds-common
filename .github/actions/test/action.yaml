@@ -29,7 +29,8 @@ runs:
       run: |
         REPO_URL=${{ github.server_url }}/${{ github.repository }}
         echo "repo_url=$REPO_URL" >> $GITHUB_ENV
-        echo "REPO=${GITHUB_REPOSITORY##*/}" >> $GITHUB_ENV
+        REPO=${{ github.repository }}
+        echo "REPO=${REPO##*/}" >> $GITHUB_ENV
 
     # === INSTALL TESTING ===
 
