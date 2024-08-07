@@ -30,10 +30,10 @@ tasks:
           - name: PACKAGE_NAME
 
       - description: Clone latest tag
-        cmd: git clone --depth 1 --branch ${LATEST_TAG} ${REPO_URL}
+        cmd: git clone --depth 1 --branch ${LATEST_TAG} ${REPO_URL} upgrade-test
 
       - description: CD into cloned repo
-        cmd: cd ${REPO}
+        cmd: cd upgrade-test
 
       - description: Build the tag's package
         cmd: ./uds run create-${PACKAGE_NAME}-package --set FLAVOR=${FLAVOR}
@@ -45,7 +45,7 @@ tasks:
         cmd: cd ../
 
       - description: Remove cloned repo
-        cmd: rm -rf uds-package-${REPO}
+        cmd: rm -rf upgrade-test
 
       # TODO (@WSTARR): This is currently needed to get around the chicken+egg condition when release please updates the version in GH
       - description: Spoof the latest release to the current version
@@ -74,10 +74,10 @@ tasks:
           - name: BUNDLE_NAME
 
       - description: Clone latest tag
-        cmd: git clone --depth 1 --branch ${LATEST_TAG} ${REPO_URL}
+        cmd: git clone --depth 1 --branch ${LATEST_TAG} ${REPO_URL} upgrade-test
 
       - description: CD into cloned repo
-        cmd: cd ${REPO}
+        cmd: cd upgrade-test
 
       - description: Build the tag's bundle
         cmd: ./uds run create-${PACKAGE_NAME}-test-bundle --set FLAVOR=${FLAVOR}
@@ -89,7 +89,8 @@ tasks:
         cmd: cd ../
 
       - description: Remove cloned repo
-        cmd: rm -rf uds-package-${REPO}
+        cmd: rm -rf upgrade-test
+
       # TODO (@ZMILLER): This is currently needed to get around the chicken+egg condition when release please updates the version in GH
       - description: Spoof the latest release to the current version
         cmd: |

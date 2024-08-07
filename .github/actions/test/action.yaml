@@ -29,19 +29,17 @@ runs:
       run: |
         REPO_URL=${{ github.server_url }}/${{ github.repository }}
         echo "repo_url=$REPO_URL" >> $GITHUB_ENV
-        REPO=${{ github.repository }}
-        echo "REPO=${REPO##*/}" >> $GITHUB_ENV
 
     # === INSTALL TESTING ===
 
     - name: Test installing the package
       if: ${{ inputs.type == 'install' }}
-      run: uds run test-package --set FLAVOR=${{ inputs.flavor }} --set LATEST_TAG=${{ env.latest_tag }} --set REPO_URL=${{ env.repo_url }} --set REPO=${{ env.repo }} ${{ inputs.options }} --no-progress
+      run: uds run test-package --set FLAVOR=${{ inputs.flavor }} --set LATEST_TAG=${{ env.latest_tag }} --set REPO_URL=${{ env.repo_url }} ${{ inputs.options }} --no-progress
       shell: bash
 
     # === UPGRADE TESTING ===
 
     - name: Test upgrading the package
       if: ${{ inputs.type == 'upgrade' }}
-      run: uds run test-upgrade --set FLAVOR=${{ inputs.flavor }} --set LATEST_TAG=${{ env.latest_tag }} --set REPO_URL=${{ env.repo_url }} --set REPO=${{ github.repository }} ${{ inputs.options }} --no-progress
+      run: uds run test-upgrade --set FLAVOR=${{ inputs.flavor }} --set LATEST_TAG=${{ env.latest_tag }} --set REPO_URL=${{ env.repo_url }} ${{ inputs.options }} --no-progress
       shell: bash
