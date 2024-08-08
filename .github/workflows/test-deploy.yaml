@@ -52,48 +52,6 @@ jobs:
           registry1Password: ${{ secrets.IRON_BANK_ROBOT_PASSWORD }}
           ghToken: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Test-Flavor
-        id: test_flavor
-        uses: ./.github/actions/test-flavor
-        if: ${{ matrix.type == 'upgrade'}}
-        with:
-          flavor: ${{ matrix.flavor }}
-          type: ${{ matrix.type }}
-
-      - name: Set Skip Variable
-        id: set_skip
-        run: |
-          if [ "${{ matrix.type }}" =! "upgrade" ]; then
-            echo "skip=false" >> $GITHUB_ENV
-          else
-            echo "skip=${{ steps.test_flavor.outputs.result }}" >> $GITHUB_ENV
-          fi
-
-  run-test:
-    runs-on: ubuntu-latest
-    needs: run-flavor-test
-    timeout-minutes: 20
-    strategy:
-      fail-fast: false
-      matrix:
-        flavor: [test, break]
-        type: [install, upgrade, breaking-change]
-    if: ${{ needs.run-flavor-test.outputs.set_skip == 'false' }}
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
-
-      - name: Clean Runner
-        uses: ./.github/actions/clean-runner
-
-      - name: Environment setup
-        uses: ./.github/actions/setup
-        with:
-          registry1Username: ${{ secrets.IRON_BANK_ROBOT_USERNAME }}
-          registry1Password: ${{ secrets.IRON_BANK_ROBOT_PASSWORD }}
-          ghToken: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Test
         uses: ./.github/actions/test
         with:
