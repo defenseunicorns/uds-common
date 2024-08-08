@@ -20,8 +20,9 @@ spec:
       clientId: uds-package-nginx
       redirectUris:
         - https://nginx.uds.dev/login
-      enableAuthserviceSelector:
-        app.kubernetes.io/name: nginx
+      # TODO: add this back once authservice can be included in testing/ci via uds-core functional layers
+      # enableAuthserviceSelector:
+      #   app.kubernetes.io/name: nginx
 
   network:
     expose:
