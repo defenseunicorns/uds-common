@@ -73,6 +73,7 @@ jobs:
     needs: run-flavor-test
     timeout-minutes: 20
     strategy:
+      fail-fast: false
       matrix:
         flavor: [test, break]
         type: [install, upgrade, breaking-change]
