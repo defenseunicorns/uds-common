@@ -30,6 +30,7 @@ concurrency:
 # Permissions for the GITHUB_TOKEN used by the workflow.
 permissions:
   contents: read # Allows reading the content of the repository.
+  id-token: write
 
 jobs:
   run-test:
