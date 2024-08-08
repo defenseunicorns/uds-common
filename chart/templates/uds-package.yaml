@@ -4,16 +4,19 @@ metadata:
   name: nginx
   namespace: {{ .Release.Namespace }}
 spec:
+  # This will be broken until an authservice exclusion is added to uds-core
   monitor:
     - selector:
-        app.kubernetes.io/name: nginx
-      targetPort: 8080
-      portName: http
-      path: /metrics.txt
+        nginx-metrics: "true"
+      targetPort: 8081
+      portName: metrics
+      path: /metrics/
       description: Metrics
+      podSelector:
+        app.kubernetes.io/name: nginx
 
   sso:
-    - name: Nginx Authservice
+    - name: Nginx Authserviced
       clientId: uds-package-nginx
       redirectUris:
         - https://nginx.uds.dev/login

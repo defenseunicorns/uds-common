@@ -40,6 +40,9 @@ spec:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
+            - name: metrics
+              containerPort: 8081
+              protocol: TCP
           livenessProbe:
             {{- toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe:
@@ -51,7 +54,7 @@ spec:
               mountPath: /etc/nginx/conf.d/default.conf
               subPath: default.conf
             - name: nginx-metrics-file
-              mountPath: /usr/share/nginx/html/metrics.txt
+              mountPath: /usr/share/nginx/metrics/metrics/metrics.txt
               subPath: metrics.txt
           {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 12 }}
