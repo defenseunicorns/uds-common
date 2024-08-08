@@ -66,8 +66,6 @@ jobs:
 
       - name: UDS Badge Verification
         uses: ./.github/actions/verify-badge
-        with:
-          commonZarf: "false"
 
       - name: Debug Output
         if: ${{ always() }}
