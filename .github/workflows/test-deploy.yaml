@@ -63,9 +63,7 @@ jobs:
         id: set_skip
         run: |
           if [ "${{ matrix.type }}" =! "upgrade" ]; then
-            echo "SKIP=false" >> $GITHUB_ENV
-          else
-            echo "SKIP=${{ needs.run-flavor-test.outputs.skip }}" >> $GITHUB_ENV
+            echo "skip=false" >> $GITHUB_ENV
           fi
 
   run-test:
