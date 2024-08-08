@@ -41,8 +41,11 @@ tasks:
           # Default values for vars, maru-runner issue workaround
 
           CHART_PATH=${CHART_PATH:-chart/}
+          echo "$(gh_notice)ℹ️  Chart Path: $CHART_PATH"
           GROUP_NAME=${GROUP_NAME:-package}
+          echo "$(gh_notice)ℹ️  Group Name: $GROUP_NAME"
           COMMON_ZARF=${COMMON_ZARF:-true}
+          echo "$(gh_notice)ℹ️  Common Zarf: $COMMON_ZARF"
 
           # Validate UDS Package/Config chart is valid
 

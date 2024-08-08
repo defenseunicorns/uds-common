@@ -29,6 +29,6 @@ runs:
       continue-on-error: true
       run: |
         uds run badge:verify-badge \
-          --set CHART_PATH=${{ inputs.chartPath }} \
-          --set GROUP_NAME=${{ inputs.groupName }} \
-          --set COMMON_ZARF=${{ inputs.commonZarf }}
+          --set CHART_PATH="${{ inputs.chartPath }}" \
+          --set GROUP_NAME="${{ inputs.groupName }}" \
+          --set COMMON_ZARF="${{ inputs.commonZarf }}"
