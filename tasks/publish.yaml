@@ -21,13 +21,20 @@ tasks:
       team:
         description: The team publishing the package
         default: uds
+      name:
+        description: The name of the package to publish
+        default: ${PACKAGE_NAME}
     actions:
       - task: utils:determine-repo
         with:
           team: ${{.inputs.team}}
+      - description: Get the current Zarf package name
+        cmd: cat ${{ .inputs.path }}/zarf.yaml | ./uds zarf tools yq .metadata.name
+        setVariables:
+          - name: PACKAGE_NAME
       - description: Publish package for the supplied architecture
         cmd: |
-          ./uds zarf package publish ${{ .inputs.path }}/zarf-package-*-${{ .inputs.architecture }}-${{ .inputs.version }}.tar.zst oci://${TARGET_REPO}
+          ./uds zarf package publish ${{ .inputs.path }}/zarf-package-${{ .inputs.name }}-${{ .inputs.architecture }}-${{ .inputs.version }}.tar.zst oci://${TARGET_REPO}
 
   - name: test-bundle
     description: Publish bundle for the supplied architecture
@@ -41,8 +48,15 @@ tasks:
       architecture:
         description: The architecture of the bundle to publish
         default: ${UDS_ARCH}
+      name:
+        description: The name of the bundle to publish
+        default: ${BUNDLE_NAME}
     actions:
       - task: utils:determine-repo
+      - description: Get the current UDS Bundle name
+        cmd: cat ${{ .inputs.path }}/uds-bundle.yaml | ./uds zarf tools yq .metadata.name
+        setVariables:
+          - name: BUNDLE_NAME
       - description: Publish bundle for the supplied architecture
         cmd: |
-          ./uds publish ${{ .inputs.path }}/uds-bundle-*-${{ .inputs.architecture }}-${{ .inputs.version }}.tar.zst oci://${TARGET_REPO}/bundles --no-progress
+          ./uds publish ${{ .inputs.path }}/uds-bundle-${{ .inputs.name }}-${{ .inputs.architecture }}-${{ .inputs.version }}.tar.zst oci://${TARGET_REPO}/bundles --no-progress
