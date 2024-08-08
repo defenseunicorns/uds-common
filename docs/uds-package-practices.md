@@ -83,7 +83,7 @@ To help maintain a UDS Package, it:
 - **Must** release its package to the `ghcr.io/defenseunicorns/packages/<group>` namespace as the application's name (i.e. `ghcr.io/defenseunicorns/packages/uds/mattermost`)
 
 ## Versioning
-You can use this section to decide how best to version a UDS Package.
+Use this section to decide how best to version a UDS Package.
 
 - **Must** be versioned using the below example versioning scheme, or if this scheme doesn't make sense for the use case (i.e. a monorepo like [uds core](https://github.com/defenseunicorns/uds-core)) fall back to using [semantic versioning](https://semver.org/)
 - **Must** be consistently versioned across flavors - this can take many forms but flavors should differ in image bases/builds not application versions.
