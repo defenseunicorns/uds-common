@@ -4,26 +4,32 @@ tasks:
       version:
         description: The version of k3d-core-slim-dev to deploy
         # renovate: datasource=github-tags depName=defenseunicorns/uds-core versioning=semver
-        default: 0.24.1
+        default: 0.25.1
+      snapshots:
+        description: Whether to pull from the nightly snapshot repository
+        default: "false"
       insecure_keycloak_admin:
         description: Automatically set a keycloak admin username / password
         default: "true"
     actions:
       - description: Create k3d cluster with slim UDS Core
-        cmd: ./uds deploy oci://defenseunicorns/uds/bundles/k3d-core-slim-dev:${{ .inputs.version }} --set INSECURE_ADMIN_PASSWORD_GENERATION=${{ .inputs.insecure_keycloak_admin }} --confirm --no-progress
+        cmd: ./uds deploy oci://defenseunicorns/uds/${{ if eq .inputs.snapshots "true" }}snapshots/${{ end }}bundles/k3d-core-slim-dev:${{ .inputs.version }} --set INSECURE_ADMIN_PASSWORD_GENERATION=${{ .inputs.insecure_keycloak_admin }} --confirm --no-progress
 
   - name: k3d-full-cluster
     inputs:
       version:
         description: The version of k3d-core-demo to deploy
         # renovate: datasource=github-tags depName=defenseunicorns/uds-core versioning=semver
-        default: 0.24.1
+        default: 0.25.1
+      snapshots:
+        description: Whether to pull from the nightly snapshot repository
+        default: "false"
       insecure_keycloak_admin:
         description: Automatically set a keycloak admin username / password
         default: "true"
     actions:
       - description: Deploy all of the UDS Core Package into the current cluster
-        cmd: ./uds deploy oci://defenseunicorns/uds/bundles/k3d-core-demo:${{ .inputs.version }} --set INSECURE_ADMIN_PASSWORD_GENERATION=${{ .inputs.insecure_keycloak_admin }} --confirm --no-progress
+        cmd: ./uds deploy oci://defenseunicorns/uds/${{ if eq .inputs.snapshots "true" }}snapshots/${{ end }}bundles/k3d-core-demo:${{ .inputs.version }} --set INSECURE_ADMIN_PASSWORD_GENERATION=${{ .inputs.insecure_keycloak_admin }} --confirm --no-progress
 
   - name: print-keycloak-admin-password
     actions:

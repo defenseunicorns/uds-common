@@ -11,7 +11,7 @@ inputs:
   udsCliVersion:
     description: The uds-cli version to install
     # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
-    default: 0.13.1
+    default: 0.14.0
   chainguardIdentity:
     description: ID for Chainguard Identity to assume
 
@@ -21,7 +21,7 @@ runs:
     - name: Install k3d
       shell: bash
       # renovate: datasource=github-tags depName=k3d-io/k3d versioning=semver
-      run: curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | TAG=v5.7.2 bash
+      run: curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | TAG=v5.7.3 bash
 
     - name: Set UDS CLI Arch
       id: setUdsCliArch
@@ -33,10 +33,10 @@ runs:
       run: curl -o /usr/local/bin/uds -L https://github.com/defenseunicorns/uds-cli/releases/download/v${{ inputs.udsCliVersion }}/uds-cli_v${{ inputs.udsCliVersion }}_Linux_${{steps.setUdsCliArch.outputs.ARCH}} && chmod +x /usr/local/bin/uds
 
     - name: Install Lula
-      uses: defenseunicorns/lula-action/setup@939e0a3d3a5f72321245a040207152dced5238f2
+      uses: defenseunicorns/lula-action/setup@6febc81992841c920b94b0613ad6b42c2bca8d2f
       with:
         # renovate: datasource=github-tags depName=defenseunicorns/lula versioning=semver-coerced
-        version: v0.4.3
+        version: v0.4.5
 
     - name: Iron Bank Login
       if: ${{ inputs.registry1Username != '' }}
@@ -48,7 +48,7 @@ runs:
 
     - name: Chainguard Login
       if: ${{ inputs.chainguardIdentity != '' }}
-      uses: chainguard-dev/setup-chainctl@fc62b08dfd3179dd694b50f672bc371f878fbd1e # v0.2.1
+      uses: chainguard-dev/setup-chainctl@f52718d822dc73d21a04ef2082822c4a203163b3 # v0.2.2
       with:
         identity: ${{ inputs.chainguardIdentity }}
 

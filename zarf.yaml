@@ -4,7 +4,7 @@ metadata:
   name: nginx
   description: UDS nginx package
   # x-release-please-start-version
-  version: 0.10.0
+  version: 0.11.2
   # x-release-please-end
   architecture: amd64
 

@@ -1,5 +1,40 @@
 # Changelog
 
+## [0.11.2](https://github.com/defenseunicorns/uds-common/compare/v0.11.1...v0.11.2) (2024-08-07)
+
+
+### Miscellaneous
+
+* refine package selection logic for publishing ([#207](https://github.com/defenseunicorns/uds-common/issues/207)) ([7e1c03a](https://github.com/defenseunicorns/uds-common/commit/7e1c03abede1d4a3f91bb122fe5fff6abbb73311))
+
+## [0.11.1](https://github.com/defenseunicorns/uds-common/compare/v0.11.0...v0.11.1) (2024-08-06)
+
+
+### Bug Fixes
+
+* renovate ghcr host docker type ([#201](https://github.com/defenseunicorns/uds-common/issues/201)) ([9c298e0](https://github.com/defenseunicorns/uds-common/commit/9c298e08417ce928dbbf4356c23182f8b1a62ffb))
+* renovate typo token/password ([#202](https://github.com/defenseunicorns/uds-common/issues/202)) ([5d7ea03](https://github.com/defenseunicorns/uds-common/commit/5d7ea03815929a662c529b2078bdf895d8f3ac1b))
+* update renovate creds ([#200](https://github.com/defenseunicorns/uds-common/issues/200)) ([1c6eb24](https://github.com/defenseunicorns/uds-common/commit/1c6eb24f37b4059589a70c9addeffb80895d450b))
+
+
+### Miscellaneous
+
+* add renovate support for org ghcr packages ([#199](https://github.com/defenseunicorns/uds-common/issues/199)) ([2c5de9c](https://github.com/defenseunicorns/uds-common/commit/2c5de9cc41cad9d1e02faf39c0cad364933f335f))
+* **deps:** update uds common support dependencies ([#195](https://github.com/defenseunicorns/uds-common/issues/195)) ([04b6409](https://github.com/defenseunicorns/uds-common/commit/04b64091ba0528463713f66d8167572a533e0c3d))
+* fix codeowners ([#196](https://github.com/defenseunicorns/uds-common/issues/196)) ([856ef22](https://github.com/defenseunicorns/uds-common/commit/856ef221b39e65070e966942b42e79d408f59b76))
+
+## [0.11.0](https://github.com/defenseunicorns/uds-common/compare/v0.10.0...v0.11.0) (2024-08-02)
+
+
+### Features
+
+* add support for uds-core snapshots ([#193](https://github.com/defenseunicorns/uds-common/issues/193)) ([7a39915](https://github.com/defenseunicorns/uds-common/commit/7a39915ceff7a1a9e319846042ab74390fda6f2b))
+
+
+### Miscellaneous
+
+* **deps:** update uds common support dependencies ([#187](https://github.com/defenseunicorns/uds-common/issues/187)) ([a0bbfb0](https://github.com/defenseunicorns/uds-common/commit/a0bbfb043e670a175fbdc44585e2bbb5b695acf7))
+
 ## [0.10.0](https://github.com/defenseunicorns/uds-common/compare/v0.9.0...v0.10.0) (2024-07-29)
 
 
