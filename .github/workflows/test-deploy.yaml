@@ -53,6 +53,7 @@ jobs:
           ghToken: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Test-Flavor
+        id: test_flavor
         uses: ./.github/actions/test-flavor
         if: ${{ matrix.type == 'upgrade'}}
         with:
@@ -64,6 +65,8 @@ jobs:
         run: |
           if [ "${{ matrix.type }}" =! "upgrade" ]; then
             echo "skip=false" >> $GITHUB_ENV
+          else
+            echo "skip=${{ steps.test_flavor.outputs.result }}" >> $GITHUB_ENV
           fi
 
   run-test:
@@ -75,7 +78,7 @@ jobs:
       matrix:
         flavor: [test, break]
         type: [install, upgrade, breaking-change]
-    if: ${{ needs.run-flavor-test.outputs.skip != 'true' }}
+    if: ${{ needs.run-flavor-test.outputs.set_skip == 'false' }}
 
     steps:
       - name: Checkout repository
