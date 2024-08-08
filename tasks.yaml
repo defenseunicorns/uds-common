@@ -6,6 +6,7 @@ includes:
   - publish: ./tasks/publish.yaml
   - pull: ./tasks/pull.yaml
   - upgrade: ./tasks/upgrade.yaml
+  - flavor-check: ./tasks/flavor-check.yaml
   - compliance: ./tasks/compliance.yaml
 
 tasks:
@@ -27,6 +28,14 @@ tasks:
     description: Create a local UDS Podinfo bundle
     actions:
       - task: create-podinfo-package
+      - task: create:test-bundle
+
+  - name: create-podinfo-latest-release-bundle
+    description: Create UDS Podinfo bundle based on the latest release
+    actions:
+      - task: pull:latest-package-release
+        with:
+          spoof_release: "true"
       - task: create:test-bundle
 
   - name: deploy-podinfo-latest-release-bundle
@@ -87,9 +96,34 @@ tasks:
         with:
           assessment_results: /tmp/oscal-assessment-results.yaml
 
+  - name: test-latest-tag-flavor
+    description: Test an upgrade from the latest released package to the current branch
+    actions:
+      - task: flavor-check:flavor-check
+
+  - name: test-breaking-change
+    description: Test an upgrade from the latest released package to the current branch
+    actions:
+      - task: create-podinfo-latest-release-bundle
+      - task: setup:k3d-test-cluster
+      - task: deploy:test-bundle
+      - task: compliance:validate
+        with:
+          assessment_results: /tmp/oscal-assessment-results.yaml
+      - task: create-podinfo-test-bundle
+      - task: deploy:test-bundle
+      - task: test
+      - task: compliance:validate
+        with:
+          assessment_results: /tmp/oscal-assessment-results.yaml
+      - task: compliance:evaluate
+        with:
+          assessment_results: /tmp/oscal-assessment-results.yaml
+
   - name: test-upgrade
     description: Test an upgrade from the latest released package to the current branch
     actions:
+      - task: setup:k3d-test-cluster
       - task: deploy-podinfo-latest-release-bundle
       - task: compliance:validate
         with:

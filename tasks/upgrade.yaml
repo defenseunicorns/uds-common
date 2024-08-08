@@ -8,17 +8,32 @@ variables:
 tasks:
   - name: deploy-latest-tag-bundle
     inputs:
+      options:
+        description: For setting create time variables and flags
+
+      config:
+        description: File name of the bundle config file. Defaults to uds-config.yaml. Path is relative to the path input.
+        default: uds-config.yaml
+
+      bundle_path:
+        description: Path relative to the repositories root where the package needs to go
+        default: bundle
+
       path:
-        description: Path relative to the repositories root where the bundle things happen
+        description: Path relative to the repositories root where the package needs to go
         default: .
 
-      spoof_release:
-        description: Whether to spoof the pulled bundle version to the current repo version
-        default: "false"
+      team:
+        description: The team you want to pull the package from
+        default: uds
 
       target_repo:
         description: The repository to pull from
         default: ghcr.io/defenseunicorns/packages/uds/bundles
+
+      architecture:
+        description: The architecture of the package to create
+        default: ${UDS_ARCH}
 
     actions:
       - description: Remove cloned repo
@@ -30,13 +45,43 @@ tasks:
       - description: CD into cloned repo
         cmd: cd upgrade-test
 
+      - task: utils:determine-repo
+        with:
+          team: ${{.inputs.team}}
+
+      - description: Get the current Zarf package name
+        cmd: cat ${{ .inputs.path }}/zarf.yaml | yq .metadata.name
+        setVariables:
+          - name: PACKAGE_NAME
+
+      - description: Get latest tag version from OCI
+        cmd: ./uds zarf tools registry ls ${TARGET_REPO}/${PACKAGE_NAME} | grep ${FLAVOR} | sort -V | tail -1
+        setVariables:
+          - name: LATEST_VERSION
+
+      - description: Pull the latest package release
+        cmd: ./uds zarf package pull oci://${TARGET_REPO}/${PACKAGE_NAME}:${LATEST_VERSION} --no-progress -o ${{ .inputs.path }}
+
       - description: Create and deploy test bundle
         cmd: |
-          if cat zarf.yaml | grep -q ${FLAVOR}; then
-            ./uds run default --set FLAVOR=${FLAVOR} --no-progress
+          if [ ${FLAVOR} != "registry1" ] || [ ${{ .inputs.architecture }} != "arm64" ]; then
+            UDS_CONFIG=${{ .inputs.bundle_path }}/${{ .inputs.config }} ./uds create ${{ .inputs.bundle_path }} --confirm --no-progress --architecture=${{ .inputs.architecture }} ${{ .inputs.options }}
           else
-            echo "::warning::⚠️ Latest tag does not have flavor:${FLAVOR}"
+            echo "Registry1 bundles cannot be made for 'arm64'"
           fi
+
+      - description: Get the current UDS Bundle name
+        cmd: cat ${{ .inputs.bundle_path }}/uds-bundle.yaml | ./uds zarf tools yq .metadata.name
+        setVariables:
+          - name: BUNDLE_NAME
+
+      - description: Get the current UDS Bundle version
+        cmd: cat ${{ .inputs.bundle_path }}/uds-bundle.yaml | ./uds zarf tools yq .metadata.version
+        setVariables:
+          - name: BUNDLE_VERSION
+
+      - description: Deploy the UDS bundle with the package and its dependencies
+        cmd: UDS_CONFIG=${{ .inputs.bundle_path }}/${{ .inputs.config }} ./uds deploy ${{ .inputs.bundle_path }}/uds-bundle-${BUNDLE_NAME}-${UDS_ARCH}-${BUNDLE_VERSION}.tar.zst --confirm --no-progress ${{ .inputs.options }}
 
       - description: Move up a directory
         cmd: cd ../
