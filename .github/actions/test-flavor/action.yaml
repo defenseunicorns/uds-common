@@ -14,8 +14,8 @@ inputs:
 
 outputs:
   skip:
-    value: "${SKIP}"
-    description: 'Indicates if the upgrade should be skipped'
+    value: ${SKIP}
+    description: Indicates if the upgrade should be skipped
 
 runs:
   using: composite
