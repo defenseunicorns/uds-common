@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.2](https://github.com/defenseunicorns/uds-common/compare/v0.11.1...v0.11.2) (2024-08-07)
+
+
+### Miscellaneous
+
+* refine package selection logic for publishing ([#207](https://github.com/defenseunicorns/uds-common/issues/207)) ([7e1c03a](https://github.com/defenseunicorns/uds-common/commit/7e1c03abede1d4a3f91bb122fe5fff6abbb73311))
+
 ## [0.11.1](https://github.com/defenseunicorns/uds-common/compare/v0.11.0...v0.11.1) (2024-08-06)
 
 
