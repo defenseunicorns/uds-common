@@ -54,12 +54,12 @@ tasks:
 
             # VARIABLES
             PACKAGE_NAME=$(cat ${{ .inputs.path }}/zarf.yaml | yq .metadata.name)
-            LATEST_VERSION=$(./uds zarf tools registry ls ${{ .inputs.target_repo }}/${PACKAGE_NAME} | grep ${FLAVOR} | sort -V | tail -1)
+            LATEST_VERSION=$(./uds zarf tools registry ls ${TARGET_REPO}/${PACKAGE_NAME} | grep ${FLAVOR} | sort -V | tail -1)
             BUNDLE_NAME=$(cat ${{ .inputs.bundle_path }}/uds-bundle.yaml | ./uds zarf tools yq .metadata.name)
             BUNDLE_VERSION=$(cat ${{ .inputs.bundle_path }}/uds-bundle.yaml | ./uds zarf tools yq .metadata.version)
 
             # Pulls latest published zarf package
-            ./uds zarf package pull oci://${{ .inputs.target_repo }}/${PACKAGE_NAME}:${LATEST_VERSION} --no-progress -o ${{ .inputs.path }}
+            ./uds zarf package pull oci://${TARGET_REPO}/${PACKAGE_NAME}:${LATEST_VERSION} --no-progress -o ${{ .inputs.path }}
 
             # Checks if the zarf package is registry1 and ARM
             if [ ${FLAVOR} != "registry1" ] || [ ${{ .inputs.architecture }} != "arm64" ]; then
