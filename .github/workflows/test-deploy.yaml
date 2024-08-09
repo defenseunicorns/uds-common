@@ -23,14 +23,6 @@ on:
       - SECURITY.md
       - config/renovate.json5
 
-concurrency:
-  group: test-${{ github.ref }}
-  cancel-in-progress: true
-
-# Permissions for the GITHUB_TOKEN used by the workflow.
-permissions:
-  contents: read # Allows reading the content of the repository.
-
 jobs:
   run-test:
     strategy:
