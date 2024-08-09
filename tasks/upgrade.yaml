@@ -6,14 +6,11 @@ variables:
     default: upstream
 
 tasks:
-  - name: deploy-latest-tag-bundle
+  - name: test-latest-tag-flavor
     inputs:
       options:
         description: For setting create time variables and flags
-
-      config:
-        description: File name of the bundle config file. Defaults to uds-config.yaml. Path is relative to the path input.
-        default: uds-config.yaml
+        default: ""
 
       bundle_path:
         description: Path relative to the repositories root where the package needs to go
@@ -29,72 +26,56 @@ tasks:
 
       target_repo:
         description: The repository to pull from
-        default: ghcr.io/defenseunicorns/packages/uds/bundles
+        default: ${TARGET_REPO}
 
       architecture:
         description: The architecture of the package to create
         default: ${UDS_ARCH}
 
     actions:
+      - task: utils:determine-repo
+        with:
+          team: ${{.inputs.team}}
+
       - description: Remove cloned repo
         cmd: rm -rf upgrade-test
 
       - description: Clone latest tag
         cmd: git clone --depth 1 --branch $(git describe --tags `git rev-list --tags --max-count=1`) $(git remote get-url origin) upgrade-test
 
-      - description: CD into cloned repo
-        cmd: cd upgrade-test
-
-      - description: Create and deploy test bundle
+      - description: Create test bundle
         cmd: |
+          cd upgrade-test
+
           FLAVOR_CHECK="flavor: ${FLAVOR}"
-          if grep -q "${FLAVOR_CHECK}" zarf.yaml; then
-            echo "::notice::✅ Latest tag does have flavor:${FLAVOR}"
+
+          # Checks if flavor exists
+          if grep -q "${FLAVOR_CHECK}" ./zarf.yaml; then
+
+            # VARIABLES
+            PACKAGE_NAME=$(cat ${{ .inputs.path }}/zarf.yaml | yq .metadata.name)
+            LATEST_VERSION=$(./uds zarf tools registry ls ${{ .inputs.target_repo }}/${PACKAGE_NAME} | grep ${FLAVOR} | sort -V | tail -1)
+            BUNDLE_NAME=$(cat ${{ .inputs.bundle_path }}/uds-bundle.yaml | ./uds zarf tools yq .metadata.name)
+            BUNDLE_VERSION=$(cat ${{ .inputs.bundle_path }}/uds-bundle.yaml | ./uds zarf tools yq .metadata.version)
+
+            # Pulls latest published zarf package
+            ./uds zarf package pull oci://${{ .inputs.target_repo }}/${PACKAGE_NAME}:${LATEST_VERSION} --no-progress -o ${{ .inputs.path }}
+
+            # Checks if the zarf package is registry1 and ARM
+            if [ ${FLAVOR} != "registry1" ] || [ ${{ .inputs.architecture }} != "arm64" ]; then
+
+              # Creates and moves the bundle into the correct spot
+              ./uds create ${{ .inputs.bundle_path }} --confirm --no-progress --architecture=${{ .inputs.architecture }} ${{ .inputs.options }}
+              mv ${{ .inputs.bundle_path }}/uds-bundle-${BUNDLE_NAME}-${{ .inputs.architecture }}-${BUNDLE_VERSION}.tar.zst ../bundle
+
+            else
+              echo "Registry1 bundles cannot be made for 'arm64'"
+            fi
+            cd ..
+            rm -rf upgrade-test
+            ./uds run test-upgrade --no-progress
+          # If flavor doesn't exist
           else
+            rm -rf upgrade-test
             echo "::warning::⚠️ Latest tag does not have flavor:${FLAVOR}"
-            exit 0
           fi
-
-      - task: utils:determine-repo
-        with:
-          team: ${{.inputs.team}}
-
-      - description: Get the current Zarf package name
-        cmd: cat ${{ .inputs.path }}/zarf.yaml | yq .metadata.name
-        setVariables:
-          - name: PACKAGE_NAME
-
-      - description: Get latest tag version from OCI
-        cmd: ./uds zarf tools registry ls ${TARGET_REPO}/${PACKAGE_NAME} | grep ${FLAVOR} | sort -V | tail -1
-        setVariables:
-          - name: LATEST_VERSION
-
-      - description: Pull the latest package release
-        cmd: ./uds zarf package pull oci://${TARGET_REPO}/${PACKAGE_NAME}:${LATEST_VERSION} --no-progress -o ${{ .inputs.path }}
-
-      - description: Create and deploy test bundle
-        cmd: |
-          if [ ${FLAVOR} != "registry1" ] || [ ${{ .inputs.architecture }} != "arm64" ]; then
-            UDS_CONFIG=${{ .inputs.bundle_path }}/${{ .inputs.config }} ./uds create ${{ .inputs.bundle_path }} --confirm --no-progress --architecture=${{ .inputs.architecture }} ${{ .inputs.options }}
-          else
-            echo "Registry1 bundles cannot be made for 'arm64'"
-          fi
-
-      - description: Get the current UDS Bundle name
-        cmd: cat ${{ .inputs.bundle_path }}/uds-bundle.yaml | ./uds zarf tools yq .metadata.name
-        setVariables:
-          - name: BUNDLE_NAME
-
-      - description: Get the current UDS Bundle version
-        cmd: cat ${{ .inputs.bundle_path }}/uds-bundle.yaml | ./uds zarf tools yq .metadata.version
-        setVariables:
-          - name: BUNDLE_VERSION
-
-      - description: Deploy the UDS bundle with the package and its dependencies
-        cmd: UDS_CONFIG=${{ .inputs.bundle_path }}/${{ .inputs.config }} ./uds deploy ${{ .inputs.bundle_path }}/uds-bundle-${BUNDLE_NAME}-${UDS_ARCH}-${BUNDLE_VERSION}.tar.zst --confirm --no-progress ${{ .inputs.options }}
-
-      - description: Move up a directory
-        cmd: cd ../
-
-      - description: Remove cloned repo
-        cmd: rm -rf upgrade-test

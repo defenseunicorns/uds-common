@@ -39,5 +39,5 @@ runs:
 
     - name: Test upgrading the package
       if: ${{ inputs.type == 'upgrade' }}
-      run: uds run test-upgrade --set FLAVOR=${{ inputs.flavor }} ${{ inputs.options }} --no-progress
+      run: uds run test-upgrade-flavor --set FLAVOR=${{ inputs.flavor }} ${{ inputs.options }} --no-progress
       shell: bash
