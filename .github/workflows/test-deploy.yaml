@@ -42,7 +42,7 @@ jobs:
           - flavor: test
             type: upgrade
             if: false
-    uses: ./.github/workflows/reusable-workflow.yml
+    uses: ./.github/workflows/test-deploy-callable.yml
     with:
       if: ${{ matrix.tests.if }}
       flavor: ${{ matrix.tests.flavor }}
