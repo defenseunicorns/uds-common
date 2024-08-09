@@ -34,13 +34,13 @@ jobs:
         tests:
           - flavor: test
             type: install
-            required: false
+            required: true
           - flavor: test
             type: upgrade
             required: true
           - flavor: break
             type: install
-            required: false
+            required: true
           - flavor: break
             type: upgrade
             required: true
