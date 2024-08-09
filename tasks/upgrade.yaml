@@ -84,7 +84,7 @@ tasks:
 
             cd ..
 
-            ./uds run test-upgrade --no-progress
+            ./uds run test-upgrade --no-progress --set FLAVOR=${FLAVOR} ${{ inputs.options }} --no-progress
 
           # If flavor doesn't exist
           else
