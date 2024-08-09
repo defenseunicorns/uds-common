@@ -13,6 +13,10 @@ on:
       type:
         required: true
         type: string
+    outputs:
+      required: # Define workflow output
+        description: "Indicates if the upgrade should be skipped"
+        value: ${{ jobs.run-test.outputs.required }}
 
 # Permissions for the GITHUB_TOKEN used by the workflow.
 permissions:
