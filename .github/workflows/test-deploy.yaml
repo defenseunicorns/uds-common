@@ -34,7 +34,7 @@ jobs:
           - flavor: test
             type: upgrade
             if: false
-    uses: ./.github/workflows/test-deploy-callable.yaml
+    uses: ./.github/workflows/callables/test-deploy-callable.yaml
     name: ${{ matrix.tests.type }} ${{ matrix.tests.flavor }}
     with:
       if: ${{ matrix.tests.if }}
