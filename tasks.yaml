@@ -6,7 +6,6 @@ includes:
   - publish: ./tasks/publish.yaml
   - pull: ./tasks/pull.yaml
   - upgrade: ./tasks/upgrade.yaml
-  - flavor-check: ./tasks/flavor-check.yaml
   - compliance: ./tasks/compliance.yaml
 
 tasks:

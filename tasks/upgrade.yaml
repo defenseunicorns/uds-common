@@ -44,6 +44,9 @@ tasks:
         cmd: git clone --depth 1 --branch $(git describe --tags `git rev-list --tags --max-count=1`) $(git remote get-url origin) upgrade-test
 
       - description: Create test bundle
+        shell:
+          linux: bash
+          darwin: bash
         cmd: |
           cd upgrade-test
 
@@ -59,23 +62,34 @@ tasks:
             BUNDLE_VERSION=$(cat ${{ .inputs.bundle_path }}/uds-bundle.yaml | ./uds zarf tools yq .metadata.version)
 
             # Pulls latest published zarf package
-            ./uds zarf package pull oci://${TARGET_REPO}/${PACKAGE_NAME}:${LATEST_VERSION} --no-progress -o ${{ .inputs.path }}
+            ./uds zarf package pull \
+              oci://${TARGET_REPO}/${PACKAGE_NAME}:${LATEST_VERSION} \
+              --no-progress \
+              -o ${{ .inputs.path }}
 
             # Checks if the zarf package is registry1 and ARM
             if [ ${FLAVOR} != "registry1" ] || [ ${{ .inputs.architecture }} != "arm64" ]; then
 
               # Creates and moves the bundle into the correct spot
-              ./uds create ${{ .inputs.bundle_path }} --confirm --no-progress --architecture=${{ .inputs.architecture }} ${{ .inputs.options }}
-              mv ${{ .inputs.bundle_path }}/uds-bundle-${BUNDLE_NAME}-${{ .inputs.architecture }}-${BUNDLE_VERSION}.tar.zst ../bundle
+              ./uds create ${{ .inputs.bundle_path }} \
+                --architecture=${{ .inputs.architecture }} \
+                --confirm \
+                --no-progress \
+                ${{ .inputs.options }}
 
+              mv ${{ .inputs.bundle_path }}/uds-bundle-${BUNDLE_NAME}-${{ .inputs.architecture }}-${BUNDLE_VERSION}.tar.zst ../bundle
             else
               echo "Registry1 bundles cannot be made for 'arm64'"
             fi
+
             cd ..
-            rm -rf upgrade-test
+
             ./uds run test-upgrade --no-progress
+
           # If flavor doesn't exist
           else
-            rm -rf upgrade-test
+            cd ..
             echo "::warning::⚠️ Latest tag does not have flavor:${FLAVOR}"
           fi
+
+          rm -rf upgrade-test
