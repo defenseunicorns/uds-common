@@ -5,7 +5,7 @@ on:
     inputs:
       required:
         required: true
-        default: true
+        default: false
         type: boolean
       flavor:
         required: true

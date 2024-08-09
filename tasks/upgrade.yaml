@@ -6,7 +6,7 @@ variables:
     default: upstream
 
 tasks:
-  - name: test-latest-tag-flavor
+  - name: create-latest-tag-bundle
     inputs:
       options:
         description: For setting create time variables and flags
@@ -50,46 +50,33 @@ tasks:
         cmd: |
           cd upgrade-test
 
-          FLAVOR_CHECK="flavor: ${FLAVOR}"
+          # VARIABLES
+          PACKAGE_NAME=$(cat ${{ .inputs.path }}/zarf.yaml | yq .metadata.name)
+          LATEST_VERSION=$(./uds zarf tools registry ls ${TARGET_REPO}/${PACKAGE_NAME} | grep ${FLAVOR} | sort -V | tail -1)
+          BUNDLE_NAME=$(cat ${{ .inputs.bundle_path }}/uds-bundle.yaml | ./uds zarf tools yq .metadata.name)
+          BUNDLE_VERSION=$(cat ${{ .inputs.bundle_path }}/uds-bundle.yaml | ./uds zarf tools yq .metadata.version)
 
-          # Checks if flavor exists
-          if grep -q "${FLAVOR_CHECK}" ./zarf.yaml; then
+          # Pulls latest published zarf package
+          ./uds zarf package pull \
+            oci://${TARGET_REPO}/${PACKAGE_NAME}:${LATEST_VERSION} \
+            --no-progress \
+            -o ${{ .inputs.path }}
 
-            # VARIABLES
-            PACKAGE_NAME=$(cat ${{ .inputs.path }}/zarf.yaml | yq .metadata.name)
-            LATEST_VERSION=$(./uds zarf tools registry ls ${TARGET_REPO}/${PACKAGE_NAME} | grep ${FLAVOR} | sort -V | tail -1)
-            BUNDLE_NAME=$(cat ${{ .inputs.bundle_path }}/uds-bundle.yaml | ./uds zarf tools yq .metadata.name)
-            BUNDLE_VERSION=$(cat ${{ .inputs.bundle_path }}/uds-bundle.yaml | ./uds zarf tools yq .metadata.version)
+          # Checks if the zarf package is registry1 and ARM
+          if [ ${FLAVOR} != "registry1" ] || [ ${{ .inputs.architecture }} != "arm64" ]; then
 
-            # Pulls latest published zarf package
-            ./uds zarf package pull \
-              oci://${TARGET_REPO}/${PACKAGE_NAME}:${LATEST_VERSION} \
+            # Creates and moves the bundle into the correct spot
+            ./uds create ${{ .inputs.bundle_path }} \
+              --architecture=${{ .inputs.architecture }} \
+              --confirm \
               --no-progress \
-              -o ${{ .inputs.path }}
+              ${{ .inputs.options }}
 
-            # Checks if the zarf package is registry1 and ARM
-            if [ ${FLAVOR} != "registry1" ] || [ ${{ .inputs.architecture }} != "arm64" ]; then
-
-              # Creates and moves the bundle into the correct spot
-              ./uds create ${{ .inputs.bundle_path }} \
-                --architecture=${{ .inputs.architecture }} \
-                --confirm \
-                --no-progress \
-                ${{ .inputs.options }}
-
-              mv ${{ .inputs.bundle_path }}/uds-bundle-${BUNDLE_NAME}-${{ .inputs.architecture }}-${BUNDLE_VERSION}.tar.zst ../bundle
-            else
-              echo "Registry1 bundles cannot be made for 'arm64'"
-            fi
-
-            cd ..
-
-            ./uds run test-upgrade --no-progress --set FLAVOR=${FLAVOR} ${{ .inputs.options }} --no-progress
-
-          # If flavor doesn't exist
+            mv ${{ .inputs.bundle_path }}/uds-bundle-${BUNDLE_NAME}-${{ .inputs.architecture }}-${BUNDLE_VERSION}.tar.zst ../bundle
           else
-            cd ..
-            echo "::warning::⚠️ Latest tag does not have flavor:${FLAVOR}"
+            echo "::warning::⚠️ Registry1 bundles cannot be made for 'arm64'"
+            exit 1
           fi
 
+          cd ..
           rm -rf upgrade-test

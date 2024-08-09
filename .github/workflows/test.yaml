@@ -1,0 +1,76 @@
+name: Test
+
+on:
+  # This workflow is triggered on pull requests to the main branch.
+  pull_request:
+    # milestoned is added here as a workaround for release-please not triggering PR workflows (PRs should be added to a milestone to trigger the workflow).
+    types: [milestoned, opened, reopened, synchronize]
+    paths-ignore:
+      - "**.md"
+      - "**.jpg"
+      - "**.png"
+      - "**.gif"
+      - "**.svg"
+      - adr/**
+      - docs/**
+      - .gitignore
+      - renovate.json
+      - .release-please-config.json
+      - release-please-config.json
+      - CODEOWNERS
+      - LICENSE
+      - CONTRIBUTING.md
+      - SECURITY.md
+      - config/renovate.json5
+
+# Permissions for the GITHUB_TOKEN used by the workflow.
+permissions:
+  contents: read # Allows reading the content of the repository.
+
+jobs:
+  flavor-test:
+    strategy:
+      matrix:
+        tests:
+          - flavor: test
+            type: install
+            required: false
+          - flavor: test
+            type: upgrade
+            required: true
+          - flavor: break
+            type: install
+            required: false
+          - flavor: break
+            type: upgrade
+            required: true
+    uses: ./.github/workflows/test-flavor.yaml
+    name: ${{ matrix.tests.type }} ${{ matrix.tests.flavor }}
+    with:
+      required: ${{ matrix.tests.required }}
+      flavor: ${{ matrix.tests.flavor }}
+      type: ${{ matrix.tests.type }}
+
+  test:
+    needs: flavor-test
+    strategy:
+      matrix:
+        tests:
+          - flavor: test
+            type: install
+            required: true
+          - flavor: test
+            type: upgrade
+            required: ${{ needs.flavor-test.outputs.required }}
+          - flavor: break
+            type: install
+            required: true
+          - flavor: break
+            type: upgrade
+            required: ${{ needs.flavor-test.outputs.required }}
+    uses: ./.github/workflows/test-deploy.yaml
+    name: ${{ matrix.tests.type }} ${{ matrix.tests.flavor }}
+    with:
+      required: ${{ matrix.tests.required }}
+      flavor: ${{ matrix.tests.flavor }}
+      type: ${{ matrix.tests.type }}
