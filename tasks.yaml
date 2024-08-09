@@ -93,7 +93,7 @@ tasks:
   - name: test-latest-tag-flavor
     description: Test an upgrade from the latest released package to the current branch
     actions:
-      - task: flavor-check:flavor-check
+      - task: upgrade:flavor-check
 
   - name: test-upgrade
     description: Test an upgrade from the latest released package to the current branch

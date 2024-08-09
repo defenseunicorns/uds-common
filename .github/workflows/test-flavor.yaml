@@ -23,7 +23,7 @@ jobs:
     name: deploy
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    if: ${{ inputs.required }}
+    if: ${{ inputs.required && inputs.type == 'upgrade' }}
 
     steps:
       - name: Checkout repository

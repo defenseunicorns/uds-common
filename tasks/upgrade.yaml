@@ -6,6 +6,33 @@ variables:
     default: upstream
 
 tasks:
+  - name: flavor-check
+    description: Checks if the flavor exists before running upgrade check
+
+    actions:
+      - description: Remove cloned repo
+        cmd: rm -rf upgrade-test
+
+      - description: Clone latest tag
+        cmd: git clone --depth 1 --branch $(git describe --tags `git rev-list --tags --max-count=1`) $(git remote get-url origin) upgrade-test
+
+      - description: Check for flavor of latest tagged test bundle
+        cmd: |
+          cd upgrade-test
+
+          FLAVOR_CHECK="flavor: ${FLAVOR}"
+          if grep -q "${FLAVOR_CHECK}" zarf.yaml; then
+            echo "::notice::✅ Latest tag does have flavor:${FLAVOR}"
+            REQUIRED=true
+            echo "REQUIRED=$REQUIRED" >> GITHUB_ENV
+            echo "::set-output name=REQUIRED::$REQUIRED"
+          else
+            echo "::warning::⚠️ Latest tag does not have flavor:${FLAVOR}"
+            REQUIRED=false
+            echo "REQUIRED=$REQUIRED" >> GITHUB_ENV
+            echo "::set-output name=REQUIRED::$REQUIRED"
+          fi
+
   - name: create-latest-tag-bundle
     inputs:
       options:
