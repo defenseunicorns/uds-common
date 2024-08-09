@@ -120,6 +120,12 @@ tasks:
     description: Create UDS Podinfo bundle based on the latest release
     actions:
       - task: upgrade:test-latest-tag-flavor
+        with:
+          target_repo: ${TARGET_REPO}
+          team: ${TEAM}
+          path: ${PATH}
+          bundle_path: ${BUNDLE_PATH}
+          options: ${OPTIONS}
 
   - name: test-upgrade
     description: Test an upgrade from the latest released package to the current branch

@@ -13,7 +13,7 @@ tasks:
         default: ""
 
       bundle_path:
-        description: Path relative to the repositories root where the package needs to go
+        description: Path relative to the repositories root where the bundle needs to go
         default: bundle
 
       path:
@@ -26,7 +26,7 @@ tasks:
 
       target_repo:
         description: The repository to pull from
-        default: ${TARGET_REPO}
+        default: ghcr.io/defenseunicorns/packages
 
       architecture:
         description: The architecture of the package to create
