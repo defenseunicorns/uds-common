@@ -23,16 +23,19 @@ jobs:
     name: deploy
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    if: ${{ inputs.required && inputs.type == 'upgrade' }}
+    if: ${{ inputs.required }}
 
     steps:
       - name: Checkout repository
+        if: ${{ inputs.type == 'upgrade' }}
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
       - name: Clean Runner
+        if: ${{ inputs.type == 'upgrade' }}
         uses: ./.github/actions/clean-runner
 
       - name: Environment setup
+        if: ${{ inputs.type == 'upgrade' }}
         uses: ./.github/actions/setup
         with:
           registry1Username: ${{ secrets.IRON_BANK_ROBOT_USERNAME }}
@@ -40,6 +43,7 @@ jobs:
           ghToken: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Test
+        if: ${{ inputs.type == 'upgrade' }}
         uses: ./.github/actions/test-flavor
         with:
           flavor: ${{ inputs.flavor }}
