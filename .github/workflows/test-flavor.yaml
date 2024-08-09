@@ -14,7 +14,7 @@ on:
         required: true
         type: string
     outputs:
-      required: # Define workflow output
+      required:
         description: Indicates if the upgrade should be skipped
         value: ${{ jobs.run-test.outputs.required }}
 
