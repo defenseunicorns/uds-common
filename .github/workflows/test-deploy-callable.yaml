@@ -20,7 +20,7 @@ permissions:
 
 jobs:
   run-test:
-    name: ${{ inputs.type }} ${{ inputs.flavor }}
+    name: deploy
     runs-on: ubuntu-latest
     timeout-minutes: 20
     if: ${{ inputs.if }}
