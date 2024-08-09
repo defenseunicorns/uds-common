@@ -1,4 +1,4 @@
-name: Test
+name: Test-Flavor
 
 on:
   workflow_call:
@@ -29,6 +29,9 @@ jobs:
     timeout-minutes: 20
     if: ${{ inputs.required }}
 
+    outputs: # Define job outputs
+      required: ${{ steps.test_flavor.outputs.required }}
+
     steps:
       - name: Checkout repository
         if: ${{ inputs.type == 'upgrade' }}
@@ -46,7 +49,8 @@ jobs:
           registry1Password: ${{ secrets.IRON_BANK_ROBOT_PASSWORD }}
           ghToken: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Test
+      - name: Test-Flavor
+        id: test_flavor
         if: ${{ inputs.type == 'upgrade' }}
         uses: ./.github/actions/test-flavor
         with:
