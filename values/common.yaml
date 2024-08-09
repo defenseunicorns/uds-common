@@ -1,0 +1,30 @@
+securityContext:
+  capabilities:
+    drop:
+      - ALL
+  readOnlyRootFilesystem: true
+  allowPrivilegeEscalation: false
+  privileged: false
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
+
+
+volumes:
+  - name: nginx-cache
+    emptyDir: {}
+  - name: run
+    emptyDir: {}
+  - name: nginx-tmp
+    emptyDir: {}
+
+volumeMounts:
+  - name: nginx-cache
+    mountPath: /var/cache/nginx
+    readOnly: false
+  - name: run
+    mountPath: /var/run
+    readOnly: false
+  - name: nginx-tmp
+    mountPath: /var/lib/nginx/tmp
+    readOnly: false

@@ -53,7 +53,7 @@
       "groupName": "UDS Common Package Dependencies",
       "labels": ["package-deps"],
       "commitMessageTopic": "package-deps",
-      "matchPackagePatterns": [".*podinfo.*"]
+      "matchPackagePatterns": [".*nginx.*"]
     }
   ]
 }

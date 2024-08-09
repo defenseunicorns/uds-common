@@ -30,6 +30,7 @@ concurrency:
 # Permissions for the GITHUB_TOKEN used by the workflow.
 permissions:
   contents: read # Allows reading the content of the repository.
+  id-token: write
 
 jobs:
   run-test:
@@ -37,8 +38,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     strategy:
+      fail-fast: false
       matrix:
-        flavor: [test]
+        flavor: [upstream, registry1, unicorn]
         type: [install, upgrade]
 
     steps:
@@ -54,12 +56,16 @@ jobs:
           registry1Username: ${{ secrets.IRON_BANK_ROBOT_USERNAME }}
           registry1Password: ${{ secrets.IRON_BANK_ROBOT_PASSWORD }}
           ghToken: ${{ secrets.GITHUB_TOKEN }}
+          chainguardIdentity: ${{ secrets.CHAINGUARD_IDENTITY }}
 
       - name: Test
         uses: ./.github/actions/test
         with:
           flavor: ${{ matrix.flavor }}
           type: ${{ matrix.type }}
+
+      - name: UDS Badge Verification
+        uses: ./.github/actions/verify-badge
 
       - name: Debug Output
         if: ${{ always() }}

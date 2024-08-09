@@ -2,6 +2,10 @@ yaml-files:
   - "**/*.y*ml"
   - .yamllint
 
+ignore:
+  - src/nginx/
+  - chart/templates/
+
 rules:
   anchors: enable
   braces: enable
