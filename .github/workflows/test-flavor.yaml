@@ -27,10 +27,10 @@ jobs:
     name: deploy
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    if: ${{ inputs.required }}
+    if: ${{ inputs.if }}
 
     outputs: # Define job outputs
-      required: ${{ steps.test_flavor.outputs.required }}
+      required: ${{ env.REQUIRED }}
 
     steps:
       - name: Checkout repository
@@ -56,6 +56,10 @@ jobs:
         with:
           flavor: ${{ inputs.flavor }}
           type: ${{ inputs.type }}
+
+      - name: Set env
+        shell: bash
+        run: echo ${{ steps.test_flavor.outputs.required }}" >> GITHUB_ENV
 
       - name: Debug Output
         if: ${{ always() && inputs.type == 'upgrade' }}
