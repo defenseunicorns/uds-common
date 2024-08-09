@@ -14,10 +14,6 @@ on:
         required: true
         type: string
 
-concurrency:
-  group: test-${{ github.ref }}
-  cancel-in-progress: true
-
 # Permissions for the GITHUB_TOKEN used by the workflow.
 permissions:
   contents: read # Allows reading the content of the repository.
