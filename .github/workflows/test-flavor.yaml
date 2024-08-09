@@ -50,11 +50,11 @@ jobs:
           type: ${{ inputs.type }}
 
       - name: Debug Output
-        if: ${{ always() }}
+        if: ${{ always() && inputs.type == 'upgrade' }}
         uses: ./.github/actions/debug-output
 
       - name: Save logs
-        if: ${{ always() }}
+        if: ${{ always() && inputs.type == 'upgrade' }}
         uses: ./.github/actions/save-logs
         with:
           suffix: ${{ inputs.type }}-${{ inputs.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}
