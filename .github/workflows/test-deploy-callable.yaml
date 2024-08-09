@@ -1,0 +1,59 @@
+name: Test
+
+on:
+  workflow_call:
+    inputs:
+      if:
+        required: false
+        default: true
+        type: boolean
+      flavor:
+        required: true
+        type: string
+      type:
+        required: true
+        type: string
+
+concurrency:
+  group: test-${{ github.ref }}
+  cancel-in-progress: true
+
+# Permissions for the GITHUB_TOKEN used by the workflow.
+permissions:
+  contents: read # Allows reading the content of the repository.
+
+jobs:
+  run-test:
+    name: ${{ inputs.type }} ${{ inputs.flavor }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+
+      - name: Clean Runner
+        uses: ./.github/actions/clean-runner
+
+      - name: Environment setup
+        uses: ./.github/actions/setup
+        with:
+          registry1Username: ${{ secrets.IRON_BANK_ROBOT_USERNAME }}
+          registry1Password: ${{ secrets.IRON_BANK_ROBOT_PASSWORD }}
+          ghToken: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Test
+        uses: ./.github/actions/test
+        with:
+          flavor: ${{ inputs.flavor }}
+          type: ${{ inputs.type }}
+
+      - name: Debug Output
+        if: ${{ always() }}
+        uses: ./.github/actions/debug-output
+
+      - name: Save logs
+        if: ${{ always() }}
+        uses: ./.github/actions/save-logs
+        with:
+          suffix: ${{ inputs.type }}-${{ inputs.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}

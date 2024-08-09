@@ -33,40 +33,17 @@ permissions:
 
 jobs:
   run-test:
-    name: ${{ matrix.type }} ${{ matrix.flavor }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
     strategy:
       matrix:
-        flavor: [test]
-        type: [install, upgrade]
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
-
-      - name: Clean Runner
-        uses: ./.github/actions/clean-runner
-
-      - name: Environment setup
-        uses: ./.github/actions/setup
-        with:
-          registry1Username: ${{ secrets.IRON_BANK_ROBOT_USERNAME }}
-          registry1Password: ${{ secrets.IRON_BANK_ROBOT_PASSWORD }}
-          ghToken: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Test
-        uses: ./.github/actions/test
-        with:
-          flavor: ${{ matrix.flavor }}
-          type: ${{ matrix.type }}
-
-      - name: Debug Output
-        if: ${{ always() }}
-        uses: ./.github/actions/debug-output
-
-      - name: Save logs
-        if: ${{ always() }}
-        uses: ./.github/actions/save-logs
-        with:
-          suffix: ${{ matrix.type }}-${{ matrix.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}
+        tests:
+          - flavor: test
+            type: install
+            if: true
+          - flavor: test
+            type: upgrade
+            if: false
+    uses: ./.github/workflows/reusable-workflow.yml
+    with:
+      if: ${{ matrix.tests.if }}
+      flavor: ${{ matrix.tests.flavor }}
+      type: ${{ matrix.tests.type }}
