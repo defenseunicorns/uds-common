@@ -51,7 +51,7 @@ jobs:
       flavor: ${{ matrix.tests.flavor }}
       type: ${{ matrix.tests.type }}
 
-  test:
+  test-deploy:
     needs: flavor-test
     strategy:
       matrix:

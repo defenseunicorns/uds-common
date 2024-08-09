@@ -1,4 +1,4 @@
-name: Test
+name: Test-Deploy
 description: Test the UDS package
 
 inputs:
