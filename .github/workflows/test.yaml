@@ -34,20 +34,20 @@ jobs:
         tests:
           - flavor: test
             type: install
-            required: true
+            if: true
           - flavor: test
             type: upgrade
-            required: true
+            if: true
           - flavor: break
             type: install
-            required: true
+            if: true
           - flavor: break
             type: upgrade
-            required: true
+            if: true
     uses: ./.github/workflows/test-flavor.yaml
     name: ${{ matrix.tests.type }} ${{ matrix.tests.flavor }}
     with:
-      required: ${{ matrix.tests.required }}
+      if: ${{ matrix.tests.if }}
       flavor: ${{ matrix.tests.flavor }}
       type: ${{ matrix.tests.type }}
 
@@ -58,19 +58,19 @@ jobs:
         tests:
           - flavor: test
             type: install
-            required: true
+            if: true
           - flavor: test
             type: upgrade
-            required: ${{ needs.flavor-test.outputs.required }}
+            if: ${{ needs.flavor-test.outputs.required }}
           - flavor: break
             type: install
-            required: true
+            if: true
           - flavor: break
             type: upgrade
-            required: ${{ needs.flavor-test.outputs.required }}
+            if: ${{ needs.flavor-test.outputs.required }}
     uses: ./.github/workflows/test-deploy.yaml
     name: ${{ matrix.tests.type }} ${{ matrix.tests.flavor }}
     with:
-      required: ${{ matrix.tests.required }}
+      if: ${{ matrix.tests.if }}
       flavor: ${{ matrix.tests.flavor }}
       type: ${{ matrix.tests.type }}

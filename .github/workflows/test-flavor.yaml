@@ -3,9 +3,9 @@ name: Test-Flavor
 on:
   workflow_call:
     inputs:
-      required:
+      if:
         required: true
-        default: false
+        default: true
         type: boolean
       flavor:
         required: true
