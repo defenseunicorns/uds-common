@@ -29,7 +29,7 @@ tasks:
             REQUIRED=false
           fi
           echo "Setting REQUIRED to $REQUIRED"
-          echo "REQUIRED=$REQUIRED" >> GITHUB_ENV
+          echo "REQUIRED=$REQUIRED" >> $GITHUB_ENV
 
   - name: create-latest-tag-bundle
     inputs:

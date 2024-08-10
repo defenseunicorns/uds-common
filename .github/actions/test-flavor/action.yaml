@@ -31,5 +31,7 @@ runs:
 
     - name: Test latest tag deployment for flavor
       if: ${{ inputs.type == 'upgrade' }}
-      run: uds run test-latest-tag-flavor --set FLAVOR=${{ inputs.flavor }} ${{ inputs.options }} --no-progress
+      run: |
+        uds run test-latest-tag-flavor --set FLAVOR=${{ inputs.flavor }} ${{ inputs.options }} --no-progress
+        echo "This is the result of env.REQUIRED: ${{ env.REQUIRED }}"
       shell: bash

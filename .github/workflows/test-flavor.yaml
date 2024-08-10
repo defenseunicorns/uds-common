@@ -30,7 +30,7 @@ jobs:
     if: ${{ inputs.if }}
 
     outputs: # Define job outputs
-      required: ${{ env.REQUIRED }}
+      required: ${{ steps.test_flavor.outputs.required }}
 
     steps:
       - name: Checkout repository
@@ -60,7 +60,8 @@ jobs:
       - name: Set env
         if: ${{ inputs.type == 'upgrade' }}
         shell: bash
-        run: echo "${{ steps.test_flavor.outputs.required }}" >> GITHUB_ENV
+        run: |
+          echo "This is the output of the test-flavor step: ${{ steps.test_flavor.outputs.required }}"
 
       - name: Debug Output
         if: ${{ always() && inputs.type == 'upgrade' }}
