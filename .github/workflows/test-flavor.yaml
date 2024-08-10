@@ -13,7 +13,10 @@ on:
         required: true
         type: string
     outputs:
-      required:
+      test:
+        description: Indicates if the upgrade should be skipped
+        value: ${{ jobs.run-test.outputs.required }}
+      break:
         description: Indicates if the upgrade should be skipped
         value: ${{ jobs.run-test.outputs.required }}
 

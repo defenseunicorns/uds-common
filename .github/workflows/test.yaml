@@ -61,13 +61,13 @@ jobs:
             if: "true"
           - flavor: test
             type: upgrade
-            if: ${{ needs.flavor-test.outputs.required }}
+            if: ${{ needs.flavor-test.outputs.test }}
           - flavor: break
             type: install
             if: "true"
           - flavor: break
             type: upgrade
-            if: ${{ needs.flavor-test.outputs.required }}
+            if: ${{ needs.flavor-test.outputs.break }}
     uses: ./.github/workflows/test-deploy.yaml
     name: ${{ matrix.tests.type }} ${{ matrix.tests.flavor }}
     with:
