@@ -22,5 +22,5 @@ runs:
       run: |
         git clone --depth 1 --branch $(git describe --tags `git rev-list --tags --max-count=1`) $(git remote get-url origin) upgrade-test
         cd upgrade-test
-        echo "upgrade-flavors=$(cat zarf.yaml | yq '.components[] | select(.only | has('flavor')) | .only.flavor' | paste -s -d, -)" >> "$GITHUB_OUTPUT"
+        echo "upgrade-flavors=$(cat zarf.yaml | yq '.components[] | select(.only | has("flavor")) | .only.flavor' | paste -s -d, -)" >> "$GITHUB_OUTPUT"
       shell: bash
