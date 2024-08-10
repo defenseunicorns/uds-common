@@ -34,16 +34,16 @@ jobs:
         tests:
           - flavor: test
             type: install
-            if: true
+            if: 'true'
           - flavor: test
             type: upgrade
-            if: true
+            if: 'true'
           - flavor: break
             type: install
-            if: true
+            if: 'true'
           - flavor: break
             type: upgrade
-            if: true
+            if: 'true'
     uses: ./.github/workflows/test-flavor.yaml
     name: ${{ matrix.tests.type }} ${{ matrix.tests.flavor }}
     with:
@@ -58,13 +58,13 @@ jobs:
         tests:
           - flavor: test
             type: install
-            if: true
+            if: 'true'
           - flavor: test
             type: upgrade
             if: ${{ needs.flavor-test.outputs.required }}
           - flavor: break
             type: install
-            if: true
+            if: 'true'
           - flavor: break
             type: upgrade
             if: ${{ needs.flavor-test.outputs.required }}

@@ -5,8 +5,7 @@ on:
     inputs:
       if:
         required: true
-        default: true
-        type: boolean
+        type: string
       flavor:
         required: true
         type: string
