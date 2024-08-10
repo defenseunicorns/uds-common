@@ -3,7 +3,7 @@ name: Test-Deploy
 on:
   workflow_call:
     inputs:
-      if:
+      upgrade-flavors:
         required: true
         type: string
       flavor:
@@ -22,7 +22,7 @@ jobs:
     name: deploy
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    if: ${{ inputs.if != 'false'}}
+    if: contains(inputs.upgrade-flavors, inputs.flavor) || inputs.type == 'install'
 
     steps:
       - name: Checkout repository

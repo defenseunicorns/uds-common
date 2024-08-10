@@ -1,23 +1,9 @@
 name: Test-Flavor
 description: Check the flavor for the UDS package
 
-inputs:
-  flavor:
-    description: Flavor of the package to test
-    required: true
-  type:
-    description: Whether to run upgrade tests
-    default: install
-  options:
-    description: Additional CLI options for test workflows
-    default: ""
-
 outputs:
-  test:
-    value: ${{ steps.set-required.outputs.test }}
-    description: Indicates if the upgrade should be skipped
-  break:
-    value: ${{ steps.set-required.outputs.break }}
+  upgrade-flavors:
+    value: ${{ steps.set-required.outputs.upgrade-flavors }}
     description: Indicates if the upgrade should be skipped
 
 runs:
@@ -27,16 +13,14 @@ runs:
     # === FLAVOR TESTING ===
 
     - name: Checkout repository
-      if: ${{ inputs.type == 'upgrade' }}
       uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       with:
         fetch-depth: 0
 
     - name: Test latest tag deployment for flavor
       id: set-required
-      if: ${{ inputs.type == 'upgrade' }}
       run: |
-        uds run test-latest-tag-flavor --set FLAVOR=${{ inputs.flavor }} ${{ inputs.options }} --no-progress
-        REQUIRED=$(cat require.txt)
-        echo "${{ inputs.flavor }}=$REQUIRED" >> "$GITHUB_OUTPUT"
+        git clone --depth 1 --branch $(git describe --tags `git rev-list --tags --max-count=1`) $(git remote get-url origin) upgrade-test
+        cd upgrade-test
+        echo "upgrade-flavors=$(cat zarf.yaml | yq '.components[] | select(.only | has('flavor')) | .only.flavor' | paste -s -d, -)" >> "$GITHUB_OUTPUT"
       shell: bash

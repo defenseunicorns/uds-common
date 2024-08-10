@@ -29,48 +29,25 @@ permissions:
 
 jobs:
   flavor-test:
-    strategy:
-      matrix:
-        tests:
-          - flavor: test
-            type: install
-            if: "true"
-          - flavor: test
-            type: upgrade
-            if: "true"
-          - flavor: break
-            type: install
-            if: "true"
-          - flavor: break
-            type: upgrade
-            if: "true"
-    uses: ./.github/workflows/test-flavor.yaml
-    name: ${{ matrix.tests.type }} ${{ matrix.tests.flavor }}
-    with:
-      if: ${{ matrix.tests.if }}
-      flavor: ${{ matrix.tests.flavor }}
-      type: ${{ matrix.tests.type }}
+    name: Test-Flavor
+    runs-on: ubuntu-latest
+    steps:
+      - name: test-flavor
+        uses: ./.github/actions/test-flavor
+        id: test-flavor
+    outputs:
+      upgrade-flavors: ${{ steps.test-flavor.outputs.upgrade-flavors }}
 
   test-deploy:
     needs: flavor-test
     strategy:
+      fail-fast: false
       matrix:
-        tests:
-          - flavor: test
-            type: install
-            if: "true"
-          - flavor: test
-            type: upgrade
-            if: ${{ needs.flavor-test.outputs.test }}
-          - flavor: break
-            type: install
-            if: "true"
-          - flavor: break
-            type: upgrade
-            if: ${{ needs.flavor-test.outputs.break }}
+        type: [install, upgrade]
+        flavor: [test, break]
     uses: ./.github/workflows/test-deploy.yaml
     name: ${{ matrix.tests.type }} ${{ matrix.tests.flavor }}
     with:
-      if: ${{ matrix.tests.if }}
+      upgrade-flavors: ${{ needs.flavor-test.outputs.upgrade-flavors }}
       flavor: ${{ matrix.tests.flavor }}
       type: ${{ matrix.tests.type }}
