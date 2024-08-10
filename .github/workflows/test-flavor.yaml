@@ -58,8 +58,9 @@ jobs:
           type: ${{ inputs.type }}
 
       - name: Set env
+        if: ${{ inputs.type == 'upgrade' }}
         shell: bash
-        run: echo ${{ steps.test_flavor.outputs.required }}" >> GITHUB_ENV
+        run: echo "${{ steps.test_flavor.outputs.required }}" >> GITHUB_ENV
 
       - name: Debug Output
         if: ${{ always() && inputs.type == 'upgrade' }}
