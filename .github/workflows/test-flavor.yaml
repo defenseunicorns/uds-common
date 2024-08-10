@@ -60,13 +60,6 @@ jobs:
           flavor: ${{ inputs.flavor }}
           type: ${{ inputs.type }}
 
-      - name: Set env
-        if: ${{ inputs.type == 'upgrade' }}
-        shell: bash
-        run: |
-          echo "This is the output of the test-flavor step: ${{ steps.test_flavor.outputs.test }}"
-          echo "This is the output of the test-flavor step: ${{ steps.test_flavor.outputs.break }}"
-
       - name: Debug Output
         if: ${{ always() && inputs.type == 'upgrade' }}
         uses: ./.github/actions/debug-output
@@ -75,4 +68,4 @@ jobs:
         if: ${{ always() && inputs.type == 'upgrade' }}
         uses: ./.github/actions/save-logs
         with:
-          suffix: ${{ inputs.type }}-${{ inputs.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}
+          suffix: Flavor-Test-${{ inputs.type }}-${{ inputs.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}
