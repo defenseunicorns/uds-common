@@ -13,8 +13,11 @@ inputs:
     default: ""
 
 outputs:
-  required:
-    value: ${{ steps.set-required.outputs.required }}
+  test:
+    value: ${{ steps.set-required.outputs.test }}
+    description: Indicates if the upgrade should be skipped
+  break:
+    value: ${{ steps.set-required.outputs.break }}
     description: Indicates if the upgrade should be skipped
 
 runs:
@@ -35,5 +38,5 @@ runs:
       run: |
         uds run test-latest-tag-flavor --set FLAVOR=${{ inputs.flavor }} ${{ inputs.options }} --no-progress
         REQUIRED=$(cat require.txt)
-        echo "required=$REQUIRED" >> "$GITHUB_OUTPUT"
+        echo "${{ inputs.flavor }}=$REQUIRED" >> "$GITHUB_OUTPUT"
       shell: bash
