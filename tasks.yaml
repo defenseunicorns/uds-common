@@ -90,11 +90,6 @@ tasks:
         with:
           assessment_results: /tmp/oscal-assessment-results.yaml
 
-  - name: test-latest-tag-flavor
-    description: Test an upgrade from the latest released package to the current branch
-    actions:
-      - task: upgrade:flavor-check
-
   - name: test-upgrade
     description: Test an upgrade from the latest released package to the current branch
     actions:
