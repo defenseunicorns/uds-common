@@ -3,7 +3,7 @@ name: Test-Deploy
 on:
   workflow_call:
     inputs:
-      required:
+      if:
         required: true
         default: true
         type: boolean
