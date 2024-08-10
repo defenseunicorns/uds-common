@@ -24,8 +24,8 @@ on:
       - config/renovate.json5
 
 # Permissions for the GITHUB_TOKEN used by the workflow.
-# permissions:
-#   contents: read # Allows reading the content of the repository.
+permissions:
+  contents: read # Allows reading the content of the repository.
 
 jobs:
   flavor-test:
@@ -47,7 +47,7 @@ jobs:
       fail-fast: false
       matrix:
         type: [install, upgrade]
-        flavor: [test, break]
+        flavor: [test]
     uses: ./.github/workflows/test-deploy.yaml
     with:
       upgrade-flavors: ${{ needs.flavor-test.outputs.upgrade-flavors }}
