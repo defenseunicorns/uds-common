@@ -22,7 +22,7 @@ jobs:
     name: deploy
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    if: ${{ inputs.if }}
+    if: ${{ inputs.if != 'false'}}
 
     steps:
       - name: Checkout repository

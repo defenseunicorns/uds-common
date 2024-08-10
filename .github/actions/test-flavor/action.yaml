@@ -36,5 +36,4 @@ runs:
         uds run test-latest-tag-flavor --set FLAVOR=${{ inputs.flavor }} ${{ inputs.options }} --no-progress
         REQUIRED=$(cat require.txt)
         echo "required=$REQUIRED" >> "$GITHUB_OUTPUT"
-        echo The output is $GITHUB_OUTPUT
       shell: bash

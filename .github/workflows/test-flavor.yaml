@@ -26,7 +26,7 @@ jobs:
     name: deploy
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    if: ${{ inputs.if }}
+    if: ${{ inputs.if != 'false'}}
 
     outputs: # Define job outputs
       required: ${{ steps.test_flavor.outputs.required }}
