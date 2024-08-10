@@ -14,7 +14,7 @@ inputs:
 
 outputs:
   required:
-    value: $(cat require.txt)
+    value: ${REQUIRED}
     description: Indicates if the upgrade should be skipped
 
 runs:
@@ -33,5 +33,5 @@ runs:
       if: ${{ inputs.type == 'upgrade' }}
       run: |
         uds run test-latest-tag-flavor --set FLAVOR=${{ inputs.flavor }} ${{ inputs.options }} --no-progress
-        cat require.txt
+        REQUIRED=$(cat require.txt)
       shell: bash
