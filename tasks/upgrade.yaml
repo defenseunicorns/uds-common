@@ -40,6 +40,9 @@ tasks:
       - description: Remove cloned repo
         cmd: rm -rf upgrade-test
 
+      - description: Fetch the most recent tags
+        cmd: git fetch --tags
+
       - description: Clone latest tag
         cmd: git clone --depth 1 --branch $(git describe --tags `git rev-list --tags --max-count=1`) $(git remote get-url origin) upgrade-test
 
