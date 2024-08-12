@@ -1,0 +1,55 @@
+name: Test
+
+on:
+  # This workflow is triggered on pull requests to the main branch.
+  pull_request:
+    # milestoned is added here as a workaround for release-please not triggering PR workflows (PRs should be added to a milestone to trigger the workflow).
+    types: [milestoned, opened, reopened, synchronize]
+    paths-ignore:
+      - "**.md"
+      - "**.jpg"
+      - "**.png"
+      - "**.gif"
+      - "**.svg"
+      - adr/**
+      - docs/**
+      - .gitignore
+      - renovate.json
+      - .release-please-config.json
+      - release-please-config.json
+      - CODEOWNERS
+      - LICENSE
+      - CONTRIBUTING.md
+      - SECURITY.md
+      - config/renovate.json5
+
+# Permissions for the GITHUB_TOKEN used by the workflow.
+permissions:
+  contents: read # Allows reading the content of the repository.
+
+jobs:
+  flavor-test:
+    name: Test-Flavor
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+
+      - name: test-flavor
+        uses: ./.github/actions/test-flavor
+        id: test-flavor
+    outputs:
+      upgrade-flavors: ${{ steps.test-flavor.outputs.upgrade-flavors }}
+
+  test-deploy:
+    needs: flavor-test
+    strategy:
+      fail-fast: false
+      matrix:
+        type: [install, upgrade]
+        flavor: [test]
+    uses: ./.github/workflows/test-deploy.yaml
+    with:
+      upgrade-flavors: ${{ needs.flavor-test.outputs.upgrade-flavors }}
+      flavor: ${{ matrix.flavor }}
+      type: ${{ matrix.type }}

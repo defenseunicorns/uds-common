@@ -5,6 +5,7 @@ includes:
   - lint: ./tasks/lint.yaml
   - publish: ./tasks/publish.yaml
   - pull: ./tasks/pull.yaml
+  - upgrade: ./tasks/upgrade.yaml
   - compliance: ./tasks/compliance.yaml
 
 tasks:
@@ -92,7 +93,7 @@ tasks:
   - name: test-upgrade
     description: Test an upgrade from the latest released package to the current branch
     actions:
-      - task: create-podinfo-latest-release-bundle
+      - task: upgrade:create-latest-tag-bundle
       - task: setup:k3d-test-cluster
       - task: deploy:test-bundle
       - task: compliance:validate
