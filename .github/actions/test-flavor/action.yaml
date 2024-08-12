@@ -1,0 +1,26 @@
+name: Test-Flavor
+description: Check the flavor for the UDS package
+
+outputs:
+  upgrade-flavors:
+    value: ${{ steps.set-required.outputs.upgrade-flavors }}
+    description: Indicates if the upgrade should be skipped
+
+runs:
+  using: composite
+  steps:
+
+    # === FLAVOR TESTING ===
+
+    - name: Checkout repository
+      uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      with:
+        fetch-depth: 0
+
+    - name: Test latest tag deployment for flavor
+      id: set-required
+      run: |
+        git clone --depth 1 --branch $(git describe --tags `git rev-list --tags --max-count=1`) $(git remote get-url origin) upgrade-test
+        cd upgrade-test
+        echo "upgrade-flavors=$(cat zarf.yaml | yq '.components[] | select(.only | has("flavor")) | .only.flavor' | paste -s -d, -)" >> "$GITHUB_OUTPUT"
+      shell: bash

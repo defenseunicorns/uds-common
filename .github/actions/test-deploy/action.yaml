@@ -1,4 +1,4 @@
-name: Test
+name: Test-Deploy
 description: Test the UDS package
 
 inputs:
@@ -15,7 +15,6 @@ inputs:
 runs:
   using: composite
   steps:
-
     # === INSTALL TESTING ===
 
     - name: Test installing the package
