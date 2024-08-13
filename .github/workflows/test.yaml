@@ -47,7 +47,7 @@ jobs:
       fail-fast: false
       matrix:
         type: [install, upgrade]
-        flavor: [test]
+        flavor: [upstream, unicorn, registry1]
     uses: ./.github/workflows/test-deploy.yaml
     with:
       upgrade-flavors: ${{ needs.flavor-test.outputs.upgrade-flavors }}
