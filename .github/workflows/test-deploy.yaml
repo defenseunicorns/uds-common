@@ -1,31 +1,17 @@
-name: Test
+name: Test-Deploy
 
 on:
-  # This workflow is triggered on pull requests to the main branch.
-  pull_request:
-    # milestoned is added here as a workaround for release-please not triggering PR workflows (PRs should be added to a milestone to trigger the workflow).
-    types: [milestoned, opened, reopened, synchronize]
-    paths-ignore:
-      - "**.md"
-      - "**.jpg"
-      - "**.png"
-      - "**.gif"
-      - "**.svg"
-      - adr/**
-      - docs/**
-      - .gitignore
-      - renovate.json
-      - .release-please-config.json
-      - release-please-config.json
-      - CODEOWNERS
-      - LICENSE
-      - CONTRIBUTING.md
-      - SECURITY.md
-      - config/renovate.json5
-
-concurrency:
-  group: test-${{ github.ref }}
-  cancel-in-progress: true
+  workflow_call:
+    inputs:
+      upgrade-flavors:
+        required: true
+        type: string
+      flavor:
+        required: true
+        type: string
+      type:
+        required: true
+        type: string
 
 # Permissions for the GITHUB_TOKEN used by the workflow.
 permissions:
@@ -34,14 +20,10 @@ permissions:
 
 jobs:
   run-test:
-    name: ${{ matrix.type }} ${{ matrix.flavor }}
+    name: deploy
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    strategy:
-      fail-fast: false
-      matrix:
-        flavor: [upstream, registry1, unicorn]
-        type: [install, upgrade]
+    if: contains(inputs.upgrade-flavors, inputs.flavor) || inputs.type == 'install'
 
     steps:
       - name: Checkout repository
@@ -59,10 +41,10 @@ jobs:
           chainguardIdentity: ${{ secrets.CHAINGUARD_IDENTITY }}
 
       - name: Test
-        uses: ./.github/actions/test
+        uses: ./.github/actions/test-deploy
         with:
-          flavor: ${{ matrix.flavor }}
-          type: ${{ matrix.type }}
+          flavor: ${{ inputs.flavor }}
+          type: ${{ inputs.type }}
 
       - name: UDS Badge Verification
         uses: ./.github/actions/verify-badge
@@ -75,4 +57,4 @@ jobs:
         if: ${{ always() }}
         uses: ./.github/actions/save-logs
         with:
-          suffix: ${{ matrix.type }}-${{ matrix.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}
+          suffix: ${{ inputs.type }}-${{ inputs.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}
