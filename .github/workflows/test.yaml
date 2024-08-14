@@ -54,3 +54,4 @@ jobs:
       upgrade-flavors: ${{ needs.flavor-test.outputs.upgrade-flavors }}
       flavor: ${{ matrix.flavor }}
       type: ${{ matrix.type }}
+    secrets: inherit # Inherits all secrets from the parent workflow.
