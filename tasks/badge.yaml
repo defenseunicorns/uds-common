@@ -49,13 +49,28 @@ tasks:
 
           # Validate UDS Package/Config chart is valid
 
+          # Cover when GOBIN isn't set
+          export GOBIN=/tmp/gobin
+
           echo "$(gh_notice)ℹ️  Installing kubectl-validate..."
-          go install sigs.k8s.io/kubectl-validate@latest
+          if go install sigs.k8s.io/kubectl-validate@latest; then
+            echo "$(gh_notice)✅ kubectl-validate installed"
+          else
+            echo "$(gh_error)❌ kubectl-validate failed to install"
+          fi
+
+          # setup path prefix for kubectl-validate
+          # if GOBIN is set with the go binary
+
 
           echo "$(gh_notice)ℹ️  Validating uds-config chart..."
-          kubectl-validate <(helm template chart ${CHART_PATH})
-          echo "$(gh_notice)✅ uds-config chart is valid"
-          echo
+          if ${GOBIN}/kubectl-validate <(helm template chart ${CHART_PATH}); then
+            echo "$(gh_notice)✅ uds-config chart is valid"
+          else
+            echo "$(gh_error)❌ uds-config chart is invalid"
+          fi
+          # echo "$(gh_notice)✅ uds-config chart is valid"
+          # echo
 
           # Setup
 
@@ -303,4 +318,19 @@ tasks:
             fi
           else
             echo "$(gh_error)❌ Tests folder does not exist"
+          fi
+
+          echo
+
+          # Versioning
+
+          # Must be consistently versioned across flavors - this can take many forms but flavors should differ in image bases/builds not application versions.
+
+          ZARF_PKG_VERSION=$(yq '.metadata.version' zarf.yaml | cut -d '-' -f1)
+          IMAGE_WITH_ZARF_VERSION_COUNT=$(cat zarf.yaml | yq '.components[].images' | grep -o "${ZARF_PKG_VERSION}" | wc -l)
+
+          if [ "$IMAGE_WITH_ZARF_VERSION_COUNT" -ge "$ZARF_COMPONENTS_FLAVOR_COUNT" ]; then
+            echo "$(gh_notice)✅ Version is consistent across flavors and package"
+          else
+            echo "$(gh_error)❌ Version is not consistent across flavors and package"
           fi
