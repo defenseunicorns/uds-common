@@ -57,7 +57,7 @@ tasks:
           --header "Authorization: Bearer ${KEYCLOAK_ADMIN_TOKEN}" \
           --data-raw '{
               "username": "doug",
-              "firstName": "doug",
+              "firstName": "Doug",
               "lastName": "Unicorn",
               "email": "doug@uds.dev",
               "attributes": {
@@ -89,7 +89,3 @@ tasks:
                   \"id\": \"${CONDITIONAL_OTP_ID}\",
                   \"requirement\": \"DISABLED\"
               }"
-  
-  - name: echo-variable
-    actions:
-      - cmd: echo ${KEYCLOAK_GROUP}
