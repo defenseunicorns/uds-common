@@ -1,3 +1,6 @@
+variables:
+  - name: KEYCLOAK_GROUP
+
 tasks:
   - name: k3d-test-cluster
     inputs:
@@ -54,7 +57,7 @@ tasks:
           --header "Authorization: Bearer ${KEYCLOAK_ADMIN_TOKEN}" \
           --data-raw '{
               "username": "doug",
-              "firstName": "Doug",
+              "firstName": "doug",
               "lastName": "Unicorn",
               "email": "doug@uds.dev",
               "attributes": {
@@ -69,7 +72,10 @@ tasks:
                   "value": "unicorn123!@#UN",
                   "temporary": false
                 }
-              ]
+              ]'"${KEYCLOAK_GROUP:+,
+              \"groups\": [
+                \"${KEYCLOAK_GROUP}\"
+              ]}"'
           }'
 
           # Disable 2FA
@@ -83,3 +89,7 @@ tasks:
                   \"id\": \"${CONDITIONAL_OTP_ID}\",
                   \"requirement\": \"DISABLED\"
               }"
+  
+  - name: echo-variable
+    actions:
+      - cmd: echo ${KEYCLOAK_GROUP}
