@@ -94,7 +94,8 @@ The following examples demonstrate best practices for implementing various types
 
 - ### Upgrade Tests
     ---
-    (TODO: Add specific examples of upgrade tests from UDS packages)
+    - The [uds-common](https://github.com/defenseunicorns/uds-common/blob/main/.github/actions/test-deploy/action.yaml) action is reused in packages.
+    - Example task in the [uds-package-gitlab repository](https://github.com/defenseunicorns/uds-package-gitlab/blob/main/tasks.yaml#L48-L68)
 
 - ### **Test Execution**
     ---
