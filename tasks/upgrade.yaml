@@ -51,13 +51,14 @@ tasks:
           linux: bash
           darwin: bash
         cmd: |
+          BUNDLE_VERSION=$(cat ${{ .inputs.bundle_path }}/uds-bundle.yaml | ./uds zarf tools yq .metadata.version)
           cd upgrade-test
 
           # VARIABLES
           PACKAGE_NAME=$(cat ${{ .inputs.path }}/zarf.yaml | yq .metadata.name)
           LATEST_VERSION=$(./uds zarf tools registry ls ${TARGET_REPO}/${PACKAGE_NAME} | grep ${FLAVOR} | sort -V | tail -1)
           BUNDLE_NAME=$(cat ${{ .inputs.bundle_path }}/uds-bundle.yaml | ./uds zarf tools yq .metadata.name)
-          BUNDLE_VERSION=$(cat ${{ .inputs.bundle_path }}/uds-bundle.yaml | ./uds zarf tools yq .metadata.version)
+          PREVIOUS_BUNDLE_VERSION=$(cat ${{ .inputs.bundle_path }}/uds-bundle.yaml | ./uds zarf tools yq .metadata.version)
 
           # Pulls latest published zarf package
           ./uds zarf package pull \
@@ -75,7 +76,7 @@ tasks:
               --no-progress \
               ${{ .inputs.options }}
 
-            mv ${{ .inputs.bundle_path }}/uds-bundle-${BUNDLE_NAME}-${{ .inputs.architecture }}-${BUNDLE_VERSION}.tar.zst ../bundle
+            mv ${{ .inputs.bundle_path }}/uds-bundle-${BUNDLE_NAME}-${{ .inputs.architecture }}-${PREVIOUS_BUNDLE_VERSION}.tar.zst ../bundle/uds-bundle-${BUNDLE_NAME}-${{ .inputs.architecture }}-${BUNDLE_VERSION}.tar.zst 
           else
             echo "::warning::⚠️ Registry1 bundles cannot be made for 'arm64'"
             exit 1
