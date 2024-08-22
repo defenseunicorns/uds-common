@@ -3,12 +3,12 @@ metadata:
   name: test
   description: The testing UDS bundle
   # x-release-please-start-version
-  version: 0.11.2
+  version: 0.12.0
   # x-release-please-end
 
 packages:
   - name: nginx
     path: ../
     # x-release-please-start-version
-    ref: 0.11.2
+    ref: 0.12.0
     # x-release-please-end
