@@ -1,0 +1,23 @@
+tasks:
+  - name: uds-security-hub-scan
+    description: Scan a zarf package using uds-security-hub
+    inputs:
+      path:
+        description: Path to the zarf package to scan
+        required: true
+      format:
+        description: Scan output format
+        default: json
+      version:
+        description: Version of uds-security-hub to use
+    actions:
+      - description: scan the zarf package
+        cmd: |
+          OUTPUT_FILE="results.{{ .inputs.format }}"
+          docker run --rm -v $PWD:/wrk -w /wrk ghcr.io/defenseunicorns/uds-security-hub:{{ .inputs.version }} \
+            --package-path {{ .inputs.path }} \
+            --output-format {{ .inputs.format }} \
+            --output-file "${OUTPUT_FILE}"
+          
+          echo "${OUTPUT_FILE}" > "$GITHUB_OUTPUT"
+             
