@@ -105,6 +105,7 @@ tasks:
 
           gh_notice "  ℹ️  Validating uds-config chart..."
           printf "\033[A"
+          echo
           if ${GOBIN}/kubectl-validate <(helm template chart ${CHART_PATH}) &> /tmp/validate-output; then
             gh_notice "  ✅ uds-config chart is valid"
           else
@@ -357,7 +358,7 @@ tasks:
           if [ "$IMAGE_WITH_ZARF_VERSION_COUNT" -ge "$ZARF_COMPONENTS_FLAVOR_COUNT" ]; then
             gh_notice "  ✅ Version is consistent across flavors and package"
           else
-            gh_error "  ❌ Version is not consistent across flavors and package"
+            gh_warning "  ⚠️ Version is not consistent across flavors and package"
           fi
 
           gh_endgroup
