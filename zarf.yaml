@@ -23,7 +23,7 @@ components:
     charts:
       - name: nginx
         valuesFiles:
-          - values/upstream.yaml
+          - values/upstream-values.yaml
     images:
       - nginx:1.26.1
 
@@ -39,7 +39,7 @@ components:
     charts:
       - name: nginx
         valuesFiles:
-          - values/registry1.yaml
+          - values/registry1-values.yaml
     images:
       - registry1.dso.mil/ironbank/opensource/nginx/nginx:1.26.1
 
@@ -53,6 +53,6 @@ components:
     charts:
       - name: nginx
         valuesFiles:
-          - values/unicorn.yaml
+          - values/unicorn-values.yaml
     images:
       - cgr.dev/du-uds-defenseunicorns/nginx:1.26.1

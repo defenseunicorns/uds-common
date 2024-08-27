@@ -17,7 +17,7 @@ components:
         namespace: nginx
         localPath: ../src/nginx
         valuesFiles:
-          - ../values/common.yaml
+          - ../values/common-values.yaml
     actions:
       onDeploy:
         after:
