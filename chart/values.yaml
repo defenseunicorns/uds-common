@@ -1,6 +1,6 @@
 domain: "###ZARF_VAR_DOMAIN###"
 
-# customNetworkPolicies:
+# custom:
 #    # Notice no `remoteGenerated` field here on custom internal rule
 #   - direction: Ingress
 #     selector:

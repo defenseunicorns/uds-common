@@ -2,7 +2,7 @@
 kind: ZarfPackageConfig
 metadata:
   name: nginx
-  description: UDS nginx Common
+  description: UDS Common Nginx Example
 
 components:
   - name: nginx
@@ -29,3 +29,11 @@ components:
                 name: nginx
                 namespace: nginx
                 condition: "'{.status.phase}'=Ready"
+          - description: Validate nginx Deployment
+            maxTotalSeconds: 300
+            wait:
+              cluster:
+                kind: Deployment
+                name: nginx
+                namespace: nginx
+                condition: Available

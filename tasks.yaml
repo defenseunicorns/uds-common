@@ -75,12 +75,6 @@ tasks:
     description: Test and validate cluster is deployed with nginx
     actions:
       - wait:
-          cluster:
-            kind: Deployment
-            name: nginx
-            namespace: nginx
-            condition: available
-      - wait:
           network:
             protocol: https
             address: nginx.uds.dev
