@@ -105,8 +105,7 @@ tasks:
 
           gh_notice "  ℹ️  Validating uds-config chart..."
           printf "\033[A"
-          echo
-          if ${GOBIN}/kubectl-validate <(helm template chart ${CHART_PATH}) &> /tmp/validate-output; then
+          if ${GOBIN}/kubectl-validate <(helm template chart ${CHART_PATH} | grep -v '^ *#' | perl -p0e 's/---[\s---]*---/---/sg') &> /tmp/validate-output; then
             gh_notice "  ✅ uds-config chart is valid"
           else
             gh_error "  ❌ uds-config chart is invalid"
