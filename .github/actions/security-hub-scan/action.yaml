@@ -16,9 +16,9 @@ outputs:
   results:
     description: a file that contains the results in the desired format
     value: ${{ steps.scan.outputs.results }}
-  basename:
-    description: the basename of the file, useful in subsequent steps (ie archive)
-    value: ${{ steps.scan.outputs.basename }}
+  format:
+    description: the format used to generate the results, useful in subsequent steps (i.e. archive)
+    value: ${{ steps.scan.outputs.format }}
 
 runs:
   using: composite
@@ -26,8 +26,7 @@ runs:
     - name: use uds-security-hub to scan a package
       id: scan
       run: |
-        TMPDIR=$(mktemp -d)
-        OUTPUT_FILE="${TMPDIR}/results.${{ inputs.format }}"
+        OUTPUT_FILE=$(mktemp --suffix .${{ inputs.format }})
         docker run --rm \
             -v $PWD:/wrk -w /wrk \
           ghcr.io/defenseunicorns/uds-security-hub:${{ inputs.version }} \
@@ -38,5 +37,5 @@ runs:
         echo "created results in ${OUTPUT_FILE}"
 
         echo "results=${OUTPUT_FILE}" >> "$GITHUB_OUTPUT"
-        echo "basename="$(basename $OUTPUT_FILE) >> "$GITHUB_OUTPUT""
+        echo "format=${{ inputs.format }}" >> "$GITHUB_OUTPUT""
       shell: bash
