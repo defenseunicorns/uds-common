@@ -14,25 +14,27 @@ inputs:
 
 outputs:
   results:
-    description: a file that contains the results in the desired format
-    value: ${{ steps.scan.outputs.results }}
-  format:
-    description: the format used to generate the results, useful in subsequent steps (i.e. archive)
-    value: ${{ inputs.format }}
-  cosign:
-    description: a cosign bundle for verifying the authenticity of the scan results
-    value: ${{ steps.cosign.outputs.cosign }}
+    description: a directory that contains the results in the desired format and a cosign bundle
+    value: ${{ steps.tmpdir.outputs.dir }}
 
 runs:
   using: composite
   steps:
     - name: install cosign
       uses: sigstore/cosign-installer@4959ce089c160fddf62f7b42464195ba1a56d382 # v3.6.0
+    
+    - name: create tmpdir for output
+      id: tmpdir
+      run: |
+        tmpdir=$(mktemp -d)
+        echo "dir=$tmpdir" >> $GITHUB_OUTPUT
+      shell: bash
 
     - name: use uds-security-hub to scan a package
       id: scan
       run: |
-        OUTPUT_FILE=$(mktemp --suffix .${{ inputs.format }})
+        OUTPUT_FILE=${{ steps.tmpdir.outputs.dir }}/results.${{ inputs.format }}
+
         docker run --rm \
             -v $PWD:/wrk -w /wrk \
           ghcr.io/defenseunicorns/uds-security-hub:${{ inputs.version }} \
@@ -41,9 +43,6 @@ runs:
             > "${OUTPUT_FILE}"
 
         echo "created results in ${OUTPUT_FILE}"
-
-        echo "results=${OUTPUT_FILE}" >> "$GITHUB_OUTPUT"
-        echo "format=${{ inputs.format }}" >> "$GITHUB_OUTPUT"
       shell: bash
 
     - name: sign results
@@ -51,6 +50,5 @@ runs:
       env:
           COSIGN_EXPERIMENTAL: "true"
       run: |
-        cosign sign-blob --bundle cosign.bundle --yes ${{ steps.scan.outputs.results }}
-        echo "cosign=cosign.bundle" >> $GITHUB_OUTPUT
+        cosign sign-blob --bundle ${{ steps.tmpdir.outputs.dir }}/cosign.bundle --yes ${{ steps.scan.outputs.results }}
       shell: bash
