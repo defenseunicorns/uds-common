@@ -19,6 +19,9 @@ outputs:
   format:
     description: the format used to generate the results, useful in subsequent steps (i.e. archive)
     value: ${{ steps.scan.inputs.format }}
+  cosign:
+    description: a cosign bundle for verifying the authenticity of the scan results
+    value: ${{ steps.cosign.outputs.cosign }}
 
 runs:
   using: composite
@@ -44,6 +47,7 @@ runs:
       shell: bash
 
     - name: sign results
+      id: cosign
       run: |
         cosign sign-blob --bundle cosign.bundle --yes ${{ steps.scan.outputs.results }}
         echo "cosign=cosign.bundle" >> $GITHUB_OUTPUT
