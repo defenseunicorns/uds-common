@@ -43,6 +43,7 @@ runs:
             > "${OUTPUT_FILE}"
 
         echo "created results in ${OUTPUT_FILE}"
+        echo "results=${OUTPUT_FILE}" >> "$GITHUB_OUTPUT"
       shell: bash
 
     - name: sign results
