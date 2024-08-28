@@ -23,5 +23,5 @@ runs:
           --output-format ${{ inputs.format }} \
           --output-file "${OUTPUT_FILE}"
 
-        echo "${OUTPUT_FILE}" > "$GITHUB_OUTPUT"
+        echo "output=${OUTPUT_FILE}" > "$GITHUB_OUTPUT"
       shell: bash
