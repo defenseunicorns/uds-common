@@ -12,10 +12,16 @@ inputs:
     description: Version of uds-security-hub to use
     default: v0.0.11
 
+outputs:
+  results:
+    description: a file that contains the results in the desired format
+    value: $${{ steps.scan.outputs.results }}
+
 runs:
   using: composite
   steps:
     - name: use uds-security-hub to scan a package
+      id: scan
       run: |
         OUTPUT_FILE=$(mktemp --suffix .${{ inputs.format }})
         docker run --rm -v $PWD:/wrk -w /wrk ghcr.io/defenseunicorns/uds-security-hub:${{ inputs.version }} \
