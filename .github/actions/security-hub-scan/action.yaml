@@ -18,11 +18,14 @@ outputs:
     value: ${{ steps.scan.outputs.results }}
   format:
     description: the format used to generate the results, useful in subsequent steps (i.e. archive)
-    value: ${{ steps.scan.outputs.format }}
+    value: ${{ steps.scan.inputs.format }}
 
 runs:
   using: composite
   steps:
+    - name: install cosign
+      uses: sigstore/cosign-installer@4959ce089c160fddf62f7b42464195ba1a56d382 # v3.6.0
+
     - name: use uds-security-hub to scan a package
       id: scan
       run: |
@@ -38,4 +41,10 @@ runs:
 
         echo "results=${OUTPUT_FILE}" >> "$GITHUB_OUTPUT"
         echo "format=${{ inputs.format }}" >> "$GITHUB_OUTPUT"
+      shell: bash
+
+    - name: sign results
+      run: |
+        cosign sign-blob --bundle cosign.bundle --yes ${{ steps.scan.outputs.results }}
+        echo "cosign=cosign.bundle" >> $GITHUB_OUTPUT
       shell: bash
