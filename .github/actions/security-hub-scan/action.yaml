@@ -24,10 +24,13 @@ runs:
       id: scan
       run: |
         OUTPUT_FILE=$(mktemp --suffix .${{ inputs.format }})
-        docker run --rm -v $PWD:/wrk -w /wrk ghcr.io/defenseunicorns/uds-security-hub:${{ inputs.version }} \
-          --package-path ${{ inputs.path }} \
-          --output-format ${{ inputs.format }} \
-          --output-file "${OUTPUT_FILE}"
+        docker run --rm 
+            -v $PWD:/wrk -w /wrk \
+            -v ${OUTPUT_FILE}:${OUTPUT_FILE} \
+          ghcr.io/defenseunicorns/uds-security-hub:${{ inputs.version }} \
+            --package-path ${{ inputs.path }} \
+            --output-format ${{ inputs.format }} \
+            --output-file "${OUTPUT_FILE}"
 
         echo "created results in ${OUTPUT_FILE}"
 
