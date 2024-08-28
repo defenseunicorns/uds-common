@@ -52,7 +52,7 @@ runs:
           COSIGN_EXPERIMENTAL: "true"
       run: |
         COSIGN_BUNDLE="${{ steps.tmpdir.outputs.dir }}/cosign.bundle"
-        cosign sign-blob --bundle COSIGN_BUNDLE --yes ${{ steps.scan.outputs.results }}
+        cosign sign-blob --bundle $COSIGN_BUNDLE --yes ${{ steps.scan.outputs.results }}
         echo "bundle=${COSIGN_BUNDLE}" >> "$GITHUB_OUTPUT"
       shell: bash
     
