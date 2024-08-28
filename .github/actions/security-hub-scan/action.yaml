@@ -48,6 +48,8 @@ runs:
 
     - name: sign results
       id: cosign
+      env:
+          COSIGN_EXPERIMENTAL: "true"
       run: |
         cosign sign-blob --bundle cosign.bundle --yes ${{ steps.scan.outputs.results }}
         echo "cosign=cosign.bundle" >> $GITHUB_OUTPUT
