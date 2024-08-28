@@ -51,5 +51,16 @@ runs:
       env:
           COSIGN_EXPERIMENTAL: "true"
       run: |
-        cosign sign-blob --bundle ${{ steps.tmpdir.outputs.dir }}/cosign.bundle --yes ${{ steps.scan.outputs.results }}
+        COSIGN_BUNDLE="${{ steps.tmpdir.outputs.dir }}/cosign.bundle"
+        cosign sign-blob --bundle COSIGN_BUNDLE --yes ${{ steps.scan.outputs.results }}
+        echo "bundle=${COSIGN_BUNDLE}" >> "$GITHUB_OUTPUT"
+      shell: bash
+    
+    - name: verify cosign results
+      env:
+        COSIGN_EXPERIMENTAL: "true"
+      run: |
+        cosign verify-blob --bundle ${{ steps.cosign.outputs.bundle }} ${{ steps.scan.outputs.results }} \
+            --certificate-identity-regexp="https://github.com/${{ github.repository }}/" \
+            --certificate-oidc-issuer="https://token.actions.githubusercontent.com"
       shell: bash
