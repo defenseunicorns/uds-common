@@ -17,10 +17,10 @@ runs:
   steps:
     - name: use uds-security-hub to scan a package
       run: |
-        OUTPUT_FILE="results.${{ .inputs.format }}"
-        docker run --rm -v $PWD:/wrk -w /wrk ghcr.io/defenseunicorns/uds-security-hub:${{ .inputs.version }} \
-          --package-path ${{ .inputs.path }} \
-          --output-format ${{ .inputs.format }} \
+        OUTPUT_FILE="results.${{ inputs.format }}"
+        docker run --rm -v $PWD:/wrk -w /wrk ghcr.io/defenseunicorns/uds-security-hub:${{ inputs.version }} \
+          --package-path ${{ inputs.path }} \
+          --output-format ${{ inputs.format }} \
           --output-file "${OUTPUT_FILE}"
 
         echo "${OUTPUT_FILE}" > "$GITHUB_OUTPUT"
