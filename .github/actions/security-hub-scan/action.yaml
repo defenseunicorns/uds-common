@@ -25,5 +25,5 @@ runs:
 
         echo "created results in ${OUTPUT_FILE}"
 
-        echo "output=${OUTPUT_FILE}" > "$GITHUB_OUTPUT"
+        echo "results=${OUTPUT_FILE}" > "$GITHUB_OUTPUT"
       shell: bash
