@@ -14,7 +14,7 @@ inputs:
 
 outputs:
   results:
-    description: a directory that contains the results in the desired format and a cosign bundle
+    description: A directory that includes the scan results and a cosign bundle
     value: ${{ steps.tmpdir.outputs.dir }}
 
 runs:
