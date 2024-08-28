@@ -16,6 +16,9 @@ outputs:
   results:
     description: a file that contains the results in the desired format
     value: ${{ steps.scan.outputs.results }}
+  basename:
+    description: the basename of the file, useful in subsequent steps (ie archive)
+    value: ${{ steps.scan.outputs.basename }}
 
 runs:
   using: composite
@@ -34,5 +37,6 @@ runs:
 
         echo "created results in ${OUTPUT_FILE}"
 
-        echo "results=${OUTPUT_FILE}" > "$GITHUB_OUTPUT"
+        echo "results=${OUTPUT_FILE}" >> "$GITHUB_OUTPUT"
+        echo "basename="$(basename $OUTPUT_FILE) >> "$GITHUB_OUTPUT""
       shell: bash
