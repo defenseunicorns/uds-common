@@ -10,7 +10,7 @@ inputs:
     default: json
   version:
     description: Version of uds-security-hub to use
-    default: v0.11.0
+    default: v0.0.11
 
 runs:
   using: composite
