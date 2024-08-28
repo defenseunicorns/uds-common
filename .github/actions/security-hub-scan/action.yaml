@@ -37,5 +37,5 @@ runs:
         echo "created results in ${OUTPUT_FILE}"
 
         echo "results=${OUTPUT_FILE}" >> "$GITHUB_OUTPUT"
-        echo "format=${{ inputs.format }}" >> "$GITHUB_OUTPUT""
+        echo "format=${{ inputs.format }}" >> "$GITHUB_OUTPUT"
       shell: bash
