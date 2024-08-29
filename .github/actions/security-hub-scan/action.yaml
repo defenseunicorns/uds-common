@@ -10,7 +10,7 @@ inputs:
     default: json
   version:
     description: Version of uds-security-hub to use
-    default: v0.0.11
+    default: latest
 
 outputs:
   cve-scan:
@@ -39,6 +39,7 @@ runs:
         OUTPUT_FILE=${{ steps.tmpdir.outputs.dir }}/cve-scan.${{ inputs.format }}
 
         docker run --rm \
+            --pull always \
             -v ${{ inputs.path }}:${{ inputs.path }} \
           ghcr.io/defenseunicorns/uds-security-hub:${{ inputs.version }} \
             --package-path ${{ inputs.path }} \
