@@ -1,0 +1,39 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/zarf-dev/zarf/main/zarf.schema.json
+kind: ZarfPackageConfig
+metadata:
+  name: nginx
+  description: UDS Common Nginx Example
+
+components:
+  - name: nginx
+    required: true
+    charts:
+      - name: uds-nginx-config
+        namespace: nginx
+        version: 0.1.0
+        localPath: ../chart
+      - name: nginx
+        version: 0.1.0
+        namespace: nginx
+        localPath: ../src/nginx
+        valuesFiles:
+          - ../values/common-values.yaml
+    actions:
+      onDeploy:
+        after:
+          - description: Validate nginx Package
+            maxTotalSeconds: 300
+            wait:
+              cluster:
+                kind: Packages
+                name: nginx
+                namespace: nginx
+                condition: "'{.status.phase}'=Ready"
+          - description: Validate nginx Deployment
+            maxTotalSeconds: 300
+            wait:
+              cluster:
+                kind: Deployment
+                name: nginx
+                namespace: nginx
+                condition: Available
