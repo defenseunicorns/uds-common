@@ -55,3 +55,6 @@ jobs:
       flavor: ${{ matrix.flavor }}
       type: ${{ matrix.type }}
     secrets: inherit # Inherits all secrets from the parent workflow.
+
+  test-security-hub-scan:
+    uses: ./.github/workflows/test-security-hub-scan.yaml

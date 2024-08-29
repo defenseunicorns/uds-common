@@ -1,0 +1,35 @@
+name: Test security-hub-scan
+
+on:
+  workflow_call: ~
+
+
+jobs:
+  run-test:
+    name: deploy
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+
+      # run setup to get uds to use zarf
+      - name: Environment setup
+        uses: ./.github/actions/setup
+
+      - name: download example package
+        id: setup
+        run: |
+          tmpdir=$(mktemp -d)
+          ./uds zarf package pull oci://ghcr.io/defenseunicorns/packages/uds/sonarqube:9.9.5-uds.1-upstream -o $tmpdir
+          echo "path="$(ls $tmpdir/*.zst) >> "$GITHUB_OUTPUT""
+        shell: bash
+
+      - name: run scan
+        uses: ./.github/actions/security-hub-scan
+        with:
+          path: ${{ steps.setup.outputs.path }}
