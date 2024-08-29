@@ -37,7 +37,7 @@ runs:
       id: scan
       run: |
         OUTPUT_FILE=${{ steps.tmpdir.outputs.dir }}/cve-scan.${{ inputs.format }}
-        INPUT_FILE_DIR=$(dirname ${{ input.path }})
+        INPUT_FILE_DIR=$(dirname ${{ inputs.path }})
         docker run --rm \
             -v $INPUT_FILE_DIR:$INPUT_FILE_DIR \
             -w /wrk \
