@@ -37,9 +37,10 @@ runs:
       id: scan
       run: |
         OUTPUT_FILE=${{ steps.tmpdir.outputs.dir }}/cve-scan.${{ inputs.format }}
-        INPUT_FILE_DIR=$(dirname ${{ inputs.path }})
+
         docker run --rm \
-            -v $INPUT_FILE_DIR:$INPUT_FILE_DIR \
+            -v /tmp:/tmp \
+            -v $PWD:/wrk \
             -w /wrk \
           ghcr.io/defenseunicorns/uds-security-hub:${{ inputs.version }} \
             --package-path ${{ inputs.path }} \
