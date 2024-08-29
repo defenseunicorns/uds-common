@@ -16,6 +16,7 @@ on:
 # Permissions for the GITHUB_TOKEN used by the workflow.
 permissions:
   contents: read # Allows reading the content of the repository.
+  id-token: write
 
 jobs:
   run-test:
@@ -37,12 +38,16 @@ jobs:
           registry1Username: ${{ secrets.IRON_BANK_ROBOT_USERNAME }}
           registry1Password: ${{ secrets.IRON_BANK_ROBOT_PASSWORD }}
           ghToken: ${{ secrets.GITHUB_TOKEN }}
+          chainguardIdentity: ${{ secrets.CHAINGUARD_IDENTITY }}
 
       - name: Test
         uses: ./.github/actions/test-deploy
         with:
           flavor: ${{ inputs.flavor }}
           type: ${{ inputs.type }}
+
+      - name: UDS Badge Verification
+        uses: ./.github/actions/verify-badge
 
       - name: Debug Output
         if: ${{ always() }}
