@@ -13,9 +13,12 @@ inputs:
     default: v0.0.11
 
 outputs:
-  results:
-    description: A directory that includes the scan results and a cosign bundle
-    value: ${{ steps.tmpdir.outputs.dir }}
+  cve-scan:
+    description: A filename that includes the results in input.format 
+    value: ${{ steps.scan.outputs.cve-scan }}
+  cosign-bundle:
+    description: A file that includes the cosign bundle for verifying authenticity
+    value: ${{ steps.cosign.outputs.bundle }}
 
 runs:
   using: composite
@@ -33,7 +36,7 @@ runs:
     - name: use uds-security-hub to scan a package
       id: scan
       run: |
-        OUTPUT_FILE=${{ steps.tmpdir.outputs.dir }}/results.${{ inputs.format }}
+        OUTPUT_FILE=${{ steps.tmpdir.outputs.dir }}/cve-scan.${{ inputs.format }}
 
         docker run --rm \
             -v $PWD:/wrk -w /wrk \
@@ -42,8 +45,7 @@ runs:
             --output-format ${{ inputs.format }} \
             > "${OUTPUT_FILE}"
 
-        echo "created results in ${OUTPUT_FILE}"
-        echo "results=${OUTPUT_FILE}" >> "$GITHUB_OUTPUT"
+        echo "cve-scan=${OUTPUT_FILE}" >> "$GITHUB_OUTPUT"
       shell: bash
 
     - name: sign results
