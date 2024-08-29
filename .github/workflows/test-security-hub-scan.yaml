@@ -6,7 +6,6 @@ on:
 
 jobs:
   run-test:
-    name: test-security-hub-scan
     runs-on: ubuntu-latest
 
     permissions:
