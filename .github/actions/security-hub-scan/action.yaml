@@ -38,9 +38,11 @@ runs:
       run: |
         OUTPUT_FILE=${{ steps.tmpdir.outputs.dir }}/cve-scan.${{ inputs.format }}
 
+        MOUNT_PATH=$(realpath ${{ inputs.path }})
+
         docker run --rm \
             --pull always \
-            -v ${{ inputs.path }}:${{ inputs.path }} \
+            -v $MOUNT_PATH:$MOUNT_PATH \
           ghcr.io/defenseunicorns/uds-security-hub:${{ inputs.version }} \
             --package-path ${{ inputs.path }} \
             --output-format ${{ inputs.format }} \
