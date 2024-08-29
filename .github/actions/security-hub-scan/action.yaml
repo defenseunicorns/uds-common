@@ -40,7 +40,7 @@ runs:
 
         docker run --rm \
             -v ${{ inputs.path }}:${{ inputs.path }} \
-          ghcr.io/defenseunicorn  s/uds-security-hub:${{ inputs.version }} \
+          ghcr.io/defenseunicorns/uds-security-hub:${{ inputs.version }} \
             --package-path ${{ inputs.path }} \
             --output-format ${{ inputs.format }} \
             > "${OUTPUT_FILE}"
