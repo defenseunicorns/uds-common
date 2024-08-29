@@ -14,7 +14,7 @@ inputs:
 
 outputs:
   cve-scan:
-    description: A filename that includes the results in input.format 
+    description: A filename that includes the results in input.format
     value: ${{ steps.scan.outputs.cve-scan }}
   cosign-bundle:
     description: A file that includes the cosign bundle for verifying authenticity
@@ -25,7 +25,7 @@ runs:
   steps:
     - name: install cosign
       uses: sigstore/cosign-installer@4959ce089c160fddf62f7b42464195ba1a56d382 # v3.6.0
-    
+
     - name: create tmpdir for output
       id: tmpdir
       run: |
@@ -51,13 +51,13 @@ runs:
     - name: sign results
       id: cosign
       env:
-          COSIGN_EXPERIMENTAL: "true"
+        COSIGN_EXPERIMENTAL: "true"
       run: |
         COSIGN_BUNDLE="${{ steps.tmpdir.outputs.dir }}/cosign.bundle"
         cosign sign-blob --bundle $COSIGN_BUNDLE --yes ${{ steps.scan.outputs.cve-scan }}
         echo "bundle=${COSIGN_BUNDLE}" >> "$GITHUB_OUTPUT"
       shell: bash
-    
+
     - name: verify cosign results
       env:
         COSIGN_EXPERIMENTAL: "true"
