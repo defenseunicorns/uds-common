@@ -13,23 +13,23 @@ on:
         required: true
         type: string
       runs-on:
-        required: true
+        required: false
         type: string
         default: ubuntu-latest
       upload-reports:
-        required: true
+        required: false
         type: string
         default: playwright
       setup-node:
         type: boolean
         default: false
-        required: true
+        required: false
       node-version:
         type: number
         default: 20
         required: false
       clean-runner:
-        required: true
+        required: false
         type: boolean
         default: true # defaults to true for backwards compatibility 
 
