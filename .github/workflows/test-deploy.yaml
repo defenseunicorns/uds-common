@@ -28,6 +28,10 @@ on:
         type: number
         default: 20
         required: false
+      timeout:
+        type: number
+        default: 25
+        required: false
       clean-runner:
         required: false
         type: boolean
@@ -43,7 +47,7 @@ jobs:
   run-test:
     name: deploy
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: ${{ inputs.timeout }}
     if: contains(inputs.upgrade-flavors, inputs.flavor) || inputs.type == 'install'
 
     steps:
