@@ -12,6 +12,27 @@ on:
       type:
         required: true
         type: string
+      runs-on:
+        required: true
+        type: string
+        default: ubuntu-latest
+      upload-reports:
+        required: true
+        type: string
+        default: playwright
+      setup-node:
+        type: boolean
+        default: false
+        required: true
+      node-version:
+        type: number
+        default: 20
+        required: false
+      clean-runner:
+        required: true
+        type: boolean
+        default: true # defaults to true for backwards compatibility 
+
 
 # Permissions for the GITHUB_TOKEN used by the workflow.
 permissions:
@@ -30,8 +51,15 @@ jobs:
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
       - name: Clean Runner
+        if: ${{ inputs.setup-node }}
         uses: ./.github/actions/clean-runner
 
+      - name: Setup Node
+        if: ${{ inputs.setup-node }}
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
+        with:
+          node-version: ${{ inputs.node-version }}
+        
       - name: Environment setup
         uses: ./.github/actions/setup
         with:
@@ -58,3 +86,10 @@ jobs:
         uses: ./.github/actions/save-logs
         with:
           suffix: ${{ inputs.type }}-${{ inputs.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}
+
+      - uses: actions/upload-artifact@834a144ee995460fba8ed112a2fc961b36a5ec5a # v4.3.6
+        if: ${{ always() && inputs.upload-reports == 'playwright' }}
+        with:
+          name: playwright-report-${{ inputs.type }}-${{ inputs.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: tests/.playwright/reports/
+          retention-days: 30
