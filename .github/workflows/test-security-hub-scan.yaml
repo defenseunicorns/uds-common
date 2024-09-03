@@ -20,7 +20,7 @@ jobs:
       - name: Environment setup
         uses: ./.github/actions/setup
 
-      - name: download example package
+      - name: build example package
         id: setup
         run: |
           uds run create-nginx-package --no-progress
