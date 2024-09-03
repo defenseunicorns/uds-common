@@ -23,7 +23,7 @@ jobs:
       - name: download example package
         id: setup
         run: |
-          uds run create:package
+          uds run create:package --no-progress
           echo "path="$(ls *.zst) >> "$GITHUB_OUTPUT"
         shell: bash
 
