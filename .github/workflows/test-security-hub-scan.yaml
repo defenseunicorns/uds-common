@@ -28,6 +28,8 @@ jobs:
           echo "path="$(ls $tmpdir/*.zst) >> "$GITHUB_OUTPUT"
         shell: bash
 
+      # the scan has a verify step at the end, so if that runs successfully we can
+      # assume that this workflow is functional
       - name: run scan
         uses: ./.github/actions/security-hub-scan
         with:
