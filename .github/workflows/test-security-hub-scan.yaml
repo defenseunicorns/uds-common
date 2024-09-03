@@ -23,7 +23,7 @@ jobs:
       - name: download example package
         id: setup
         run: |
-          uds run create:package --no-progress
+          uds run create-nginx-package --no-progress
           echo "path="$(ls *.zst) >> "$GITHUB_OUTPUT"
         shell: bash
 
@@ -33,4 +33,3 @@ jobs:
         uses: ./.github/actions/security-hub-scan
         with:
           path: ${{ steps.setup.outputs.path }}
-          
