@@ -34,3 +34,10 @@ jobs:
         uses: ./.github/actions/security-hub-scan
         with:
           path: ${{ steps.setup.outputs.path }}
+
+      - name: cleanup temp file
+        id: setup
+        run: |
+          tmpdir=$(basename ${{ .steps.outputs.path }})
+          rm -rf $tmpdir
+        shell: bash
