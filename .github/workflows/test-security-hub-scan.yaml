@@ -23,9 +23,8 @@ jobs:
       - name: download example package
         id: setup
         run: |
-          tmpdir=$(mktemp -d)
-          uds zarf package pull oci://ghcr.io/defenseunicorns/packages/uds/mattermost:9.11.1-uds.0-upstream -o $tmpdir
-          echo "path="$(ls $tmpdir/*.zst) >> "$GITHUB_OUTPUT"
+          uds run create:package
+          echo "path="$(ls *.zst) >> "$GITHUB_OUTPUT"
         shell: bash
 
       # the scan has a verify step at the end, so if that runs successfully we can
@@ -34,10 +33,4 @@ jobs:
         uses: ./.github/actions/security-hub-scan
         with:
           path: ${{ steps.setup.outputs.path }}
-
-      - name: cleanup temp file
-        id: setup
-        run: |
-          tmpdir=$(basename ${{ .steps.outputs.path }})
-          rm -rf $tmpdir
-        shell: bash
+          
