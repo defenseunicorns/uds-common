@@ -1,0 +1,40 @@
+tasks:
+  - name: scan
+    inputs:
+      path:
+        description: Path to the zarf package to scan
+        required: true
+      format:
+        description: Scan output format
+        default: json
+      version:
+        description: Version of uds-security-hub to use
+        default: latest
+      cosign-version:
+        description: Version of cosign to use
+        default: v2.4.0
+    actions:
+      - description: run scan against the path
+        cmd: |
+          CVE_SCAN=cve-scan.${{ inputs.format }}
+
+          FILE_TO_SCAN=$(realpath ${{ inputs.path }})
+
+          docker run --rm \
+              --pull always \
+              -v $FILE_TO_SCAN:$FILE_TO_SCAN \
+            ghcr.io/defenseunicorns/uds-security-hub:${{ inputs.version }} \
+              --package-path $FILE_TO_SCAN \
+              --output-format ${{ inputs.format }} \
+              > "${CVE_SCAN}"
+
+          echo $CVE_SCAN
+        setVariables:
+          - name: CVE_SCAN
+      - description: create the cosign bundle
+        cmd: |
+          COSIGN_BUNDLE="cosign.bundle"
+          docker run -v $PWD:$PWD -w $PWD --rm gcr.io/projectsigstore/cosign:${{ .inputs.cosign-version }} sign-blob --bundle $COSIGN_BUNDLE --yes ${{ steps.scan.outputs.cve-scan }}
+          echo $COSIGN_BUNDLE
+        setVariables:
+          - name: COSIGN_BUNDLE
