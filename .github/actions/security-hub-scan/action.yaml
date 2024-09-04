@@ -11,6 +11,9 @@ inputs:
   version:
     description: Version of uds-security-hub to use
     default: latest
+  cosign-version:
+    description: Version of cosign to use for signing results
+    default: v2.4.0
 
 outputs:
   cve-scan:
@@ -25,7 +28,11 @@ runs:
   steps:
     - name: run uds security-hub:scan
       run: |
-        uds run security-hub:scan
+        uds run security-hub:scan \
+          --set PKG_PATH=${{ .inputs.path }} \
+          --set OUTPUT_FORMAT=${{ .inputs.format }} \
+          --set VERSION=${{ .inputs.version }} \
+          --set COSIGN_VERSION=${{ .inputs.cosign-version }}
       shell: bash
 
     # - name: create tmpdir for output
