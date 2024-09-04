@@ -34,7 +34,7 @@ tasks:
       - description: create the cosign bundle
         cmd: |
           COSIGN_BUNDLE="cosign.bundle"
-          docker run -v $PWD:$PWD -w $PWD --rm gcr.io/projectsigstore/cosign:${COSIGN_VERSION} sign-blob --bundle $COSIGN_BUNDLE --yes ${{ steps.scan.outputs.cve-scan }}
+          docker run -v $PWD:$PWD -w $PWD --rm gcr.io/projectsigstore/cosign:${COSIGN_VERSION} sign-blob --bundle $COSIGN_BUNDLE --yes ${CVE_SCAN}
           echo $COSIGN_BUNDLE
         setVariables:
           - name: COSIGN_BUNDLE
