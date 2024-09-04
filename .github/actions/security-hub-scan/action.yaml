@@ -24,6 +24,7 @@ runs:
   using: composite
   steps:
     - name: run uds security-hub:scan
+      id: scan
       run: |
         uds run security-hub:scan \
           --set PKG_PATH=${{ inputs.path }} \
@@ -31,7 +32,7 @@ runs:
           --set VERSION=${{ inputs.version }}
 
         echo "cve-scan=${CVE_SCAN}"
-        echo "cve-scan=${CVE_SCAN}" >> "${GITHUB_OUTPUT}"
+        echo "cve-scan=${CVE_SCAN}" >> "$GITHUB_OUTPUT"
       shell: bash
 
     - name: install cosign
