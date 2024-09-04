@@ -7,9 +7,6 @@ variables:
   - name: VERSION
     description: Version of uds-security-hub to use
     default: latest
-  - name: COSIGN_VERSION
-    description: sion of cosign to use
-    default: v2.4.0
 
 tasks:
   - name: scan
@@ -31,11 +28,3 @@ tasks:
           echo $CVE_SCAN
         setVariables:
           - name: CVE_SCAN
-      - description: create the cosign bundle
-        cmd: |
-          COSIGN_BUNDLE="cosign.bundle"
-          env
-          docker run -e GITHUB_TOKEN -v $PWD:$PWD -w $PWD --rm gcr.io/projectsigstore/cosign:${COSIGN_VERSION} sign-blob --bundle $COSIGN_BUNDLE --yes ${CVE_SCAN}
-          echo $COSIGN_BUNDLE
-        setVariables:
-          - name: COSIGN_BUNDLE

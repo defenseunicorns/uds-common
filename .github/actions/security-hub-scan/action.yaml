@@ -11,9 +11,6 @@ inputs:
   version:
     description: Version of uds-security-hub to use
     default: latest
-  cosign-version:
-    description: Version of cosign to use for signing results
-    default: v2.4.0
 
 outputs:
   cve-scan:
@@ -31,50 +28,30 @@ runs:
         uds run security-hub:scan \
           --set PKG_PATH=${{ inputs.path }} \
           --set OUTPUT_FORMAT=${{ inputs.format   }} \
-          --set VERSION=${{ inputs.version }} \
-          --set COSIGN_VERSION=${{ inputs.cosign-version }}
+          --set VERSION=${{ inputs.version }}
+
+        echo "cve-scan=${CVE_SCAN}"
+        echo "cve-scan=${CVE_SCAN}" >> "${GITHUB_OUTPUT}"
       shell: bash
 
-    # - name: create tmpdir for output
-    #   id: tmpdir
-    #   run: |
-    #     tmpdir=$(mktemp -d)
-    #     echo "dir=$tmpdir" >> $GITHUB_OUTPUT
-    #   shell: bash
+    - name: install cosign
+      uses: sigstore/cosign-installer@4959ce089c160fddf62f7b42464195ba1a56d382 # v3.6.0
 
-    # - name: use uds-security-hub to scan a package
-    #   id: scan
-    #   run: |
-    #     OUTPUT_FILE=${{ steps.tmpdir.outputs.dir }}/cve-scan.${{ inputs.format }}
+    - name: sign results
+      id: cosign
+      env:
+        COSIGN_EXPERIMENTAL: "true"
+      run: |
+        COSIGN_BUNDLE="cosign.bundle"
+        cosign sign-blob --bundle $COSIGN_BUNDLE --yes ${{ steps.scan.outputs.cve-scan }}
+        echo "bundle=${COSIGN_BUNDLE}" >> "$GITHUB_OUTPUT"
+      shell: bash
 
-    #     FILE_TO_SCAN=$(realpath ${{ inputs.path }})
-
-    #     docker run --rm \
-    #         --pull always \
-    #         -v $FILE_TO_SCAN:$FILE_TO_SCAN \
-    #       ghcr.io/defenseunicorns/uds-security-hub:${{ inputs.version }} \
-    #         --package-path $FILE_TO_SCAN \
-    #         --output-format ${{ inputs.format }} \
-    #         > "${OUTPUT_FILE}"
-
-    #     echo "cve-scan=${OUTPUT_FILE}" >> "$GITHUB_OUTPUT"
-    #   shell: bash
-
-    # - name: sign results
-    #   id: cosign
-    #   env:
-    #     COSIGN_EXPERIMENTAL: "true"
-    #   run: |
-    #     COSIGN_BUNDLE="${{ steps.tmpdir.outputs.dir }}/cosign.bundle"
-    #     cosign sign-blob --bundle $COSIGN_BUNDLE --yes ${{ steps.scan.outputs.cve-scan }}
-    #     echo "bundle=${COSIGN_BUNDLE}" >> "$GITHUB_OUTPUT"
-    #   shell: bash
-
-    # - name: verify cosign results
-    #   env:
-    #     COSIGN_EXPERIMENTAL: "true"
-    #   run: |
-    #     cosign verify-blob --bundle ${{ steps.cosign.outputs.bundle }} ${{ steps.scan.outputs.cve-scan }} \
-    #         --certificate-identity-regexp="https://github.com/${{ github.repository }}/" \
-    #         --certificate-oidc-issuer="https://token.actions.githubusercontent.com"
-    #   shell: bash
+    - name: verify cosign results
+      env:
+        COSIGN_EXPERIMENTAL: "true"
+      run: |
+        cosign verify-blob --bundle ${{ steps.cosign.outputs.bundle }} ${{ steps.scan.outputs.cve-scan }} \
+            --certificate-identity-regexp="https://github.com/${{ github.repository }}/" \
+            --certificate-oidc-issuer="https://token.actions.githubusercontent.com"
+      shell: bash
