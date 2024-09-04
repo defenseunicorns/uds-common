@@ -29,10 +29,10 @@ runs:
     - name: run uds security-hub:scan
       run: |
         uds run security-hub:scan \
-          --set PKG_PATH=${{ .inputs.path }} \
-          --set OUTPUT_FORMAT=${{ .inputs.format }} \
-          --set VERSION=${{ .inputs.version }} \
-          --set COSIGN_VERSION=${{ .inputs.cosign-version }}
+          --set PKG_PATH=${{ inputs.path }} \
+          --set OUTPUT_FORMAT=${{ inputs.format }} \
+          --set VERSION=${{ inputs.version }} \
+          --set COSIGN_VERSION=${{ inputs.cosign-version }}
       shell: bash
 
     # - name: create tmpdir for output
