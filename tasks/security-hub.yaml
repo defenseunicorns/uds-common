@@ -1,6 +1,8 @@
 variables:
   - name: PKG_PATH
     description: Path to the zarf package to scan
+  - name: OUTPUT_FILE
+    description: Path to write the results into
   - name: OUTPUT_FORMAT
     description: Scan output format
     default: json
@@ -13,8 +15,6 @@ tasks:
     actions:
       - description: scan the provided PKG_PATH
         cmd: |
-          CVE_SCAN=cve-scan.${OUTPUT_FORMAT}
-
           FILE_TO_SCAN=$(realpath ${PKG_PATH})
 
           docker run --rm \
@@ -23,8 +23,4 @@ tasks:
             ghcr.io/defenseunicorns/uds-security-hub:${VERSION} \
               --package-path $FILE_TO_SCAN \
               --output-format ${OUTPUT_FORMAT} \
-              > "${CVE_SCAN}"
-
-          echo $CVE_SCAN
-        setVariables:
-          - name: CVE_SCAN
+              > "${OUTPUT_FILE}"

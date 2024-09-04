@@ -26,13 +26,14 @@ runs:
     - name: run uds security-hub:scan
       id: scan
       run: |
-        CVE_SCAN=$(uds run security-hub:scan \
+        OUTPUT_FILE=cve-scan.${{ inputs.format }}
+        uds run security-hub:scan \
           --set PKG_PATH=${{ inputs.path }} \
+          --set OUTPUT_FILE=${OUTPUT_FILE} \
           --set OUTPUT_FORMAT=${{ inputs.format }} \
-          --set VERSION=${{ inputs.version }})
+          --set VERSION=${{ inputs.version }}
 
-        echo "cve-scan=${CVE_SCAN}"
-        echo "cve-scan=${CVE_SCAN}" >> "$GITHUB_OUTPUT"
+        echo "cve-scan=${OUTPUT_FILE}" >> "$GITHUB_OUTPUT"
       shell: bash
 
     - name: install cosign
