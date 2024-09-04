@@ -71,6 +71,12 @@ tasks:
           version: 0.12.0
           # x-release-please-end
 
+  - name: uds-security-hub-scan
+    description: Scans a package using uds-security-hub
+    actions:
+      - description: run scan
+        task: security-hub:scan
+
   - name: test
     description: Test and validate cluster is deployed with nginx
     actions:
