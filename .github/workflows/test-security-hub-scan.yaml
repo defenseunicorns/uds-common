@@ -27,9 +27,21 @@ jobs:
           echo "path="$(ls *.zst) >> "$GITHUB_OUTPUT"
         shell: bash
 
-      # the scan has a verify step at the end, so if that runs successfully we can
-      # assume that this workflow is functional
       - name: run scan
+        id: scan
         uses: ./.github/actions/security-hub-scan
         with:
           path: ${{ steps.setup.outputs.path }}
+
+      # verify that the outputs and the cosign bundle are correct
+      - name: install cosign
+        uses: sigstore/cosign-installer@4959ce089c160fddf62f7b42464195ba1a56d382 # v3.6.0
+
+      - name: verify cosign results
+        env:
+          COSIGN_EXPERIMENTAL: "true"
+        run: |
+          cosign verify-blob --bundle ${{ steps.scan.outputs.bundle }} ${{ steps.scan.scan.cve-scan }} \
+              --certificate-identity-regexp="https://github.com/${{ github.repository }}/" \
+              --certificate-oidc-issuer="https://token.actions.githubusercontent.com"
+        shell: bash
