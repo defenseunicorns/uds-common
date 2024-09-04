@@ -8,6 +8,7 @@ includes:
   - upgrade: ./tasks/upgrade.yaml
   - compliance: ./tasks/compliance.yaml
   - badge: ./tasks/badge.yaml
+  - security-hub: ./tasks/security-hub.yaml
 
 tasks:
   - name: default
@@ -70,12 +71,6 @@ tasks:
           # x-release-please-start-version
           version: 0.12.0
           # x-release-please-end
-
-  - name: security-hub-scan
-    description: Scans a package using uds-security-hub
-    actions:
-      - description: run scan
-        task: security-hub:scan
 
   - name: test
     description: Test and validate cluster is deployed with nginx

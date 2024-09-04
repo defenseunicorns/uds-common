@@ -23,9 +23,9 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: run uds security-hub-scan
+    - name: run uds security-hub:scan
       run: |
-        uds run security-hub-scan
+        uds run security-hub:scan
       shell: bash
 
     # - name: create tmpdir for output
