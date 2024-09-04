@@ -28,7 +28,7 @@ runs:
       run: |
         CVE_SCAN=$(uds run security-hub:scan \
           --set PKG_PATH=${{ inputs.path }} \
-          --set OUTPUT_FORMAT=${{ inputs.format   }} \
+          --set OUTPUT_FORMAT=${{ inputs.format }} \
           --set VERSION=${{ inputs.version }})
 
         echo "cve-scan=${CVE_SCAN}"

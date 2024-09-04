@@ -11,7 +11,7 @@ variables:
 tasks:
   - name: scan
     actions:
-      - description: run scan against the path
+      - description: scan the provided PKG_PATH
         cmd: |
           CVE_SCAN=cve-scan.${OUTPUT_FORMAT}
 
