@@ -12,23 +12,6 @@ on:
       type:
         required: true
         type: string
-    paths-ignore:
-      - "**.md"
-      - "**.jpg"
-      - "**.png"
-      - "**.gif"
-      - "**.svg"
-      - adr/**
-      - docs/**
-      - .gitignore
-      - renovate.json
-      - .release-please-config.json
-      - release-please-config.json
-      - CODEOWNERS
-      - LICENSE
-      - CONTRIBUTING.md
-      - SECURITY.md
-      - config/renovate.json5
 
 # Permissions for the GITHUB_TOKEN used by the workflow.
 permissions:
