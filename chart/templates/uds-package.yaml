@@ -1,0 +1,56 @@
+apiVersion: uds.dev/v1alpha1
+kind: Package
+metadata:
+  name: nginx
+  namespace: {{ .Release.Namespace }}
+spec:
+  # This will be broken until an authservice exclusion is added to uds-core
+  monitor:
+    - selector:
+        nginx-metrics: "true"
+      targetPort: 8081
+      portName: metrics
+      path: /metrics/
+      description: Metrics
+      podSelector:
+        app.kubernetes.io/name: nginx
+
+  sso:
+    - name: Nginx Authserviced
+      clientId: uds-package-nginx
+      redirectUris:
+        - https://nginx.{{ .Values.domain }}/login
+      # TODO: add this back once authservice can be included in testing/ci via uds-core functional layers
+      # enableAuthserviceSelector:
+      #   app.kubernetes.io/name: nginx
+
+  network:
+    expose:
+      - service: nginx
+        selector:
+          app.kubernetes.io/name: nginx
+        gateway: tenant
+        host: nginx
+        port: 8080
+    allow:
+      - direction: Ingress
+        remoteGenerated: IntraNamespace
+
+      - direction: Egress
+        remoteGenerated: IntraNamespace
+
+      # Custom rules for unanticipated scenarios
+      {{- range .Values.custom }}
+      - direction: {{ .direction }}
+        selector:
+          {{ .selector | toYaml | nindent 10 }}
+        {{- if not .remoteGenerated }}
+        remoteNamespace: {{ .remoteNamespace }}
+        remoteSelector:
+          {{ .remoteSelector | toYaml | nindent 10 }}
+        port: {{ .port }}
+        {{- else }}
+        remoteGenerated: {{ .remoteGenerated }}
+        {{- end }}
+        description: {{ .description }}
+      {{- end }}
