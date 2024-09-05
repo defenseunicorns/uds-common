@@ -7,7 +7,7 @@ tasks:
     description: Install linting tool dependencies
     actions:
       - description: Install yamllint via pip
-        cmd: CMD=pip && which $CMD || CMD=pip3 && $CMD install yamllint
+        cmd: CMD=pip && which $CMD || CMD=pip3 && $CMD install yamllint>=1.30.0
 
   - name: yaml
     description: Run YAML linting checks
