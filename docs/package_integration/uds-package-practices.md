@@ -1,14 +1,25 @@
-# UDS Package Practices
+# UDS Package Integration Guide
 
-This document describes the practices that a UDS package **must**, **should** and **may** follow to be considered officially supported as a UDS package and to be able to display the "Made for UDS" badge on its GitHub repository README.md file :
+## Introduction
 
-[<img alt="Made for UDS" src="./made-for-uds.svg" height="20px"/>](https://github.com/defenseunicorns/uds-core)
+This guide is intended for developers integrating applications with UDS (Unicorn Delivery Service). This document describes the practices that a UDS package _**must**_, _**should**_ and _**may**_ follow to be considered officially supported as a UDS package.
+
+_and most importantly..._
+> Earning the [<img alt="Made for UDS" src="../made-for-uds.svg" height="20px"/>](https://github.com/defenseunicorns/uds-core) badge and leveraging UDS Core.
 
 > [!NOTE]
 > This badge should link to the `uds-core` repo and should match the height of any other badges (i.e. `20px`).
 
 > [!TIP]
 > This document follows [RFC-2119](https://datatracker.ietf.org/doc/html/rfc2119) for definitions of requirement levels (e.g. **must**, **should** and **may**)
+
+Integrating a Package fundamentally means:
+1. Creating a repository `uds-package-<name>`
+2. Integrating the upstream helm chart as a zarf package `zarf.yaml` to build a declarative OCI artifact
+3. Adding a UDS package Custom Resource `uds-package.yaml` to integrate with UDS Core via Pepr
+4. Build a 'zero CVE' package by replacing images with a `*-unicorn` flavored image
+
+This document is intentionally lightweight for quick reference. A more detailed guide can be found [here](guide.md).
 
 ## Integrations
 
@@ -76,7 +87,7 @@ A UDS Package will also have testing and quality checks to ensure that updates /
 
 - **Should** lint their configurations with appropriate tooling such as [`yamllint`](https://github.com/adrienverge/yamllint) and [`zarf dev lint`](https://docs.zarf.dev/commands/zarf_dev_lint/).
 
-For more detailed guidelines on implementing these testing practices, please refer to the [Testing Guidelines for UDS Packages](docs/testing-guidelines.md).
+For more detailed guidelines on implementing these testing practices, please refer to the [Testing Guidelines for UDS Packages](./testing-guidelines.md).
 
 
 ## Maintenance
