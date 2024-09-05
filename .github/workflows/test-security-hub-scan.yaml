@@ -41,7 +41,7 @@ jobs:
         env:
           COSIGN_EXPERIMENTAL: "true"
         run: |
-          cosign verify-blob --bundle ${{ steps.scan.outputs.bundle }} ${{ steps.scan.outputs.cve-scan }} \
+          cosign verify-blob --bundle ${{ steps.scan.outputs.cosign-bundle }} ${{ steps.scan.outputs.cve-scan }} \
               --certificate-identity-regexp="https://github.com/${{ github.repository }}/" \
               --certificate-oidc-issuer="https://token.actions.githubusercontent.com"
         shell: bash

@@ -18,7 +18,7 @@ outputs:
     value: ${{ steps.scan.outputs.cve-scan }}
   cosign-bundle:
     description: A file that includes the cosign bundle for verifying authenticity
-    value: ${{ steps.cosign.outputs.bundle }}
+    value: ${{ steps.cosign.outputs.cosign-bundle }}
 
 runs:
   using: composite
@@ -46,14 +46,14 @@ runs:
       run: |
         COSIGN_BUNDLE="cosign.bundle"
         cosign sign-blob --bundle $COSIGN_BUNDLE --yes ${{ steps.scan.outputs.cve-scan }}
-        echo "bundle=${COSIGN_BUNDLE}" >> "$GITHUB_OUTPUT"
+        echo "cosign-bundle=${COSIGN_BUNDLE}" >> "$GITHUB_OUTPUT"
       shell: bash
 
     - name: verify cosign results
       env:
         COSIGN_EXPERIMENTAL: "true"
       run: |
-        cosign verify-blob --bundle ${{ steps.cosign.outputs.bundle }} ${{ steps.scan.outputs.cve-scan }} \
+        cosign verify-blob --bundle ${{ steps.cosign.outputs.cosign-bundle }} ${{ steps.scan.outputs.cve-scan }} \
             --certificate-identity-regexp="https://github.com/${{ github.repository }}/" \
             --certificate-oidc-issuer="https://token.actions.githubusercontent.com"
       shell: bash
