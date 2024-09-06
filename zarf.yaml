@@ -25,7 +25,7 @@ components:
         valuesFiles:
           - values/upstream-values.yaml
     images:
-      - nginx:1.27.1
+      - nginx:1.26.1
 
   - name: nginx
     required: true
@@ -41,7 +41,7 @@ components:
         valuesFiles:
           - values/registry1-values.yaml
     images:
-      - registry1.dso.mil/ironbank/opensource/nginx/nginx:1.26.2
+      - registry1.dso.mil/ironbank/opensource/nginx/nginx:1.26.1
 
   - name: nginx
     required: true
@@ -55,4 +55,4 @@ components:
         valuesFiles:
           - values/unicorn-values.yaml
     images:
-      - cgr.dev/du-uds-defenseunicorns/nginx:1.27.1
+      - cgr.dev/du-uds-defenseunicorns/nginx:1.26.1
