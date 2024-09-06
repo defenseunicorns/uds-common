@@ -1,35 +1,58 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/zarf-dev/zarf/main/zarf.schema.json
 kind: ZarfPackageConfig
 metadata:
-  name: podinfo
+  name: nginx
+  description: UDS nginx package
   # x-release-please-start-version
   version: 0.12.0
   # x-release-please-end
+  architecture: amd64
+
+variables:
+  - name: DOMAIN
+    default: uds.dev
 
 components:
-  - name: podinfo
+  - name: nginx
     required: true
+    description: Deploy nginx with upstream images
+    import:
+      path: common
     only:
-      flavor: test
+      flavor: upstream
     charts:
-      - name: podinfo
-        version: 6.7.0
-        namespace: uds-podinfo
-        url: oci://ghcr.io/stefanprodan/charts/podinfo
+      - name: nginx
         valuesFiles:
-          - values/common-values.yaml
-    manifests:
-      - name: podinfo-config
-        namespace: uds-podinfo
-        files:
-          - manifests/uds-package.yaml
-    actions:
-      onDeploy:
-        after:
-          - wait:
-              cluster:
-                kind: deployment
-                name: podinfo
-                namespace: uds-podinfo
-                condition: available
+          - values/upstream-values.yaml
     images:
-      - ghcr.io/stefanprodan/podinfo:6.7.0
+      - nginx:1.26.1
+
+  - name: nginx
+    required: true
+    description: Deploy nginx with registry1 images
+    import:
+      path: common
+    only:
+      flavor: registry1
+      cluster:
+        architecture: amd64
+    charts:
+      - name: nginx
+        valuesFiles:
+          - values/registry1-values.yaml
+    images:
+      - registry1.dso.mil/ironbank/opensource/nginx/nginx:1.26.1
+
+  - name: nginx
+    required: true
+    description: Deploy nginx with unicorn images
+    import:
+      path: common
+    only:
+      flavor: unicorn
+    charts:
+      - name: nginx
+        valuesFiles:
+          - values/unicorn-values.yaml
+    images:
+      - cgr.dev/du-uds-defenseunicorns/nginx:1.26.1

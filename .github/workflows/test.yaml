@@ -26,6 +26,7 @@ on:
 # Permissions for the GITHUB_TOKEN used by the workflow.
 permissions:
   contents: read # Allows reading the content of the repository.
+  id-token: write
 
 jobs:
   flavor-test:
@@ -47,9 +48,10 @@ jobs:
       fail-fast: false
       matrix:
         type: [install, upgrade]
-        flavor: [test]
+        flavor: [upstream, unicorn, registry1]
     uses: ./.github/workflows/test-deploy.yaml
     with:
       upgrade-flavors: ${{ needs.flavor-test.outputs.upgrade-flavors }}
       flavor: ${{ matrix.flavor }}
       type: ${{ matrix.type }}
+    secrets: inherit # Inherits all secrets from the parent workflow.
