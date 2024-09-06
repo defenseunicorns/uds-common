@@ -36,7 +36,7 @@ runs:
       uses: defenseunicorns/lula-action/setup@91fe067451c33cc2a211eb0532e2351ae5b155a3
       with:
         # renovate: datasource=github-tags depName=defenseunicorns/lula versioning=semver-coerced
-        version: v0.5.1
+        version: v0.6.0
 
     - name: Iron Bank Login
       if: ${{ inputs.registry1Username != '' }}
