@@ -43,7 +43,7 @@ Your goal is to bundle the upstream helm chart and images into a single Zarf pac
 
 *reminder https://docs.zarf.dev*
 
-- [ ] Understand zarf's [helm chart component](https://docs.zarf.dev/ref/components/#helm-charts)
+- [ ] Understand Zarf's [Helm Chart component primitive](https://docs.zarf.dev/ref/components/#helm-charts)
 - [ ] The Command `uds zarf dev generate` may be useful to generate an initial `zarf.yaml` file for your application.
 - [ ] Identify the application's images, the command `uds zarf dev find-images` may be useful.
 - [ ] The application may require additional configurations at build time or runtime, consider [Zarf Component Actions](https://docs.zarf.dev/ref/examples/component-actions/)
