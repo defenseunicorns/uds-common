@@ -58,7 +58,7 @@ Your goal is to integrate the Zarf package application with [UDS Core](https://g
 
 - [ ] If you haven't already, read the docs on [UDS Operator](https://uds.defenseunicorns.com/core/configuration/uds-operator/)
 
-- [ ] [UDS Package Practices](https://github.com/defenseunicorns/uds-common/blob/main/docs/uds-package-practices.md) provides an extensive list of best practices, considerations, and tasks to for package
+- [ ] [UDS Package Practices](https://github.com/defenseunicorns/uds-common/blob/main/docs/uds-package-practices.md) provides an extensive list of best practices, considerations, and tasks for a package to be "Made for UDS"
 
 #### Checkout
 Your repository has a `uds-package.yaml` manifest added to the appropriate helm chart and you can deploy to a K3d Core Dev Slim cluster, via zarf package.
