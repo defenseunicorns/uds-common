@@ -10,7 +10,7 @@ inputs:
     default: json
   version:
     description: Version of uds-security-hub to use
-    default: latest
+    default: v0.1.0
 
 outputs:
   cve-scan:
