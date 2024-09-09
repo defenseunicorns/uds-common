@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This guide is intended for developers integrating applications with UDS (Unicorn Delivery Service). This document describes the practices that a UDS package _**must**_, _**should**_ and _**may**_ follow to be considered officially supported as a UDS package.
+This document describes the practices that a UDS package _**must**_, _**should**_ and _**may**_ follow to be considered officially supported as a UDS package.
 
 _and most importantly..._
 > Earning the [<img alt="Made for UDS" src="../made-for-uds.svg" height="20px"/>](https://github.com/defenseunicorns/uds-core) badge and leveraging UDS Core.
