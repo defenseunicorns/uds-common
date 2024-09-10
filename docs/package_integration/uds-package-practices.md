@@ -1,6 +1,4 @@
-# UDS Package Integration Guide
-
-## Introduction
+# UDS Package Practices
 
 This document describes the practices that a UDS package _**must**_, _**should**_ and _**may**_ follow to be considered officially supported as a UDS package.
 
