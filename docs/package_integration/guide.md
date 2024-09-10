@@ -68,4 +68,4 @@ Your repository has a `uds-package.yaml` manifest added to the appropriate helm 
 For reference, consider these well-maintained UDS package examples:
 - [UDS Package GitLab](https://github.com/defenseunicorns/uds-package-gitlab) (More complex example)
 - [UDS Package Mattermost](https://github.com/defenseunicorns/uds-package-mattermost) (Simpler example)
-- [UDS Common NGINX](https://github.com/defenseunicorns/uds-common/pull/191)
+- [UDS Common NGINX](https://github.com/defenseunicorns/uds-common)
