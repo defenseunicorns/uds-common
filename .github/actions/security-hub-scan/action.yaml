@@ -31,7 +31,7 @@ runs:
           --set PKG_PATH=${{ inputs.path }} \
           --set OUTPUT_FILE=${OUTPUT_FILE} \
           --set OUTPUT_FORMAT=${{ inputs.format }} \
-          --set VERSION=${{ inputs.version }}
+          --set SECURITY_HUB_VERSION=${{ inputs.version }}
 
         echo "cve-scan=${OUTPUT_FILE}" >> "$GITHUB_OUTPUT"
       shell: bash
