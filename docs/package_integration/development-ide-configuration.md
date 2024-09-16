@@ -10,7 +10,7 @@ To configure your VSCode for schema validation, you must install a yaml language
 
 Open the command palette and select the specific level of settings you want to modify. For example select default from the options provided.
 
-![Command Pallete](image.png)
+![Command Pallete](./.images/cmd-pallete.png)
 
 In the file that opens, add your yaml language server specific settings (and any other setting you may want globally) in line with the example [configuration](.vscode/settings.json). Then save the settings.
 

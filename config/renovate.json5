@@ -261,6 +261,11 @@
         {
             "matchPackageNames": ["registry1.dso.mil/ironbank/big-bang/base"],
             "allowedVersions": "!/8.4/"
+        },
+        // Prefers the OpenTofu registry for Terraform Providers
+        {
+            "matchDatasources": ["terraform-provider"],
+            "registryUrls": ["https://registry.opentofu.org"]
         }
     ]
 }
