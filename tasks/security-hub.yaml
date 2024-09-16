@@ -6,7 +6,7 @@ variables:
   - name: OUTPUT_FORMAT
     description: Scan output format
     default: json
-  - name: VERSION
+  - name: SECURITY_HUB_VERSION
     description: Version of uds-security-hub to use
     default: v0.1.0
 
@@ -20,7 +20,7 @@ tasks:
           docker run --rm \
               --pull always \
               -v $FILE_TO_SCAN:$FILE_TO_SCAN \
-            ghcr.io/defenseunicorns/uds-security-hub:${VERSION} \
+            ghcr.io/defenseunicorns/uds-security-hub:${SECURITY_HUB_VERSION} \
               --package-path $FILE_TO_SCAN \
               --output-format ${OUTPUT_FORMAT} \
               > "${OUTPUT_FILE}"

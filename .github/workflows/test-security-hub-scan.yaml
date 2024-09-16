@@ -1,8 +1,7 @@
 name: Test security-hub-scan
 
 on:
-  workflow_call: ~
-
+  pull_request: ~
 
 jobs:
   run-test:
