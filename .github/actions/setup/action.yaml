@@ -38,6 +38,9 @@ runs:
         # renovate: datasource=github-tags depName=defenseunicorns/lula versioning=semver-coerced
         version: v0.6.0
 
+    - name: Install cosign
+      uses: sigstore/cosign-installer@4959ce089c160fddf62f7b42464195ba1a56d382 # v3.6.0
+
     - name: Iron Bank Login
       if: ${{ inputs.registry1Username != '' }}
       env:
