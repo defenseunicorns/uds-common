@@ -7,7 +7,7 @@ tasks:
       version:
         description: The version of k3d-core-slim-dev to deploy
         # renovate: datasource=github-tags depName=defenseunicorns/uds-core versioning=semver
-        default: 0.26.1
+        default: 0.27.0
       snapshots:
         description: Whether to pull from the nightly snapshot repository
         default: "false"
@@ -23,7 +23,7 @@ tasks:
       version:
         description: The version of k3d-core-demo to deploy
         # renovate: datasource=github-tags depName=defenseunicorns/uds-core versioning=semver
-        default: 0.26.1
+        default: 0.27.0
       snapshots:
         description: Whether to pull from the nightly snapshot repository
         default: "false"
