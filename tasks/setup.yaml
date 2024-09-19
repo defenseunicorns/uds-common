@@ -14,9 +14,11 @@ tasks:
       insecure_keycloak_admin:
         description: Automatically set a keycloak admin username / password
         default: "true"
+      options:
+        description: For setting deploy time variables and flags
     actions:
       - description: Create k3d cluster with slim UDS Core
-        cmd: ./uds deploy oci://defenseunicorns/uds/${{ if eq .inputs.snapshots "true" }}snapshots/${{ end }}bundles/k3d-core-slim-dev:${{ .inputs.version }} --set INSECURE_ADMIN_PASSWORD_GENERATION=${{ .inputs.insecure_keycloak_admin }} --confirm --no-progress
+        cmd: ./uds deploy oci://defenseunicorns/uds/${{ if eq .inputs.snapshots "true" }}snapshots/${{ end }}bundles/k3d-core-slim-dev:${{ .inputs.version }} --set INSECURE_ADMIN_PASSWORD_GENERATION=${{ .inputs.insecure_keycloak_admin }} --confirm --no-progress ${{ .inputs.options }}
 
   - name: k3d-full-cluster
     inputs:
@@ -30,9 +32,11 @@ tasks:
       insecure_keycloak_admin:
         description: Automatically set a keycloak admin username / password
         default: "true"
+      options:
+        description: For setting deploy time variables and flags
     actions:
       - description: Deploy all of the UDS Core Package into the current cluster
-        cmd: ./uds deploy oci://defenseunicorns/uds/${{ if eq .inputs.snapshots "true" }}snapshots/${{ end }}bundles/k3d-core-demo:${{ .inputs.version }} --set INSECURE_ADMIN_PASSWORD_GENERATION=${{ .inputs.insecure_keycloak_admin }} --confirm --no-progress
+        cmd: ./uds deploy oci://defenseunicorns/uds/${{ if eq .inputs.snapshots "true" }}snapshots/${{ end }}bundles/k3d-core-demo:${{ .inputs.version }} --set INSECURE_ADMIN_PASSWORD_GENERATION=${{ .inputs.insecure_keycloak_admin }} --confirm --no-progress ${{ .inputs.options }}
 
   - name: print-keycloak-admin-password
     actions:
