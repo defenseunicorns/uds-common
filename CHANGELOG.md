@@ -1,5 +1,29 @@
 # Changelog
 
+## [0.13.0](https://github.com/defenseunicorns/uds-common/compare/v0.12.0...v0.13.0) (2024-09-19)
+
+
+### Features
+
+* add action for assisting with badge verification and migrate to nginx ([#191](https://github.com/defenseunicorns/uds-common/issues/191)) ([79a5edf](https://github.com/defenseunicorns/uds-common/commit/79a5edfe7f5d9a4d1611289dbadf643c07850081))
+* add options support to setup to set vars and other flags on uds-core ([#235](https://github.com/defenseunicorns/uds-common/issues/235)) ([4336357](https://github.com/defenseunicorns/uds-common/commit/433635708b47c3f420990582a6a813a710d44423))
+
+
+### Bug Fixes
+
+* mandate yamllint at least 1.30.0 to guarantee features in use ([#224](https://github.com/defenseunicorns/uds-common/issues/224)) ([61929ac](https://github.com/defenseunicorns/uds-common/commit/61929ac82c3e4b635a5e1673975ab29964001ce4))
+
+
+### Miscellaneous
+
+* add uds-marketplace to codeowners ([#225](https://github.com/defenseunicorns/uds-common/issues/225)) ([ff9a8d9](https://github.com/defenseunicorns/uds-common/commit/ff9a8d943f4e7e926d243dabecfe0c585e946ba0))
+* **deps:** update uds common nginx package ([#223](https://github.com/defenseunicorns/uds-common/issues/223)) ([688197c](https://github.com/defenseunicorns/uds-common/commit/688197cfcfdf2e14c222f82c59d27904fd1753bb))
+* **deps:** update uds common support dependencies ([#216](https://github.com/defenseunicorns/uds-common/issues/216)) ([a597644](https://github.com/defenseunicorns/uds-common/commit/a597644480afb2e8c1685ca067a7e838c6f14570))
+* **deps:** update uds common support dependencies ([#221](https://github.com/defenseunicorns/uds-common/issues/221)) ([bd6459f](https://github.com/defenseunicorns/uds-common/commit/bd6459f057c236a6ca28e8fc6ec9af2821be9c00))
+* **deps:** update uds common support dependencies ([#228](https://github.com/defenseunicorns/uds-common/issues/228)) ([b34e017](https://github.com/defenseunicorns/uds-common/commit/b34e01747bc81b098b63cdf2a820dd644a7c6725))
+* **deps:** update uds common support dependencies ([#236](https://github.com/defenseunicorns/uds-common/issues/236)) ([ba37ec2](https://github.com/defenseunicorns/uds-common/commit/ba37ec2db2d56afd2b7e63c00bd19eebd1dd8ddc))
+* **renovate:** prefer opentofu registry for providers ([#230](https://github.com/defenseunicorns/uds-common/issues/230)) ([443fd0f](https://github.com/defenseunicorns/uds-common/commit/443fd0f1401ea496d5f39b43383d910f9f737871))
+
 ## [0.12.0](https://github.com/defenseunicorns/uds-common/compare/v0.11.2...v0.12.0) (2024-08-22)
 
 
