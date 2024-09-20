@@ -15,10 +15,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
-      # run setup to get uds to use zarf
-      - name: Environment setup
-        uses: ./.github/actions/setup
-
       - name: build example package
         id: setup
         run: |

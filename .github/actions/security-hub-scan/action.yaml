@@ -23,6 +23,10 @@ outputs:
 runs:
   using: composite
   steps:
+    # run setup to get uds to use zarf
+    - name: Environment setup
+      uses: ./.github/actions/setup
+
     - name: run uds security-hub:scan
       id: scan
       run: |
@@ -35,9 +39,6 @@ runs:
 
         echo "cve-scan=${OUTPUT_FILE}" >> "$GITHUB_OUTPUT"
       shell: bash
-
-    - name: install cosign
-      uses: sigstore/cosign-installer@4959ce089c160fddf62f7b42464195ba1a56d382 # v3.6.0
 
     - name: sign results
       id: cosign
