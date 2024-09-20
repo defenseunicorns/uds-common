@@ -154,7 +154,7 @@
             ],
             "datasourceTemplate": "{{#if git}}git-tags{{else}}helm{{/if}}",
             "depNameTemplate": "{{#if git}}{{{url}}}{{else}}{{{name}}}{{/if}}",
-            "registryUrlTemplate": "{{#if git}}"null"{{else}}{{{url}}}{{/if}}"
+            "registryUrlTemplate": "{{{url}}}"
         },
         // Matches individual helm charts in a `zarf.yaml`'s `charts:` section that specify `url` then `version`, selecting correct options for Git or Helm repos
         {
@@ -170,7 +170,7 @@
             ],
             "datasourceTemplate": "{{#if git}}git-tags{{else}}helm{{/if}}",
             "depNameTemplate": "{{#if git}}{{{url}}}{{else}}{{{name}}}{{/if}}",
-            "registryUrlTemplate": "{{#if git}}"null"{{else}}{{{url}}}{{/if}}"
+            "registryUrlTemplate": "{{{url}}}"
         },
         // Matches individual helm oci charts in a `zarf.yaml`'s `charts:` section that specify `version` then `url`
         {
