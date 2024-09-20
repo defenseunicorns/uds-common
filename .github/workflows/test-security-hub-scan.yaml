@@ -23,7 +23,9 @@ jobs:
         id: setup
         run: |
           uds run create-nginx-package --no-progress
-          echo "path="$(ls *.zst) >> "$GITHUB_OUTPUT"
+          PACKAGE_NAME=$(cat zarf.yaml | ./uds zarf tools yq .metadata.name)
+          PACKAGE_VERSION=$(cat zarf.yaml | ./uds zarf tools yq .metadata.version)
+          echo "path=zarf-package-${PACKAGE_NAME}-${UDS_ARCH}-${PACKAGE_VERSION}.tar.zst" >> "$GITHUB_OUTPUT"
         shell: bash
 
       - name: run scan
