@@ -149,12 +149,11 @@
                 "(?m)charts:(.|\\n)*?(^\\s{4}[\\w:]+|\\n$|^\\s{2}-)",
                 // Match a chart entry. Test: https://regex101.com/r/ibpxYd/1
                 "(?m)name:(.|\\n)+?(^\\s{4}[\\w\\-:]+|\\n$|^\\s{2}-|^\\s{6}-)",
-                // Match the parts of a chart entry. Test: https://regex101.com/r/RKb9y3/2
-                "(?m)name: [\"']?(?<name>.+?)[\"']?$(.|\\n)*?version: [\"']?(?<currentValue>.+?)[\"']?$(.|\\n)*?url: [\"']?(?<url>(https|http|file):\\/\\/.+?)(?<git>\\.git)?[\"']?$"
+                // Match the parts of a chart entry. Test: https://regex101.com/r/Le1qff/2
+                "(?m)name: [\"']?(?<name>.+?)[\"']?$(.|\\n)*?version: [\"']?(?<currentValue>.+?)[\"']?$(.|\\n)*?url: [\"']?(?:(?<gitUrl>(https|http|file):\\/\\/.+?\\.git)|(?<registryUrl>(https|http|file):\\/\\/.+?))[\"']?$"
             ],
-            "datasourceTemplate": "{{#if git}}git-tags{{else}}helm{{/if}}",
-            "depNameTemplate": "{{#if git}}{{{url}}}{{else}}{{{name}}}{{/if}}",
-            "registryUrlTemplate": "{{{url}}}"
+            "datasourceTemplate": "{{#if gitUrl}}git-tags{{else}}helm{{/if}}",
+            "depNameTemplate": "{{#if gitUrl}}{{{gitUrl}}}{{else}}{{{name}}}{{/if}}",
         },
         // Matches individual helm charts in a `zarf.yaml`'s `charts:` section that specify `url` then `version`, selecting correct options for Git or Helm repos
         {
@@ -165,12 +164,11 @@
                 "(?m)charts:(.|\\n)*?(^\\s{4}[\\w:]+|\\n$|^\\s{2}-)",
                 // Match a chart entry. Test: https://regex101.com/r/ibpxYd/1
                 "(?m)name:(.|\\n)+?(^\\s{4}[\\w\\-:]+|\\n$|^\\s{2}-|^\\s{6}-)",
-                // Match the parts of a chart entry. Test: https://regex101.com/r/mQHDdJ/2
-                "(?m)name: [\"']?(?<name>.+?)[\"']?$(.|\\n)*?url: [\"']?(?<url>(https|http|file):\\/\\/.+?)(?<git>\\.git)?[\"']?$(.|\\n)*?version: [\"']?(?<currentValue>.+?)[\"']?$"
+                // Match the parts of a chart entry. Test: https://regex101.com/r/mQHDdJ/3
+                "(?m)name: [\"']?(?<name>.+?)[\"']?$(.|\\n)*?url: [\"']?(?:(?<gitUrl>(https|http|file):\\/\\/.+?\\.git)|(?<registryUrl>(https|http|file):\\/\\/.+?))[\"']?$(.|\\n)*?version: [\"']?(?<currentValue>.+?)[\"']?$"
             ],
-            "datasourceTemplate": "{{#if git}}git-tags{{else}}helm{{/if}}",
-            "depNameTemplate": "{{#if git}}{{{url}}}{{else}}{{{name}}}{{/if}}",
-            "registryUrlTemplate": "{{{url}}}"
+            "datasourceTemplate": "{{#if gitUrl}}git-tags{{else}}helm{{/if}}",
+            "depNameTemplate": "{{#if gitUrl}}{{{gitUrl}}}{{else}}{{{name}}}{{/if}}",
         },
         // Matches individual helm oci charts in a `zarf.yaml`'s `charts:` section that specify `version` then `url`
         {
