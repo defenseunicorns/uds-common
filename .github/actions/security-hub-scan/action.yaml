@@ -23,7 +23,6 @@ outputs:
 runs:
   using: composite
   steps:
-    # run setup to get uds to use zarf
     - name: Environment setup
       uses: ./.github/actions/setup
 
