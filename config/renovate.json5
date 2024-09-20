@@ -140,7 +140,7 @@
             "extractVersionTemplate": "{{#if extractVersion}}{{{extractVersion}}}{{else}}^(?<version>.*)${{/if}}",
             "datasourceTemplate": "docker"
         },
-        // Matches individual helm repo charts in a `zarf.yaml`'s `charts:` section that specify `version` then `url`
+        // Matches individual helm charts in a `zarf.yaml`'s `charts:` section that specify `version` then `url`
         {
             "fileMatch": [ "(^|/)zarf\\.ya?ml$" ],
             "matchStringsStrategy": "recursive",
@@ -149,12 +149,12 @@
                 "(?m)charts:(.|\\n)*?(^\\s{4}[\\w:]+|\\n$|^\\s{2}-)",
                 // Match a chart entry. Test: https://regex101.com/r/ibpxYd/1
                 "(?m)name:(.|\\n)+?(^\\s{4}[\\w\\-:]+|\\n$|^\\s{2}-|^\\s{6}-)",
-                // Match the parts of a chart entry. Test: https://regex101.com/r/tVVHYS/1
-                "(?m)name: [\"']?(?<depName>.+?)[\"']?$(.|\\n)*?version: [\"']?(?<currentValue>.+?)[\"']?$(.|\\n)*?url: [\"']?(?<registryUrl>(https|http|file):\\/\\/.+?)[\"']?$"
+                // Match the parts of a chart entry. Test: https://regex101.com/r/RKb9y3/1
+                "(?m)name: [\"']?(?<depName>.+?)[\"']?$(.|\\n)*?version: [\"']?(?<currentValue>.+?)[\"']?$(.|\\n)*?url: [\"']?(?<registryUrl>(https|http|file):\\/\\/.+?)(?<git>\\.git)?[\"']?$"
             ],
-            "datasourceTemplate": "helm"
+            "datasourceTemplate": "{{#if git}}git-tags{{else}}helm{{/if}}"
         },
-        // Matches individual helm repo charts in a `zarf.yaml`'s `charts:` section that specify `url` then `version`
+        // Matches individual helm charts in a `zarf.yaml`'s `charts:` section that specify `url` then `version`
         {
             "fileMatch": [ "(^|/)zarf.yaml$" ],
             "matchStringsStrategy": "recursive",
@@ -163,42 +163,10 @@
                 "(?m)charts:(.|\\n)*?(^\\s{4}[\\w:]+|\\n$|^\\s{2}-)",
                 // Match a chart entry. Test: https://regex101.com/r/ibpxYd/1
                 "(?m)name:(.|\\n)+?(^\\s{4}[\\w\\-:]+|\\n$|^\\s{2}-|^\\s{6}-)",
-                // Match the parts of a chart entry. Test: https://regex101.com/r/ehfBW6/1
-                "(?m)name: [\"']?(?<depName>.+?)[\"']?$(.|\\n)*?url: [\"']?(?<registryUrl>(https|http|file):\\/\\/.+?)[\"']?$(.|\\n)*?version: [\"']?(?<currentValue>.+?)[\"']?$"
+                // Match the parts of a chart entry. Test: https://regex101.com/r/mQHDdJ/1
+                "(?m)name: [\"']?(?<depName>.+?)[\"']?$(.|\\n)*?url: [\"']?(?<registryUrl>(https|http|file):\\/\\/.+?)(?<git>\\.git)?[\"']?$(.|\\n)*?version: [\"']?(?<currentValue>.+?)[\"']?$"
             ],
-            "datasourceTemplate": "helm"
-        },
-        // Matches individual helm git charts in a `zarf.yaml`'s `charts:` section that specify `version` then `url`
-        {
-            "fileMatch": [ "(^|/)zarf\\.ya?ml$" ],
-            "matchStringsStrategy": "recursive",
-            "matchStrings": [
-                // Match the chart section. Test: https://regex101.com/r/1DL0tI/3
-                "(?m)charts:(.|\\n)*?(^\\s{4}[\\w:]+|\\n$|^\\s{2}-)",
-                // Match a chart entry. Test: https://regex101.com/r/ibpxYd/1
-                "(?m)name:(.|\\n)+?(^\\s{4}[\\w\\-:]+|\\n$|^\\s{2}-|^\\s{6}-)",
-                // Match the parts of a chart entry. Test: https://regex101.com/r/PIIH1p/1
-                "(?m)name:(.|\\n)*?version: [\"']?(?<currentValue>.+?)[\"']?$(.|\\n)*?url: [\"']?(?<depName>.+?\\.git)[\"']?$"
-            ],
-            "datasourceTemplate": "git-tags",
-            // Match the version from the tag. Test: https://regex101.com/r/dzQZiE/1
-            "versioningTemplate": "regex:^v?(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)(-[\\w\\.]+\\.(?<build>\\d+))?"
-        },
-        // Matches individual helm git charts in a `zarf.yaml`'s `charts:` section that specify `url` then `version`
-        {
-            "fileMatch": [ "(^|/)zarf.yaml$" ],
-            "matchStringsStrategy": "recursive",
-            "matchStrings": [
-                // Match the chart section. Test: https://regex101.com/r/1DL0tI/3
-                "(?m)charts:(.|\\n)*?(^\\s{4}[\\w:]+|\\n$|^\\s{2}-)",
-                // Match a chart entry. Test: https://regex101.com/r/ibpxYd/1
-                "(?m)name:(.|\\n)+?(^\\s{4}[\\w\\-:]+|\\n$|^\\s{2}-|^\\s{6}-)",
-                // Match the parts of a chart entry. Test: https://regex101.com/r/m71Sn5/1
-                "(?m)name:(.|\\n)*?url: [\"']?(?<depName>.+?\\.git)[\"']?$(.|\\n)*?version: [\"']?(?<currentValue>.+?)[\"']?$"
-            ],
-            "datasourceTemplate": "git-tags",
-            // Match the version from the tag. Test: https://regex101.com/r/dzQZiE/1
-            "versioningTemplate": "regex:^v?(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)(-[\\w\\.]+\\.(?<build>\\d+))?"
+            "datasourceTemplate": "{{#if git}}git-tags{{else}}helm{{/if}}"
         },
         // Matches individual helm oci charts in a `zarf.yaml`'s `charts:` section that specify `version` then `url`
         {
