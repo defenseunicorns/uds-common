@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.13.1](https://github.com/defenseunicorns/uds-common/compare/v0.13.0...v0.13.1) (2024-09-23)
+
+
+### Bug Fixes
+
+* allow dependent bundle commands to be run on upgrade tests ([#241](https://github.com/defenseunicorns/uds-common/issues/241)) ([093def2](https://github.com/defenseunicorns/uds-common/commit/093def2f245709084c079aaf529a604d8ca5b6c2))
+
+
+### Miscellaneous
+
+* **deps:** update uds common support dependencies ([#237](https://github.com/defenseunicorns/uds-common/issues/237)) ([eac2f68](https://github.com/defenseunicorns/uds-common/commit/eac2f686deacb898a6383fcc73c861293db52b9c))
+* modify helm matches to handle git and helm ([#238](https://github.com/defenseunicorns/uds-common/issues/238)) ([803d9fe](https://github.com/defenseunicorns/uds-common/commit/803d9fed89bd890c1203c618a1e3fda1bd495cbd))
+
 ## [0.13.0](https://github.com/defenseunicorns/uds-common/compare/v0.12.0...v0.13.0) (2024-09-19)
 
 
