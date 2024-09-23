@@ -11,7 +11,7 @@ inputs:
   udsCliVersion:
     description: The uds-cli version to install
     # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
-    default: 0.15.0
+    default: 0.16.0
   chainguardIdentity:
     description: ID for Chainguard Identity to assume
 
