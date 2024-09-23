@@ -23,9 +23,6 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: Environment setup
-      uses: ./.github/actions/setup
-
     - name: run uds security-hub:scan
       id: scan
       run: |
