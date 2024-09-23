@@ -32,6 +32,10 @@ tasks:
         description: The architecture of the package to create
         default: ${UDS_ARCH}
 
+      dep_commands:
+        description: Additional commands to run inside the old repo to setup dependencies
+        default: ""
+
     actions:
       - task: utils:determine-repo
         with:
@@ -65,6 +69,9 @@ tasks:
             oci://${TARGET_REPO}/${PACKAGE_NAME}:${LATEST_VERSION} \
             --no-progress \
             -o ${{ .inputs.path }}
+
+          # Run any dependency commands (i.e. uds run dependencies:create)
+          sh -c "${{ .inputs.dep_commands }}"
 
           # Checks if the zarf package is registry1 and ARM
           if [ ${FLAVOR} != "registry1" ] || [ ${{ .inputs.architecture }} != "arm64" ]; then
