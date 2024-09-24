@@ -5,7 +5,7 @@
 This guide is intended for developers integrating applications with UDS (Unicorn Delivery Service). It provides an overview of the integration process, key considerations, and resources to ensure a smooth integration.
 
 Integrating a Package fundamentally means:
-1. Creating a repository `uds-package-<name>`
+1. Creating a repository `uds-package-<name>` from [uds-package-template](https://github.com/defenseunicorns/uds-package-template)
 2. Integrating the upstream helm chart as a zarf package `zarf.yaml` to build a declarative OCI artifact
 3. Adding a UDS package Custom Resource `uds-package.yaml` to integrate with UDS Core via Pepr
 4. Build a 'zero CVE' package by replacing images with a `*-unicorn` flavored image
@@ -30,7 +30,7 @@ Before beginning the integration process, familiarize yourself with the followin
 1. [UDS Capabilities Documentation](https://uds.defenseunicorns.com/capabilities/): Provides information about UDS, UDS CLI, UDS Core, and UDS Bundles.
 2. [Zarf Documentation](https://docs.zarf.dev): Zarf is a tool for declarative creation & distribution of software.
 3. [UDS Common Repository](https://github.com/defenseunicorns/uds-common): Contains information and best practices for UDS integration.
-4. [UDS Applications Tracker](https://coda.io/d/Product_dGmk3eNjmm8/Applications_sux6H#_luFRc): Lists many backlogged and completed applications for UDS integration.
+4. [UDS Applications Tracker](https://coda.io/d/Product_dGmk3eNjmm8/Applications_suCbOWqL#_lu8fEKSc): Lists many backlogged and completed applications for UDS integration.
 5. Briefly review [Pepr Documentation](https://docs.pepr.dev/): it may become useful when you begin integrating with UDS Core.
 
 ## Integration Checklist

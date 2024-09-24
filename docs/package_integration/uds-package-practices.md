@@ -24,7 +24,7 @@ _a Gold UDS-Package out of the box implements best-effort 0-cve images, configur
 Gold Packages:
 
 - **Must** Satisfy all the requirements of [Silver](#silver) packages
-- **Must** include OSCAL-component control mapping and responses for the application
+- **Must** include OSCAL-component control mapping and responses for the application. see [OSCAL Guidelines](oscal-guidelines.md)
 - **Must** minimize the scope and number of the exemptions to only what is absolutely required by the application
   - UDS Packages **may** make use of the [UDS `Exemption` custom resource](https://github.com/defenseunicorns/uds-core/blob/main/src/pepr/operator/README.md#example-uds-exemption-cr) for exempting any Pepr policies, but in doing so they **Must** document rationale for the exemptions
 - **Must** declaratively implement any available application hardening guidelines by default (Example: [GitLab Hardening guidelines](https://docs.gitlab.com/ee/security/hardening.html))
