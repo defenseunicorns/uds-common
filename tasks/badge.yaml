@@ -12,7 +12,7 @@ variables:
     default: "true"
   - name: PACKAGE_DIR
     description: Base directory where packages are located, relative to the root of the repository
-    default: "./"
+    default: ./
 
 tasks:
   - name: verify-badge
