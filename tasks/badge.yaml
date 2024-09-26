@@ -116,7 +116,6 @@ tasks:
             PACKAGE_FOUND=true
           else
             gh_catastrophic_error "  ❌ Failed to retrieve Package $UDS_PACKAGE_NAME in namespace $NAMESPACE"
-            gh_catastrophic_error "  Catastrophic Error Description: Package CR $UDS_PACKAGE_NAME not found in namespace $NAMESPACE"
             PACKAGE_FOUND=false
           fi
 
