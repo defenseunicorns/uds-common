@@ -31,31 +31,30 @@ jobs:
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
       - name: Clean Runner
-        uses: ./.github/actions/clean-runner
+        run: uds run actions:clean-gh-runner
+        shell: bash
 
       - name: Environment setup
-        uses: ./.github/actions/setup
-        with:
-          registry1Username: ${{ secrets.IRON_BANK_ROBOT_USERNAME }}
-          registry1Password: ${{ secrets.IRON_BANK_ROBOT_PASSWORD }}
-          ghToken: ${{ secrets.GITHUB_TOKEN }}
-          chainguardIdentity: ${{ secrets.CHAINGUARD_IDENTITY }}
+        run: |
+            uds run actions:setup-environment --set registry1Username="${{ secrets.IRON_BANK_ROBOT_USERNAME }}" \
+            --set registry1Password="${{ secrets.IRON_BANK_ROBOT_PASSWORD }}" \
+            --set ghToken="${{ secrets.GITHUB_TOKEN }}" \
+            --set chainguardIdentity="${{ secrets.CHAINGUARD_IDENTITY }}"
+        shell: bash
 
       - name: Test
-        uses: ./.github/actions/test-deploy
-        with:
-          flavor: ${{ inputs.flavor }}
-          type: ${{ inputs.type }}
+        run: uds run actions:save-logs --set FLAVOR="${{ inputs.flavor }}" --set TYPE="${{ inputs.type }}"
+        shell: bash
 
       - name: UDS Badge Verification
         uses: ./.github/actions/verify-badge
 
       - name: Debug Output
         if: ${{ always() }}
-        uses: ./.github/actions/debug-output
+        run: uds run actions:debug-output
+        shell: bash
 
       - name: Save logs
         if: ${{ always() }}
-        uses: ./.github/actions/save-logs
-        with:
-          suffix: ${{ inputs.type }}-${{ inputs.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}
+        run: uds run actions:save-logs --set SUFFIX="${{ inputs.type }}-${{ inputs.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}"
+        shell: bash
