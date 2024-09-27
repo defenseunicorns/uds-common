@@ -20,7 +20,7 @@ tasks:
           echo "::endgroup::"
           echo "::group::kubectl describe nodes"
           uds zarf tools kubectl describe nodes k3d-uds-server-0 || echo "failed" | tee /tmp/debug-k-describe-node.log
-          echo "::endgroup::"`
+          echo "::endgroup::"
 
 
   # https://github.com/defenseunicorns/uds-common/blob/82e63be82766a2e550a847af904b2d738c9d3478/.github/actions/clean-runner/action.yaml#L1
