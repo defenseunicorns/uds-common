@@ -95,6 +95,7 @@ tasks:
           - name: UDS_ARCH
   
       - description: Install UDS CLI
+        if: ${{ $CI != 'true' }}
         cmd: |
           Platform=$(uname -s)
           curl -o /usr/local/bin/uds -L \
