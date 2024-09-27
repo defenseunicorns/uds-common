@@ -163,4 +163,29 @@ tasks:
           echo "$(cat zarf.yaml | yq '.components[] | select(.only | has("flavor")) | .only.flavor' | paste -s -d, -)"
         setVariables:
           - name: UPGRADE_FLAVORS
-      
+
+  # https://github.com/defenseunicorns/uds-common/blob/5cadc44608d2457db696198bd1675202d4449e23/.github/actions/test-deploy/action.yaml#L1
+  - name: verify-badge
+    description: Perform verification to assist with UDS badge certification
+    inputs:
+      chartPath:
+        description: Relative path to the directory with the uds-config chart
+        default: chart/
+      groupName:
+        description: The name of the niche/group that the package fits into. E.g. package,swf,lfai
+        default: package
+      commonZarf:
+        description: Whether or not there is a common zarf.yaml file
+        default: "true"
+    actions:
+
+      - description: Setup Go environment
+        cmd: echo "TODO`:` Setup Go environment"
+      - description: Setup Helm
+        cmd: echo "TODO`:` Setup Helm"
+      - description: Test installing the package
+        cmd: |
+          uds run badge:verify-badge \
+            --set CHART_PATH="${{ inputs.chartPath }}" \
+            --set GROUP_NAME="${{ inputs.groupName }}" \
+            --set COMMON_ZARF="${{ inputs.commonZarf }}"
