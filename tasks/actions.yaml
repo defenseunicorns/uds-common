@@ -1,0 +1,129 @@
+variables:
+  - name: FLAVOR
+    default: upstream
+
+tasks:
+
+
+  # https://github.com/defenseunicorns/uds-common/blob/82e63be82766a2e550a847af904b2d738c9d3478/.github/actions/debug-output/action.yaml#L1
+  - name: debug-output
+    actions:
+      - description: Print basic debug info for a k8s cluster
+        cmd: |
+          echo "::group::kubectl get all"
+          uds zarf tools kubectl get all -A || echo "failed" | tee /tmp/debug-k-get-all.log
+          echo "::endgroup::"
+          echo "::group::kubectl get pv,pvc"
+          uds zarf tools kubectl get pv,pvc -A || echo "failed" | tee /tmp/debug-k-get-pv-pvc.log
+          echo "::endgroup::"
+          echo "::group::kubectl get package"
+          uds zarf tools kubectl get package -A || echo "failed" | tee /tmp/debug-k-get-package.log
+          echo "::endgroup::"
+          echo "::group::kubectl get events"
+          uds zarf tools kubectl get events -A --sort-by='.lastTimestamp' || echo "failed" | tee /tmp/debug-k-get-events.log
+          echo "::endgroup::"
+          echo "::group::kubectl describe nodes"
+          uds zarf tools kubectl describe nodes k3d-uds-server-0 || echo "failed" | tee /tmp/debug-k-describe-node.log
+          echo "::endgroup::"`
+
+
+  # https://github.com/defenseunicorns/uds-common/blob/82e63be82766a2e550a847af904b2d738c9d3478/.github/actions/clean-runner/action.yaml#L1
+  - name: clean-gh-runner
+    actions:
+      - description: Clean up space on the GitHub runner
+        cmd: |
+            df -h
+            sudo rm -rf /usr/share/dotnet
+            sudo rm -rf /usr/local/lib/android
+            sudo rm -rf /opt/ghc
+            sudo rm -rf /opt/hostedtoolcache/CodeQL
+            sudo docker image prune --all --force
+            df -h
+
+  # https://github.com/defenseunicorns/uds-common/blob/82e63be82766a2e550a847af904b2d738c9d3478/.github/actions/save-logs/action.yaml#L1
+  - name: save-logs
+    inputs:
+      suffix:
+        description: Suffix to append to the debug log
+        default: ""
+        required: false
+    actions:
+      - description: Pull logs from containerd
+        cmd: |
+          CONTAINER_NAME="k3d-uds-server-0"
+          if docker ps | grep -q "$CONTAINER_NAME"; then
+            echo "Container $CONTAINER_NAME is running. Proceeding with log copy..."
+            docker cp ${CONTAINER_NAME}:/var/log/ /tmp/uds-containerd-logs
+          else
+            echo "Container $CONTAINER_NAME is not running. Skipping log copy."
+          fi
+      - description: Dump Node Logs
+        cmd: |
+          docker ps --filter "name=k3d" --format "{{.Names}}" | while read line; do
+            docker logs "$line" 2> /tmp/$line.log
+          done
+      - description: Fix log permissions
+        cmd: |
+          sudo chown $USER /tmp/zarf-*.log || echo ""
+          sudo chown $USER /tmp/uds-*.log || echo ""
+      # TODO in GH Workflow and CI Component: Upload logs to the artifact store
+      #https://github.com/defenseunicorns/uds-common/blob/82e63be82766a2e550a847af904b2d738c9d3478/.github/actions/save-logs/action.yaml#L37
+
+  - name: setup-environment
+    description: UDS Environment Setup
+    inputs:
+      registry1Username:
+        description: Registry1 Username
+      registry1Password:
+        description: Registry1 Password
+      ghToken:
+        description: GitHub Token
+      udsCliVersion:
+        description: The uds-cli version to install
+        # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
+        default: 0.16.0
+      chainguardIdentity:
+        description: ID for Chainguard Identity to assume
+    actions:
+
+      - description: Install k3d
+        cmd: |
+          # renovate: datasource=github-tags depName=k3d-io/k3d versioning=semver
+          curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | TAG=v5.7.4 bash
+
+      - description: Set UDS CLI Arch
+        cmd: |
+          ARCH=$(uname -m) && [ "$ARCH" = "x86_64" ] && ARCH='amd64'; [ "$ARCH" = "aarch64" ] && ARCH='arm64'; echo $ARCH
+        setVariables:
+          - name: UDS_ARCH
+  
+      - description: Install UDS CLI
+        cmd: |
+          Platform=$(uname -s)
+          curl -o /usr/local/bin/uds -L \
+          https://github.com/defenseunicorns/uds-cli/releases/download/v${{ inputs.udsCliVersion }}/uds-cli_v${{ inputs.udsCliVersion }}_${Platform}_${{ variables.UDS_ARCH} \
+          && chmod +x /usr/local/bin/uds
+
+      - description: Install Lula
+        cmd: |
+          # renovate: datasource=github-tags depName=defenseunicorns/lula versioning=semver-coerced
+          LulaVersion=0.7.0
+          Platform=$(uname -s)
+          curl -o /usr/local/bin/uds -L \
+          https://github.com/defenseunicorns/lula/releases/download/v${LulaVersion}/uds-cli_v${LulaVersion}_${Platform}_${{ variables.UDS_ARCH }} \
+          && chmod +x /usr/local/bin/lula
+
+      - description: Iron Bank Login
+        if: ${{ inputs.registry1Username != '' }}
+        cmd: |
+          echo "${{ inputs.registry1Password }}" | uds zarf tools registry login -u "${{ inputs.registry1Username }}" --password-stdin registry1.dso.mil
+
+      - description: Chainguard Login
+        if: ${{ inputs.chainguardIdentity != '' }}
+        cmd: | 
+          # TODO Add chainctl install previous to this and then login to chainguard via process internal to their gh action
+
+      - description: GHCR Login
+        if: ${{ inputs.ghToken != '' }}
+        cmd: | 
+          echo "${{ inputs.ghToken }}" | uds zarf tools registry login -u "dummy" --password-stdin ghcr.io
