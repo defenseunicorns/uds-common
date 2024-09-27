@@ -16,7 +16,7 @@ Gold packages will include a baseline set of [NIST 800-53 controls](https://csrc
 
 This command will generate an `oscal-component.yaml` file for a package that implements these controls. Once generated you can add specific responses to the controls.
 ```
-lula generate component -c https://raw.githubusercontent.com/GSA/fedramp-automation/refs/tags/fedramp-2.0.0-oscal-1.0.4/dist/content/rev5/baselines/json/FedRAMP_rev5_MODERATE-baseline-resolved-profile_catalog.json --framework il4 --requirements ac-6.9,au-2,au-3,au-3.1,au-8,au-12,sc-13 --remarks assessment-objective --component 'app-name'
+lula generate component -c https://raw.githubusercontent.com/GSA/fedramp-automation/refs/tags/fedramp-2.0.0-oscal-1.0.4/dist/content/rev5/baselines/json/FedRAMP_rev5_MODERATE-baseline-resolved-profile_catalog.json --framework il4 --requirements ac-6.9,au-2,au-3,au-3.1,au-8,au-12,sc-13 --remarks assessment-objective -o oscal-component.yaml --component 'app-name'
 ```
 
 > [!TIP]
