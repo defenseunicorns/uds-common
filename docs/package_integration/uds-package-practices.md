@@ -3,7 +3,7 @@
 This document describes the standards for [<img alt="Made for UDS" src="../made-for-uds.svg" height="20px"/>](https://github.com/defenseunicorns/uds-core) badging. It is not a comprehensive guide to creating UDS Packages, a more detailed guide can be found [here](guide.md).
 
 > [!NOTE]
-> This document assumes knowledge of the UDS ecosystem adn the UDS Package Custom Resource. If you are unfamiliar with these concepts, please first refer to the [guide](guide.md) providing more detailed information.
+> This document assumes knowledge of the UDS ecosystem and the UDS Package Custom Resource. If you are unfamiliar with these concepts, please first refer to the [guide](guide.md) providing more detailed information.
 
 This document outlines services and features of [UDS Core](https://github.com/defenseunicorns/uds-core) UDS package's **must** integrate with, using the [UDS `Package` custom resource](https://github.com/defenseunicorns/uds-core/blob/main/src/pepr/operator/README.md#example-uds-package-cr).
 
