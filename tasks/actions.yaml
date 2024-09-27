@@ -1,7 +1,3 @@
-variables:
-  - name: FLAVOR
-    default: upstream
-
 tasks:
 
 
@@ -69,6 +65,7 @@ tasks:
       # TODO in GH Workflow and CI Component: Upload logs to the artifact store
       #https://github.com/defenseunicorns/uds-common/blob/82e63be82766a2e550a847af904b2d738c9d3478/.github/actions/save-logs/action.yaml#L37
 
+  # https://github.com/defenseunicorns/uds-common/blob/5cadc44608d2457db696198bd1675202d4449e23/.github/actions/setup/action.yaml#L1
   - name: setup-environment
     description: UDS Environment Setup
     inputs:
@@ -127,3 +124,43 @@ tasks:
         if: ${{ inputs.ghToken != '' }}
         cmd: | 
           echo "${{ inputs.ghToken }}" | uds zarf tools registry login -u "dummy" --password-stdin ghcr.io
+
+  # https://github.com/defenseunicorns/uds-common/blob/5cadc44608d2457db696198bd1675202d4449e23/.github/actions/test-deploy/action.yaml#L1
+  - name: test-deploy
+    description: Test the UDS package
+    inputs:
+      flavor:
+        description: Flavor of the package to test
+        required: true
+      type:
+        description: Whether to run upgrade tests
+        default: install
+      options:
+        description: Additional CLI options for test workflows
+        default: ""
+    actions:
+
+      # === INSTALL TESTING ===
+
+      - description: Test installing the package
+        if: ${{ inputs.type == 'install' }}
+        cmd: uds run test-package --set FLAVOR=${{ inputs.flavor }} ${{ inputs.options }} --no-progress
+
+      # === UPGRADE TESTING ===
+
+      - description: Test upgrading the package
+        if: ${{ inputs.type == 'upgrade' }}
+        cmd: uds run test-upgrade --set FLAVOR=${{ inputs.flavor }} ${{ inputs.options }} --no-progress
+
+  # https://github.com/defenseunicorns/uds-common/blob/5cadc44608d2457db696198bd1675202d4449e23/.github/actions/test-flavor/action.yaml#L1
+  - name: test-flavor
+    description: Check the flavor for the UDS package
+    actions:
+      - description: Test latest tag deployment for flavor
+        cmd: |
+          git clone --depth 1 --branch $(git describe --tags `git rev-list --tags --max-count=1`) $(git remote get-url origin) upgrade-test
+          cd upgrade-test
+          echo "$(cat zarf.yaml | yq '.components[] | select(.only | has("flavor")) | .only.flavor' | paste -s -d, -)"
+        setVariables:
+          - name: UPGRADE_FLAVORS
+      
