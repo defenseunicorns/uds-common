@@ -7,7 +7,7 @@ variables:
 
 tasks:
   - name: package
-    description: Publish package for the supplied architecture
+    description: Publish the UDS package for the supplied architecture
     inputs:
       path:
         description: Path to the zarf package being published
@@ -37,7 +37,7 @@ tasks:
           ./uds zarf package publish ${{ .inputs.path }}/zarf-package-${{ .inputs.name }}-${{ .inputs.architecture }}-${{ .inputs.version }}.tar.zst oci://${TARGET_REPO}
 
   - name: test-bundle
-    description: Publish bundle for the supplied architecture
+    description: Publish the test bundle for the supplied architecture
     inputs:
       path:
         description: Path to the UDS bundle being published

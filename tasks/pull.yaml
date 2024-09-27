@@ -7,6 +7,7 @@ variables:
 
 tasks:
   - name: latest-package-release
+    description: Pull the last release of the UDS Package (useful for upgrade testing)
     inputs:
       path:
         description: Path relative to the repositories root where the package needs to go
@@ -40,6 +41,7 @@ tasks:
           fi
 
   - name: latest-bundle-release
+    description: Pull the last release of the UDS Bundle (useful for upgrade testing)
     inputs:
       path:
         description: Path relative to the repositories root where the bundle things happen

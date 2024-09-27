@@ -4,6 +4,7 @@ variables:
 
 tasks:
   - name: determine-repo
+    description: Determines the OCI repository that this flavor should go into (i.e. 'unicorn' should be private)
     inputs:
       base_repo:
         description: The base repository to publish into

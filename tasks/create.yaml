@@ -4,7 +4,7 @@ variables:
 
 tasks:
   - name: package
-    description: Create the UDS Zarf Package
+    description: Create the UDS Zarf Package in the repository
     inputs:
       options:
         description: For setting create time variables and flags
@@ -23,7 +23,7 @@ tasks:
           fi
 
   - name: test-bundle
-    description: Create the test UDS Bundle
+    description: Create the test bundle (bundling package + dependencies for testing)
     inputs:
       options:
         description: For setting create time variables and flags

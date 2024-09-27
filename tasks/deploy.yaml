@@ -1,5 +1,6 @@
 tasks:
   - name: package
+    description: Deploy the created UDS Zarf Package
     inputs:
       options:
         description: For setting deploy time variables and flags
@@ -19,6 +20,7 @@ tasks:
         cmd: ./uds zarf package deploy ${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${UDS_ARCH}-${PACKAGE_VERSION}.tar.zst --confirm --no-progress ${{ .inputs.options }}
 
   - name: test-bundle
+    description: Deploy the created test bundle (deploying package + dependencies for testing)
     inputs:
       path:
         description: Path relative to the repositories root where the uds-bundle.yaml and .tar.zst lives

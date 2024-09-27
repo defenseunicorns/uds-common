@@ -11,6 +11,7 @@ variables:
 
 tasks:
   - name: verify-badge
+    description: Verifies that a UDS Package implements UDS Package Practices flagging things that are out of compliance
     actions:
       - description: Verify that the package meets uds badging standards
         shell:

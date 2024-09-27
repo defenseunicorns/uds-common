@@ -1,5 +1,6 @@
 tasks:
   - name: test-bundle
+    description: Remove the deployed test bundle
     inputs:
       path:
         description: Path relative to the repositories root where the uds-bundle.yaml and .tar.zst lives
