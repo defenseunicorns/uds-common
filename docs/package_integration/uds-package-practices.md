@@ -1,6 +1,6 @@
 # UDS Package Practices
 
-This document describes the standards for [<img alt="Made for UDS" src="../made-for-uds.svg" height="20px"/>](https://github.com/defenseunicorns/uds-core) badging. It is not a comprehensive guide to creating UDS Packages, a more detailed guide can be found [here](guide.md).
+This document describes the standards for [<img alt="Made for UDS" src="../made-for-uds.svg" height="20px"/>](https://github.com/defenseunicorns/uds-core) badging. It is not a comprehensive guide to creating UDS Packages; more detail's can be found in the [guide](guide.md).
 
 > [!NOTE]
 > This document assumes knowledge of the UDS ecosystem and the UDS Package Custom Resource. If you are unfamiliar with these concepts, please first refer to the [guide](guide.md) providing more detailed information.
@@ -12,7 +12,7 @@ Made for UDS packages can be one of three tiers:
 [<img alt="Gold" src="../made-for-uds-gold.svg" height="20px"/>](https://github.com/defenseunicorns/uds-core), [<img alt="Silver" src="../made-for-uds-silver.svg" height="20px"/>](https://github.com/defenseunicorns/uds-core), or [<img alt="bronze" src="../made-for-uds-bronze.svg" height="20px"/>](https://github.com/defenseunicorns/uds-core).
 
 > [!IMPORTANT]
-> Packages should aim for Gold by default and only _SETTLE_ for lesser tiers of Bronze and Silver.
+> Packages should aim for Gold by default and only _SETTLE_ for lesser tiers of Bronze and Silver by [documented and approved exception](#documenting-exceptions).
 
 > [!TIP]
 > This document follows [RFC-2119](https://datatracker.ietf.org/doc/html/rfc2119) for definitions of requirement levels (e.g. **must**, **should** and **may**)
@@ -29,13 +29,6 @@ Gold Packages:
   - UDS Packages **may** make use of the [UDS `Exemption` custom resource](https://github.com/defenseunicorns/uds-core/blob/main/src/pepr/operator/README.md#example-uds-exemption-cr) for exempting any Pepr policies, but in doing so they **Must** document rationale for the exemptions
 - **Must** declaratively implement any available application hardening guidelines by default (Example: [GitLab Hardening guidelines](https://docs.gitlab.com/ee/security/hardening.html))
 - **Must** release a unicorn flavor package, providing a minimal CVE baseline
-- **Should** avoid workarounds with Istio such as disabling strict mTLS peer authentication.
-- **Should** minimize network policies to specific selectors needed for Ingress/Egress traffic.
-- **Should** consider security options during implementation to provide the most secure default possible (i.e. SAML w/SCIM vs OIDC).
-- **Should** name the client `<App> Login` (i.e. `Mattermost Login`) to provide login UX consistency.
-- **Should** clearly mark the client id with the group and app name `uds-<group>-<application>` (i.e. `uds-swf-mattermost`) to provide consistency in the Keycloak UI.
-- **Should** limit the use of Zarf variable templates and prioritize configuring packages via Helm value overrides.
-  > This ensures that the package is configured the same way that the bundle would be and avoids any side effect issues of Zarf's `###` templating.
 
 ## Silver
 
@@ -53,6 +46,13 @@ _a Silver UDS-Package that integrates with the main features of the UDS Operator
 - **May** template network policy keys to provide flexibility for delivery customers to configure.
 - **May** end any generated secrets with `-sso` to easily locate them when querying the cluster.
 - **May** template Keycloak fields to provide flexibility for delivery customers to configure.
+- **Should** avoid workarounds with Istio such as disabling strict mTLS peer authentication.
+- **Should** minimize network policies to specific selectors needed for Ingress/Egress traffic.
+- **Should** consider security options during implementation to provide the most secure default possible (i.e. SAML w/SCIM vs OIDC).
+- **Should** name the client `<App> Login` (i.e. `Mattermost Login`) to provide login UX consistency.
+- **Should** clearly mark the client id with the group and app name `uds-<group>-<application>` (i.e. `uds-swf-mattermost`) to provide consistency in the Keycloak UI.
+- **Should** limit the use of Zarf variable templates and prioritize configuring packages via Helm value overrides.
+  > This ensures that the package is configured the same way that the bundle would be and avoids any side effect issues of Zarf's `###` templating.
 
 ## Bronze
 
@@ -111,3 +111,16 @@ In practice, this results in the following for the second release of a package f
 ```
 17.2.1-uds.1
 ```
+
+## Documenting Exceptions
+
+If you are unable to meet a requirement or best practice, document the justification in your package repository `docs/package_exceptions.md`
+
+Some examples of valid justifications would be:
+- ✅ The last step of deployment requires a click-ops interaction and cannot be automated through IaC
+- ✅ Upstream application does not expose metrics endpoint to integrate
+
+Some examples of invalid justifications would be:
+- ❌ I couldn’t get the Istio integration working
+- ❌ There is a bug in uds-common verify badge workflow
+- ❌ Waiting for help on oscal-component mapping
