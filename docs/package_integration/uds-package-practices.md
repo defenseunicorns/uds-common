@@ -5,7 +5,7 @@ This document describes the standards for [<img alt="Made for UDS" src="../made-
 > [!NOTE]
 > This document assumes knowledge of the UDS ecosystem and the UDS Package Custom Resource. If you are unfamiliar with these concepts, please first refer to the [guide](guide.md) providing more detailed information.
 
-This document outlines services and features of [UDS Core](https://github.com/defenseunicorns/uds-core) UDS package's **must** integrate with, using the [UDS `Package` custom resource](https://github.com/defenseunicorns/uds-core/blob/main/src/pepr/operator/README.md#example-uds-package-cr).
+This document outlines services and features of [UDS Core](https://github.com/defenseunicorns/uds-core) UDS Packages **must** integrate with, using the [UDS `Package` custom resource](https://github.com/defenseunicorns/uds-core/blob/main/src/pepr/operator/README.md#example-uds-package-cr).
 
 Made for UDS packages can be one of three tiers:
 
