@@ -1,4 +1,4 @@
-# Oscal
+# OSCAL: the Open Security Controls Assessment Language
 
 
 [OSCAL](https://pages.nist.gov/OSCAL/) is a set of standards for describing security and privacy controls for information systems. It is developed by the National Institute of Standards and Technology (NIST) and is intended to be used by organizations to automate the exchange of security and privacy control information.
