@@ -91,7 +91,9 @@ tasks:
       - description: Set UDS CLI Arch
         cmd: |
           ARCH=$(uname -m) && [ "$ARCH" = "x86_64" ] && ARCH='amd64'; [ "$ARCH" = "aarch64" ] && ARCH='arm64'; echo $ARCH
-        shell: bash
+        shell:
+          linux: bash
+          darwin: bash
         setVariables:
           - name: UDS_ARCH
   
