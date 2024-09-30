@@ -1,18 +1,17 @@
 # UDS Package Practices
 
-This document describes the standards for [<img alt="Made for UDS" src="../made-for-uds.svg" height="20px"/>](https://github.com/defenseunicorns/uds-core) badging. It is not a comprehensive guide to creating UDS Packages; more details can be found in the [package integration guide](guide.md).
+This document describes the standards for [<img alt="Made for UDS" src="../made-for-uds.svg" height="20px"/>](https://github.com/defenseunicorns/uds-core) badging. It is not a comprehensive guide to creating UDS Packages and assumes familiarity with the UDS ecosystem and UDS Package Custom Resource. If you are unfamiliar with these concepts, please first refer to the [package integration guide](guide.md) providing more detailed information.
 
-> [!NOTE]
-> This document assumes knowledge of the UDS ecosystem and the UDS Package Custom Resource. If you are unfamiliar with these concepts, please first refer to the [package integration guide](guide.md) providing more detailed information.
-
-This document outlines services and features of [UDS Core](https://github.com/defenseunicorns/uds-core) UDS Packages **must** integrate with, using the [UDS `Package` custom resource](https://github.com/defenseunicorns/uds-core/blob/main/src/pepr/operator/README.md#example-uds-package-cr).
-
-Made for UDS packages can be one of three tiers:
+Made for UDS Packages integrate with services and features of [UDS Core](https://github.com/defenseunicorns/uds-core), through the [UDS `Package` custom resource](https://github.com/defenseunicorns/uds-core/blob/main/src/pepr/operator/README.md#example-uds-package-cr). These packages can be one of three tiers:
 
 [<img alt="Gold" src="../made-for-uds-gold.svg" height="20px"/>](https://github.com/defenseunicorns/uds-core), [<img alt="Silver" src="../made-for-uds-silver.svg" height="20px"/>](https://github.com/defenseunicorns/uds-core), or [<img alt="bronze" src="../made-for-uds-bronze.svg" height="20px"/>](https://github.com/defenseunicorns/uds-core).
 
 > [!IMPORTANT]
-> Packages should aim for Gold by default and only _SETTLE_ for lesser tiers of Bronze and Silver by [documented and approved exception](#documenting-exceptions).
+> Packages should aim for Gold by default and only _SETTLE_ for lesser tiers of Bronze and Silver.
+
+> [!TIP]
+> As a package creator navigates the badging levels, they may encounter scenarios that can't be resolved without changes to the upstream application. It is recommended to document these scenarios to alleviate the challenge of maintaining the package. It will not change the badging level.
+
 
 > [!TIP]
 > This document follows [RFC-2119](https://datatracker.ietf.org/doc/html/rfc2119) for definitions of requirement levels (e.g. **must**, **should** and **may**)
@@ -37,15 +36,12 @@ _a Silver UDS Package integrates with the main features of the UDS Operator, is 
 - **Must** satisfy all the requirements of [Bronze](#bronze) Packages
 - **Must** define network policies under the `allow` key as required in the [UDS Package Custom Resource](https://github.com/defenseunicorns/uds-core/blob/main/docs/configuration/uds-operator.md)
 - **Must** (except if the application provides no end user login) use and create a Keycloak client through the `sso` key. [UDS Package Custom Resource](https://github.com/defenseunicorns/uds-core/blob/main/docs/configuration/uds-operator.md)
-- **Must** implement monitors for each application metrics endpoint using it's built-in chart monitors, `monitor` key, or manual monitors in the config chart.
+- **Must** (except if the application provides no application metrics) implement monitors for each application metrics endpoint using it's built-in chart monitors, `monitor` key, or manual monitors in the config chart.
 - **Must** integrate declaratively (i.e. no clickops) with the UDS Operator
 - **Should** expose all configuration (`uds.dev` CRs, additional `Secrets`/`ConfigMaps`, etc) through a Helm chart (ideally in a `chart` or `charts` directory).
   > This allows UDS bundles to override configuration with Helm overrides and enables downstream teams to fully control their bundle configurations.
 - **Should** implement or allow for multiple flavors (ideally with common definitions in a `common` directory).
   > This allows for different images or configurations to be delivered consistently to customers.
-- **May** template network policy keys to provide flexibility for delivery customers to configure.
-- **May** end any generated Keycloak client secrets with `-sso` to easily locate them when querying the cluster.
-- **May** template Keycloak fields to provide flexibility for delivery customers to configure.
 - **Should** avoid workarounds with Istio such as disabling strict mTLS peer authentication.
 - **Should** minimize network policies to specific selectors needed for Ingress/Egress traffic.
 - **Should** consider security options during implementation to provide the most secure default possible (i.e. SAML w/SCIM vs OIDC).
@@ -53,6 +49,9 @@ _a Silver UDS Package integrates with the main features of the UDS Operator, is 
 - **Should** clearly mark the Keycloak client id with the group and app name `uds-<group>-<application>` (i.e. `uds-swf-mattermost`) to provide consistency in the Keycloak UI.
 - **Should** limit the use of Zarf variable templates and prioritize configuring packages via Helm value overrides.
   > This ensures that the package is configured the same way that the bundle would be and avoids any side effect issues of Zarf's `###` templating.
+- **May** template network policy keys to provide flexibility for delivery customers to configure.
+- **May** end any generated Keycloak client secrets with `-sso` to easily locate them when querying the cluster.
+- **May** template Keycloak fields to provide flexibility for delivery customers to configure.
 
 ## Bronze
 
@@ -65,7 +64,6 @@ Bronze packages:
 - **Must** define any external interfaces under the `expose` key in the [UDS Package Custom Resource](https://github.com/defenseunicorns/uds-core/blob/main/docs/configuration/uds-operator.md)
 - **Must** deploy and operate successfully with Istio injection enabled in the namespace.
 - **Must** implement Journey testing, covering the basic user flows and features of the application (see [Testing Guidelines](./testing-guidelines.md))
-  > This can by something like Playwright / [Cypress](https://github.com/defenseunicorns/uds-identity-config/tree/main/src/test/cypress) tests for services with a Web UI or something like [Jest](https://github.com/defenseunicorns/uds-package-gitlab-runner/tree/main/test) tests for headless services.
 - **Must** implement Upgrade Testing to ensure that the current development package works when deployed over the previously released one. (see [Testing Guidelines](./testing-guidelines.md))
 - **Must** be capable of operating within an internet-disconnected (air-gapped) environment
 - **Must** be actively maintained by the package maintainers identified in CODEOWNERS [see #CODEOWNERS section for more information](#codeowners)
@@ -74,8 +72,9 @@ Bronze packages:
   > This allows users of the package to learn more about exposed configuration - it is recommended to make the entrypoint for configuration `configuration.md`.
 - **Must** have a dependency management bot (such as renovate) configured to open PRs to update the core package and support dependencies.
 - **Must** release its package to the `ghcr.io/defenseunicorns/packages/<group>` namespace as the application's name (i.e. `ghcr.io/defenseunicorns/packages/uds/mattermost`).
-- **Must** not make the assumption that the `expose` interfaces are accessible to the bastion or pipeline deploying the package (i.e. `*.uds.dev`). If web requests need to be made they should be done through a `Job` or `./uds zarf tools kubectl exec` as appropriate.
-- **Should** lint their configurations with appropriate tooling such as [`yamllint`](https://github.com/adrienverge/yamllint) and [`zarf dev lint`](https://docs.zarf.dev/commands/zarf_dev_lint/).
+- **Must** not make the assumption that the `expose` interfaces are accessible to the bastion or pipeline deploying the package (i.e. `*.uds.dev`).
+  > If web requests need to be made they should be done through a `Job` or `./uds zarf tools kubectl exec` as appropriate.
+- **Should** lint their configurations with appropriate tooling, such as [`yamllint`](https://github.com/adrienverge/yamllint) and [`zarf dev lint`](https://docs.zarf.dev/commands/zarf_dev_lint/).
 
 ## Badging
 
@@ -111,19 +110,6 @@ In practice, this results in the following for the second release of a package f
 ```
 17.2.1-uds.1
 ```
-
-## Documenting Exceptions
-
-If you are unable to meet a requirement or best practice, document the justification in your package repository `docs/package_exceptions.md`
-
-Some examples of valid justifications would be:
-- ✅ The last step of SSO configuration requires a click-ops interaction and cannot be automated declaratively
-- ✅ Upstream application does not expose metrics endpoint to integrate
-
-Some examples of invalid justifications would be:
-- ❌ I couldn’t get the Istio integration working
-- ❌ There is a bug in uds-common verify badge workflow
-- ❌ Waiting for help on oscal-component mapping
 
 ## CODEOWNERS
 
