@@ -68,7 +68,7 @@ Bronze packages:
   > This can by something like Playwright / [Cypress](https://github.com/defenseunicorns/uds-identity-config/tree/main/src/test/cypress) tests for services with a Web UI or something like [Jest](https://github.com/defenseunicorns/uds-package-gitlab-runner/tree/main/test) tests for headless services.
 - **Must** implement Upgrade Testing to ensure that the current development package works when deployed over the previously released one. (see [Testing Guidelines](./testing-guidelines.md))
 - **Must** be capable of operating within an internet-disconnected (air-gapped) environment
-- **Must** be actively maintained by the package maintainers identified in CODEOWNERS
+- **Must** be actively maintained by the package maintainers identified in CODEOWNERS [see #CODEOWNERS section for more information](#codeowners)
 - **Must** be versioned using the UDS Package [Versioning scheme](#versioning)
 - **Must** contain documentation under a `docs` folder at the root that describes how to configure the package and outlines package dependencies.
   > This allows users of the package to learn more about exposed configuration - it is recommended to make the entrypoint for configuration `configuration.md`.
@@ -124,3 +124,18 @@ Some examples of invalid justifications would be:
 - ❌ I couldn’t get the Istio integration working
 - ❌ There is a bug in uds-common verify badge workflow
 - ❌ Waiting for help on oscal-component mapping
+
+## CODEOWNERS
+
+The CODEOWNERS file should address two key concerns:
+1. The package is guaranteed to be maintained by a resourced team
+2. During creation, the package can be built with speed - without waiting for the 'maintenance' team
+
+Template CODEOWNERS file:
+```
+/* @defenseunicorns/uds-package-maintainers
+# /* @name-of-creator/s #optional during package creation to enable velocity
+# /* @name-of-established-known-team #optional addition to "uds-package-maintainers"
+
+/CODEOWNERS @defenseunicorns/uds-package-maintainers
+```
