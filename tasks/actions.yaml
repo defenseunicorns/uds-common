@@ -102,7 +102,7 @@ tasks:
         cmd: |
           Platform=$(uname -s)
           curl -o /usr/local/bin/uds -L \
-          https://github.com/defenseunicorns/uds-cli/releases/download/v${{ inputs.udsCliVersion }}/uds-cli_v${{ inputs.udsCliVersion }}_${Platform}_${{ variables.UDS_ARCH} \
+          https://github.com/defenseunicorns/uds-cli/releases/download/v${{ inputs.udsCliVersion }}/uds-cli_v${{ inputs.udsCliVersion }}_${Platform}_${{ variables.UDS_ARCH }} \
           && chmod +x /usr/local/bin/uds
 
       - description: Install Lula
