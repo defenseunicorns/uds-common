@@ -20,7 +20,7 @@ variables:
   - name: OPTIONS
     default: ""
   - name: GO_VERSION
-    default: "1.23.1"
+    default: 1.23.1
 
 tasks:
   - name: debug-output
