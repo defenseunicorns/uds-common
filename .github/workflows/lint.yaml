@@ -24,7 +24,7 @@ jobs:
       udsCliVersion: ${{ steps.set-uds-version.outputs.udsCliVersion }}
     steps:
       - name: Set uds version based on
-        id: set-uds-version 
+        id: set-uds-version
         run: |
             # If the input is not defined (i.e., on push), use the default value
             input="${{ inputs.udsCliVersion || env.udsCliVersion }}"

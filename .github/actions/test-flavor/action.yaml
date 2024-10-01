@@ -22,7 +22,7 @@ runs:
       run: |
         # Check if any tag exists
         TAG=$(git describe --tags $(git rev-list --tags --max-count=1) 2>/dev/null || echo "")
-        
+
         if [ -z "$TAG" ]; then
           echo "No Git tags found. Skipping step."
           exit 0
