@@ -150,7 +150,7 @@ tasks:
         cmd: |
           PLATFORM=$(uname -s | tr '[:upper:]' '[:lower:]')
           curl  -OL "https://go.dev/dl/go${{ .variables.GO_VERSION }}.${PLATFORM}-${{ .variables.ARCH }}.tar.gz" && \
-          tar -C /usr/local -xzf "go${{ .variables.GO_VERSION }}.${PLATFORM}-${{ .variables.ARCH }}.tar.gz"
+          sudo tar -C /usr/local -xzf "go${{ .variables.GO_VERSION }}.${PLATFORM}-${{ .variables.ARCH }}.tar.gz"
           echo 'export PATH="$PATH:/usr/local/go/bin"' >> ~/.bashrc && source ~/.bashrc
 
       - description: Setup Helm
