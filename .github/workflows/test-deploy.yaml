@@ -73,5 +73,18 @@ jobs:
 
       - name: Save logs
         if: ${{ always() }}
-        run: uds run actions:save-logs --set SUFFIX="${{ inputs.type }}-${{ inputs.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}"
+        run: uds run actions:save-logs
         shell: bash
+
+      - uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4.4.0
+        if: ${{ always() }}
+        with:
+          name: debug-log${{ inputs.type }}-${{ inputs.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            /tmp/zarf-*.log
+            /tmp/uds-*.log
+            /tmp/maru-*.log
+            /tmp/debug-*.log
+            /tmp/uds-containerd-logs
+            /tmp/k3d-uds-*.log
+            /tmp/oscal-assessment-results.yaml

@@ -20,10 +20,8 @@ variables:
     default: ""
   - name: OPTIONS
     default: ""
-  - name: SUFFIX
 
 tasks:
-
 
   # https://github.com/defenseunicorns/uds-common/blob/82e63be82766a2e550a847af904b2d738c9d3478/.github/actions/debug-output/action.yaml#L1
   - name: debug-output
@@ -62,11 +60,6 @@ tasks:
 
   # https://github.com/defenseunicorns/uds-common/blob/82e63be82766a2e550a847af904b2d738c9d3478/.github/actions/save-logs/action.yaml#L1
   - name: save-logs
-    # inputs:
-      # suffix:
-      #   description: Suffix to append to the debug log
-      #   default: ""
-      #   required: false
     actions:
       - description: Pull logs from containerd
         cmd: |
@@ -86,8 +79,6 @@ tasks:
         cmd: |
           sudo chown $USER /tmp/zarf-*.log || echo ""
           sudo chown $USER /tmp/uds-*.log || echo ""
-      # TODO in GH Workflow and CI Component: Upload logs to the artifact store
-      #https://github.com/defenseunicorns/uds-common/blob/82e63be82766a2e550a847af904b2d738c9d3478/.github/actions/save-logs/action.yaml#L37
 
   # https://github.com/defenseunicorns/uds-common/blob/5cadc44608d2457db696198bd1675202d4449e23/.github/actions/setup/action.yaml#L1
   - name: setup-environment
