@@ -163,13 +163,13 @@ tasks:
       # === INSTALL TESTING ===
 
       - description: Test installing the package
-        if: ${{ .variables.TYPE == 'install' }}
+        if: ${{ eq .variables.TYPE "install" }}
         cmd: ./uds run test-package --set FLAVOR=${{ .variables.FLAVOR }} ${{ .variables.OPTIONS }} --no-progress
 
       # === UPGRADE TESTING ===
 
       - description: Test upgrading the package
-        if: ${{ .variables.TYPE == 'upgrade' }}
+        if: ${{ eq .variables.TYPE "upgrade" }}
         cmd: ./uds run test-upgrade --set FLAVOR=${{ .variables.FLAVOR }} ${{ .variables.OPTIONS }} --no-progress
 
   # https://github.com/defenseunicorns/uds-common/blob/5cadc44608d2457db696198bd1675202d4449e23/.github/actions/test-flavor/action.yaml#L1
