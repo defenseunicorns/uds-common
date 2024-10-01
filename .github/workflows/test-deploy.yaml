@@ -58,7 +58,7 @@ jobs:
         shell: bash
 
       - name: Test
-        run: uds run actions:save-logs --set FLAVOR="${{ inputs.flavor }}" --set TYPE="${{ inputs.type }}"
+        run: uds run test-deploy --set FLAVOR="${{ inputs.flavor }}" --set TYPE="${{ inputs.type }}"
         shell: bash
 
       - name: UDS Badge Verification
