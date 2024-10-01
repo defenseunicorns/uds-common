@@ -13,8 +13,25 @@ on:
         # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
         default: 0.16.0
         type: string
+
+env:
+  udsCliVersion: 0.16.0
+
 jobs:
+  set-uds-version:
+    runs-on: ubuntu-latest
+    outputs:
+      udsCliVersion: ${{ steps.set-uds-version.outputs.udsCliVersion }}
+    steps:
+      - name: Set uds version based on
+        id: set-uds-version 
+        run: |
+            # If the input is not defined (i.e., on push), use the default value
+            input="${{ inputs.udsCliVersion || env.udsCliVersion }}"
+            echo "udsCliVersion=$input" >> $GITHUB_OUTPUT
+
   validate:
+    needs: set-uds-version
     runs-on: ubuntu-latest
     name: Lint
     permissions:
@@ -33,7 +50,7 @@ jobs:
 
       - name: Install UDS CLI
         shell: bash
-        run: curl -o /usr/local/bin/uds -L https://github.com/defenseunicorns/uds-cli/releases/download/v${{ inputs.udsCliVersion }}/uds-cli_v${{ inputs.udsCliVersion }}_Linux_${{steps.setUdsCliArch.outputs.ARCH}} && chmod +x /usr/local/bin/uds
+        run: curl -o /usr/local/bin/uds -L https://github.com/defenseunicorns/uds-cli/releases/download/v${{ needs.set-uds-version.outputs.udsCliVersion }}/uds-cli_v${{ needs.set-uds-version.outputs.udsCliVersion }}_Linux_${{steps.setUdsCliArch.outputs.ARCH}} && chmod +x /usr/local/bin/uds
 
       - name: Environment setup
         run: |
