@@ -20,6 +20,8 @@ variables:
     default: ""
   - name: OPTIONS
     default: ""
+  - name: GO_VERSION
+    default: 1.23.1
 
 tasks:
 
@@ -205,9 +207,14 @@ tasks:
     actions:
 
       - description: Setup Go environment
-        cmd: echo "TODO`:` Setup Go environment"
+        cmd: |
+          PLATFORM=$(uname -s | tr '[:upper:]' '[:lower:]')
+          curl  -OL https://go.dev/dl/go${{ .variables.GO_VERSION }}.${PLATFORM}-${{ .variables.ARCH }}.tar.gz && \
+          tar -C /usr/local -xzf go${{ .variables.GO_VERSION }}.${PLATFORM}-${{ .variables.ARCH }}.tar.gz
+          echo 'export PATH="$PATH:/usr/local/go/bin"' >> ~/.bashrc && source ~/.bashrc
+
       - description: Setup Helm
-        cmd: echo "TODO`:` Setup Helm"
+        cmd: curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
       - description: Test installing the package
         cmd: |
           uds run badge:verify-badge \
