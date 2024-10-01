@@ -54,10 +54,9 @@ jobs:
 
       - name: Environment setup
         run: |
-          uds run actions:setup-environment --set REGISTRY1_USERNAME="${{ secrets.IRON_BANK_ROBOT_USERNAME }}" \
-          --set REGISTRY1_PASSWORD="${{ secrets.IRON_BANK_ROBOT_PASSWORD }}" \
+          uds run actions:setup-environment \
           --set GH_TOKEN="${{ secrets.GITHUB_TOKEN }}" \
-          --set CHAINGUARD_IDENTITY="${{ secrets.CHAINGUARD_IDENTITY }}"
+
         shell: bash
 
       - name: Install lint deps
