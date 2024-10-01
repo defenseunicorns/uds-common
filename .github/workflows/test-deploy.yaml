@@ -64,7 +64,7 @@ jobs:
         shell: bash
 
       - name: UDS Badge Verification
-        run: uds run actions:verify-badge
+        run: uds run verify-badge -f tasks/actions.yaml
         shell: bash
 
       - name: Debug Output
