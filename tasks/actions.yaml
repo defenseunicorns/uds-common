@@ -1,5 +1,4 @@
 variables:
-  # TODO: Update back to using .inputs once Maru issue https://github.com/defenseunicorns/maru-runner/issues/136 is resolved
   - name: REGISTRY1_USERNAME
     default: ""
   - name: REGISTRY1_PASSWORD
@@ -24,8 +23,6 @@ variables:
     default: 1.23.1
 
 tasks:
-
-  # https://github.com/defenseunicorns/uds-common/blob/82e63be82766a2e550a847af904b2d738c9d3478/.github/actions/debug-output/action.yaml#L1
   - name: debug-output
     actions:
       - description: Print basic debug info for a k8s cluster
@@ -46,8 +43,6 @@ tasks:
           uds zarf tools kubectl describe nodes k3d-uds-server-0 || echo "failed" | tee /tmp/debug-k-describe-node.log
           echo "::endgroup::"
 
-
-  # https://github.com/defenseunicorns/uds-common/blob/82e63be82766a2e550a847af904b2d738c9d3478/.github/actions/clean-runner/action.yaml#L1
   - name: clean-gh-runner
     actions:
       - description: Clean up space on the GitHub runner
@@ -60,7 +55,6 @@ tasks:
             sudo docker image prune --all --force
             df -h
 
-  # https://github.com/defenseunicorns/uds-common/blob/82e63be82766a2e550a847af904b2d738c9d3478/.github/actions/save-logs/action.yaml#L1
   - name: save-logs
     actions:
       - description: Pull logs from containerd
@@ -82,19 +76,8 @@ tasks:
           sudo chown $USER /tmp/zarf-*.log || echo ""
           sudo chown $USER /tmp/uds-*.log || echo ""
 
-  # https://github.com/defenseunicorns/uds-common/blob/5cadc44608d2457db696198bd1675202d4449e23/.github/actions/setup/action.yaml#L1
   - name: setup-environment
     description: UDS Environment Setup
-    # TODO: Update back to using .inputs once Maru issue https://github.com/defenseunicorns/maru-runner/issues/136 is resolved
-    # inputs:
-    #   registry1Username:
-    #     description: Registry1 Username
-    #   registry1Password:
-    #     description: Registry1 Password
-    #   ghToken:
-    #     description: GitHub Token
-    #   chainguardIdentity:
-    #     description: ID for Chainguard Identity to assume
     actions:
 
       - description: Install k3d
@@ -110,7 +93,6 @@ tasks:
           darwin: bash
         setVariables:
           - name: ARCH
-
 
       - description: Install Lula
         cmd: |
@@ -150,20 +132,8 @@ tasks:
         cmd: |
           echo "${{ .variables.GH_TOKEN }}" | uds zarf tools registry login -u "dummy" --password-stdin ghcr.io
 
-  # https://github.com/defenseunicorns/uds-common/blob/5cadc44608d2457db696198bd1675202d4449e23/.github/actions/test-deploy/action.yaml#L1
   - name: test-deploy
     description: Test the UDS package
-    # TODO: Update back to using .inputs once Maru issue https://github.com/defenseunicorns/maru-runner/issues/136 is resolved
-    # inputs:
-    #   flavor:
-    #     description: Flavor of the package to test
-    #     required: true
-    #   type:
-    #     description: Whether to run upgrade tests
-    #     default: install
-    #   options:
-    #     description: Additional CLI options for test workflows
-    #     default: ""
     actions:
 
       # === INSTALL TESTING ===
@@ -178,7 +148,6 @@ tasks:
         if: ${{ eq .variables.TYPE "upgrade" }}
         cmd: ./uds run test-upgrade --set FLAVOR=${{ .variables.FLAVOR }} ${{ .variables.OPTIONS }} --no-progress
 
-  # https://github.com/defenseunicorns/uds-common/blob/5cadc44608d2457db696198bd1675202d4449e23/.github/actions/test-flavor/action.yaml#L1
   - name: test-flavor
     description: Check the flavor for the UDS package
     actions:
@@ -190,20 +159,8 @@ tasks:
         setVariables:
           - name: UPGRADE_FLAVORS
 
-  # https://github.com/defenseunicorns/uds-common/blob/5cadc44608d2457db696198bd1675202d4449e23/.github/actions/test-deploy/action.yaml#L1
   - name: verify-badge
     description: Perform verification to assist with UDS badge certification
-    # TODO: Update back to using .inputs once Maru issue https://github.com/defenseunicorns/maru-runner/issues/136 is resolved
-    # inputs:
-    #   chartPath:
-    #     description: Relative path to the directory with the uds-config chart
-    #     default: chart/
-    #   groupName:
-    #     description: The name of the niche/group that the package fits into. E.g. package,swf,lfai
-    #     default: package
-    #   commonZarf:
-    #     description: Whether or not there is a common zarf.yaml file
-    #     default: "true"
     actions:
 
       - description: Setup Go environment
