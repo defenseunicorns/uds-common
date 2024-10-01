@@ -21,6 +21,15 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Set UDS CLI Arch
+        id: setUdsCliArch
+        shell: bash
+        run: INPUT=${{ runner.arch == 'X64' && 'amd64' || runner.arch }}; echo "ARCH=${INPUT,,}" >> "$GITHUB_OUTPUT"
+
+      - name: Install UDS CLI
+        shell: bash
+        run: curl -o /usr/local/bin/uds -L https://github.com/defenseunicorns/uds-cli/releases/download/v${{ inputs.udsCliVersion }}/uds-cli_v${{ inputs.udsCliVersion }}_Linux_${{steps.setUdsCliArch.outputs.ARCH}} && chmod +x /usr/local/bin/uds
+
       - name: Environment setup
         run: |
           uds run actions:setup-environment --set REGISTRY1_USERNAME="${{ secrets.IRON_BANK_ROBOT_USERNAME }}" \
