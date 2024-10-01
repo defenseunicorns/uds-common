@@ -51,10 +51,10 @@ jobs:
 
       - name: Environment setup
         run: |
-            uds run actions:setup-environment --set registry1Username="${{ secrets.IRON_BANK_ROBOT_USERNAME }}" \
-            --set registry1Password="${{ secrets.IRON_BANK_ROBOT_PASSWORD }}" \
-            --set ghToken="${{ secrets.GITHUB_TOKEN }}" \
-            --set chainguardIdentity="${{ secrets.CHAINGUARD_IDENTITY }}"
+            uds run actions:setup-environment --set REGISTRY1_USERNAME="${{ secrets.IRON_BANK_ROBOT_USERNAME }}" \
+            --set REGISTRY1_PASSWORD="${{ secrets.IRON_BANK_ROBOT_PASSWORD }}" \
+            --set GH_TOKEN="${{ secrets.GITHUB_TOKEN }}" \
+            --set CHAINGUARD_IDENTITY="${{ secrets.CHAINGUARD_IDENTITY }}"
         shell: bash
 
       - name: Test
