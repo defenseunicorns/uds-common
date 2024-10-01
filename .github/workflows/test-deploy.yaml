@@ -64,7 +64,7 @@ jobs:
         shell: bash
 
       - name: UDS Badge Verification
-        uses: ./.github/actions/verify-badge
+        uses: uds run actions:verify-badge
 
       - name: Debug Output
         if: ${{ always() }}
