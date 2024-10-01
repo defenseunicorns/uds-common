@@ -128,7 +128,22 @@ tasks:
       - description: Chainguard Login
         if: ${{ ne .variables.CHAINGUARD_IDENTITY "" }}
         cmd: | 
-          # TODO Add chainctl install previous to this and then login to chainguard via process internal to their gh action
+          curl -o /usr/local/bin/chainctl -L \
+          "https://dl.enforce.dev/chainctl/latest/chainctl_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/aarch64/arm64/')" \
+          && chmod +x /usr/local/bin/chainctl
+
+          if chainctl auth login --identity "${{ .variables.CHAINGUARD_IDENTITY }}" -v=0; then
+            echo Logged in as ${{ .variables.CHAINGUARD_IDENTITY }}!
+          else
+            echo Unable to assume the identity ${{ .variables.CHAINGUARD_IDENTITY }}.
+          exit 1
+          fi
+          if ! chainctl auth configure-docker --identity "${{ .variables.CHAINGUARD_IDENTITY }}" -v=0; then
+            echo Unable to register credential helper as ${{ .variables.CHAINGUARD_IDENTITY }}.
+            exit 1
+          fi
+
+
 
       - description: GHCR Login
         if: ${{ ne .variables.GH_TOKEN "" }}
