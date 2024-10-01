@@ -20,7 +20,7 @@ variables:
   - name: OPTIONS
     default: ""
   - name: GO_VERSION
-    default: 1.23.1
+    default: "1.23.1"
 
 tasks:
   - name: debug-output
@@ -148,17 +148,6 @@ tasks:
         if: ${{ eq .variables.TYPE "upgrade" }}
         cmd: ./uds run test-upgrade --set FLAVOR=${{ .variables.FLAVOR }} ${{ .variables.OPTIONS }} --no-progress
 
-  - name: test-flavor
-    description: Check the flavor for the UDS package
-    actions:
-      - description: Test latest tag deployment for flavor
-        cmd: |
-          git clone --depth 1 --branch $(git describe --tags `git rev-list --tags --max-count=1`) $(git remote get-url origin) upgrade-test
-          cd upgrade-test
-          echo "$(cat zarf.yaml | yq '.components[] | select(.only | has("flavor")) | .only.flavor' | paste -s -d, -)"
-        setVariables:
-          - name: UPGRADE_FLAVORS
-
   - name: verify-badge
     description: Perform verification to assist with UDS badge certification
     actions:
@@ -166,12 +155,13 @@ tasks:
       - description: Setup Go environment
         cmd: |
           PLATFORM=$(uname -s | tr '[:upper:]' '[:lower:]')
-          curl  -OL https://go.dev/dl/go${{ .variables.GO_VERSION }}.${PLATFORM}-${{ .variables.ARCH }}.tar.gz && \
-          tar -C /usr/local -xzf go${{ .variables.GO_VERSION }}.${PLATFORM}-${{ .variables.ARCH }}.tar.gz
+          curl  -OL "https://go.dev/dl/go${{ .variables.GO_VERSION }}.${PLATFORM}-${{ .variables.ARCH }}.tar.gz" && \
+          tar -C /usr/local -xzf "go${{ .variables.GO_VERSION }}.${PLATFORM}-${{ .variables.ARCH }}.tar.gz"
           echo 'export PATH="$PATH:/usr/local/go/bin"' >> ~/.bashrc && source ~/.bashrc
 
       - description: Setup Helm
         cmd: curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
       - description: Test installing the package
         cmd: |
           uds run badge:verify-badge \
