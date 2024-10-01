@@ -54,8 +54,8 @@ jobs:
 
       - name: Environment setup
         run: |
-          uds run actions:setup-environment \
-          --set GH_TOKEN="${{ secrets.GITHUB_TOKEN }}" \
+          uds run setup-environment \
+          --set GH_TOKEN="${{ secrets.GITHUB_TOKEN }}" -f tasks/actions.yaml
 
         shell: bash
 
