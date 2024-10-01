@@ -85,14 +85,7 @@ tasks:
           # renovate: datasource=github-tags depName=k3d-io/k3d versioning=semver
           curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | TAG=v5.7.4 bash
 
-      - description: Set Arch
-        cmd: |
-          ARCH=$(uname -m) && [ "$ARCH" = "x86_64" ] && ARCH='amd64'; [ "$ARCH" = "aarch64" ] && ARCH='arm64'; echo $ARCH
-        shell:
-          linux: bash
-          darwin: bash
-        setVariables:
-          - name: ARCH
+      - task: determine-arch
 
       - description: Install Lula
         cmd: |
@@ -151,6 +144,7 @@ tasks:
   - name: verify-badge
     description: Perform verification to assist with UDS badge certification
     actions:
+      - task: determine-arch
 
       - description: Setup Go environment
         cmd: |
@@ -168,3 +162,16 @@ tasks:
             --set CHART_PATH="${{ .variables.CHART_PATH }}" \
             --set GROUP_NAME="${{ .variables.GROUP_NAME }}" \
             --set COMMON_ZARF="${{ .variables.COMMON_ZARF }}"
+
+  # Common task
+  - name: determine-arch
+    description: determine architecture
+    actions:
+      - description: Set Arch
+        cmd: |
+          ARCH=$(uname -m) && [ "$ARCH" = "x86_64" ] && ARCH='amd64'; [ "$ARCH" = "aarch64" ] && ARCH='arm64'; echo $ARCH
+        shell:
+          linux: bash
+          darwin: bash
+        setVariables:
+          - name: ARCH
