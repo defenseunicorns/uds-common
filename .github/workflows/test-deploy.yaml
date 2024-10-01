@@ -39,11 +39,11 @@ jobs:
         id: setUdsCliArch
         shell: bash
         run: INPUT=${{ runner.arch == 'X64' && 'amd64' || runner.arch }}; echo "ARCH=${INPUT,,}" >> "$GITHUB_OUTPUT"
-  
+
       - name: Install UDS CLI
         shell: bash
         run: curl -o /usr/local/bin/uds -L https://github.com/defenseunicorns/uds-cli/releases/download/v${{ inputs.udsCliVersion }}/uds-cli_v${{ inputs.udsCliVersion }}_Linux_${{steps.setUdsCliArch.outputs.ARCH}} && chmod +x /usr/local/bin/uds
-  
+
 
       - name: Clean Runner
         run: uds run actions:clean-gh-runner

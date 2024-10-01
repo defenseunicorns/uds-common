@@ -1,5 +1,5 @@
 variables:
-  # TODO: Update back to using .variables once Maru issue https://github.com/defenseunicorns/maru-runner/issues/136 is resolved
+  # TODO: Update back to using .inputs once Maru issue https://github.com/defenseunicorns/maru-runner/issues/136 is resolved
   - name: REGISTRY1_USERNAME
     default: ""
   - name: REGISTRY1_PASSWORD
@@ -85,7 +85,7 @@ tasks:
   # https://github.com/defenseunicorns/uds-common/blob/5cadc44608d2457db696198bd1675202d4449e23/.github/actions/setup/action.yaml#L1
   - name: setup-environment
     description: UDS Environment Setup
-    # TODO: Update back to using .variables once Maru issue https://github.com/defenseunicorns/maru-runner/issues/136 is resolved
+    # TODO: Update back to using .inputs once Maru issue https://github.com/defenseunicorns/maru-runner/issues/136 is resolved
     # inputs:
     #   registry1Username:
     #     description: Registry1 Username
@@ -147,13 +147,13 @@ tasks:
 
       - description: GHCR Login
         if: ${{ ne .variables.GH_TOKEN "" }}
-        cmd: | 
+        cmd: |
           echo "${{ .variables.GH_TOKEN }}" | uds zarf tools registry login -u "dummy" --password-stdin ghcr.io
 
   # https://github.com/defenseunicorns/uds-common/blob/5cadc44608d2457db696198bd1675202d4449e23/.github/actions/test-deploy/action.yaml#L1
   - name: test-deploy
     description: Test the UDS package
-    # TODO: Update back to using .variables once Maru issue https://github.com/defenseunicorns/maru-runner/issues/136 is resolved
+    # TODO: Update back to using .inputs once Maru issue https://github.com/defenseunicorns/maru-runner/issues/136 is resolved
     # inputs:
     #   flavor:
     #     description: Flavor of the package to test
@@ -193,7 +193,7 @@ tasks:
   # https://github.com/defenseunicorns/uds-common/blob/5cadc44608d2457db696198bd1675202d4449e23/.github/actions/test-deploy/action.yaml#L1
   - name: verify-badge
     description: Perform verification to assist with UDS badge certification
-    # TODO: Update back to using .variables once Maru issue https://github.com/defenseunicorns/maru-runner/issues/136 is resolved
+    # TODO: Update back to using .inputs once Maru issue https://github.com/defenseunicorns/maru-runner/issues/136 is resolved
     # inputs:
     #   chartPath:
     #     description: Relative path to the directory with the uds-config chart
