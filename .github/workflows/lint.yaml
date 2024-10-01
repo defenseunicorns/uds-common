@@ -7,7 +7,12 @@ on:
     types: [milestoned, opened, synchronize]
   # This allows other repositories to call this workflow in a reusable way
   workflow_call:
-
+    inputs:
+      udsCliVersion:
+        description: The uds-cli version to install
+        # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
+        default: 0.16.0
+        type: string
 jobs:
   validate:
     runs-on: ubuntu-latest
