@@ -1,5 +1,5 @@
 variables:
-  # TODO: Update back to using .variables once Maru issue https://github.com/defenseunicorns/maru-runner/issues/136 is resolved 
+  # TODO: Update back to using .variables once Maru issue https://github.com/defenseunicorns/maru-runner/issues/136 is resolved
   - name: REGISTRY1_USERNAME
     default: ""
   - name: REGISTRY1_PASSWORD
@@ -9,9 +9,9 @@ variables:
   - name: CHAINGUARD_IDENTITY
     default: ""
   - name: CHART_PATH
-    default: "chart/"
+    default: chart/
   - name: GROUP_NAME
-    default: "package"
+    default: package
   - name: COMMON_ZARF
     default: "true"
   - name: TYPE
@@ -83,7 +83,7 @@ tasks:
   # https://github.com/defenseunicorns/uds-common/blob/5cadc44608d2457db696198bd1675202d4449e23/.github/actions/setup/action.yaml#L1
   - name: setup-environment
     description: UDS Environment Setup
-    # TODO: Update back to using .variables once Maru issue https://github.com/defenseunicorns/maru-runner/issues/136 is resolved 
+    # TODO: Update back to using .variables once Maru issue https://github.com/defenseunicorns/maru-runner/issues/136 is resolved
     # inputs:
     #   registry1Username:
     #     description: Registry1 Username
@@ -127,7 +127,7 @@ tasks:
 
       - description: Chainguard Login
         if: ${{ ne .variables.CHAINGUARD_IDENTITY "" }}
-        cmd: | 
+        cmd: |
           curl -o /usr/local/bin/chainctl -L \
           "https://dl.enforce.dev/chainctl/latest/chainctl_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/aarch64/arm64/')" \
           && chmod +x /usr/local/bin/chainctl
@@ -143,8 +143,6 @@ tasks:
             exit 1
           fi
 
-
-
       - description: GHCR Login
         if: ${{ ne .variables.GH_TOKEN "" }}
         cmd: | 
@@ -153,7 +151,7 @@ tasks:
   # https://github.com/defenseunicorns/uds-common/blob/5cadc44608d2457db696198bd1675202d4449e23/.github/actions/test-deploy/action.yaml#L1
   - name: test-deploy
     description: Test the UDS package
-    # TODO: Update back to using .variables once Maru issue https://github.com/defenseunicorns/maru-runner/issues/136 is resolved 
+    # TODO: Update back to using .variables once Maru issue https://github.com/defenseunicorns/maru-runner/issues/136 is resolved
     # inputs:
     #   flavor:
     #     description: Flavor of the package to test
@@ -193,7 +191,7 @@ tasks:
   # https://github.com/defenseunicorns/uds-common/blob/5cadc44608d2457db696198bd1675202d4449e23/.github/actions/test-deploy/action.yaml#L1
   - name: verify-badge
     description: Perform verification to assist with UDS badge certification
-    # TODO: Update back to using .variables once Maru issue https://github.com/defenseunicorns/maru-runner/issues/136 is resolved 
+    # TODO: Update back to using .variables once Maru issue https://github.com/defenseunicorns/maru-runner/issues/136 is resolved
     # inputs:
     #   chartPath:
     #     description: Relative path to the directory with the uds-config chart
