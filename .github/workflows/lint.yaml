@@ -68,8 +68,7 @@ jobs:
 
       - name: Download UDS run actions.yaml
         shell: bash
-        run: curl -o ./tasks/common-actions.yaml -L \
-            https://raw.githubusercontent.com/defenseunicorns/uds-common/refs/heads/${{ needs.set-uds-version.outputs.udsCommonVersion }}/tasks/actions.yaml
+        run: curl -o ./tasks/common-actions.yaml -L https://raw.githubusercontent.com/defenseunicorns/uds-common/refs/heads/${{ needs.set-uds-version.outputs.udsCommonVersion }}/tasks/actions.yaml
 
       - name: Environment setup
         run: |
