@@ -1,10 +1,6 @@
-name: Scan
+name: Lint
 
 on:
-  # This workflow is triggered on pull requests to the main branch.
-  pull_request:
-    # milestoned is added here as a workaround for release-please not triggering PR workflows (PRs should be added to a milestone to trigger the workflow).
-    types: [milestoned, opened, synchronize]
   # This allows other repositories to call this workflow in a reusable way
   workflow_call:
     inputs:
@@ -19,10 +15,6 @@ on:
         default: 0.13.1
         # release-please: end-version
         type: string
-
-env:
-  udsCliVersion: 0.16.0
-
 
 jobs:
 #   set-uds-version:
