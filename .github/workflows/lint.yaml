@@ -69,12 +69,12 @@ jobs:
       - name: Download UDS run actions.yaml
         shell: bash
         run: curl -o ./tasks/common-actions.yaml -L \
-            https://raw.githubusercontent.com/defenseunicorns/uds-common/refs/heads/${{ inputs.udsCommonVersion }}/tasks/actions.yaml
+            https://raw.githubusercontent.com/defenseunicorns/uds-common/refs/heads/${{ needs.set-uds-version.outputs.udsCommonVersion }}/tasks/actions.yaml
 
       - name: Environment setup
         run: |
           uds run setup-environment \
-          --set GH_TOKEN="${{ secrets.GITHUB_TOKEN }}" -f tasks/actions.yaml
+          --set GH_TOKEN="${{ secrets.GITHUB_TOKEN }}" -f tasks/common-actions.yaml
 
         shell: bash
 
