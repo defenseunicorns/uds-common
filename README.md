@@ -1,6 +1,6 @@
 # UDS Common
 
-This repository contains common configuration and tasks used in UDS Packages for management, setup, creation, deployment, and publishing of packages and bundles.  It is useful to help implement [UDS package practices](./docs/package_integration/uds-package-practices.md).
+This repository contains common configuration and tasks used in UDS Packages for management, setup, creation, deployment, and publishing of packages and bundles.  It also includes [UDS package practices](./docs/package_integration/uds-package-practices.md) defining requirements and standards to obtain the [<img alt="Made for UDS" src="docs/made-for-uds.svg" height="20px"/>](https://github.com/defenseunicorns/uds-core) Badges.
 
 ## Task Usage
 

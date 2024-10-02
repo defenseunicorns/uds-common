@@ -2,24 +2,23 @@
 
 ## Table of Contents
 
-1. [Introduction](#introduction)
-2. [Journey Testing](#journey-testing)
-   - [Definition](#definition)
-   - [Key Principles](#key-principles)
-   - [Implementation Guidelines](#implementation-guidelines)
-   - [Tools](#tools)
-3. [Upgrade Testing](#upgrade-testing)
-   - [Key Considerations](#key-considerations)
-4. [Linting and Static Analysis](#linting-and-static-analysis)
-   - [Recommended Tools](#recommended-tools)
-5. [Best Practices](#best-practices)
-6. [Best Practice Examples](#best-practice-examples)
-   - [Journey Tests](#journey-tests)
-   - [Upgrade Tests](#upgrade-tests-1)
-   - [Test Execution](#test-execution)
-7. [Consistency Across Packages](#consistency-across-packages)
-8. [Contribution and Maintenance](#contribution-and-maintenance)
-9. [Related Resources](#related-resources)
+- [Testing Guidelines for UDS Marketplace Apps](#testing-guidelines-for-uds-marketplace-apps)
+  - [Table of Contents](#table-of-contents)
+  - [Introduction](#introduction)
+  - [Journey Testing](#journey-testing)
+    - [**Definition**](#definition)
+    - [**Key Principles**](#key-principles)
+    - [**Implementation Guidelines**](#implementation-guidelines)
+    - [**Tools**](#tools)
+  - [Upgrade Testing](#upgrade-testing)
+    - [**Key Considerations**](#key-considerations)
+  - [Linting and Static Analysis](#linting-and-static-analysis)
+    - [**Recommended Tools**](#recommended-tools)
+  - [**Best Practices**](#best-practices)
+  - [**Best Practice Examples**](#best-practice-examples)
+  - [Consistency Across Packages](#consistency-across-packages)
+  - [Contribution and Maintenance](#contribution-and-maintenance)
+  - [Related Resources](#related-resources)
 
 ## Introduction
 
@@ -44,7 +43,7 @@ A **Journey** in the context of UDS package testing is defined as:
 - Handle limitations due to licensing or other constraints by documenting them and implementing what testing is possible.
 
 ### **Tools**
-- UI Testing: Playwright, Cypress
+- UI Testing: Playwright
 - Non-UI Testing: Jest
 - Custom Scripts: Bash or other scripting languages as needed
 
