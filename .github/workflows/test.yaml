@@ -55,5 +55,5 @@ jobs:
       upgrade-flavors: ${{ needs.flavor-test.outputs.upgrade-flavors }}
       flavor: ${{ matrix.flavor }}
       type: ${{ matrix.type }}
-      udsCommonVersion: ${{ github.ref_name }}
+      udsCommonVersion: ${{ github.head_ref }}
     secrets: inherit # Inherits all secrets from the parent workflow.
