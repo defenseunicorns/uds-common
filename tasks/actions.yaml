@@ -92,7 +92,6 @@ tasks:
           # renovate: datasource=github-tags depName=defenseunicorns/lula versioning=semver-coerced
           LulaVersion=0.7.0
           Platform=$(uname -s)
-          echo "https://github.com/defenseunicorns/lula/releases/download/v${LulaVersion}/lula_v${LulaVersion}_${Platform}_${{ .variables.ARCH }}"
           curl -o /usr/local/bin/lula -L \
           "https://github.com/defenseunicorns/lula/releases/download/v${LulaVersion}/lula_v${LulaVersion}_${Platform}_${{ .variables.ARCH }}" \
           && chmod +x /usr/local/bin/lula
