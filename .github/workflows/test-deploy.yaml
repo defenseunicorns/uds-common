@@ -52,8 +52,7 @@ jobs:
 
       - name: Download UDS run actions.yaml
         shell: bash
-        run: curl -o ./tasks/common-actions.yaml -L \
-            https://raw.githubusercontent.com/defenseunicorns/uds-common/refs/heads/${{ inputs.udsCommonVersion }}/tasks/actions.yaml
+        run: curl -o ./tasks/common-actions.yaml -L https://raw.githubusercontent.com/defenseunicorns/uds-common/refs/heads/${{ inputs.udsCommonVersion }}/tasks/actions.yaml
 
       - name: Clean Runner
         run: uds run clean-gh-runner -f tasks/common-actions.yaml
