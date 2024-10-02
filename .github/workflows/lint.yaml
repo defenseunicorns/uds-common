@@ -41,7 +41,7 @@ jobs:
         id: set-uds-common-version
         run: |
             # If the input is not defined (i.e., on push), use the default value
-            input="${{ inputs.udsCommonVersion || github.ref_name}}"
+            input="${{ inputs.udsCommonVersion || github.head_ref }}"
             echo "udsCommonVersion=$input" >> $GITHUB_OUTPUT
 
   validate:
