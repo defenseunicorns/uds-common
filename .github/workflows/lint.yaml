@@ -29,7 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       udsCliVersion: ${{ steps.set-uds-version.outputs.udsCliVersion }}
-      udsCommonVersion: ${{ steps.set-uds-version.outputs.udsCommonVersion }}
+      udsCommonVersion: ${{ steps.set-uds-common-version.outputs.udsCommonVersion }}
     steps:
       - name: Set uds version based on
         id: set-uds-version
