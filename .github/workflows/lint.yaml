@@ -13,15 +13,23 @@ on:
         # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
         default: 0.16.0
         type: string
+      udsCommonVersion:
+        description: The uds-cli version to install
+        # release-please: start-version
+        default: 0.13.1
+        # release-please: end-version
+        type: string
 
 env:
   udsCliVersion: 0.16.0
+  udsCommonVersion: ${{ github.ref }}
 
 jobs:
   set-uds-version:
     runs-on: ubuntu-latest
     outputs:
       udsCliVersion: ${{ steps.set-uds-version.outputs.udsCliVersion }}
+      udsCommonVersion: ${{ steps.set-uds-version.outputs.udsCommonVersion }}
     steps:
       - name: Set uds version based on
         id: set-uds-version
@@ -29,6 +37,12 @@ jobs:
             # If the input is not defined (i.e., on push), use the default value
             input="${{ inputs.udsCliVersion || env.udsCliVersion }}"
             echo "udsCliVersion=$input" >> $GITHUB_OUTPUT
+      - name: Set uds common version
+        id: set-uds-common-version
+        run: |
+            # If the input is not defined (i.e., on push), use the default value
+            input="${{ inputs.udsCommonVersion || env.udsCommonVersion }}"
+            echo "udsCommonVersion=$input" >> $GITHUB_OUTPUT
 
   validate:
     needs: set-uds-version
@@ -51,6 +65,11 @@ jobs:
       - name: Install UDS CLI
         shell: bash
         run: curl -o /usr/local/bin/uds -L https://github.com/defenseunicorns/uds-cli/releases/download/v${{ needs.set-uds-version.outputs.udsCliVersion }}/uds-cli_v${{ needs.set-uds-version.outputs.udsCliVersion }}_Linux_${{steps.setUdsCliArch.outputs.ARCH}} && chmod +x /usr/local/bin/uds
+
+      - name: Download UDS run actions.yaml
+        shell: bash
+        run: curl -o ./tasks/common-actions.yaml -L \
+            https://raw.githubusercontent.com/defenseunicorns/uds-common/refs/heads/${{ inputs.udsCommonVersion }}/tasks/actions.yaml
 
       - name: Environment setup
         run: |

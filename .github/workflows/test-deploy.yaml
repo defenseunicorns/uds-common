@@ -17,6 +17,12 @@ on:
         # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
         default: 0.16.0
         type: string
+      udsCommonVersion:
+        description: The uds-cli version to install
+        # release-please: start-version
+        default: 0.13.1
+        # release-please: end-version
+        type: string
 
 # Permissions for the GITHUB_TOKEN used by the workflow.
 permissions:
@@ -44,9 +50,13 @@ jobs:
         shell: bash
         run: curl -o /usr/local/bin/uds -L https://github.com/defenseunicorns/uds-cli/releases/download/v${{ inputs.udsCliVersion }}/uds-cli_v${{ inputs.udsCliVersion }}_Linux_${{steps.setUdsCliArch.outputs.ARCH}} && chmod +x /usr/local/bin/uds
 
+      - name: Download UDS run actions.yaml
+        shell: bash
+        run: curl -o ./tasks/common-actions.yaml -L \
+            https://raw.githubusercontent.com/defenseunicorns/uds-common/refs/heads/${{ inputs.udsCommonVersion }}/tasks/actions.yaml
 
       - name: Clean Runner
-        run: uds run actions:clean-gh-runner
+        run: uds run clean-gh-runner -f tasks/common-actions.yaml
         shell: bash
 
       - name: Environment setup
@@ -54,27 +64,27 @@ jobs:
             uds run setup-environment --set REGISTRY1_USERNAME="${{ secrets.IRON_BANK_ROBOT_USERNAME }}" \
             --set REGISTRY1_PASSWORD="${{ secrets.IRON_BANK_ROBOT_PASSWORD }}" \
             --set GH_TOKEN="${{ secrets.GITHUB_TOKEN }}" \
-            --set CHAINGUARD_IDENTITY="${{ secrets.CHAINGUARD_IDENTITY }}" -f tasks/actions.yaml
+            --set CHAINGUARD_IDENTITY="${{ secrets.CHAINGUARD_IDENTITY }}" -f tasks/common-actions.yaml
         shell: bash
 
         # TODO Update to use actions:test-deploy instead of -f tasks/actions.yaml
         # once maru issue https://github.com/defenseunicorns/maru-runner/issues/133 is resolved
       - name: Test
-        run: uds run test-deploy --set FLAVOR="${{ inputs.flavor }}" --set TYPE="${{ inputs.type }}" -f tasks/actions.yaml
+        run: uds run test-deploy --set FLAVOR="${{ inputs.flavor }}" --set TYPE="${{ inputs.type }}" -f tasks/common-actions.yaml
         shell: bash
 
       - name: UDS Badge Verification
-        run: uds run verify-badge -f tasks/actions.yaml
+        run: uds run verify-badge -f tasks/common-actions.yaml
         shell: bash
 
       - name: Debug Output
         if: ${{ always() }}
-        run: uds run actions:debug-output
+        run: uds run debug-output -f tasks/common-actions.yaml
         shell: bash
 
       - name: Save logs
         if: ${{ always() }}
-        run: uds run actions:save-logs
+        run: uds run save-logs -f tasks/common-actions.yaml
         shell: bash
 
       - uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4.4.0
