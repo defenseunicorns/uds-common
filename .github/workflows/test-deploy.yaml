@@ -18,7 +18,7 @@ on:
         default: 0.16.0
         type: string
       udsCommonVersion:
-        description: The uds-cli version to install
+        description: The uds common version to run against
         # release-please: start-version
         default: 0.13.1
         # release-please: end-version

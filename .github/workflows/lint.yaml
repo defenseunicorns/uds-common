@@ -22,7 +22,7 @@ on:
 
 env:
   udsCliVersion: 0.16.0
-  udsCommonVersion: ${{ github.ref }}
+  udsCommonVersion: ${{ github.ref_name }}
 
 jobs:
   set-uds-version:
