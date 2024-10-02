@@ -1,0 +1,56 @@
+name: security-hub-scan
+description: Scans a zarf package with uds-security-hub
+
+inputs:
+  path:
+    description: Path to the zarf package to scan
+    required: true
+  format:
+    description: Scan output format
+    default: json
+  version:
+    description: Version of uds-security-hub to use
+    default: v0.1.0
+
+outputs:
+  cve-scan:
+    description: A filename that includes the results in input.format
+    value: ${{ steps.scan.outputs.cve-scan }}
+  cosign-bundle:
+    description: A file that includes the cosign bundle for verifying authenticity
+    value: ${{ steps.cosign.outputs.cosign-bundle }}
+
+runs:
+  using: composite
+  steps:
+    - name: run uds security-hub:scan
+      id: scan
+      run: |
+        OUTPUT_FILE=cve-scan.${{ inputs.format }}
+        uds run security-hub:scan \
+          --set PKG_PATH=${{ inputs.path }} \
+          --set OUTPUT_FILE=${OUTPUT_FILE} \
+          --set OUTPUT_FORMAT=${{ inputs.format }} \
+          --set SECURITY_HUB_VERSION=${{ inputs.version }}
+
+        echo "cve-scan=${OUTPUT_FILE}" >> "$GITHUB_OUTPUT"
+      shell: bash
+
+    - name: sign results
+      id: cosign
+      env:
+        COSIGN_EXPERIMENTAL: "true"
+      run: |
+        COSIGN_BUNDLE="cosign.bundle"
+        cosign sign-blob --bundle $COSIGN_BUNDLE --yes ${{ steps.scan.outputs.cve-scan }}
+        echo "cosign-bundle=${COSIGN_BUNDLE}" >> "$GITHUB_OUTPUT"
+      shell: bash
+
+    - name: verify cosign results
+      env:
+        COSIGN_EXPERIMENTAL: "true"
+      run: |
+        cosign verify-blob --bundle ${{ steps.cosign.outputs.cosign-bundle }} ${{ steps.scan.outputs.cve-scan }} \
+            --certificate-identity-regexp="https://github.com/${{ github.repository }}/" \
+            --certificate-oidc-issuer="https://token.actions.githubusercontent.com"
+      shell: bash

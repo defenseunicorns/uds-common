@@ -8,6 +8,7 @@ includes:
   - upgrade: ./tasks/upgrade.yaml
   - compliance: ./tasks/compliance.yaml
   - badge: ./tasks/badge.yaml
+  - security-hub: ./tasks/security-hub.yaml
 
 tasks:
   - name: default

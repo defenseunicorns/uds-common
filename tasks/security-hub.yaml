@@ -1,0 +1,26 @@
+variables:
+  - name: PKG_PATH
+    description: Path to the zarf package to scan
+  - name: OUTPUT_FILE
+    description: Path to write the results into
+  - name: OUTPUT_FORMAT
+    description: Scan output format
+    default: json
+  - name: SECURITY_HUB_VERSION
+    description: Version of uds-security-hub to use
+    default: v0.1.0
+
+tasks:
+  - name: scan
+    actions:
+      - description: scan the provided PKG_PATH
+        cmd: |
+          FILE_TO_SCAN=$(realpath ${PKG_PATH})
+
+          docker run --rm \
+              --pull always \
+              -v $FILE_TO_SCAN:$FILE_TO_SCAN \
+            ghcr.io/defenseunicorns/uds-security-hub:${SECURITY_HUB_VERSION} \
+              --package-path $FILE_TO_SCAN \
+              --output-format ${OUTPUT_FORMAT} \
+              > "${OUTPUT_FILE}"
