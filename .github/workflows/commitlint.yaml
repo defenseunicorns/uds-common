@@ -37,4 +37,5 @@ jobs:
           pull_request_title: ${{ github.event.pull_request.title }}
         run: |
           echo "module.exports = {extends: ['@commitlint/config-conventional']}" > commitlint.config.js
+          # shellcheck disable=SC2154
           echo "$pull_request_title" | npx commitlint
