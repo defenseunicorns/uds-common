@@ -27,12 +27,13 @@ tasks:
     description: Run linting checks on OSCAL
     actions:
       - description: Lint OSCAL files
-        cmd: lula tools lint -f $OSCALFILES
+        cmd: lula tools lint -f "$OSCALFILES"
 
   - name: shell
     description: Run shellcheck on all Maru tasks, GitHub workflows, and local shell scripts
     actions:
-      - shell:
+      - description: Lint shell scripts in Maru tasks, GitHub workflows and .sh files
+        shell:
           linux: bash
           darwin: bash
         cmd: |
@@ -41,7 +42,10 @@ tasks:
           # -e SC2016 Ignore unexpanded env vars (since sometimes we want to dynamically add something to something like .bashrc)
           # -e SC2050 Ignore if statements that are static (inputs / expressions are filtered for shellcheck to work which in some expressions makes them static)
           # -e SC2001 Ignore sed replace suggestions (${text//search/replacement} syntax doesn't support regex so this suggestion often won't work)
-          export SHELLCHECK_OPTS="-x -e SC2016 -e SC2050 -e SC2001"
+          # -e SC2002 Ignore rejection of `cat |` (redirection syntax is not always familiar to developers and while cat _could_ not exist that is extremely unlikely)
+          # -e SC2181 Ignore rejection of $? ($? can be confusing in some circumstances but also more readable in others with more complex commands)
+          # -e SC2154 Ignore unset variables (in many cases env vars will come from the environment and we should assume they are set)
+          export SHELLCHECK_OPTS="-x -e SC2016 -e SC2050 -e SC2001 -e SC2002 -e SC2181 -e SC2154"
 
           # Function to lint scripts inside `---` delimited files
           lint_scripts() {
@@ -86,7 +90,10 @@ tasks:
             # Strip any ${{ }} templates with the word "maru-expression" for compatibility
             raw_scripts=$(echo "$raw_cmds" | sed 's/\${{[^}]*}}/maru-expression/g')
 
-            lint_scripts "$yaml_file" "$raw_scripts"
+            # If this file has 
+            if [ -n "$raw_scripts" ]; then
+              lint_scripts "$yaml_file" "$raw_scripts"
+            fi
           done
 
           # Lint all .sh files in the current directory
@@ -105,5 +112,7 @@ tasks:
             # Strip any ${{ }} templates with the word "github-expression" for compatibility
             raw_scripts=$(echo "$raw_runs" | sed 's/\${{[^}]*}}/github-expression/g')
 
-            lint_scripts "$yaml_file" "$raw_scripts"
+            if [ -n "$raw_scripts" ]; then
+              lint_scripts "$yaml_file" "$raw_scripts"
+            fi
           done
