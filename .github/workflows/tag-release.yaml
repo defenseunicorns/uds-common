@@ -36,6 +36,11 @@ jobs:
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
+      - name: Install UDS CLI
+        uses: defenseunicorns/setup-uds@v1.0.0
+        with:
+          version: v0.16.0
+
       - name: Environment setup
         run: |
             uds run actions:setup-environment --set REGISTRY1_USERNAME="${{ secrets.IRON_BANK_ROBOT_USERNAME }}" \

@@ -41,15 +41,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
-      - name: Set UDS CLI Arch
-        id: setUdsCliArch
-        shell: bash
-        run: INPUT=${{ runner.arch == 'X64' && 'amd64' || runner.arch }}; echo "ARCH=${INPUT,,}" >> "$GITHUB_OUTPUT"
-
       - name: Install UDS CLI
-        shell: bash
-        run: curl -o /usr/local/bin/uds -L https://github.com/defenseunicorns/uds-cli/releases/download/v${{ inputs.udsCliVersion }}/uds-cli_v${{ inputs.udsCliVersion }}_Linux_${{steps.setUdsCliArch.outputs.ARCH}} && chmod +x /usr/local/bin/uds
-
+        uses: defenseunicorns/setup-uds@v1.0.0
+        with:
+          version: v0.16.0
       - name: Download UDS run actions.yaml
         shell: bash
         run: curl -o ./tasks/common-actions.yaml -L https://raw.githubusercontent.com/defenseunicorns/uds-common/refs/heads/${{ inputs.udsCommonVersion }}/tasks/actions.yaml
