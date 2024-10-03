@@ -53,7 +53,7 @@ tasks:
             local raw_scripts="$2"
 
             echo "Processing $file..."
-            
+
             # Temporary variable to hold the current element
             current_element=""
 
@@ -90,7 +90,7 @@ tasks:
             # Strip any ${{ }} templates with the word "maru-expression" for compatibility
             raw_scripts=$(echo "$raw_cmds" | sed 's/\${{[^}]*}}/maru-expression/g')
 
-            # If this file has 
+            # If this file has scripts, lint them
             if [ -n "$raw_scripts" ]; then
               lint_scripts "$yaml_file" "$raw_scripts"
             fi
@@ -112,6 +112,7 @@ tasks:
             # Strip any ${{ }} templates with the word "github-expression" for compatibility
             raw_scripts=$(echo "$raw_runs" | sed 's/\${{[^}]*}}/github-expression/g')
 
+            # If this file has scripts, lint them
             if [ -n "$raw_scripts" ]; then
               lint_scripts "$yaml_file" "$raw_scripts"
             fi
