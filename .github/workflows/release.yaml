@@ -32,5 +32,5 @@ jobs:
         flavor: [upstream, registry1, unicorn]
     uses: ./.github/workflows/callable-publish.yaml
     with:
-      udsCommonVersion: ${{ github.head_ref }}
+      flavor: ${{ matrix.flavor }}
     secrets: inherit # Inherits all secrets from the parent workflow.
