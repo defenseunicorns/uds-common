@@ -21,7 +21,7 @@ tasks:
           - name: PACKAGE_VERSION
       - description: Deploy the UDS Zarf Package
         env:
-          - ZARF_CONFIG=${{ .inputs.zarfConfig }}
+          - ZARF_CONFIG=${{ .inputs.config }}
         cmd: ./uds zarf package deploy ${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${UDS_ARCH}-${PACKAGE_VERSION}.tar.zst --confirm --no-progress ${{ .inputs.options }}
 
   - name: test-bundle
