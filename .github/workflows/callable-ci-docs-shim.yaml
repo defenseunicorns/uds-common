@@ -1,0 +1,25 @@
+name: CI Docs Shim
+
+on:
+  workflow_call:
+    inputs:
+      flavor:
+        required: true
+        type: string
+      type:
+        required: true
+        type: string
+
+jobs:
+  run:
+    name: test-deploy (${{ inputs.type }}, ${{ inputs.flavor }}) / deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      matrix:
+        flavor: [upstream, registry1, unicorn]
+        type: [install, upgrade]
+    steps:
+      - name: Shim for ${{ inputs.type }} ${{ inputs.flavor }}
+        run: |
+          echo "Documentation-only change detected; marking ${{ inputs.type }} ${{ inputs.flavor }} as successful."

@@ -17,12 +17,6 @@ on:
         # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
         default: 0.17.0
         type: string
-      udsCommonVersion:
-        description: The uds common version to run against
-        # release-please: start-version
-        default: 0.13.1
-        # release-please: end-version
-        type: string
 
 # Permissions for the GITHUB_TOKEN used by the workflow.
 permissions:

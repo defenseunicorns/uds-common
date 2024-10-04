@@ -1,5 +1,3 @@
-name: CI Docs Shim
-
 on:
   pull_request:
     paths:
@@ -22,15 +20,13 @@ on:
       - config/renovate.json5
 
 jobs:
-  run-test:
-    name: test-deploy (${{ matrix.type }}, ${{ matrix.flavor }}) / deploy
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
+  validate:
     strategy:
       matrix:
         flavor: [upstream, registry1, unicorn]
         type: [install, upgrade]
-    steps:
-      - name: Shim for ${{ matrix.type }} ${{ matrix.flavor }}
-        run: |
-          echo "Documentation-only change detected; marking ${{ matrix.type }} ${{ matrix.flavor }} as successful."
+    uses: ./.github/workflows/callable-ci-docs-shim.yaml
+    with:
+      flavor: ${{ matrix.flavor }}
+      type: ${{ matrix.type }}
+    secrets: inherit # Inherits all secrets from the parent workflow.
