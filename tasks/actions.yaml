@@ -64,7 +64,7 @@ tasks:
           CONTAINER_NAME="k3d-uds-server-0"
           if docker ps | grep -q "$CONTAINER_NAME"; then
             echo "Container $CONTAINER_NAME is running. Proceeding with log copy..."
-            docker cp "${CONTAINER_NAME}:/var/log/ /tmp/uds-containerd-logs"
+            docker cp "${CONTAINER_NAME}:/var/log/" /tmp/uds-containerd-logs
           else
             echo "Container $CONTAINER_NAME is not running. Skipping log copy."
           fi
