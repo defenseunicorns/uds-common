@@ -25,7 +25,7 @@ jobs:
     outputs:
       upgrade-flavors: ${{ steps.test-flavor.outputs.upgrade-flavors }}
 
-  test:
+  validate:
     needs: check-flavor
     strategy:
       fail-fast: false
