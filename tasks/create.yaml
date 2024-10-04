@@ -14,8 +14,14 @@ tasks:
       architecture:
         description: The architecture of the package to create
         default: ${UDS_ARCH}
+      config:
+        description: Optionally supply a path to the desired Zarf Configuration for the package
+        default: ""
+        required: false
     actions:
-      - cmd: |
+      - env:
+          - "ZARF_CONFIG=${{ .inputs.zarfConfig }}"
+        cmd: |
           if [ ${FLAVOR} != "registry1" ] || [ ${{ .inputs.architecture }} != "arm64" ]; then
             ./uds zarf package create ${{ .inputs.path }} --confirm --no-progress --architecture=${{ .inputs.architecture }} --flavor ${FLAVOR} ${{ .inputs.options }}
           else
