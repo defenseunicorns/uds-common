@@ -21,6 +21,7 @@ jobs:
       - name: Install UDS CLI
         uses: defenseunicorns/setup-uds@v1.0.0
         with:
+          # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
           version: v0.17.0
 
       - name: Environment setup
