@@ -1,4 +1,4 @@
-name: Scan
+name: Lint
 
 on:
   # This workflow is triggered on pull requests to the main branch.
@@ -13,7 +13,7 @@ permissions:
   id-token: write
 
 jobs:
-  lint:
+  validate:
     uses: ./.github/workflows/callable-lint.yaml
     with:
       udsCommonVersion: ${{ github.head_ref }}

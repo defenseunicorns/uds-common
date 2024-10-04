@@ -1,4 +1,4 @@
-name: Lint
+name: Callable-Lint
 
 on:
   # This allows other repositories to call this workflow in a reusable way
@@ -17,9 +17,8 @@ on:
         type: string
 
 jobs:
-  validate:
+  run:
     runs-on: ubuntu-latest
-    name: Lint
     permissions:
       contents: read # Allows reading the repo contents
 

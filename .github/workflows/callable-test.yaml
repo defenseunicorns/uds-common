@@ -1,4 +1,4 @@
-name: Test-Deploy
+name: Callable-Test
 
 on:
   workflow_call:
@@ -31,8 +31,7 @@ permissions:
   id-token: write
 
 jobs:
-  run-test:
-    name: deploy
+  run:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     if: contains(inputs.upgrade-flavors, inputs.flavor) || inputs.type == 'install'
