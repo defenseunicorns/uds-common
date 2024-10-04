@@ -83,8 +83,10 @@ There are multiple task files available in this repository with different object
 | Name | Description |
 |------|-------------|
 | **deps** | Install linting tool dependencies |
+| **all** | Run all linting commands |
 | **yaml** | Run YAML linting checks |
 | **oscal** | Run linting checks on OSCAL |
+| **shell** | Run shellcheck on all Maru tasks, GitHub workflows, and local shell scripts |
 
 ### [badge.yaml](./tasks/badge.yaml)
 
@@ -98,3 +100,15 @@ There are multiple task files available in this repository with different object
 |------|-------------|
 | **validate** | Lula Validate OSCAL Compliance |
 | **evaluate** | Lula Evaluate multiple OSCAL Assessment Results |
+
+### [actions.yaml](./tasks/actions.yaml)
+
+| Name | Description |
+|------|-------------|
+| **debug-output** | Print debug output from a k8s cluster |
+| **clean-gh-runner** | Cleanup unneeded files to free space on a GitHub runner |
+| **save-logs** | Save Pod and Node logs from a cluster and fix permissions |
+| **setup-environment** | Setup the runner environment for testing UDS Packages |
+| **test-deploy** | Test a deployment of the UDS package |
+| **verify-badge** | Perform verification to assist with UDS badge certification |
+| **determine-arch** | Determine the architecture of the current machine |
