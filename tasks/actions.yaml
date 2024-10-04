@@ -47,7 +47,6 @@ tasks:
     actions:
       - description: Clean up space on the GitHub runner
         cmd: |
-
          if [ "$CI" = "true" ]; then
             df -h
             sudo rm -rf /usr/share/dotnet
@@ -131,14 +130,9 @@ tasks:
   - name: test-deploy
     description: Test the UDS package
     actions:
-
-      # === INSTALL TESTING ===
-
       - description: Test installing the package
         if: ${{ eq .variables.TYPE "install" }}
         cmd: ./uds run test-package --set FLAVOR=${{ .variables.FLAVOR }} ${{ .variables.OPTIONS }} --no-progress
-
-      # === UPGRADE TESTING ===
 
       - description: Test upgrading the package
         if: ${{ eq .variables.TYPE "upgrade" }}
