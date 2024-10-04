@@ -11,9 +11,6 @@ tasks:
         default: ""
         required: false
     actions:
-      - env:
-          - ZARF_CONFIG=${{ .inputs.config }}
-    actions:
       - description: Get the current Zarf package name
         cmd: cat ${{ .inputs.path }}/zarf.yaml | ./uds zarf tools yq .metadata.name
         setVariables:
