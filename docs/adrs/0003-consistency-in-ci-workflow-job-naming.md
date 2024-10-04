@@ -13,7 +13,7 @@ understandability on a Pull Request and with Branch Protection Rules for a
 repository.
 
 Because of the downstream impacts these names can have to UDS Package repos
-we need a simple scheme to follow  for common workflows and jobs that will
+we need a simple scheme to follow for common workflows and jobs that will
 minimize the need to change repo settings for consuming repos.
 
 Parent workflow names (the `name` key at the top of a GitHub workflow) do not
