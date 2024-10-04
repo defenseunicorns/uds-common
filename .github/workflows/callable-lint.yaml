@@ -1,4 +1,4 @@
-name: Callable-Lint
+name: Lint
 
 on:
   # This workflow is triggered on pull requests to the main branch.

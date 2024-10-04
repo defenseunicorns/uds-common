@@ -57,8 +57,6 @@ jobs:
             --set CHAINGUARD_IDENTITY="${{ secrets.CHAINGUARD_IDENTITY }}"
         shell: bash
 
-        # TODO Update to use actions:test-deploy instead of -f tasks/actions.yaml
-        # once maru issue https://github.com/defenseunicorns/maru-runner/issues/133 is resolved
       - name: Test
         run: uds run actions:test-deploy --set FLAVOR="${{ inputs.flavor }}" --set TYPE="${{ inputs.type }}"
         shell: bash
