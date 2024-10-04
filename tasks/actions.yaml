@@ -24,6 +24,7 @@ variables:
 
 tasks:
   - name: debug-output
+    description: Print debug output from a k8s cluster
     actions:
       - description: Print basic debug info for a k8s cluster
         cmd: |
@@ -44,6 +45,7 @@ tasks:
           echo "::endgroup::"
 
   - name: clean-gh-runner
+    description: Cleanup unneeded files to free space on a GitHub runner
     actions:
       - description: Clean up space on the GitHub runner
         cmd: |
@@ -58,6 +60,7 @@ tasks:
           fi
 
   - name: save-logs
+    description: Save Pod and Node logs from a cluster and fix permissions
     actions:
       - description: Pull logs from containerd
         cmd: |
@@ -81,7 +84,7 @@ tasks:
           sudo chown "$USER" /tmp/uds-*.log || echo ""
 
   - name: setup-environment
-    description: UDS Environment Setup
+    description: Setup the runner environment for testing UDS Packages
     actions:
       - description: Install k3d
         cmd: |
@@ -128,7 +131,7 @@ tasks:
           echo "${{ .variables.GH_TOKEN }}" | uds zarf tools registry login -u "dummy" --password-stdin ghcr.io
 
   - name: test-deploy
-    description: Test the UDS package
+    description: Test a deployment of the UDS package
     actions:
       - description: Test installing the package
         if: ${{ eq .variables.TYPE "install" }}
@@ -162,7 +165,7 @@ tasks:
 
   # Common task
   - name: determine-arch
-    description: determine architecture
+    description: Determine the architecture of the current machine
     actions:
       - description: Set Arch
         cmd: |
