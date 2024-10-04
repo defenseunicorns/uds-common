@@ -23,6 +23,8 @@ Pinning to a specific tag of a task (rather than `main`) with renovate watching 
 
 There are multiple task files available in this repository with different objectives and required variables.
 
+<!-- TODO: @WSTARR - these were generated with Maru off of https://github.com/defenseunicorns/maru-runner/pull/151 - once that feature is finalized a workflow should be added to check this file for missing text -->
+
 ### [setup.yaml](./tasks/setup.yaml)
 
 | Name | Description |
