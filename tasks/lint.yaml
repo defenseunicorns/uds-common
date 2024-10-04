@@ -27,16 +27,19 @@ tasks:
     description: Run linting checks on OSCAL
     actions:
       - description: Lint OSCAL files
+        shell:
+          linux: bash
+          darwin: bash
         cmd: |
-          for file in $OSCALFILES; do
+          IFS=',' read -r -a OSCALARRAY <<< "$OSCALFILES"
+          for file in "${OSCALARRAY[@]}"; do
             if [ ! -f "$file" ]; then
               echo "⚠️ WARNING: file $file does not exist."
               exit 0
             fi
           done
 
-          # shellcheck disable=SC2086
-          lula tools lint -f $OSCALFILES
+          lula tools lint -f "$OSCALFILES"
 
   - name: shell
     description: Run shellcheck on all Maru tasks, GitHub workflows, and local shell scripts
