@@ -8,36 +8,37 @@ includes:
   - upgrade: ./tasks/upgrade.yaml
   - compliance: ./tasks/compliance.yaml
   - badge: ./tasks/badge.yaml
+  - actions: ./tasks/actions.yaml
 
 tasks:
   - name: default
     description: Create and deploy the nginx package on a fresh cluster
     actions:
-      - task: create-nginx-test-bundle
+      - task: create-test-bundle
       - task: setup:k3d-test-cluster
       - task: deploy:test-bundle
 
   - name: default-full
     description: Create and deploy the nginx package on a fresh cluster with full uds-core
     actions:
-      - task: create-nginx-test-bundle
+      - task: create-test-bundle
       - task: setup:k3d-full-cluster
       - task: deploy:test-bundle
 
-  - name: create-nginx-package
+  - name: create-package
     description: Create UDS nginx Package
     actions:
       - task: create:package
         with:
           options: --skip-sbom
 
-  - name: create-nginx-test-bundle
+  - name: create-test-bundle
     description: Create a local UDS nginx bundle
     actions:
-      - task: create-nginx-package
+      - task: create-package
       - task: create:test-bundle
 
-  - name: create-nginx-latest-release-bundle
+  - name: create-latest-release-bundle
     description: Create UDS nginx bundle based on the latest release
     actions:
       - task: pull:latest-package-release
@@ -48,10 +49,10 @@ tasks:
   - name: dev
     description: Create and deploy the bundle against an existing cluster
     actions:
-      - task: create-nginx-test-bundle
+      - task: create-test-bundle
       - task: deploy:test-bundle
 
-  - name: publish-nginx
+  - name: publish
     description: Build and publish the packages
     actions:
       - description: Create the AMD64 package
@@ -85,7 +86,7 @@ tasks:
   - name: test-package
     description: Test the nginx package from the current branch
     actions:
-      - task: create-nginx-test-bundle
+      - task: create-test-bundle
       - task: setup:k3d-test-cluster
       - task: deploy:test-bundle
       - task: test
@@ -102,7 +103,7 @@ tasks:
       - task: compliance:validate
         with:
           assessment_results: /tmp/oscal-assessment-results.yaml
-      - task: create-nginx-test-bundle
+      - task: create-test-bundle
       - task: deploy:test-bundle
       - task: test
       - task: compliance:validate
