@@ -30,8 +30,7 @@ permissions:
   id-token: write
 
 jobs:
-  flavor-test:
-    name: Test-Flavor
+  check-flavor:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -43,16 +42,16 @@ jobs:
     outputs:
       upgrade-flavors: ${{ steps.test-flavor.outputs.upgrade-flavors }}
 
-  test-deploy:
-    needs: flavor-test
+  validate:
+    needs: check-flavor
     strategy:
       fail-fast: false
       matrix:
         type: [install, upgrade]
         flavor: [upstream, unicorn, registry1]
-    uses: ./.github/workflows/test-deploy.yaml
+    uses: ./.github/workflows/callable-test.yaml
     with:
-      upgrade-flavors: ${{ needs.flavor-test.outputs.upgrade-flavors }}
+      upgrade-flavors: ${{ needs.check-flavor.outputs.upgrade-flavors }}
       flavor: ${{ matrix.flavor }}
       type: ${{ matrix.type }}
     secrets: inherit # Inherits all secrets from the parent workflow.
