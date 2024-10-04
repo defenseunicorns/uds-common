@@ -54,6 +54,12 @@ With the Pull Request jobs looking something like:
 - Test / validate (upgrade, unicorn) / run
 - Test / validate (install, registry1) / run
 - Test / validate (upgrade, registry1) / run
+- CI Docs Shim / validate (install, upstream) / run
+- CI Docs Shim / validate (upgrade, upstream) / run
+- CI Docs Shim / validate (install, unicorn) / run
+- CI Docs Shim / validate (upgrade, unicorn) / run
+- CI Docs Shim / validate (install, registry1) / run
+- CI Docs Shim / validate (upgrade, registry1) / run
 
 ## Consequences
 
