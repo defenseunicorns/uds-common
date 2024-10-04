@@ -16,7 +16,7 @@ tasks:
         setVariables:
           - name: PACKAGE_VERSION
       - description: Deploy the UDS Zarf Package
-        cmd: ./uds zarf package deploy ${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${UDS_ARCH}-${PACKAGE_VERSION}.tar.zst --confirm --no-progress ${{ .inputs.options }}
+        cmd: ./uds zarf package deploy "${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${UDS_ARCH}-${PACKAGE_VERSION}.tar.zst" --confirm --no-progress ${{ .inputs.options }}
 
   - name: test-bundle
     inputs:
@@ -38,4 +38,4 @@ tasks:
         setVariables:
           - name: BUNDLE_VERSION
       - description: Deploy the UDS bundle with the package and its dependencies
-        cmd: UDS_CONFIG=${{ .inputs.path }}/${{ .inputs.config }} ./uds deploy ${{ .inputs.path }}/uds-bundle-${BUNDLE_NAME}-${UDS_ARCH}-${BUNDLE_VERSION}.tar.zst --confirm --no-progress ${{ .inputs.options }}
+        cmd: UDS_CONFIG=${{ .inputs.path }}/${{ .inputs.config }} ./uds deploy "${{ .inputs.path }}/uds-bundle-${BUNDLE_NAME}-${UDS_ARCH}-${BUNDLE_VERSION}.tar.zst" --confirm --no-progress ${{ .inputs.options }}
