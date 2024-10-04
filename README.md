@@ -1,7 +1,7 @@
 # 🦄 UDS Common
 
 [![Latest Release](https://img.shields.io/github/v/release/defenseunicorns/uds-common)](https://github.com/defenseunicorns/uds-common/releases)
-[![Build Status](https://img.shields.io/github/actions/workflow/status/defenseunicorns/uds-common/tag-and-release.yaml)](https://github.com/defenseunicorns/uds-common/actions/workflows/tag-and-release.yaml)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/defenseunicorns/uds-common/release.yaml)](https://github.com/defenseunicorns/uds-common/actions/workflows/release.yaml)
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/defenseunicorns/uds-common/badge)](https://api.securityscorecards.dev/projects/github.com/defenseunicorns/uds-common)
 
 This repo acts as a UDS Package Framework that contains common configuration, tasks and documentation useful for building downstream UDS Packages.  It defines and helps consumers implement [UDS package practices](./docs/package_integration/uds-package-practices.md) within their specific package repositories and is intended to help streamline keeping those practices up to date over time.
