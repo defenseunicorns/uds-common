@@ -25,6 +25,10 @@ jobs:
         run: echo "release_created=${{ steps.tag.outputs.release_created || false }}" >> $GITHUB_OUTPUT
 
   publish:
+    permissions:
+      contents: read # Allows reading the content of the repository.
+      packages: write # Allows reading the content of the repository's packages.
+      id-token: write
     needs: tag-new-version
     if: ${{ needs.tag-new-version.outputs.release_created == 'true' }}
     strategy:
