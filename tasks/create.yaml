@@ -37,14 +37,14 @@ tasks:
         description: Path relative to the repositories root where the uds-bundle.yaml lives
         default: bundle
       config:
-        description: File name of the bundle config file. Defaults to uds-config.yaml. Path is relative to the path input.
-        default: uds-config.yaml
+        description: Path to the bundle config file. Defaults to bundle/uds-config.yaml.
+        default: bundle/uds-config.yaml
       architecture:
         description: The architecture of the bundle to create
         default: ${UDS_ARCH}
     actions:
       - env:
-          - UDS_CONFIG=${{ .inputs.path }}/${{ .inputs.config }}
+          - UDS_CONFIG=${{ .inputs.config }}
         cmd: |
           if [ ${FLAVOR} != "registry1" ] || [ ${{ .inputs.architecture }} != "arm64" ]; then
             ./uds create ${{ .inputs.path }} --confirm --no-progress --architecture=${{ .inputs.architecture }} ${{ .inputs.options }}
