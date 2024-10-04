@@ -21,7 +21,7 @@ jobs:
       - name: Install UDS CLI
         uses: defenseunicorns/setup-uds@v1.0.0
         with:
-          version: v0.16.0
+          version: v0.17.0
 
       - name: Environment setup
         run: |
@@ -36,7 +36,7 @@ jobs:
 
       - name: Save logs
         if: ${{ always() }}
-        run: uds run save-logs -f tasks/common-actions.yaml
+        run: uds run actions:save-logs -f tasks/common-actions.yaml
         shell: bash
 
       - uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4.4.0

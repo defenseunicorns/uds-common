@@ -23,20 +23,12 @@ jobs:
       - name: Install UDS CLI
         uses: defenseunicorns/setup-uds@v1.0.0
         with:
-          version: v0.16.0
-
-      - name: Download UDS run actions.yaml
-        shell: bash
-        run: curl -o ./tasks/common-actions.yaml -L https://raw.githubusercontent.com/defenseunicorns/uds-common/refs/heads/${{ inputs.udsCommonVersion }}/tasks/actions.yaml
-
-      - name: Download UDS run badge.yaml
-        shell: bash
-        run: curl -o ./tasks/badge.yaml -L https://raw.githubusercontent.com/defenseunicorns/uds-common/refs/heads/${{ inputs.udsCommonVersion }}/tasks/badge.yaml
+          version: v0.17.0
 
       - name: Environment setup
         run: |
-          uds run setup-environment \
-          --set GH_TOKEN="${{ secrets.GITHUB_TOKEN }}" -f tasks/common-actions.yaml
+          uds run actions:setup-environment \
+          --set GH_TOKEN="${{ secrets.GITHUB_TOKEN }}"
 
         shell: bash
 
