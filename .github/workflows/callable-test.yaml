@@ -46,7 +46,7 @@ jobs:
           version: v${{ inputs.udsCliVersion }}
 
       - name: Clean Runner
-        run: uds run clean-gh-runner -f tasks/common-actions.yaml
+        run: uds run actions:clean-gh-runner
         shell: bash
 
       - name: Environment setup
