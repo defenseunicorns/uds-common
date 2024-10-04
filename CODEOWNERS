@@ -1,7 +1,7 @@
-* @defenseunicorns/uds-core @defenseunicorns/swf @defenseunicorns/leapfrogai @defenseunicorns/uds-marketplace
+* @defenseunicorns/uds-core @defenseunicorns/swf @defenseunicorns/zarf @defenseunicorns/pepr @defenseunicorns/lula-dev @defenseunicorns/uds @defenseunicorns/leapfrogai @defenseunicorns/uds-marketplace
 
 # Common Renovate Configuration (updates as soon as it hits `main`)
-/config/renovate.json5 @defenseunicorns/uds-platform-leads @defenseunicorns/swf-leads @defenseunicorns/tech-leads
+/config/renovate.json5 @defenseunicorns/uds-core @defenseunicorns/swf @defenseunicorns/tech-leads
 
 # UDS Package Practices
 /docs/made-for-uds.svg @defenseunicorns/tech-leads
