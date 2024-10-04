@@ -7,7 +7,7 @@ tasks:
         description: Path relative to the repositories root where the zarf.yaml and .tar.zst lives
         default: .
       config:
-        description: Optionally provde a path to the package config file
+        description: Optionally provide a path to a Zarf config file
         default: ""
         required: false
     actions:
