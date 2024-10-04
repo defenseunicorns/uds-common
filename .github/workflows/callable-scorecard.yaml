@@ -6,6 +6,8 @@ on:
     - cron: 30 1 * * 6
   push:
     branches: [main]
+  # This allows other repositories to call this workflow in a reusable way
+  workflow_call:
 
 # Declare default permissions as read only.
 permissions: read-all
