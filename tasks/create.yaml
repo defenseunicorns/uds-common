@@ -44,7 +44,7 @@ tasks:
         default: ${UDS_ARCH}
     actions:
       - env:
-          - UDS_CONFIG=${{ .inputs.path }}/${{ .inputs.config }} 
+          - UDS_CONFIG=${{ .inputs.path }}/${{ .inputs.config }}
         cmd: |
           if [ ${FLAVOR} != "registry1" ] || [ ${{ .inputs.architecture }} != "arm64" ]; then
             ./uds create ${{ .inputs.path }} --confirm --no-progress --architecture=${{ .inputs.architecture }} ${{ .inputs.options }}
