@@ -20,7 +20,7 @@ tasks:
         required: false
     actions:
       - env:
-          - ZARF_CONFIG=${{ .inputs.zarfConfig }}
+          - ZARF_CONFIG=${{ .inputs.config }}
         cmd: |
           if [ ${FLAVOR} != "registry1" ] || [ ${{ .inputs.architecture }} != "arm64" ]; then
             ./uds zarf package create ${{ .inputs.path }} --confirm --no-progress --architecture=${{ .inputs.architecture }} --flavor ${FLAVOR} ${{ .inputs.options }}
