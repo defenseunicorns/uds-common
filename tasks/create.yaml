@@ -15,7 +15,7 @@ tasks:
         description: The architecture of the package to create
         default: ${UDS_ARCH}
       config:
-        description: Optionally provde a path to the package config file
+        description: Optionally provide a path to a Zarf config file
         default: ""
         required: false
     actions:
