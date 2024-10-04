@@ -20,4 +20,4 @@ tasks:
         setVariables:
           - name: BUNDLE_VERSION
       - description: Remove the UDS bundle with the package and its dependencies
-        cmd: UDS_CONFIG=${{ .inputs.path }}/${{ .inputs.config }} ./uds remove ${{ .inputs.path }}/uds-bundle-${BUNDLE_NAME}-${UDS_ARCH}-${BUNDLE_VERSION}.tar.zst --confirm --no-progress ${{ .inputs.options }}
+        cmd: UDS_CONFIG=${{ .inputs.path }}/${{ .inputs.config }} ./uds remove "${{ .inputs.path }}/uds-bundle-${BUNDLE_NAME}-${UDS_ARCH}-${BUNDLE_VERSION}.tar.zst" --confirm --no-progress ${{ .inputs.options }}
