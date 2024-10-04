@@ -44,6 +44,17 @@ given repo the Branch Protection Rules could look something like:
 - validate (install, registry1) / run
 - validate (upgrade, registry1) / run
 
+With the Pull Request jobs looking something like:
+
+- Lint / validate / run
+- PR Title Check / validate / run
+- Test / validate (install, upstream) / run
+- Test / validate (upgrade, upstream) / run
+- Test / validate (install, unicorn) / run
+- Test / validate (upgrade, unicorn) / run
+- Test / validate (install, registry1) / run
+- Test / validate (upgrade, registry1) / run
+
 ## Consequences
 
 Sticking to `validate / run` could make things more ambiguous - especially if calling
