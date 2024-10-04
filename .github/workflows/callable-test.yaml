@@ -1,0 +1,84 @@
+name: Callable-Test
+
+on:
+  workflow_call:
+    inputs:
+      upgrade-flavors:
+        required: true
+        type: string
+      flavor:
+        required: true
+        type: string
+      type:
+        required: true
+        type: string
+      udsCliVersion:
+        description: The uds-cli version to install
+        # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
+        default: 0.17.0
+        type: string
+
+# Permissions for the GITHUB_TOKEN used by the workflow.
+permissions:
+  contents: read # Allows reading the content of the repository.
+  packages: read # Allows reading the content of the repository's packages.
+  id-token: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    if: contains(inputs.upgrade-flavors, inputs.flavor) || inputs.type == 'install'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+
+      - name: Install UDS CLI
+        uses: defenseunicorns/setup-uds@v1.0.0
+        with:
+          version: v${{ inputs.udsCliVersion }}
+
+      - name: Clean Runner
+        run: uds run actions:clean-gh-runner
+        shell: bash
+
+      - name: Environment setup
+        run: |
+            uds run actions:setup-environment \
+            --set REGISTRY1_USERNAME="${{ secrets.IRON_BANK_ROBOT_USERNAME }}" \
+            --set REGISTRY1_PASSWORD="${{ secrets.IRON_BANK_ROBOT_PASSWORD }}" \
+            --set GH_TOKEN="${{ secrets.GITHUB_TOKEN }}" \
+            --set CHAINGUARD_IDENTITY="${{ secrets.CHAINGUARD_IDENTITY }}"
+        shell: bash
+
+      - name: Test
+        run: uds run actions:test-deploy --set FLAVOR="${{ inputs.flavor }}" --set TYPE="${{ inputs.type }}"
+        shell: bash
+
+      - name: UDS Badge Verification
+        run: uds run actions:verify-badge
+        shell: bash
+
+      - name: Debug Output
+        if: ${{ always() }}
+        run: uds run actions:debug-output
+        shell: bash
+
+      - name: Save logs
+        if: ${{ always() }}
+        run: uds run actions:save-logs
+        shell: bash
+
+      - uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4.4.0
+        if: ${{ always() }}
+        with:
+          name: debug-log${{ inputs.type }}-${{ inputs.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            /tmp/zarf-*.log
+            /tmp/uds-*.log
+            /tmp/maru-*.log
+            /tmp/debug-*.log
+            /tmp/uds-containerd-logs
+            /tmp/k3d-uds-*.log
+            /tmp/oscal-assessment-results.yaml
