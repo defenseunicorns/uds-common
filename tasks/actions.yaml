@@ -64,21 +64,21 @@ tasks:
           CONTAINER_NAME="k3d-uds-server-0"
           if docker ps | grep -q "$CONTAINER_NAME"; then
             echo "Container $CONTAINER_NAME is running. Proceeding with log copy..."
-            docker cp ${CONTAINER_NAME}:/var/log/ /tmp/uds-containerd-logs
+            docker cp "${CONTAINER_NAME}:/var/log/" /tmp/uds-containerd-logs
           else
             echo "Container $CONTAINER_NAME is not running. Skipping log copy."
           fi
 
       - description: Dump Node Logs
         cmd: |
-          docker ps --filter "name=k3d" --format "{{.Names}}" | while read line; do
-            docker logs "$line" 2> /tmp/$line.log
+          docker ps --filter "name=k3d" --format "{{.Names}}" | while read -r line; do
+            docker logs "$line" 2> "/tmp/$line.log"
           done
 
       - description: Fix log permissions
         cmd: |
-          sudo chown $USER /tmp/zarf-*.log || echo ""
-          sudo chown $USER /tmp/uds-*.log || echo ""
+          sudo chown "$USER" /tmp/zarf-*.log || echo ""
+          sudo chown "$USER" /tmp/uds-*.log || echo ""
 
   - name: setup-environment
     description: UDS Environment Setup
@@ -166,7 +166,7 @@ tasks:
     actions:
       - description: Set Arch
         cmd: |
-          ARCH=$(uname -m) && [ "$ARCH" = "x86_64" ] && ARCH='amd64'; [ "$ARCH" = "aarch64" ] && ARCH='arm64'; echo $ARCH
+          ARCH=$(uname -m) && [ "$ARCH" = "x86_64" ] && ARCH='amd64'; [ "$ARCH" = "aarch64" ] && ARCH='arm64'; echo "$ARCH"
         shell:
           linux: bash
           darwin: bash
