@@ -1,4 +1,4 @@
-name: Metadata
+name: PR Title Check
 
 on:
   # This workflow is triggered on pull requests to the main branch.
@@ -11,9 +11,8 @@ on:
   workflow_call:
 
 jobs:
-  validate:
+  run:
     runs-on: ubuntu-latest
-    name: Validate PR Title
     permissions:
       pull-requests: read # Allows reading pull request metadata.
       contents: read  # Allows pulling repo contents.

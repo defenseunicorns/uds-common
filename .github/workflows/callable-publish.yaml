@@ -1,0 +1,55 @@
+name: Callable-Publish
+
+on:
+  workflow_call:
+    inputs:
+      flavor:
+        required: true
+        type: string
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+
+      - name: Install UDS CLI
+        uses: defenseunicorns/setup-uds@v1.0.0
+        with:
+          # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
+          version: v0.17.0
+
+      - name: Environment setup
+        run: |
+            uds run actions:setup-environment \
+            --set REGISTRY1_USERNAME="${{ secrets.IRON_BANK_ROBOT_USERNAME }}" \
+            --set REGISTRY1_PASSWORD="${{ secrets.IRON_BANK_ROBOT_PASSWORD }}" \
+            --set GH_TOKEN="${{ secrets.GITHUB_TOKEN }}" \
+            --set CHAINGUARD_IDENTITY="${{ secrets.CHAINGUARD_IDENTITY }}"
+        shell: bash
+
+      - name: Publish Package
+        run: uds run publish --set FLAVOR=${{ inputs.flavor }} --no-progress
+
+      - name: Save logs
+        if: ${{ always() }}
+        run: uds run actions:save-logs
+        shell: bash
+
+      - uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4.4.0
+        if: ${{ always() }}
+        with:
+          name: debug-log${{ inputs.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            /tmp/zarf-*.log
+            /tmp/uds-*.log
+            /tmp/maru-*.log
+            /tmp/debug-*.log
+            /tmp/uds-containerd-logs
+            /tmp/k3d-uds-*.log
+            /tmp/oscal-assessment-results.yaml

@@ -1,0 +1,174 @@
+variables:
+  - name: REGISTRY1_USERNAME
+    default: ""
+  - name: REGISTRY1_PASSWORD
+    default: ""
+  - name: GH_TOKEN
+    default: ""
+  - name: CHAINGUARD_IDENTITY
+    default: ""
+  - name: CHART_PATH
+    default: chart/
+  - name: GROUP_NAME
+    default: package
+  - name: COMMON_ZARF
+    default: "true"
+  - name: TYPE
+    default: ""
+  - name: FLAVOR
+    default: ""
+  - name: OPTIONS
+    default: ""
+  - name: GO_VERSION
+    default: 1.23.1
+
+tasks:
+  - name: debug-output
+    actions:
+      - description: Print basic debug info for a k8s cluster
+        cmd: |
+          echo "::group::kubectl get all"
+          uds zarf tools kubectl get all -A || echo "failed" | tee /tmp/debug-k-get-all.log
+          echo "::endgroup::"
+          echo "::group::kubectl get pv,pvc"
+          uds zarf tools kubectl get pv,pvc -A || echo "failed" | tee /tmp/debug-k-get-pv-pvc.log
+          echo "::endgroup::"
+          echo "::group::kubectl get package"
+          uds zarf tools kubectl get package -A || echo "failed" | tee /tmp/debug-k-get-package.log
+          echo "::endgroup::"
+          echo "::group::kubectl get events"
+          uds zarf tools kubectl get events -A --sort-by='.lastTimestamp' || echo "failed" | tee /tmp/debug-k-get-events.log
+          echo "::endgroup::"
+          echo "::group::kubectl describe nodes"
+          uds zarf tools kubectl describe nodes k3d-uds-server-0 || echo "failed" | tee /tmp/debug-k-describe-node.log
+          echo "::endgroup::"
+
+  - name: clean-gh-runner
+    actions:
+      - description: Clean up space on the GitHub runner
+        cmd: |
+         if [ "$CI" = "true" ]; then
+            df -h
+            sudo rm -rf /usr/share/dotnet
+            sudo rm -rf /usr/local/lib/android
+            sudo rm -rf /opt/ghc
+            sudo rm -rf /opt/hostedtoolcache/CodeQL
+            sudo docker image prune --all --force
+            df -h
+          fi
+
+  - name: save-logs
+    actions:
+      - description: Pull logs from containerd
+        cmd: |
+          CONTAINER_NAME="k3d-uds-server-0"
+          if docker ps | grep -q "$CONTAINER_NAME"; then
+            echo "Container $CONTAINER_NAME is running. Proceeding with log copy..."
+            docker cp ${CONTAINER_NAME}:/var/log/ /tmp/uds-containerd-logs
+          else
+            echo "Container $CONTAINER_NAME is not running. Skipping log copy."
+          fi
+
+      - description: Dump Node Logs
+        cmd: |
+          docker ps --filter "name=k3d" --format "{{.Names}}" | while read line; do
+            docker logs "$line" 2> /tmp/$line.log
+          done
+
+      - description: Fix log permissions
+        cmd: |
+          sudo chown $USER /tmp/zarf-*.log || echo ""
+          sudo chown $USER /tmp/uds-*.log || echo ""
+
+  - name: setup-environment
+    description: UDS Environment Setup
+    actions:
+      - description: Install k3d
+        cmd: |
+          # renovate: datasource=github-tags depName=k3d-io/k3d versioning=semver
+          curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | TAG=v5.7.4 bash
+
+      - task: determine-arch
+
+      - description: Install Lula
+        cmd: |
+          # renovate: datasource=github-tags depName=defenseunicorns/lula versioning=semver-coerced
+          LulaVersion=0.7.0
+          Platform=$(uname -s)
+          curl -o /usr/local/bin/lula -L \
+          "https://github.com/defenseunicorns/lula/releases/download/v${LulaVersion}/lula_v${LulaVersion}_${Platform}_${{ .variables.ARCH }}" \
+          && chmod +x /usr/local/bin/lula
+
+      - description: Iron Bank Login
+        if: ${{ ne .variables.REGISTRY1_USERNAME "" }}
+        cmd: |
+          echo "${{ .variables.REGISTRY1_PASSWORD }}" | ./uds zarf tools registry login -u "${{ .variables.REGISTRY1_USERNAME }}" --password-stdin registry1.dso.mil
+
+      - description: Chainguard Login
+        if: ${{ ne .variables.CHAINGUARD_IDENTITY "" }}
+        cmd: |
+          curl -o /usr/local/bin/chainctl -L \
+          "https://dl.enforce.dev/chainctl/latest/chainctl_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/aarch64/arm64/')" \
+          && chmod +x /usr/local/bin/chainctl
+
+          if chainctl auth login --identity "${{ .variables.CHAINGUARD_IDENTITY }}" -v=0; then
+            echo Logged in as ${{ .variables.CHAINGUARD_IDENTITY }}!
+          else
+            echo Unable to assume the identity ${{ .variables.CHAINGUARD_IDENTITY }}.
+          exit 1
+          fi
+          if ! chainctl auth configure-docker --identity "${{ .variables.CHAINGUARD_IDENTITY }}" -v=0; then
+            echo Unable to register credential helper as ${{ .variables.CHAINGUARD_IDENTITY }}.
+            exit 1
+          fi
+
+      - description: GHCR Login
+        if: ${{ ne .variables.GH_TOKEN "" }}
+        cmd: |
+          echo "${{ .variables.GH_TOKEN }}" | uds zarf tools registry login -u "dummy" --password-stdin ghcr.io
+
+  - name: test-deploy
+    description: Test the UDS package
+    actions:
+      - description: Test installing the package
+        if: ${{ eq .variables.TYPE "install" }}
+        cmd: ./uds run test-package --set FLAVOR=${{ .variables.FLAVOR }} ${{ .variables.OPTIONS }} --no-progress
+
+      - description: Test upgrading the package
+        if: ${{ eq .variables.TYPE "upgrade" }}
+        cmd: ./uds run test-upgrade --set FLAVOR=${{ .variables.FLAVOR }} ${{ .variables.OPTIONS }} --no-progress
+
+  - name: verify-badge
+    description: Perform verification to assist with UDS badge certification
+    actions:
+      - task: determine-arch
+
+      - description: Setup Go environment
+        cmd: |
+          PLATFORM=$(uname -s | tr '[:upper:]' '[:lower:]')
+          curl  -OL "https://go.dev/dl/go${{ .variables.GO_VERSION }}.${PLATFORM}-${{ .variables.ARCH }}.tar.gz" && \
+          sudo tar -C /usr/local -xzf "go${{ .variables.GO_VERSION }}.${PLATFORM}-${{ .variables.ARCH }}.tar.gz"
+          echo 'export PATH="$PATH:/usr/local/go/bin"' >> ~/.bashrc
+
+      - description: Setup Helm
+        cmd: curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+      - description: Test installing the package
+        cmd: |
+          uds run badge:verify-badge \
+            --set CHART_PATH="${{ .variables.CHART_PATH }}" \
+            --set GROUP_NAME="${{ .variables.GROUP_NAME }}" \
+            --set COMMON_ZARF="${{ .variables.COMMON_ZARF }}"
+
+  # Common task
+  - name: determine-arch
+    description: determine architecture
+    actions:
+      - description: Set Arch
+        cmd: |
+          ARCH=$(uname -m) && [ "$ARCH" = "x86_64" ] && ARCH='amd64'; [ "$ARCH" = "aarch64" ] && ARCH='arm64'; echo $ARCH
+        shell:
+          linux: bash
+          darwin: bash
+        setVariables:
+          - name: ARCH
