@@ -7,7 +7,7 @@ variables:
 
 tasks:
   - name: package
-    description: Publish package for the supplied architecture
+    description: Publish the UDS package for the supplied architecture
     inputs:
       path:
         description: Path to the zarf package being published
@@ -34,10 +34,10 @@ tasks:
           - name: PACKAGE_NAME
       - description: Publish package for the supplied architecture
         cmd: |
-          ./uds zarf package publish ${{ .inputs.path }}/zarf-package-${{ .inputs.name }}-${{ .inputs.architecture }}-${{ .inputs.version }}.tar.zst oci://${TARGET_REPO}
+          ./uds zarf package publish "${{ .inputs.path }}/zarf-package-${{ .inputs.name }}-${{ .inputs.architecture }}-${{ .inputs.version }}.tar.zst" "oci://${TARGET_REPO}"
 
   - name: test-bundle
-    description: Publish bundle for the supplied architecture
+    description: Publish the test bundle for the supplied architecture
     inputs:
       path:
         description: Path to the UDS bundle being published
@@ -59,4 +59,4 @@ tasks:
           - name: BUNDLE_NAME
       - description: Publish bundle for the supplied architecture
         cmd: |
-          ./uds publish ${{ .inputs.path }}/uds-bundle-${{ .inputs.name }}-${{ .inputs.architecture }}-${{ .inputs.version }}.tar.zst oci://${TARGET_REPO}/bundles --no-progress
+          ./uds publish "${{ .inputs.path }}/uds-bundle-${{ .inputs.name }}-${{ .inputs.architecture }}-${{ .inputs.version }}.tar.zst" "oci://${TARGET_REPO}/bundles" --no-progress

@@ -1,8 +1,8 @@
 # Welcome to UDS Common
 
-Thank you for your interest in contributing to the common patterns Defense Unicorns uses across UDS!
+Thank you for your interest in contributing to the common framework Defense Unicorns 🦄 uses across UDS!
 
-This document describes the process and requirements for contributing.
+Below are the process and requirements for contributing.
 
 ## Developer Experience
 
@@ -15,6 +15,10 @@ Specifically:
 * We perform automated testing on all changes before they get merged to main
 * Continuous integration (CI) pipeline tests are definitive
 * We create immutable release artifacts
+
+### Philosophy
+
+Before contributing or suggesting a larger change it is important to keep in mind that the "Best way to avoid punch. No be there." ―Miyagi to Daniel in Karate Kid.  This means that the best way to update a task or a configuration is to require no downstream changes at all and to suggest changes in architecture that will lead to fewer and fewer downstream changes over all.  When proposing architectural changes in [ADRs](#architecture-decision-records-adr) you should clearly outline (and test!) the consequences of changes to downstream consumers.
 
 ### Developer Workflow
 
@@ -34,24 +38,8 @@ Specifically:
 
 We've chosen to use ADRs to document architecturally significant decisions. We primarily use the guidance found in [this article by Michael Nygard](http://thinkrelevance.com/blog/2011/11/15/documenting-architecture-decisions) with a couple of tweaks:
 
-- The criteria for when an ADR is needed is undefined. The team will decide when the team needs an ADR.
+- An ADR is needed whenever there is an architectural/structural change to the repository that will incur downstream impacts to other repositories.
 - We will use the tool [adr-tools](https://github.com/npryce/adr-tools) to make it easier on us to create and maintain ADRs.
 - We will keep ADRs specific to this package in the repository under `adr/NNNN-name-of-adr.md`.
   > `adr-tools` is configured with a dotfile to automatically use this directory and format.
-- We will keep ADRs relating to Software Factory as a whole in the [UDS Software Factory](https://github.com/defenseunicorns/uds-software-factory) repository under `adr/NNNN-name-of-adr.md`.
-
-### How to use `adr-tools`
-
-```bash
-# Create a new ADR titled "Use Bisquick for all waffle making"
-adr new Use Bisquick for all waffle making
-
-# Create a new ADR that supersedes a previous one. Let's say, for example, that the previous ADR about Bisquick was ADR number 9.
-adr new -s 9 Use scratch ingredients for all waffle making
-
-# Create a new ADR that amends a previous one. Let's say the previous one was ADR number 15
-adr new -l "15:Amends:Amended by" Use store-bought butter for all waffle making
-
-# Get full help docs. There are all sorts of other helpful commands that help manage the decision log.
-adr help
-```
+- We will keep ADRs relating to specific teams in their repositories (i.e. the [UDS Software Factory](https://github.com/defenseunicorns/uds-software-factory) repository).

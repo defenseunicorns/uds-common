@@ -1,5 +1,6 @@
 tasks:
   - name: package
+    description: Deploy the created UDS Zarf Package
     inputs:
       options:
         description: For setting deploy time variables and flags
@@ -22,9 +23,10 @@ tasks:
       - description: Deploy the UDS Zarf Package
         env:
           - ZARF_CONFIG=${{ .inputs.config }}
-        cmd: ./uds zarf package deploy ${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${UDS_ARCH}-${PACKAGE_VERSION}.tar.zst --confirm --no-progress ${{ .inputs.options }}
+        cmd: ./uds zarf package deploy "${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${UDS_ARCH}-${PACKAGE_VERSION}.tar.zst" --confirm --no-progress ${{ .inputs.options }}
 
   - name: test-bundle
+    description: Deploy the created test bundle (deploying package + dependencies for testing)
     inputs:
       path:
         description: Path relative to the repositories root where the uds-bundle.yaml and .tar.zst lives
@@ -46,4 +48,4 @@ tasks:
       - description: Deploy the UDS bundle with the package and its dependencies
         env:
           - UDS_CONFIG=${{ .inputs.config }}
-        cmd: ./uds deploy ${{ .inputs.path }}/uds-bundle-${BUNDLE_NAME}-${UDS_ARCH}-${BUNDLE_VERSION}.tar.zst --confirm --no-progress ${{ .inputs.options }}
+        cmd: ./uds deploy "${{ .inputs.path }}/uds-bundle-${BUNDLE_NAME}-${UDS_ARCH}-${BUNDLE_VERSION}.tar.zst" --confirm --no-progress ${{ .inputs.options }}
