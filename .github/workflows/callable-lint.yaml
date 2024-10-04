@@ -1,20 +1,12 @@
 name: Callable-Lint
 
 on:
+  # This workflow is triggered on pull requests to the main branch.
+  pull_request:
+    # milestoned is added here as a workaround for release-please not triggering PR workflows (PRs should be added to a milestone to trigger the workflow).
+    types: [milestoned, opened, reopened, synchronize]
   # This allows other repositories to call this workflow in a reusable way
   workflow_call:
-    inputs:
-      udsCliVersion:
-        description: The uds-cli version to install
-        # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
-        default: 0.16.0
-        type: string
-      udsCommonVersion:
-        description: The uds-cli version to install
-        # release-please: start-version
-        default: 0.13.1
-        # release-please: end-version
-        type: string
 
 jobs:
   run:
