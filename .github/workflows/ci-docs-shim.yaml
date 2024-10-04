@@ -25,8 +25,8 @@ jobs:
   validate:
     strategy:
       matrix:
-        flavor: [upstream, registry1, unicorn]
         type: [install, upgrade]
+        flavor: [upstream, registry1, unicorn]
     uses: ./.github/workflows/callable-ci-docs-shim.yaml
     with:
       flavor: ${{ matrix.flavor }}
