@@ -22,6 +22,7 @@
 * update the publish task to avoid name collision ([#267](https://github.com/defenseunicorns/uds-common/issues/267)) ([6a176ff](https://github.com/defenseunicorns/uds-common/commit/6a176ffd18ece28b759eb4e20f2e082ff0e079fb))
 * update publish to take architecture as an input ([#143](https://github.com/defenseunicorns/uds-common/issues/143))
 
+
 ### Miscellaneous
 
 * add an ADR to document workflow/job names ([#260](https://github.com/defenseunicorns/uds-common/issues/260)) ([0685c7c](https://github.com/defenseunicorns/uds-common/commit/0685c7cac904ebe5f746770f9488210498d4463d))
