@@ -9,6 +9,13 @@ on:
       flavor:
         required: true
         type: string
+      reports-path:
+        type: string
+        description: The path to test outputs to upload 
+      reports-name:
+        type: string
+        description: The name prefix for upload test reports
+        default: playwright-report
 
 jobs:
   run:
@@ -56,3 +63,10 @@ jobs:
             /tmp/uds-containerd-logs
             /tmp/k3d-uds-*.log
             /tmp/oscal-assessment-results.yaml
+
+      - uses: actions/upload-artifact@604373da6381bf24206979c74d06a550515601b9 # v4.4.1
+        if: always() && ${{ inputs.reports-path != '' }}
+        with:
+          name: ${{ inputs.reports-name }}-${{ inputs.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ runner.arch }}
+          path: ${{ inputs.reports-path }}
+          retention-days: 30
