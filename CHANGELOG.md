@@ -1,5 +1,36 @@
 # Changelog
 
+## [1.0.0](https://github.com/defenseunicorns/uds-common/compare/v0.13.1...v1.0.0) (2024-10-07)
+
+
+### ⚠ BREAKING CHANGES
+
+* **task:** add optional config input to create, deploy package and bundle tasks ([#262](https://github.com/defenseunicorns/uds-common/issues/262))
+* add shell linting to uds-common linting ([#258](https://github.com/defenseunicorns/uds-common/issues/258))
+* update uds common gh actions to use uds run conditionals ([#254](https://github.com/defenseunicorns/uds-common/issues/254))
+
+### Features
+
+* **task:** add optional config input to create, deploy package and bundle tasks ([#262](https://github.com/defenseunicorns/uds-common/issues/262)) ([3d3e9cb](https://github.com/defenseunicorns/uds-common/commit/3d3e9cb82e6664a4250782e6ae3a4e1112cfe5be))
+* update uds common gh actions to use uds run conditionals ([#254](https://github.com/defenseunicorns/uds-common/issues/254)) ([c9d92f0](https://github.com/defenseunicorns/uds-common/commit/c9d92f0481d147e362d359447b487ab1c1560f31))
+
+
+### Bug Fixes
+
+* update publish permissions ([#263](https://github.com/defenseunicorns/uds-common/issues/263)) ([2e57869](https://github.com/defenseunicorns/uds-common/commit/2e57869b41d1f523ca37b2a3da035a580fc7d6d0))
+
+
+### Miscellaneous
+
+* add an ADR to document workflow/job names ([#260](https://github.com/defenseunicorns/uds-common/issues/260)) ([0685c7c](https://github.com/defenseunicorns/uds-common/commit/0685c7cac904ebe5f746770f9488210498d4463d))
+* add shell linting to uds-common linting ([#258](https://github.com/defenseunicorns/uds-common/issues/258)) ([82e9137](https://github.com/defenseunicorns/uds-common/commit/82e9137642cb5dc0ba41cb33ad1ae44258549d19))
+* correct the release workflow path on README ([#265](https://github.com/defenseunicorns/uds-common/issues/265)) ([62c9a5f](https://github.com/defenseunicorns/uds-common/commit/62c9a5f0a14a8215d5d7e55e1b11d0d77003c8e1))
+* **deps:** update uds common support dependencies ([#250](https://github.com/defenseunicorns/uds-common/issues/250)) ([c828932](https://github.com/defenseunicorns/uds-common/commit/c82893264fffadfd0d84ca239a9459e6e55b9635))
+* **docs:** restructure and introduce metadata guidelines ([#266](https://github.com/defenseunicorns/uds-common/issues/266)) ([6828f10](https://github.com/defenseunicorns/uds-common/commit/6828f10932a65d5fbbaf5994e2c23ddd1cd27255))
+* refactor and improve badge verification task ([#249](https://github.com/defenseunicorns/uds-common/issues/249)) ([82e63be](https://github.com/defenseunicorns/uds-common/commit/82e63be82766a2e550a847af904b2d738c9d3478))
+* update practices around maintaining the UDS Common framework ([#253](https://github.com/defenseunicorns/uds-common/issues/253)) ([a733122](https://github.com/defenseunicorns/uds-common/commit/a7331224f153532361d32d0b02de6cbe7361ffe3))
+* update the codeowners for the repo ([#264](https://github.com/defenseunicorns/uds-common/issues/264)) ([6359020](https://github.com/defenseunicorns/uds-common/commit/6359020fa85b88f3360d0813f3da1d5e1f51134c))
+
 ## [0.13.1](https://github.com/defenseunicorns/uds-common/compare/v0.13.0...v0.13.1) (2024-09-23)
 
 
