@@ -34,6 +34,7 @@ jobs:
     strategy:
       matrix:
         flavor: [upstream, registry1, unicorn]
+        architecture: [amd64]
     uses: ./.github/workflows/callable-publish.yaml
     with:
       flavor: ${{ matrix.flavor }}
