@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This guide is intended for developers integrating applications with UDS (Unicorn Delivery Service). It provides an overview of the integration process, key considerations, and resources to ensure a smooth integration.
+This guide is intended for developers integrating applications with UDS (Unicorn Delivery Service). It provides an overview of the integration process, key considerations, and resources to ensure a smooth integration. If you are familiar with UDS Package creation, [Badging Requirements](./requirements/uds-package-requirements.md) may be more relevant.
 
 Integrating a Package fundamentally means:
 1. Creating a repository `uds-package-<name>` from [uds-package-template](https://github.com/defenseunicorns/uds-package-template)
