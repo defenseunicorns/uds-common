@@ -34,8 +34,12 @@ jobs:
     strategy:
       matrix:
         flavor: [upstream, registry1, unicorn]
-        architecture: [amd64]
+        architecture: [amd64, arm64]
+        exclude:
+          - flavor: registry1
+            architecture: arm64
     uses: ./.github/workflows/callable-publish.yaml
     with:
       flavor: ${{ matrix.flavor }}
+      runsOn: ${{ matrix.architecture == 'arm64' && 'uds-swf-ubuntu-arm64-4-core' || 'ubuntu-latest' }}
     secrets: inherit # Inherits all secrets from the parent workflow.
