@@ -59,7 +59,7 @@ tasks:
       - description: Test the bundle
         task: test
 
-# CI will execute the following (via .github/actions/test and .github/actions/release) so they need to be here with these names
+# CI will execute the following (via .github/workflows/callable-test.yaml and .github/workflows/callable-publish.yaml) so they need to be here with these names
 
   - name: test-package
     description: Test the nginx package from the current branch
