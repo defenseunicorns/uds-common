@@ -7,6 +7,7 @@ variables:
 
 tasks:
   - name: create-latest-tag-bundle
+    description: Creates the test bundle at the latest tag in preparation for upgrade testing
     inputs:
       options:
         description: For setting create time variables and flags
