@@ -25,52 +25,18 @@ tasks:
       - task: setup:k3d-full-cluster
       - task: deploy:test-bundle
 
-  - name: create-package
+  - name: create-dev-package
     description: Create UDS nginx Package
     actions:
       - task: create:package
         with:
           options: --skip-sbom
 
-  - name: create-test-bundle
-    description: Create a local UDS nginx bundle
-    actions:
-      - task: create-package
-      - task: create:test-bundle
-
-  - name: create-latest-release-bundle
-    description: Create UDS nginx bundle based on the latest release
-    actions:
-      - task: pull:latest-package-release
-        with:
-          spoof_release: "true"
-      - task: create:test-bundle
-
   - name: dev
     description: Create and deploy the bundle against an existing cluster
     actions:
       - task: create-test-bundle
       - task: deploy:test-bundle
-
-  - name: publish
-    description: Build and publish the packages
-    actions:
-      - description: Create the AMD64 package
-        task: create:package
-        with:
-          architecture: amd64
-
-      - description: Create the ARM64 package
-        task: create:package
-        with:
-          architecture: arm64
-
-      - description: Publish the packages
-        task: publish:package
-        with:
-          # x-release-please-start-version
-          version: 1.0.0
-          # x-release-please-end
 
   - name: test
     description: Test and validate cluster is deployed with nginx
@@ -81,16 +47,34 @@ tasks:
             address: nginx.uds.dev
             code: 200
 
-# CI will execute the following (via .github/actions/test) so they need to be here with these names
+  - name: create-deploy-test-bundle
+    description: Test and validate cluster is deployed with nginx
+    actions:
+      - description: Create the test bundle
+        task: create:test-bundle
+
+      - description: Deploy the test bundle
+        task: deploy:test-bundle
+
+      - description: Test the bundle
+        task: test
+
+# CI will execute the following (via .github/workflows/callable-test.yaml and .github/workflows/callable-publish.yaml) so they need to be here with these names
 
   - name: test-package
     description: Test the nginx package from the current branch
     actions:
-      - task: create-test-bundle
-      - task: setup:k3d-test-cluster
-      - task: deploy:test-bundle
-      - task: test
-      - task: compliance:validate
+      - description: Create a dev version of the package
+        task: create-dev-package
+
+      - description: Setup the cluster
+        task: setup:k3d-test-cluster
+
+      - description: Create deploy and test the bundle
+        task: create-deploy-test-bundle
+
+      - description: Validate OSCAL compliance
+        task: compliance:validate
         with:
           assessment_results: /tmp/oscal-assessment-results.yaml
 
@@ -103,12 +87,30 @@ tasks:
       - task: compliance:validate
         with:
           assessment_results: /tmp/oscal-assessment-results.yaml
-      - task: create-test-bundle
-      - task: deploy:test-bundle
-      - task: test
+      - task: create-dev-package
+      - task: create-deploy-test-bundle
       - task: compliance:validate
         with:
           assessment_results: /tmp/oscal-assessment-results.yaml
       - task: compliance:evaluate
         with:
           assessment_results: /tmp/oscal-assessment-results.yaml
+
+  - name: publish-package
+    description: Build and publish the packages
+    actions:
+      - description: Create the package
+        task: create:package
+
+      - description: Setup the cluster
+        task: setup:k3d-test-cluster
+
+      - description: Create deploy and test the bundle
+        task: create-deploy-test-bundle
+
+      - description: Publish the packages
+        task: publish:package
+        with:
+          # x-release-please-start-version
+          version: 1.0.0
+          # x-release-please-end

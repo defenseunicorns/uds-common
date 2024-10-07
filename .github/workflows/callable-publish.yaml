@@ -3,13 +3,16 @@ name: Callable-Publish
 on:
   workflow_call:
     inputs:
+      runsOn:
+        default: ubuntu-latest
+        type: string
       flavor:
         required: true
         type: string
 
 jobs:
   run:
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runsOn }}
     permissions:
       contents: read
       packages: write
@@ -34,7 +37,7 @@ jobs:
         shell: bash
 
       - name: Publish Package
-        run: uds run publish --set FLAVOR=${{ inputs.flavor }} --no-progress
+        run: uds run publish-package --set FLAVOR=${{ inputs.flavor }} --no-progress
 
       - name: Save logs
         if: ${{ always() }}
