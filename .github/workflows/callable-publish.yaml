@@ -11,7 +11,7 @@ on:
         type: string
       reports-path:
         type: string
-        description: The path to test outputs to upload 
+        description: The path to test outputs to upload
       reports-name:
         type: string
         description: The name prefix for upload test reports
