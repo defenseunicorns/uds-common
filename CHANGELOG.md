@@ -5,6 +5,7 @@
 
 ### ⚠ BREAKING CHANGES
 
+* update the publish task to avoid name collision ([#267](https://github.com/defenseunicorns/uds-common/issues/267))
 * **task:** add optional config input to create, deploy package and bundle tasks ([#262](https://github.com/defenseunicorns/uds-common/issues/262))
 * add shell linting to uds-common linting ([#258](https://github.com/defenseunicorns/uds-common/issues/258))
 * update uds common gh actions to use uds run conditionals ([#254](https://github.com/defenseunicorns/uds-common/issues/254))
@@ -18,6 +19,7 @@
 ### Bug Fixes
 
 * update publish permissions ([#263](https://github.com/defenseunicorns/uds-common/issues/263)) ([2e57869](https://github.com/defenseunicorns/uds-common/commit/2e57869b41d1f523ca37b2a3da035a580fc7d6d0))
+* update the publish task to avoid name collision ([#267](https://github.com/defenseunicorns/uds-common/issues/267)) ([6a176ff](https://github.com/defenseunicorns/uds-common/commit/6a176ffd18ece28b759eb4e20f2e082ff0e079fb))
 
 
 ### Miscellaneous
