@@ -72,7 +72,7 @@ tasks:
 
       - description: Create deploy and test the bundle
         task: create-deploy-test-bundle
-  
+
       - description: Validate OSCAL compliance
         task: compliance:validate
         with:
