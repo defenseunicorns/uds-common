@@ -29,6 +29,11 @@ permissions:
   packages: read # Allows reading the content of the repository's packages.
   id-token: write
 
+# Abort prior jobs in the same workflow / PR
+concurrency:
+  group: test-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   check-flavor:
     runs-on: ubuntu-latest
