@@ -5,10 +5,11 @@
 
 ### ⚠ BREAKING CHANGES
 
+* remove with.assessment_results from oscal tasks ([#276](https://github.com/defenseunicorns/uds-common/issues/276))
 * update the publish task to avoid name collision ([#267](https://github.com/defenseunicorns/uds-common/issues/267))
 * **task:** add optional config input to create, deploy package and bundle tasks ([#262](https://github.com/defenseunicorns/uds-common/issues/262))
 * add shell linting to uds-common linting ([#258](https://github.com/defenseunicorns/uds-common/issues/258))
-* update uds-common gh actions to use uds run conditionals ([#254](https://github.com/defenseunicorns/uds-common/issues/254))
+* update uds common gh actions to use uds run conditionals ([#254](https://github.com/defenseunicorns/uds-common/issues/254))
 
 ### Features
 
@@ -18,9 +19,13 @@
 
 ### Bug Fixes
 
+* add runner.arch to upload-artifacts name ([#269](https://github.com/defenseunicorns/uds-common/issues/269)) ([4abe414](https://github.com/defenseunicorns/uds-common/commit/4abe414fa5460bc9e98b53f2e830b41e2e01cf26))
+* add test artifact uploads to callable workflows ([#275](https://github.com/defenseunicorns/uds-common/issues/275)) ([02e5c07](https://github.com/defenseunicorns/uds-common/commit/02e5c072465f1b06a05760fd4d1d12e070c22155))
+* broken hyperlink in guide.md ([#272](https://github.com/defenseunicorns/uds-common/issues/272)) ([6b152a4](https://github.com/defenseunicorns/uds-common/commit/6b152a4905ce4b8d212519e3fff4ff99dbaf7e50))
+* refactor top level tasks ([#277](https://github.com/defenseunicorns/uds-common/issues/277)) ([b7f6894](https://github.com/defenseunicorns/uds-common/commit/b7f68947d4082a7cb3128271476f65c61b3a9261))
+* remove with.assessment_results from oscal tasks ([#276](https://github.com/defenseunicorns/uds-common/issues/276)) ([bb8bb4b](https://github.com/defenseunicorns/uds-common/commit/bb8bb4b4df897b8aa747f5fe6e3ddd3fa40017b9))
 * update publish permissions ([#263](https://github.com/defenseunicorns/uds-common/issues/263)) ([2e57869](https://github.com/defenseunicorns/uds-common/commit/2e57869b41d1f523ca37b2a3da035a580fc7d6d0))
 * update the publish task to avoid name collision ([#267](https://github.com/defenseunicorns/uds-common/issues/267)) ([6a176ff](https://github.com/defenseunicorns/uds-common/commit/6a176ffd18ece28b759eb4e20f2e082ff0e079fb))
-* update publish to take architecture as an input ([#143](https://github.com/defenseunicorns/uds-common/issues/143))
 
 
 ### Miscellaneous
@@ -33,6 +38,7 @@
 * refactor and improve badge verification task ([#249](https://github.com/defenseunicorns/uds-common/issues/249)) ([82e63be](https://github.com/defenseunicorns/uds-common/commit/82e63be82766a2e550a847af904b2d738c9d3478))
 * update practices around maintaining the UDS Common framework ([#253](https://github.com/defenseunicorns/uds-common/issues/253)) ([a733122](https://github.com/defenseunicorns/uds-common/commit/a7331224f153532361d32d0b02de6cbe7361ffe3))
 * update the codeowners for the repo ([#264](https://github.com/defenseunicorns/uds-common/issues/264)) ([6359020](https://github.com/defenseunicorns/uds-common/commit/6359020fa85b88f3360d0813f3da1d5e1f51134c))
+* **deps:** update uds common support dependencies ([#278](https://github.com/defenseunicorns/uds-common/issues/278)) ([e71432f](https://github.com/defenseunicorns/uds-common/commit/e71432f261fa03b60c7bf5845e749476390e104b))
 
 ## [0.13.1](https://github.com/defenseunicorns/uds-common/compare/v0.13.0...v0.13.1) (2024-09-23)
 
