@@ -1,10 +1,9 @@
 spec:
   inputs:
-    stage:
-      default: build
+    inputs:
+      job_name: 'lint'
 ---
-lint:
-  stage: $[[ inputs.stage ]]
+"$[[ inputs.job_name ]]":
   script:
     # Environment setup
     - uds run actions:setup-environment --set GH_TOKEN="${GITHUB_TOKEN}"

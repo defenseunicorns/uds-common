@@ -1,0 +1,3 @@
+commitlint:
+  script:
+    - echo "hi i am commitlint"
