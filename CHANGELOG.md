@@ -23,6 +23,7 @@
 * add test artifact uploads to callable workflows ([#275](https://github.com/defenseunicorns/uds-common/issues/275)) ([02e5c07](https://github.com/defenseunicorns/uds-common/commit/02e5c072465f1b06a05760fd4d1d12e070c22155))
 * broken hyperlink in guide.md ([#272](https://github.com/defenseunicorns/uds-common/issues/272)) ([6b152a4](https://github.com/defenseunicorns/uds-common/commit/6b152a4905ce4b8d212519e3fff4ff99dbaf7e50))
 * refactor top level tasks ([#277](https://github.com/defenseunicorns/uds-common/issues/277)) ([b7f6894](https://github.com/defenseunicorns/uds-common/commit/b7f68947d4082a7cb3128271476f65c61b3a9261))
+* remove with.assessment_results from oscal tasks ([#276](https://github.com/defenseunicorns/uds-common/issues/276))
 * update publish permissions ([#263](https://github.com/defenseunicorns/uds-common/issues/263)) ([2e57869](https://github.com/defenseunicorns/uds-common/commit/2e57869b41d1f523ca37b2a3da035a580fc7d6d0))
 * update the publish task to avoid name collision ([#267](https://github.com/defenseunicorns/uds-common/issues/267)) ([6a176ff](https://github.com/defenseunicorns/uds-common/commit/6a176ffd18ece28b759eb4e20f2e082ff0e079fb))
 
