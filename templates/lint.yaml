@@ -1,0 +1,11 @@
+# templates/lint.yaml
+lint:
+  script:
+    # Environment setup
+    - uds run actions:setup-environment --set GH_TOKEN="${GITHUB_TOKEN}"
+
+    # Install lint dependencies
+    - uds run lint:deps --no-progress
+
+    # Lint the repository
+    - uds run lint:all --no-progress
