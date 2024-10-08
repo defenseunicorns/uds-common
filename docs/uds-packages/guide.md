@@ -22,6 +22,7 @@ Integrating a Package fundamentally means:
 - Vendors in the marketplace will carry forward their license and associated fees.
 - When in doubt, ask in the #product-support channel in Slack. Legal and Business considerations are being evaluated.
 
+
 ## Getting Started
 
 Before beginning the integration process, familiarize yourself with the following resources:
