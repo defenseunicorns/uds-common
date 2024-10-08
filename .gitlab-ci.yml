@@ -1,6 +1,6 @@
 include:
   # include the component located in the current project from the current SHA
-  - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/lint@ac1a6a996a119daee3054e456e707fab0d11cef7
+  - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/lint@$CI_COMMIT_SHA
     inputs:
       stage: build
 
