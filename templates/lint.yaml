@@ -4,6 +4,7 @@ spec:
       default: build
 ---
 lint:
+  stage: $[[ inputs.stage ]]
   script:
     # Environment setup
     - uds run actions:setup-environment --set GH_TOKEN="${GITHUB_TOKEN}"
