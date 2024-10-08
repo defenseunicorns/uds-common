@@ -75,8 +75,6 @@ tasks:
 
       - description: Validate OSCAL compliance
         task: compliance:validate
-        with:
-          assessment_results: /tmp/oscal-assessment-results.yaml
 
   - name: test-upgrade
     description: Test an upgrade from the latest released package to the current branch
@@ -85,16 +83,10 @@ tasks:
       - task: setup:k3d-test-cluster
       - task: deploy:test-bundle
       - task: compliance:validate
-        with:
-          assessment_results: /tmp/oscal-assessment-results.yaml
       - task: create-dev-package
       - task: create-deploy-test-bundle
       - task: compliance:validate
-        with:
-          assessment_results: /tmp/oscal-assessment-results.yaml
       - task: compliance:evaluate
-        with:
-          assessment_results: /tmp/oscal-assessment-results.yaml
 
   - name: publish-package
     description: Build and publish the packages
