@@ -5,12 +5,10 @@
 This guide is intended for developers integrating applications with UDS (Unicorn Delivery Service). It provides an overview of the integration process, key considerations, and resources to ensure a smooth integration. If you are familiar with UDS Package creation, [Badging Requirements](./requirements/uds-package-requirements.md) may be more relevant.
 
 Integrating a Package fundamentally means:
-
 1. Creating a repository `uds-package-<name>` from [uds-package-template](https://github.com/defenseunicorns/uds-package-template)
-2. Create a new issue using the [UDS Badging Requirements template](uds-badging-requirements-template.md) to record the progress being made and any exceptions that are necessary
-3. Integrating the upstream helm chart as a zarf package `zarf.yaml` to build a declarative OCI artifact
-4. Adding a UDS package Custom Resource `uds-package.yaml` to integrate with UDS Core via Pepr
-5. Build a 'zero CVE' package by replacing images with a `*-unicorn` flavored image
+2. Integrating the upstream helm chart as a zarf package `zarf.yaml` to build a declarative OCI artifact
+3. Adding a UDS package Custom Resource `uds-package.yaml` to integrate with UDS Core via Pepr
+4. Build a 'zero CVE' package by replacing images with a `*-unicorn` flavored image
 
 ## Prerequisites
 
@@ -51,7 +49,6 @@ Your goal is to bundle the upstream helm chart and images into a single Zarf pac
 - [ ] Start to monitor for the application reaching out to the internet For example [Sonarqube](https://github.com/defenseunicorns/uds-package-sonarqube/tree/main/src/monitoring-image) tries to download a jar file from Maven central to enable monitoring with Prometheus (it is not baked into their images) - this custom image takes a Chainguard busybox base, adds the correct jar file, and creates a simple script that calls itself "curl" that doesn't curl and instead copies the Jar file it already has to make that piece work in the Air Gap. Its basically a shim around the way the upstream chart works.
 
 #### Checkout
-
 Your repository has a `zarf.yaml`, you can build a single artifact with `uds zarf package create`, and deploy it to a [k3d-core-dev-slim cluster](https://github.com/defenseunicorns/uds-core?tab=readme-ov-file#uds-package-development) using `uds zarf package deploy`
 
 ### Step 2 - UDS Package
@@ -63,13 +60,11 @@ Your goal is to integrate the Zarf package application with [UDS Core](https://g
 - [ ] [UDS Package Practices](https://github.com/defenseunicorns/uds-common/blob/main/docs/uds-packages/requirements/uds-package-requirements.md) provides an extensive list of best practices, considerations, and tasks for a package to be "Made for UDS"
 
 #### Checkout
-
 Your repository has a `uds-package.yaml` manifest added to the appropriate helm chart and you can deploy to a K3d Core Dev Slim cluster, via zarf package.
 
 ## Examples
 
 For reference, consider these well-maintained UDS package examples:
-
 - [UDS Package GitLab](https://github.com/defenseunicorns/uds-package-gitlab) (More complex example)
 - [UDS Package Mattermost](https://github.com/defenseunicorns/uds-package-mattermost) (Simpler example)
 - [UDS Common NGINX](https://github.com/defenseunicorns/uds-common)
