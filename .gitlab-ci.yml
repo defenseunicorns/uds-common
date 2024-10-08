@@ -1,8 +1,6 @@
 include:
   # include the component located in the current project from the current SHA
   - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/lint@$CI_COMMIT_SHA
-    inputs:
-      job_name: 'my-lint'
   - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/test@$CI_COMMIT_SHA
   - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/commitlint@$CI_COMMIT_SHA
 

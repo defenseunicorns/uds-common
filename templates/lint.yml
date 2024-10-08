@@ -1,9 +1,4 @@
-spec:
-  inputs:
-    inputs:
-      job_name: 'lint'
----
-"$[[ inputs.job_name ]]":
+lint:
   script:
     # Environment setup
     - uds run actions:setup-environment --set GH_TOKEN="${GITHUB_TOKEN}"
