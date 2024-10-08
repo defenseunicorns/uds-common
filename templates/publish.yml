@@ -32,6 +32,7 @@ publish:
 
     name: "${REPORTS_NAME}-${FLAVOR}-${CI_PIPELINE_ID}-${CI_JOB_ID}"
 
+# todo fix publish rules 
   rules:
     - if: '$CI_COMMIT_REF_NAME == "main"'  # Adjust this condition as needed
 
