@@ -14,16 +14,16 @@ tasks:
   - name: default
     description: Create and deploy the nginx package on a fresh cluster
     actions:
-      - task: create-test-bundle
+      - task: create-dev-package
       - task: setup:k3d-test-cluster
-      - task: deploy:test-bundle
+      - task: create-deploy-test-bundle
 
   - name: default-full
     description: Create and deploy the nginx package on a fresh cluster with full uds-core
     actions:
-      - task: create-test-bundle
+      - task: create-dev-package
       - task: setup:k3d-full-cluster
-      - task: deploy:test-bundle
+      - task: create-deploy-test-bundle
 
   - name: create-dev-package
     description: Create UDS nginx Package
@@ -35,7 +35,8 @@ tasks:
   - name: dev
     description: Create and deploy the bundle against an existing cluster
     actions:
-      - task: create-test-bundle
+      - task: create-dev-package
+      - task: create:test-bundle
       - task: deploy:test-bundle
 
   - name: test
