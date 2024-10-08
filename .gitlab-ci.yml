@@ -3,10 +3,18 @@ include:
   - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/lint@$CI_COMMIT_SHA
   - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/test@$CI_COMMIT_SHA
   - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/commitlint@$CI_COMMIT_SHA
+  - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/publish@$CI_COMMIT_SHA
+
+publish:
+  parallel:
+    matrix:
+      - FLAVOR: [unicorn, upstream, registry1]
+        TYPE: [install]
+        ARCH: [amd64]
 
 test:
   parallel:
     matrix:
-      - FLAVOR: [unicorn]
+      - FLAVOR: [unicorn, upstream, registry1]
         TYPE: [install]
         ARCH: [amd64]
