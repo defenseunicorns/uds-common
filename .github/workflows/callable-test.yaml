@@ -15,6 +15,14 @@ on:
       type:
         required: true
         type: string
+      reports-path:
+        type: string
+        description: The path to test outputs to upload
+        default: tests/.playwright/reports/
+      reports-name:
+        type: string
+        description: The name prefix for upload test reports
+        default: playwright-report
       udsCliVersion:
         description: The uds-cli version to install
         # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
@@ -85,3 +93,10 @@ jobs:
             /tmp/uds-containerd-logs
             /tmp/k3d-uds-*.log
             /tmp/oscal-assessment-results.yaml
+
+      - uses: actions/upload-artifact@604373da6381bf24206979c74d06a550515601b9 # v4.4.1
+        if: always() && ${{ inputs.reports-path != '' }}
+        with:
+          name: ${{ inputs.reports-name }}-${{ inputs.type }}-${{ inputs.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ runner.arch }}
+          path: ${{ inputs.reports-path }}
+          retention-days: 30
