@@ -1,0 +1,13 @@
+includes:
+  - actions: ./actions.yaml
+  - badge: ./badge.yaml
+  - compliance: ./compliance.yaml
+  - create: ./create.yaml
+  - deploy: ./deploy.yaml
+  - lint: ./lint.yaml
+  - publish: ./publish.yaml
+  - pull: ./pull.yaml
+  - remove: ./remove.yaml
+  - setup: ./setup.yaml
+  - upgrade: ./upgrade.yaml
+  - utils: ./utils.yaml
