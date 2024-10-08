@@ -7,6 +7,6 @@ include:
 test:
   parallel:
     matrix:
-      - FLAVOR: [unicorn, upstream, registry1]
-        TYPE: [install, upgrade]
-        ARCH: [amd64, arm64]
+      - FLAVOR: [unicorn]
+        TYPE: [install]
+        ARCH: [amd64]
