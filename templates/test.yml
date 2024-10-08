@@ -1,3 +1,3 @@
 test:
   script:
-    - echo "hi i am test"
+    - echo "hi from $FLAVOR - $TYPE - $ARCH"
