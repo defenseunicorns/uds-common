@@ -62,7 +62,7 @@ jobs:
             /tmp/debug-*.log
             /tmp/uds-containerd-logs
             /tmp/k3d-uds-*.log
-            /tmp/oscal-assessment-results.yaml
+            oscal-assessment-results.yaml
 
       - uses: actions/upload-artifact@604373da6381bf24206979c74d06a550515601b9 # v4.4.1
         if: always() && ${{ inputs.reports-path != '' }}
