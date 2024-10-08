@@ -1,4 +1,8 @@
-# templates/lint.yaml
+spec:
+  inputs:
+    stage:
+      default: build
+---
 lint:
   script:
     # Environment setup
