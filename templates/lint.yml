@@ -4,7 +4,7 @@ lint:
     - curl -sL https://github.com/defenseunicorns/uds-cli/releases/download/v0.17.0/uds-cli_v0.17.0_Linux_amd64 -o ./uds
     - chmod +x ./uds
 
-    - ./uds run actions:setup-environment --set GH_TOKEN="${GITHUB_TOKEN}"
+    - ./uds run actions:setup-environment --set GH_TOKEN="${GITHUB_TOKEN}" || true
 
     # # Install lint dependencies
     - ./uds run lint:deps --no-progress
