@@ -65,7 +65,7 @@ jobs:
             oscal-assessment-results.yaml
 
       - uses: actions/upload-artifact@604373da6381bf24206979c74d06a550515601b9 # v4.4.1
-        if: always() && ${{ inputs.reports-path != '' }}
+        if: ${{ always() && inputs.reports-path != '' }}
         with:
           name: ${{ inputs.reports-name }}-${{ inputs.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ runner.arch }}
           path: ${{ inputs.reports-path }}
