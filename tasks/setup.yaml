@@ -3,11 +3,12 @@ variables:
 
 tasks:
   - name: k3d-test-cluster
+    description: Creates a k3d cluster for testing based on the K3d + UDS Core Slim Dev bundle
     inputs:
       version:
         description: The version of k3d-core-slim-dev to deploy
         # renovate: datasource=github-tags depName=defenseunicorns/uds-core versioning=semver
-        default: 0.27.3
+        default: 0.28.0
       snapshots:
         description: Whether to pull from the nightly snapshot repository
         default: "false"
@@ -21,11 +22,12 @@ tasks:
         cmd: ./uds deploy oci://defenseunicorns/uds/${{ if eq .inputs.snapshots "true" }}snapshots/${{ end }}bundles/k3d-core-slim-dev:${{ .inputs.version }} --set INSECURE_ADMIN_PASSWORD_GENERATION=${{ .inputs.insecure_keycloak_admin }} --confirm --no-progress ${{ .inputs.options }}
 
   - name: k3d-full-cluster
+    description: Creates a k3d cluster for testing based on the K3d + UDS Core Full bundle
     inputs:
       version:
         description: The version of k3d-core-demo to deploy
         # renovate: datasource=github-tags depName=defenseunicorns/uds-core versioning=semver
-        default: 0.27.3
+        default: 0.28.0
       snapshots:
         description: Whether to pull from the nightly snapshot repository
         default: "false"
@@ -39,15 +41,17 @@ tasks:
         cmd: ./uds deploy oci://defenseunicorns/uds/${{ if eq .inputs.snapshots "true" }}snapshots/${{ end }}bundles/k3d-core-demo:${{ .inputs.version }} --set INSECURE_ADMIN_PASSWORD_GENERATION=${{ .inputs.insecure_keycloak_admin }} --confirm --no-progress ${{ .inputs.options }}
 
   - name: print-keycloak-admin-password
+    description: Print the default keycloak 'admin' password to standard out (if INSECURE_ADMIN_PASSWORD_GENERATION was used on uds-core)
     actions:
       - description: Print the default keycloak admin password to standard out (if available)
-        cmd: ./uds zarf tools kubectl get secret -n keycloak keycloak-admin-password -o jsonpath={.data.password} | base64 -d
+        cmd: ./uds zarf tools kubectl get secret -n keycloak keycloak-admin-password -o jsonpath='{.data.password}' | base64 -d
 
   - name: create-doug-user
+    description: Creates a user named 'doug' in the uds realm of keycloak (using the default admin account)
     actions:
-      - description: Create a user named 'doug' in the uds realm of keycloak (using the default admin account)
+      - description: Creating the 'doug' user int he 'uds' realm
         cmd: |
-          KEYCLOAK_ADMIN_PASSWORD=$(./uds zarf tools kubectl get secret -n keycloak keycloak-admin-password -o jsonpath={.data.password} | base64 -d)
+          KEYCLOAK_ADMIN_PASSWORD=$(./uds zarf tools kubectl get secret -n keycloak keycloak-admin-password -o jsonpath='{.data.password}' | base64 -d)
           KEYCLOAK_ADMIN_TOKEN=$(curl -s --location "https://keycloak.admin.uds.dev/realms/master/protocol/openid-connect/token" \
             --header "Content-Type: application/x-www-form-urlencoded" \
             --data-urlencode "username=admin" \

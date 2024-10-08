@@ -1,10 +1,12 @@
-# UDS Package Practices
+# UDS Package Standards and Badging Requirements
 
-This document describes the standards for [<img alt="Made for UDS" src="../made-for-uds.svg" height="20px"/>](https://github.com/defenseunicorns/uds-core) badging. It is not a comprehensive guide to creating UDS Packages and assumes familiarity with the UDS ecosystem and UDS Package Custom Resource. If you are unfamiliar with these concepts, please first refer to the [package integration guide](guide.md) providing more detailed information.
+This document describes the standards for [<img alt="Made for UDS" src="../../assets/made-for-uds.svg" height="20px"/>](https://github.com/defenseunicorns/uds-core) badging. It is not a comprehensive guide to creating UDS Packages and assumes familiarity with the UDS ecosystem and UDS Package Custom Resource. If you are unfamiliar with these concepts, please first refer to the [package integration guide](../guide.md) providing more detailed information.
 
 Made for UDS Packages integrate with services and features of [UDS Core](https://github.com/defenseunicorns/uds-core), through the [UDS `Package` custom resource](https://github.com/defenseunicorns/uds-core/blob/main/src/pepr/operator/README.md#example-uds-package-cr). These packages can be one of three tiers:
 
-[<img alt="Gold" src="../made-for-uds-gold.svg" height="20px"/>](https://github.com/defenseunicorns/uds-core), [<img alt="Silver" src="../made-for-uds-silver.svg" height="20px"/>](https://github.com/defenseunicorns/uds-core), or [<img alt="bronze" src="../made-for-uds-bronze.svg" height="20px"/>](https://github.com/defenseunicorns/uds-core).
+[<img alt="Gold" src="../../assets/made-for-uds-gold.svg" height="20px"/>](https://github.com/defenseunicorns/uds-core)
+[<img alt="Silver" src="../../assets/made-for-uds-silver.svg" height="20px"/>](https://github.com/defenseunicorns/uds-core)
+[<img alt="bronze" src="../../assets/made-for-uds-bronze.svg" height="20px"/>](https://github.com/defenseunicorns/uds-core)
 
 > [!IMPORTANT]
 > Packages should aim for Gold by default and only _SETTLE_ for lesser tiers of Bronze and Silver.
@@ -23,7 +25,7 @@ _a Gold UDS Package implements best-effort 0-cve images, configuration hardening
 Gold Packages:
 
 - **Must** satisfy all the requirements of [Silver](#silver) packages
-- **Must** include OSCAL-component control mapping and responses for the application. see [OSCAL Guidelines](oscal-guidelines.md)
+- **Must** include OSCAL-component control mapping and responses for the application. see [OSCAL Guidelines](../guidelines/oscal-guidelines.md)
 - **Must** minimize the scope and number of the exemptions to only what is absolutely required by the application
   - UDS Packages **may** make use of the [UDS `Exemption` custom resource](https://github.com/defenseunicorns/uds-core/blob/main/src/pepr/operator/README.md#example-uds-exemption-cr) for exempting any Pepr policies, but in doing so they **Must** document rationale for the exemptions
 - **Must** declaratively implement any available application hardening guidelines by default (Example: [GitLab Hardening guidelines](https://docs.gitlab.com/ee/security/hardening.html))
@@ -63,8 +65,8 @@ Bronze packages:
 - **Must** be declaratively bundled in a [Zarf package](https://docs.zarf.dev/ref/create/)
 - **Must** define any external interfaces under the `expose` key in the [UDS Package Custom Resource](https://github.com/defenseunicorns/uds-core/blob/main/docs/configuration/uds-operator.md)
 - **Must** deploy and operate successfully with Istio injection enabled in the namespace.
-- **Must** implement Journey testing, covering the basic user flows and features of the application (see [Testing Guidelines](./testing-guidelines.md))
-- **Must** implement Upgrade Testing to ensure that the current development package works when deployed over the previously released one. (see [Testing Guidelines](./testing-guidelines.md))
+- **Must** implement Journey testing, covering the basic user flows and features of the application (see [Testing Guidelines](../guidelines/testing-guidelines.md))
+- **Must** implement Upgrade Testing to ensure that the current development package works when deployed over the previously released one. (see [Testing Guidelines](../guidelines/testing-guidelines.md))
 - **Must** be capable of operating within an internet-disconnected (air-gapped) environment
 - **Must** be actively maintained by the package maintainers identified in CODEOWNERS [see #CODEOWNERS section for more information](#codeowners)
 - **Must** be versioned using the UDS Package [Versioning scheme](#versioning)
@@ -74,6 +76,7 @@ Bronze packages:
 - **Must** release its package to the `ghcr.io/defenseunicorns/packages/<group>` namespace as the application's name (i.e. `ghcr.io/defenseunicorns/packages/uds/mattermost`).
 - **Must** not make the assumption that the `expose` interfaces are accessible to the bastion or pipeline deploying the package (i.e. `*.uds.dev`).
   > If web requests need to be made they should be done through a `Job` or `./uds zarf tools kubectl exec` as appropriate.
+- **Must** include application [metadata for Airgap App Store](../guidelines/metadata.md) publishing
 - **Should** lint their configurations with appropriate tooling, such as [`yamllint`](https://github.com/adrienverge/yamllint) and [`zarf dev lint`](https://docs.zarf.dev/commands/zarf_dev_lint/).
 
 ## Badging

@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This guide is intended for developers integrating applications with UDS (Unicorn Delivery Service). It provides an overview of the integration process, key considerations, and resources to ensure a smooth integration.
+This guide is intended for developers integrating applications with UDS (Unicorn Delivery Service). It provides an overview of the integration process, key considerations, and resources to ensure a smooth integration. If you are familiar with UDS Package creation, [Badging Requirements](./requirements/uds-package-requirements.md) may be more relevant.
 
 Integrating a Package fundamentally means:
 
@@ -60,7 +60,7 @@ Your goal is to integrate the Zarf package application with [UDS Core](https://g
 
 - [ ] If you haven't already, read the docs on [UDS Operator](https://uds.defenseunicorns.com/core/configuration/uds-operator/)
 
-- [ ] [UDS Package Practices](https://github.com/defenseunicorns/uds-common/blob/main/docs/uds-package-practices.md) provides an extensive list of best practices, considerations, and tasks for a package to be "Made for UDS"
+- [ ] [UDS Package Practices](https://github.com/defenseunicorns/uds-common/blob/main/docs/uds-packages/requirements/uds-package-requirements.md) provides an extensive list of best practices, considerations, and tasks for a package to be "Made for UDS"
 
 #### Checkout
 
