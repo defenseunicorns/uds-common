@@ -1,0 +1,18 @@
+includes:
+  - setup: ./setup.yaml
+  - create: ./create.yaml
+  - deploy: ./deploy.yaml
+  - lint: ./lint.yaml
+  - publish: ./publish.yaml
+  - pull: ./pull.yaml
+  - upgrade: ./upgrade.yaml
+  - compliance: ./compliance.yaml
+  - badge: ./badge.yaml
+  - actions: ./actions.yaml
+
+tasks:
+  - name: default
+    description: Default task for "all" task includes
+    actions:
+      - cmd: |
+          echo "This task file handles bulk task imports"

@@ -1,0 +1,99 @@
+variables:
+  - name: KEYCLOAK_GROUP
+
+tasks:
+  - name: k3d-test-cluster
+    description: Creates a k3d cluster for testing based on the K3d + UDS Core Slim Dev bundle
+    inputs:
+      version:
+        description: The version of k3d-core-slim-dev to deploy
+        # renovate: datasource=github-tags depName=defenseunicorns/uds-core versioning=semver
+        default: 0.28.0
+      snapshots:
+        description: Whether to pull from the nightly snapshot repository
+        default: "false"
+      insecure_keycloak_admin:
+        description: Automatically set a keycloak admin username / password
+        default: "true"
+      options:
+        description: For setting deploy time variables and flags
+    actions:
+      - description: Create k3d cluster with slim UDS Core
+        cmd: ./uds deploy oci://defenseunicorns/uds/${{ if eq .inputs.snapshots "true" }}snapshots/${{ end }}bundles/k3d-core-slim-dev:${{ .inputs.version }} --set INSECURE_ADMIN_PASSWORD_GENERATION=${{ .inputs.insecure_keycloak_admin }} --confirm --no-progress ${{ .inputs.options }}
+
+  - name: k3d-full-cluster
+    description: Creates a k3d cluster for testing based on the K3d + UDS Core Full bundle
+    inputs:
+      version:
+        description: The version of k3d-core-demo to deploy
+        # renovate: datasource=github-tags depName=defenseunicorns/uds-core versioning=semver
+        default: 0.28.0
+      snapshots:
+        description: Whether to pull from the nightly snapshot repository
+        default: "false"
+      insecure_keycloak_admin:
+        description: Automatically set a keycloak admin username / password
+        default: "true"
+      options:
+        description: For setting deploy time variables and flags
+    actions:
+      - description: Deploy all of the UDS Core Package into the current cluster
+        cmd: ./uds deploy oci://defenseunicorns/uds/${{ if eq .inputs.snapshots "true" }}snapshots/${{ end }}bundles/k3d-core-demo:${{ .inputs.version }} --set INSECURE_ADMIN_PASSWORD_GENERATION=${{ .inputs.insecure_keycloak_admin }} --confirm --no-progress ${{ .inputs.options }}
+
+  - name: print-keycloak-admin-password
+    description: Print the default keycloak 'admin' password to standard out (if INSECURE_ADMIN_PASSWORD_GENERATION was used on uds-core)
+    actions:
+      - description: Print the default keycloak admin password to standard out (if available)
+        cmd: ./uds zarf tools kubectl get secret -n keycloak keycloak-admin-password -o jsonpath='{.data.password}' | base64 -d
+
+  - name: create-doug-user
+    description: Creates a user named 'doug' in the uds realm of keycloak (using the default admin account)
+    actions:
+      - description: Creating the 'doug' user int he 'uds' realm
+        cmd: |
+          KEYCLOAK_ADMIN_PASSWORD=$(./uds zarf tools kubectl get secret -n keycloak keycloak-admin-password -o jsonpath='{.data.password}' | base64 -d)
+          KEYCLOAK_ADMIN_TOKEN=$(curl -s --location "https://keycloak.admin.uds.dev/realms/master/protocol/openid-connect/token" \
+            --header "Content-Type: application/x-www-form-urlencoded" \
+            --data-urlencode "username=admin" \
+            --data-urlencode "password=${KEYCLOAK_ADMIN_PASSWORD}" \
+            --data-urlencode "client_id=admin-cli" \
+            --data-urlencode "grant_type=password" | ./uds zarf tools yq .access_token)
+
+          # Create the doug user in the UDS Realm
+          curl --location "https://keycloak.admin.uds.dev/admin/realms/uds/users" \
+          --header "Content-Type: application/json" \
+          --header "Authorization: Bearer ${KEYCLOAK_ADMIN_TOKEN}" \
+          --data-raw '{
+              "username": "doug",
+              "firstName": "Doug",
+              "lastName": "Unicorn",
+              "email": "doug@uds.dev",
+              "attributes": {
+                "mattermostid": "1"
+              },
+              "emailVerified": true,
+              "enabled": true,
+              "requiredActions": [],
+              "credentials": [
+                {
+                  "type": "password",
+                  "value": "unicorn123!@#UN",
+                  "temporary": false
+                }
+              ]'"${KEYCLOAK_GROUP:+,
+              \"groups\": [
+                \"${KEYCLOAK_GROUP}\"
+              ]}"'
+          }'
+
+          # Disable 2FA
+          CONDITIONAL_OTP_ID=$(curl --location "https://keycloak.admin.uds.dev/admin/realms/uds/authentication/flows/Authentication/executions" \
+            --header "Authorization: Bearer ${KEYCLOAK_ADMIN_TOKEN}" | ./uds zarf tools yq '.[] | select(.displayName == "Conditional OTP") | .id')
+
+          curl --location --request PUT "https://keycloak.admin.uds.dev/admin/realms/uds/authentication/flows/Authentication/executions" \
+          --header "Content-Type: application/json" \
+          --header "Authorization: Bearer ${KEYCLOAK_ADMIN_TOKEN}" \
+          --data "{
+                  \"id\": \"${CONDITIONAL_OTP_ID}\",
+                  \"requirement\": \"DISABLED\"
+              }"

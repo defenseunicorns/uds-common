@@ -1,0 +1,62 @@
+includes:
+  - utils: ./utils.yaml
+
+variables:
+  - name: FLAVOR
+    default: upstream
+
+tasks:
+  - name: package
+    description: Publish the UDS package for the supplied architecture
+    inputs:
+      path:
+        description: Path to the zarf package being published
+        default: .
+      version:
+        description: The version of the package to publish
+        required: true
+      architecture:
+        description: The architecture of the package to publish
+        default: ${UDS_ARCH}
+      team:
+        description: The team publishing the package
+        default: uds
+      name:
+        description: The name of the package to publish
+        default: ${PACKAGE_NAME}
+    actions:
+      - task: utils:determine-repo
+        with:
+          team: ${{.inputs.team}}
+      - description: Get the current Zarf package name
+        cmd: cat ${{ .inputs.path }}/zarf.yaml | ./uds zarf tools yq .metadata.name
+        setVariables:
+          - name: PACKAGE_NAME
+      - description: Publish package for the supplied architecture
+        cmd: |
+          ./uds zarf package publish "${{ .inputs.path }}/zarf-package-${{ .inputs.name }}-${{ .inputs.architecture }}-${{ .inputs.version }}.tar.zst" "oci://${TARGET_REPO}"
+
+  - name: test-bundle
+    description: Publish the test bundle for the supplied architecture
+    inputs:
+      path:
+        description: Path to the UDS bundle being published
+        default: bundle
+      version:
+        description: The version of the bundle to publish
+        required: true
+      architecture:
+        description: The architecture of the bundle to publish
+        default: ${UDS_ARCH}
+      name:
+        description: The name of the bundle to publish
+        default: ${BUNDLE_NAME}
+    actions:
+      - task: utils:determine-repo
+      - description: Get the current UDS Bundle name
+        cmd: cat ${{ .inputs.path }}/uds-bundle.yaml | ./uds zarf tools yq .metadata.name
+        setVariables:
+          - name: BUNDLE_NAME
+      - description: Publish bundle for the supplied architecture
+        cmd: |
+          ./uds publish "${{ .inputs.path }}/uds-bundle-${{ .inputs.name }}-${{ .inputs.architecture }}-${{ .inputs.version }}.tar.zst" "oci://${TARGET_REPO}/bundles" --no-progress

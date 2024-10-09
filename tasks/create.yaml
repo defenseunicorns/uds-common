@@ -1,0 +1,53 @@
+variables:
+  - name: FLAVOR
+    default: upstream
+
+tasks:
+  - name: package
+    description: Create the UDS Zarf Package in the repository
+    inputs:
+      options:
+        description: For setting create time variables and flags
+      path:
+        description: Path to the zarf package definition being created
+        default: .
+      architecture:
+        description: The architecture of the package to create
+        default: ${UDS_ARCH}
+      config:
+        description: Optionally provide a path to a Zarf config file
+        default: ""
+        required: false
+    actions:
+      - env:
+          - ZARF_CONFIG=${{ .inputs.config }}
+        cmd: |
+          if [ "${FLAVOR}" != "registry1" ] || [ "${{ .inputs.architecture }}" != "arm64" ]; then
+            ./uds zarf package create ${{ .inputs.path }} --confirm --no-progress --architecture="${{ .inputs.architecture }}" --flavor "${FLAVOR}" ${{ .inputs.options }}
+          else
+            echo "Registry1 packages cannot be made for 'arm64'"
+          fi
+
+  - name: test-bundle
+    description: Create the test bundle (bundling package + dependencies for testing)
+    inputs:
+      options:
+        description: For setting create time variables and flags
+      path:
+        description: Path relative to the repositories root where the uds-bundle.yaml lives
+        default: bundle
+      config:
+        description: Path to the bundle config file. Defaults to bundle/uds-config.yaml.
+        default: bundle/uds-config.yaml
+      architecture:
+        description: The architecture of the bundle to create
+        default: ${UDS_ARCH}
+    actions:
+      - env:
+          - UDS_CONFIG=${{ .inputs.config }}
+        cmd: |
+          if [ "${FLAVOR}" != "registry1" ] || [ "${{ .inputs.architecture }}" != "arm64" ]; then
+            ./uds create ${{ .inputs.path }} --confirm --no-progress --architecture="${{ .inputs.architecture }}" ${{ .inputs.options }}
+          else
+            echo "Registry1 bundles cannot be made for 'arm64'"
+          fi
