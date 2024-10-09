@@ -15,13 +15,15 @@ test:
     - if: $CI_MERGE_REQUEST_ID
   script:
     #TODO need to do actions:authenticate-registries here when we get secrets
-    - |
-      echo token is $CHAINGUARD_IDENTITY
-      curl -o ./chainctl -L \
-        "https://dl.enforce.dev/chainctl/latest/chainctl_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/aarch64/arm64/')" \
-        && chmod +x ./chainctl
-    - ./chainctl auth login --identity "uds-btb-ci" --identity-token "$CHAINGUARD_IDENTITY" --skip-browser -v=16
-    - ./chainctl auth configure-docker  --identity "uds-btb-ci" --identity-token "$CHAINGUARD_IDENTITY" --skip-browser -v=16
+
+    #note: was trying this stuff to see how to get chainguard login working, commented out for now because it doesn't seem to get identity token
+    # - |
+    #   echo token is $CHAINGUARD_IDENTITY
+    #   curl -o ./chainctl -L \
+    #     "https://dl.enforce.dev/chainctl/latest/chainctl_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/aarch64/arm64/')" \
+    #     && chmod +x ./chainctl
+    # - ./chainctl auth login --identity "uds-btb-ci" --identity-token "$CHAINGUARD_IDENTITY" --skip-browser -v=16
+    # - ./chainctl auth configure-docker  --identity "uds-btb-ci" --identity-token "$CHAINGUARD_IDENTITY" --skip-browser -v=16
     - uds run actions:test-deploy --set FLAVOR="$[[ inputs.flavor ]]" --set TYPE="$[[ inputs.type ]]"
     - uds run actions:verify-badge
 
