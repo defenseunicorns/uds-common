@@ -89,6 +89,7 @@ tasks:
             fi
           }
 
+          shopt -s nullglob # if nothing matches the glab expand to nothing
           # Lint all scripts in Maru tasks
           for yaml_file in tasks.yaml tasks/*.yaml; do
 
@@ -106,11 +107,13 @@ tasks:
               lint_scripts "$yaml_file" "$raw_scripts"
             fi
           done
+          shopt -u nullglob #reset nullglob behavior
 
           # Lint all .sh files in the current directory
           echo "Processing .sh files..."
           find . -type f -name "*.sh" -exec shellcheck {} +
 
+          shopt -s nullglob # if nothing matches the glab expand to nothing
           # Lint all scripts in GitHub workflows
           for yaml_file in .github/workflows/*.yaml; do
 
@@ -128,3 +131,4 @@ tasks:
               lint_scripts "$yaml_file" "$raw_scripts"
             fi
           done
+          shopt -u nullglob #reset nullglob behavior
