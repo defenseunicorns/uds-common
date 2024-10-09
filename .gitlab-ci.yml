@@ -3,6 +3,9 @@ include:
   - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/commitlint@$CI_COMMIT_SHA
   - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/lint@$CI_COMMIT_SHA
   - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/test@$CI_COMMIT_SHA
+    inputs:
+      flavor: $FLAVOR
+      type: $TYPE 
   # - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/publish@$CI_COMMIT_SHA
 
 # publish:
@@ -18,6 +21,3 @@ test:
     matrix:
       - FLAVOR: [upstream]
         TYPE: [install]
-  variables:
-    flavor: $FLAVOR
-    type: $TYPE

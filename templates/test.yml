@@ -2,12 +2,8 @@ spec:
   inputs:
     runsOn:
       default: ubuntu-latest
-    upgrade-flavors:
-      default: ""
     flavor:
-      default: ""
     type:
-      default: ""
     reports-path:
       default: ""
     reports-name:
