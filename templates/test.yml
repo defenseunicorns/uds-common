@@ -18,8 +18,12 @@ test:
     - if: $CI_MERGE_REQUEST_ID
   script:
     #TODO need to do actions:authenticate-registries here when we get secrets
-    - chainctl auth login --identity-token "$CHAINGUARD_IDENTITY" -v=0
-    - chainctl auth configure-docker --identity-token "$CHAINGUARD_IDENTITY" -v=0
+    - |
+      curl -o ./chainctl -L \
+        "https://dl.enforce.dev/chainctl/latest/chainctl_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/aarch64/arm64/')" \
+        && chmod +x ./chainctl
+    - ./chainctl auth login --identity-token "$CHAINGUARD_IDENTITY" -v=0
+    - ./chainctl auth configure-docker --identity-token "$CHAINGUARD_IDENTITY" -v=0
     - uds run actions:test-deploy --set FLAVOR="$[[ inputs.flavor ]]" --set TYPE="$[[ inputs.type ]]"
     - uds run actions:verify-badge
 
