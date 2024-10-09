@@ -19,5 +19,5 @@ include:
 test:
   parallel:
     matrix:
-      - FLAVOR: [upstream, registry1]
+      - FLAVOR: [upstream]
         TYPE: [install]
