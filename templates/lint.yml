@@ -1,11 +1,11 @@
 lint:
   script:
     # Environment setup
-    - eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-    - ./uds run actions:authenticate_registries --set GH_TOKEN="${GITHUB_TOKEN}"
+    - eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)" #todo remove this eval when new ami is ready
+    - uds run actions:authenticate_registries --set GH_TOKEN="${GITHUB_TOKEN}"
 
     # # Install lint dependencies
-    - ./uds run lint:deps --no-progress
+    - uds run lint:deps --no-progress
 
     # # Lint the repository
-    - ./uds run lint:all --no-progress
+    - uds run lint:all --no-progress
