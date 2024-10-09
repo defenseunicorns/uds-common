@@ -35,15 +35,19 @@ test:
     - uds run actions:debug-output
     - uds run actions:save-logs
 
+    # todo this would be better if we change debug-output and save-logs to take a directory name to write to
+    # gitlab can only attach artifacts that are under the project, not arbitrary dirs on the runner
+    - mkdir logs && cp /tmp/*.log logs && cp -R /tmp/uds-containerd-logs logs
+
   artifacts:
     when: always
     name: debug-log-$[[ inputs.type ]]-$[[ inputs.flavor ]]-${CI_PIPELINE_ID}-${CI_JOB_ID}
     paths:
       # Save debug logs as artifacts
-      - /tmp/zarf-*.log
-      - /tmp/uds-*.log
-      - /tmp/maru-*.log
-      - /tmp/debug-*.log
-      - /tmp/uds-containerd-logs
-      - /tmp/k3d-uds-*.log
+      - logs/zarf-*.log
+      - logs/uds-*.log
+      - logs/maru-*.log
+      - logs/debug-*.log
+      - logs/uds-containerd-logs
+      - logs/k3d-uds-*.log
       - oscal-assessment-results.yaml
