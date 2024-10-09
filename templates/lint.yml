@@ -5,8 +5,8 @@ lint:
     #todo env setup stuff - look at this again after ami is gtg
     - |
       echo "skipping installing things because new ami is here?"
+      chmod +x /home/ubuntu/.local/bin/uds
       # curl -sL https://github.com/defenseunicorns/uds-cli/releases/download/v0.17.0/uds-cli_v0.17.0_Linux_amd64 -o /home/ubuntu/.local/bin/uds
-      # chmod +x /home/ubuntu/.local/bin/uds
       # export PATH=/home/ubuntu/.local/bin:$PATH #todo we shouldn't need this, stuff should just be on path
     #todo end of setup stuff  - look at this again after ami is gtg
 
