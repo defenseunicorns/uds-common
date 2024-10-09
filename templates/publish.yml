@@ -30,14 +30,14 @@ publish:
       # Include reports-path as regular artifacts
       - $REPORTS_PATH
 
-    name: "${REPORTS_NAME}-${FLAVOR}-${CI_PIPELINE_ID}-${CI_JOB_ID}"
+    name: ${REPORTS_NAME}-${FLAVOR}-${CI_PIPELINE_ID}-${CI_JOB_ID}
 
-# todo fix publish rules 
+# todo fix publish rules
   rules:
-    - if: '$CI_COMMIT_REF_NAME == "main"'  # Adjust this condition as needed
+    - if: $CI_COMMIT_REF_NAME == "main"  # Adjust this condition as needed
 
 #todo these should be inputs instead of variables
   variables:
-    FLAVOR: "${FLAVOR}"
-    REPORTS_PATH: "${REPORTS_PATH:-}"
-    REPORTS_NAME: "${REPORTS_NAME:-playwright-report}"
+    FLAVOR: ${FLAVOR}
+    REPORTS_PATH: ${REPORTS_PATH:-}
+    REPORTS_NAME: ${REPORTS_NAME:-playwright-report}
