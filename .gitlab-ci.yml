@@ -8,13 +8,13 @@ include:
 publish:
   parallel:
     matrix:
-      - FLAVOR: [unicorn, upstream, registry1]
+      - FLAVOR: [unicorn]
         TYPE: [install]
         ARCH: [amd64]
 
 test:
   parallel:
     matrix:
-      - FLAVOR: [unicorn, upstream, registry1]
+      - FLAVOR: [unicorn]
         TYPE: [install]
         ARCH: [amd64]
