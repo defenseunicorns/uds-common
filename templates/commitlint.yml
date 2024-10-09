@@ -1,0 +1,5 @@
+commitlint:
+  rules:
+    - if: '$CI_MERGE_REQUEST_ID'
+  script:
+    - echo "Merge Request Title is $CI_MERGE_REQUEST_TITLE"

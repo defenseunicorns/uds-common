@@ -1,0 +1,3 @@
+test:
+  script:
+    - echo "hi from $FLAVOR - $TYPE - $ARCH"
