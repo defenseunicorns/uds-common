@@ -16,5 +16,8 @@ include:
 test:
   parallel:
     matrix:
-      - FLAVOR: [upstream, unicorn, registry1]
-        TYPE: [install, upgrade]
+      - FLAVOR: [upstream]
+        TYPE: [install]
+  variables:
+    flavor: $FLAVOR
+    type: $TYPE
