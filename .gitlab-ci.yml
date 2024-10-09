@@ -22,5 +22,5 @@ test:
       aud: https://console-api.enforce.dev
   parallel:
     matrix:
-      - FLAVOR: [upstream, unicorn] # TODO need secrets to add other flavors
+      - FLAVOR: [upstream] # TODO need secrets to add other flavors
         TYPE: [install] # TODO need upgrade check stuff to enable upgrade type
