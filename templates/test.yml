@@ -25,4 +25,25 @@ test:
     #todo end of setup stuff  - look at this again after ami is gtg
 
     - echo FLAVOR=$[[ inputs.flavor ]] TYPE=$[[ inputs.type ]]
+    - echo "Runner architecture is $CI_PIPELINE_ID"
+    - echo "pipeline id is $CI_RUNNER_ARCH"
+    - echo "job id is $CI_JOB_ID"
     - uds run actions:test-deploy --set FLAVOR="$[[ inputs.flavor ]]" --set TYPE="$[[ inputs.type ]]"
+    - uds run actions:verify-badge
+
+  after_script:
+    - uds run actions:debug-output
+    - uds run actions:save-logs
+
+  artifacts:
+    when: always
+    name: debug-log-$[[ inputs.type ]]-$[[ inputs.flavor ]]-${CI_PIPELINE_ID}-${CI_JOB_ID}
+    paths:
+      # Save debug logs as artifacts
+      - /tmp/zarf-*.log
+      - /tmp/uds-*.log
+      - /tmp/maru-*.log
+      - /tmp/debug-*.log
+      - /tmp/uds-containerd-logs
+      - /tmp/k3d-uds-*.log
+      - oscal-assessment-results.yaml
