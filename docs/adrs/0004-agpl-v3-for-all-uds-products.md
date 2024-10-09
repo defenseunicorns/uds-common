@@ -1,4 +1,4 @@
-# 4. [Affero General Public License v3 (AGPLv3)](https://opensource.org/license/agpl-v3) + Commercial for All UDS Products
+# 4. [Affero General Public License v3 (AGPLv3)](https://opensource.org/license/agpl-v3) or Commercial for All UDS Products
 
 Date: 2024-10-08
 
