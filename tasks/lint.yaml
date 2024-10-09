@@ -1,5 +1,5 @@
 # Copyright 2024 Defense Unicorns
-# SPDX-License-Identifier: AGPL-3.0-or-later OR Commercial
+# SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
 
 variables:
   - name: OSCALFILES
@@ -139,9 +139,9 @@ tasks:
   - name: license
     description: Lint for the SPDX license identifier being in source files
     actions:
-      - cmd: "\"$HOME/go/bin/addlicense\" -l 'AGPL-3.0-or-later OR Commercial' -check -s=only -v -c 'Defense Unicorns' ."
+      - cmd: "\"$HOME/go/bin/addlicense\" -l 'AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial' -check -s=only -v -c 'Defense Unicorns' ."
 
   - name: fix-license
     description: Add the SPDX license identifier to source files
     actions:
-      - cmd: "\"$HOME/go/bin/addlicense\" -l 'AGPL-3.0-or-later OR Commercial' -s=only -v -c 'Defense Unicorns' ."
+      - cmd: "\"$HOME/go/bin/addlicense\" -l 'AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial' -s=only -v -c 'Defense Unicorns' ."
