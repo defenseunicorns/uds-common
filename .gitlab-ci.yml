@@ -6,7 +6,7 @@ include:
   - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/publish@$CI_COMMIT_SHA
 
 publish:
-  needs: test
+  needs: [test]
   parallel:
     matrix:
       - FLAVOR: [unicorn]
