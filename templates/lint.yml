@@ -1,11 +1,8 @@
 lint:
   script:
     # Environment setup
-    - curl -sL https://github.com/defenseunicorns/uds-cli/releases/download/v0.17.0/uds-cli_v0.17.0_Linux_amd64 -o ./uds
-    - chmod +x ./uds
-    #- eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-    - ./uds version
-    - ./uds run actions:setup-environment --set GH_TOKEN="${GITHUB_TOKEN}"
+    - eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+    - ./uds run actions:authenticate_registries --set GH_TOKEN="${GITHUB_TOKEN}"
 
     # # Install lint dependencies
     - ./uds run lint:deps --no-progress
