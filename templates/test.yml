@@ -15,9 +15,15 @@ test:
   script:
     #todo env setup stuff - look at this again after ami is gtg
     - |
+      export PATH=/home/ubuntu/.local/bin:$PATH #todo we shouldn't need this, stuff should just be on path
+
       curl -sL https://github.com/defenseunicorns/uds-cli/releases/download/v0.17.0/uds-cli_v0.17.0_Linux_amd64 -o /home/ubuntu/.local/bin/uds
       chmod +x /home/ubuntu/.local/bin/uds
-      export PATH=/home/ubuntu/.local/bin:$PATH #todo we shouldn't need this, stuff should just be on path
+
+      K3D_VERSION="5.7.4"
+      curl -L "https://github.com/k3d-io/k3d/releases/download/v${K3D_VERSION}/k3d-linux-${ARCH}" -o k3d
+      sudo install -m 0755 k3d /home/ubuntu/.local/bin/k3d
     #todo end of setup stuff  - look at this again after ami is gtg
 
+    - echo FLAVOR=$[[ inputs.flavor ]] TYPE=$[[ inputs.type ]]
     - uds run actions:test-deploy --set FLAVOR="$[[ inputs.flavor ]]" --set TYPE="$[[ inputs.type ]]"

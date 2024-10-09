@@ -5,7 +5,7 @@ include:
   - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/test@$CI_COMMIT_SHA
     inputs:
       flavor: $FLAVOR
-      type: $TYPE 
+      type: $TYPE
   # - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/publish@$CI_COMMIT_SHA
 
 # publish:
@@ -19,5 +19,5 @@ include:
 test:
   parallel:
     matrix:
-      - FLAVOR: [upstream]
+      - FLAVOR: [upstream, registry1]
         TYPE: [install]
