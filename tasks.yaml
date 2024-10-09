@@ -1,5 +1,5 @@
 includes:
-  - setup: ./tasks/all.yaml
+  - all: ./tasks/all.yaml
 
 tasks:
   - name: default
