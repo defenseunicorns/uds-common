@@ -1,10 +1,13 @@
 lint:
+  rules:
+    - if: '$CI_MERGE_REQUEST_ID'
   script:
-    # Environment setup -- todo look at this again after ami is gtg
-    - curl -sL https://github.com/defenseunicorns/uds-cli/releases/download/v0.17.0/uds-cli_v0.17.0_Linux_amd64 -o /home/ubuntu/.local/bin/uds
-    - chmod +x /home/ubuntu/.local/bin/uds
-    - export PATH=/home/ubuntu/.local/bin:$PATH #todo we shouldn't need this, stuff should just be on path
-    - uds version
+    #todo env setup stuff - look at this again after ami is gtg
+    - |
+      curl -sL https://github.com/defenseunicorns/uds-cli/releases/download/v0.17.0/uds-cli_v0.17.0_Linux_amd64 -o /home/ubuntu/.local/bin/uds
+      chmod +x /home/ubuntu/.local/bin/uds
+      export PATH=/home/ubuntu/.local/bin:$PATH #todo we shouldn't need this, stuff should just be on path
+    #todo end of setup stuff 
 
     # # Install lint dependencies
     - uds run lint:deps --no-progress
