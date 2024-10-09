@@ -1,7 +1,7 @@
 spec:
   inputs:
     runsOn:
-      default: "ubuntu-latest"
+      default: ubuntu-latest
     upgrade-flavors:
       default: ""
     flavor:
@@ -11,7 +11,7 @@ spec:
     reports-path:
       default: ""
     reports-name:
-      default: "playwright-report"
+      default: playwright-report
 ---
 test:
   rules:
@@ -23,5 +23,5 @@ test:
       chmod +x /home/ubuntu/.local/bin/uds
       export PATH=/home/ubuntu/.local/bin:$PATH #todo we shouldn't need this, stuff should just be on path
     #todo end of setup stuff  - look at this again after ami is gtg
-      
+
     - uds run actions:test-deploy --set FLAVOR="$[[ inputs.flavor ]]" --set TYPE="$[[ inputs.type ]]"
