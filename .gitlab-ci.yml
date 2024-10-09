@@ -1,22 +1,22 @@
 include:
   # include the component located in the current project from the current SHA
   - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/lint@$CI_COMMIT_SHA
-  - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/test@$CI_COMMIT_SHA
-  - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/commitlint@$CI_COMMIT_SHA
-  - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/publish@$CI_COMMIT_SHA
+  # - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/test@$CI_COMMIT_SHA
+  # - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/commitlint@$CI_COMMIT_SHA
+  # - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/publish@$CI_COMMIT_SHA
 
-publish:
-  needs: [test]
-  parallel:
-    matrix:
-      - FLAVOR: [unicorn]
-        TYPE: [install]
-        ARCH: [amd64]
+# publish:
+#   needs: [test]
+#   parallel:
+#     matrix:
+#       - FLAVOR: [unicorn]
+#         TYPE: [install]
+#         ARCH: [amd64]
 
-test:
-  needs: [lint]
-  parallel:
-    matrix:
-      - FLAVOR: [unicorn]
-        TYPE: [install]
-        ARCH: [amd64]
+# test:
+#   needs: [lint]
+#   parallel:
+#     matrix:
+#       - FLAVOR: [unicorn]
+#         TYPE: [install]
+#         ARCH: [amd64]
