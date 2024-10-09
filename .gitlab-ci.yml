@@ -19,5 +19,5 @@ include:
 test:
   parallel:
     matrix:
-      - FLAVOR: [upstream] # TODO need secrets to add other flavors
+      - FLAVOR: [upstream, unicorn] # TODO need secrets to add other flavors
         TYPE: [install] # TODO need upgrade check stuff to enable upgrade type
