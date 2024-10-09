@@ -8,6 +8,9 @@ tasks:
     actions:
       - description: Install yamllint via pip
         cmd: CMD=pip && which $CMD || CMD=pip3 && $CMD install yamllint>=1.30.0
+      - description: Install addlicense via go
+        # renovate: datasource=github-tags depName=google/addlicense versioning=semver
+        cmd: GOPATH="$HOME/go" go install github.com/google/addlicense@v1.1.1
 
   - name: all
     description: Run all linting commands
@@ -15,6 +18,7 @@ tasks:
       - task: yaml
       - task: oscal
       - task: shell
+      - task: license
 
   - name: yaml
     description: Run YAML linting checks
@@ -128,3 +132,13 @@ tasks:
               lint_scripts "$yaml_file" "$raw_scripts"
             fi
           done
+
+  - name: license
+    description: Lint for the SPDX license identifier being in source files
+    actions:
+      - cmd: "\"$HOME/go/bin/addlicense\" -l 'AGPL-3.0-or-later OR Commercial' -check -s=only -v -c 'Defense Unicorns' ."
+
+  - name: fix-license
+    description: Add the SPDX license identifier to source files
+    actions:
+      - cmd: "\"$HOME/go/bin/addlicense\" -l 'AGPL-3.0-or-later OR Commercial' -s=only -v -c 'Defense Unicorns' ."
