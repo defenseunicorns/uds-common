@@ -229,4 +229,5 @@ tasks:
     actions:
       - description: Registry Login
         cmd: |
+          set -x
           echo "${{ .inputs.registry_token }}" | ./uds zarf tools registry login -u "${{ .inputs.registry_username }}" --password-stdin "${{ .inputs.registry }}"
