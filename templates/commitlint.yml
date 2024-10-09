@@ -1,6 +1,6 @@
 commitlint:
   rules:
-    - if: '$CI_MERGE_REQUEST_ID'
+    - if: $CI_MERGE_REQUEST_ID
   script:
     #todo delete node install after new ami
     - |
@@ -9,7 +9,7 @@ commitlint:
       sudo apt-get install -y nodejs
     #todo end of stuff to delete
     - npm install --save-dev @commitlint/config-conventional@19.5.0
-    - npm install --save-dev @commitlint/cli@19.5.0  
+    - npm install --save-dev @commitlint/cli@19.5.0
     - |
       echo "module.exports = {extends: ['@commitlint/config-conventional']}" > commitlint.config.js
     - echo "$CI_MERGE_REQUEST_TITLE" | npx commitlint
