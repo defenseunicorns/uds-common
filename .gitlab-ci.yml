@@ -14,7 +14,6 @@ include:
 #         ARCH: [amd64]
 
 test:
-  needs: [lint]
   parallel:
     matrix:
       - FLAVOR: [upstream, unicorn, registry1]
