@@ -14,6 +14,7 @@ publish:
         ARCH: [amd64]
 
 test:
+  needs: [lint]
   parallel:
     matrix:
       - FLAVOR: [unicorn]
