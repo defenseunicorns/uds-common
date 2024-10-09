@@ -1,2 +1,10 @@
 includes:
-  - all: https://raw.githubusercontent.com/defenseunicorns/uds-common/refs/heads/gitlab-changes/tasks/all.yaml
+  - create: https://raw.githubusercontent.com/defenseunicorns/uds-common/refs/heads/updates-for-gitlab/tasks/create.yaml
+  - lint: https://raw.githubusercontent.com/defenseunicorns/uds-common/refs/heads/updates-for-gitlab/tasks/lint.yaml
+  - pull: https://raw.githubusercontent.com/defenseunicorns/uds-common/refs/heads/updates-for-gitlab/tasks/pull.yaml
+  - deploy: https://raw.githubusercontent.com/defenseunicorns/uds-common/refs/heads/updates-for-gitlab/tasks/deploy.yaml
+  - setup: https://raw.githubusercontent.com/defenseunicorns/uds-common/refs/heads/updates-for-gitlab/tasks/setup.yaml
+  - actions: https://raw.githubusercontent.com/defenseunicorns/uds-common/refs/heads/updates-for-gitlab/tasks/actions.yaml
+  - badge: https://raw.githubusercontent.com/defenseunicorns/uds-common/refs/heads/updates-for-gitlab/tasks/badge.yaml
+  - upgrade: https://raw.githubusercontent.com/defenseunicorns/uds-common/refs/heads/updates-for-gitlab/tasks/upgrade.yaml
+  - compliance: https://raw.githubusercontent.com/defenseunicorns/uds-common/refs/heads/updates-for-gitlab/tasks/compliance.yaml
