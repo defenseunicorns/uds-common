@@ -2,4 +2,6 @@ commitlint:
   rules:
     - if: '$CI_MERGE_REQUEST_ID'
   script:
+    - npm install --save-dev @commitlint/config-conventional@19.5.0
+    - npm install --save-dev @commitlint/cli@19.5.0  
     - echo "Merge Request Title is $CI_MERGE_REQUEST_TITLE"
