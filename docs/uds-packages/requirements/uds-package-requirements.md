@@ -1,10 +1,10 @@
 # UDS Package Standards and Badging Requirements
 
-This document describes the standards for [<img alt="Made for UDS" src="https://raw.githubusercontent.com/defenseunicorns/uds-common/86886015d1edc43036b3dd000fbd972a384beb8f/docs/assets/made-for-uds.svg" height="20px"/>](https://github.com/defenseunicorns/uds-core) badging. It is not a comprehensive guide to creating UDS Packages and assumes familiarity with the UDS ecosystem and UDS Package Custom Resource. If you are unfamiliar with these concepts, please first refer to the [package integration guide](https://github.com/defenseunicorns/uds-common/blob/main/docs/uds-packages/guide.md) providing more detailed information.
+This document describes the standards for [<img alt="Made for UDS" src="https://raw.githubusercontent.com/defenseunicorns/uds-common/refs/heads/main/docs/assets/made-for-uds.svg" height="20px"/>](https://github.com/defenseunicorns/uds-core) badging. It is not a comprehensive guide to creating UDS Packages and assumes familiarity with the UDS ecosystem and UDS Package Custom Resource. If you are unfamiliar with these concepts, please first refer to the [package integration guide](https://github.com/defenseunicorns/uds-common/blob/main/docs/uds-packages/guide.md) providing more detailed information.
 
 Made for UDS Packages integrate with services and features of [UDS Core](https://github.com/defenseunicorns/uds-core), through the [UDS `Package` custom resource](https://github.com/defenseunicorns/uds-core/blob/main/src/pepr/operator/README.md#example-uds-package-cr). These packages can be one of three tiers:
 
-[<img alt="Gold" src="https://raw.githubusercontent.com/defenseunicorns/uds-common/3e0fb5acd5c590c96aeb18f5941002aea4e0dbcd/docs/made-for-uds-gold.svg" height="20px"/>](https://github.com/defenseunicorns/uds-core), [<img alt="Silver" src="https://raw.githubusercontent.com/defenseunicorns/uds-common/3e0fb5acd5c590c96aeb18f5941002aea4e0dbcd/docs/made-for-uds-silver.svg" height="20px"/>](https://github.com/defenseunicorns/uds-core), or [<img alt="Bronze" src="https://raw.githubusercontent.com/defenseunicorns/uds-common/3e0fb5acd5c590c96aeb18f5941002aea4e0dbcd/docs/made-for-uds-bronze.svg" height="20px"/>](https://github.com/defenseunicorns/uds-core).
+[<img alt="Gold" src="https://raw.githubusercontent.com/defenseunicorns/uds-common/refs/heads/main/docs/assets/made-for-uds-gold.svg" height="20px"/>](https://github.com/defenseunicorns/uds-core), [<img alt="Silver" src="https://raw.githubusercontent.com/defenseunicorns/uds-common/refs/heads/main/docs/assets/made-for-uds-silver.svg" height="20px"/>](https://github.com/defenseunicorns/uds-core), or [<img alt="Bronze" src="https://raw.githubusercontent.com/defenseunicorns/uds-common/refs/heads/main/docs/assets/made-for-uds-bronze.svg" height="20px"/>](https://github.com/defenseunicorns/uds-core).
 
 > [!IMPORTANT]
 > Packages should aim for Gold by default and only _SETTLE_ for lesser tiers of Bronze and Silver.
@@ -18,7 +18,7 @@ Made for UDS Packages integrate with services and features of [UDS Core](https:/
 > [!TIP]
 > View the following lines in it's raw format and copy these lines into a github issue for easy tracking
 
-## Gold: [<img alt="Gold" src="https://raw.githubusercontent.com/defenseunicorns/uds-common/3e0fb5acd5c590c96aeb18f5941002aea4e0dbcd/docs/made-for-uds-gold.svg" height="20px"/>](https://github.com/defenseunicorns/uds-core)
+## Gold: [<img alt="Gold" src="https://raw.githubusercontent.com/defenseunicorns/uds-common/refs/heads/main/docs/assets/made-for-uds-gold.svg" height="20px"/>](https://github.com/defenseunicorns/uds-core)
 
 _a Gold UDS Package implements best-effort 0-cve images, configuration hardening, and meets the unicorn guarantee out of the box with zero additional effort._
 
@@ -31,7 +31,7 @@ UDS Packages may make use of the [UDS Exemption custom resource](https://github.
 - [ ] **Must** declaratively implement any available application hardening guidelines by default (Example: [GitLab Hardening guidelines](https://docs.gitlab.com/ee/security/hardening.html))
 - [ ] **Must** release a unicorn flavor package, providing a minimal CVE baseline
 
-## Silver: [<img alt="Silver" src="https://raw.githubusercontent.com/defenseunicorns/uds-common/3e0fb5acd5c590c96aeb18f5941002aea4e0dbcd/docs/made-for-uds-silver.svg" height="20px"/>](https://github.com/defenseunicorns/uds-core)
+## Silver: [<img alt="Silver" src="https://raw.githubusercontent.com/defenseunicorns/uds-common/refs/heads/main/docs/assets/made-for-uds-silver.svg" height="20px"/>](https://github.com/defenseunicorns/uds-core)
 
 _a Silver UDS Package integrates with the main features of the UDS Operator, is documented, maintained, and can be confidently operated in production._
 
@@ -57,7 +57,7 @@ Silver packages:
 - [ ] **May** end any generated Keycloak client secrets with `-sso` to easily locate them when querying the cluster.
 - [ ] **May** template Keycloak fields to provide flexibility for delivery customers to configure.
 
-## Bronze: [<img alt="Bronze" src="https://raw.githubusercontent.com/defenseunicorns/uds-common/3e0fb5acd5c590c96aeb18f5941002aea4e0dbcd/docs/made-for-uds-bronze.svg" height="20px"/>](https://github.com/defenseunicorns/uds-core)
+## Bronze: [<img alt="Bronze" src="https://raw.githubusercontent.com/defenseunicorns/uds-common/refs/heads/main/docs/assets/made-for-uds-bronze.svg" height="20px"/>](https://github.com/defenseunicorns/uds-core)
 
 _a Bronze UDS Package meets the minimum requirements and becomes compatible, but not optimal or fully integrated, with UDS. It is not ready to run in production without significant caveats._
 
