@@ -1,12 +1,14 @@
 lint:
   script:
     # Environment setup
-    - set -x
-    - eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)" #todo remove this eval when new ami is ready
-    - uds run actions:authenticate-registries
+    - curl -sL https://github.com/defenseunicorns/uds-cli/releases/download/v0.17.0/uds-cli_v0.17.0_Linux_amd64 -o ./uds
+    - chmod +x ./uds
+    #- eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+    - ./uds version
+    - ./uds run actions:setup-environment
 
     # # Install lint dependencies
-    - uds run lint:deps --no-progress
+    - ./uds run lint:deps --no-progress
 
     # # Lint the repository
-    - uds run lint:all --no-progress
+    - ./uds run lint:all --no-progress
