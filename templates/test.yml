@@ -19,6 +19,7 @@ test:
   script:
     #TODO need to do actions:authenticate-registries here when we get secrets
     - |
+      echo $CHAINGUARD_IDENTITY
       curl -o ./chainctl -L \
         "https://dl.enforce.dev/chainctl/latest/chainctl_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/aarch64/arm64/')" \
         && chmod +x ./chainctl
