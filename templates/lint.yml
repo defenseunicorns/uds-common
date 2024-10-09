@@ -4,6 +4,7 @@ lint:
     - curl -sL https://github.com/defenseunicorns/uds-cli/releases/download/v0.17.0/uds-cli_v0.17.0_Linux_amd64 -o ./uds
     - chmod +x ./uds
     #- eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+    - export PATH=/home/ubuntu/.local/bin:$PATH #todo we shouldn't need this, stuff should just be on path
     - ./uds version
     - ./uds run actions:authenticate-registries
 
