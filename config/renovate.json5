@@ -10,10 +10,10 @@
     // Disable reviewers getting added by renovate to limit notification noise
     "reviewersFromCodeOwners": false,
     "timezone": "America/New_York",
-    "rebaseStalePrs": true,
     "dependencyDashboard": true,
     "dependencyDashboardTitle": "Renovate Dashboard 🤖",
     "rebaseWhen": "conflicted",
+    "rebaseStalePrs": false,
     "commitBodyTable": true,
     "suppressNotifications": ["prIgnoreNotification"],
     "pre-commit": {
