@@ -13,16 +13,16 @@ test:
   rules:
     - if: $CI_MERGE_REQUEST_ID
   script:
-    #todo env setup stuff - look at this again after ami is gtg
-    - |
-      export PATH=/home/ubuntu/.local/bin:$PATH #todo we shouldn't need this, stuff should just be on path
+    # #todo env setup stuff - look at this again after ami is gtg
+    # - |
+    #   export PATH=/home/ubuntu/.local/bin:$PATH #todo we shouldn't need this, stuff should just be on path
 
-      curl -sL https://github.com/defenseunicorns/uds-cli/releases/download/v0.17.0/uds-cli_v0.17.0_Linux_amd64 -o /home/ubuntu/.local/bin/uds
-      chmod +x /home/ubuntu/.local/bin/uds
+    #   curl -sL https://github.com/defenseunicorns/uds-cli/releases/download/v0.17.0/uds-cli_v0.17.0_Linux_amd64 -o /home/ubuntu/.local/bin/uds
+    #   chmod +x /home/ubuntu/.local/bin/uds
 
-      curl -sL "https://github.com/k3d-io/k3d/releases/download/v5.7.4/k3d-linux-amd64" -o /home/ubuntu/.local/bin/k3d
-      chmod +x /home/ubuntu/.local/bin/k3d
-    #todo end of setup stuff  - look at this again after ami is gtg
+    #   curl -sL "https://github.com/k3d-io/k3d/releases/download/v5.7.4/k3d-linux-amd64" -o /home/ubuntu/.local/bin/k3d
+    #   chmod +x /home/ubuntu/.local/bin/k3d
+    # #todo end of setup stuff  - look at this again after ami is gtg
 
     - echo FLAVOR=$[[ inputs.flavor ]] TYPE=$[[ inputs.type ]]
     - echo "Runner architecture is $CI_PIPELINE_ID"
