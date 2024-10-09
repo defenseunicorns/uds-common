@@ -9,7 +9,6 @@ commitlint:
       sudo apt-get install -y nodejs
     - npm install --save-dev @commitlint/config-conventional@19.5.0
     - npm install --save-dev @commitlint/cli@19.5.0  
-    - echo "Merge Request Title is $CI_MERGE_REQUEST_TITLE"
     - |
       echo "module.exports = {extends: ['@commitlint/config-conventional']}" > commitlint.config.js
-    - cat commitlint.config.js
+    - echo "$CI_MERGE_REQUEST_TITLE" | npx commitlint
