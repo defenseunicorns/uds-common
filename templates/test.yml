@@ -10,24 +10,11 @@ spec:
       default: playwright-report
 ---
 test:
+  #TODO rules update for upgrade check / flavor stuff
   rules:
     - if: $CI_MERGE_REQUEST_ID
   script:
-    # #todo env setup stuff - look at this again after ami is gtg
-    # - |
-    #   export PATH=/home/ubuntu/.local/bin:$PATH #todo we shouldn't need this, stuff should just be on path
-
-    #   curl -sL https://github.com/defenseunicorns/uds-cli/releases/download/v0.17.0/uds-cli_v0.17.0_Linux_amd64 -o /home/ubuntu/.local/bin/uds
-    #   chmod +x /home/ubuntu/.local/bin/uds
-
-    #   curl -sL "https://github.com/k3d-io/k3d/releases/download/v5.7.4/k3d-linux-amd64" -o /home/ubuntu/.local/bin/k3d
-    #   chmod +x /home/ubuntu/.local/bin/k3d
-    # #todo end of setup stuff  - look at this again after ami is gtg
-
-    - echo FLAVOR=$[[ inputs.flavor ]] TYPE=$[[ inputs.type ]]
-    - echo "Runner architecture is $CI_PIPELINE_ID"
-    - echo "pipeline id is $CI_RUNNER_ARCH"
-    - echo "job id is $CI_JOB_ID"
+    #TODO need to do actions:authenticate-registries here when we get secrets
     - uds run actions:test-deploy --set FLAVOR="$[[ inputs.flavor ]]" --set TYPE="$[[ inputs.type ]]"
     - uds run actions:verify-badge
 
@@ -35,7 +22,7 @@ test:
     - uds run actions:debug-output
     - uds run actions:save-logs
 
-    # todo this would be better if we change debug-output and save-logs to take a directory name to write to
+    # TODO this would be better if we change debug-output and save-logs to take a directory name to write to
     # gitlab can only attach artifacts that are under the project, not arbitrary dirs on the runner
     - mkdir logs && cp /tmp/*.log logs && cp -R /tmp/uds-containerd-logs logs
 
@@ -51,3 +38,5 @@ test:
       - logs/uds-containerd-logs
       - logs/k3d-uds-*.log
       - oscal-assessment-results.yaml
+
+  # TODO need to figure out the report path and extra report artifact stuff too
