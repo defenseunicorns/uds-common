@@ -5,6 +5,8 @@ variables:
     default: ""
   - name: GH_TOKEN
     default: ""
+  - name: GITLAB_CI
+    default: ""
   - name: GITLAB_REGISTRY_USER
     default: ""
   - name: GITLAB_REGISTRY_URL
@@ -108,6 +110,7 @@ tasks:
       - task: determine-arch
 
       - description: Install Lula
+        if: ${{ eq .variables.GITLAB_CI "" }}
         cmd: |
           # renovate: datasource=github-tags depName=defenseunicorns/lula versioning=semver-coerced
           LulaVersion=0.7.0
