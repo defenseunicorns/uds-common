@@ -1,3 +1,21 @@
-test:
+spec:
+  inputs:
+    runsOn:
+      default: "ubuntu-latest"
+    upgrade-flavors:
+      default: ""
+    flavor:
+      default: ""
+    type:
+      default: ""
+    reports-path:
+      default: ""
+    reports-name:
+      default: "playwright-report"
+---
+test-$[[ inputs.flavor ]]-$[[ inputs.type ]]:
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
   script:
     - echo "hi from $FLAVOR - $TYPE - $ARCH"
+    - uds run actions:test-deploy --set FLAVOR="$[[ inputs.flavor ]]" --set TYPE="$[[ inputs.type ]]"
