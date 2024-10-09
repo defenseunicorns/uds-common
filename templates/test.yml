@@ -13,7 +13,7 @@ spec:
     reports-name:
       default: "playwright-report"
 ---
-test-$[[ inputs.flavor ]]-$[[ inputs.type ]]:
+test:
   rules:
     - if: $CI_MERGE_REQUEST_ID
   script:
