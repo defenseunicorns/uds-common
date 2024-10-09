@@ -5,7 +5,7 @@ lint:
     - chmod +x ./uds
     #- eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
     - ./uds version
-    - ./uds run actions:setup-environment
+    - ./uds run actions:authenticate-registries
 
     # # Install lint dependencies
     - ./uds run lint:deps --no-progress
