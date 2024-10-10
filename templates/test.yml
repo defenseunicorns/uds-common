@@ -8,6 +8,12 @@ spec:
       default: ""
     reports-name:
       default: playwright-report
+    registry1Username:
+      default: ${IRON_BANK_ROBOT_USERNAME}
+    registry1Password:
+      default: ${IRON_BANK_ROBOT_PASSWORD}
+    chainguardIdentity:
+      default: ${CHAINGUARD_IDENTITY}
 ---
 test:
   #TODO rules update for upgrade check / flavor stuff
@@ -24,6 +30,7 @@ test:
     #     && chmod +x ./chainctl
     # - ./chainctl auth login --identity "uds-btb-ci" --identity-token "$CHAINGUARD_IDENTITY" --skip-browser -v=16
     # - ./chainctl auth configure-docker  --identity "uds-btb-ci" --identity-token "$CHAINGUARD_IDENTITY" --skip-browser -v=16
+    - uds run actions:authenticate-registries --set REGISTRY1_USERNAME="$[[ inputs.registry1Username ]]" --set REGISTRY1_USERNAME="$[[ inputs.registry1Password ]]" --set REGISTRY1_USERNAME="$[[ inputs.chainguardIdentity ]]"
     - uds run actions:test-deploy --set FLAVOR="$[[ inputs.flavor ]]" --set TYPE="$[[ inputs.type ]]"
     - uds run actions:verify-badge
 

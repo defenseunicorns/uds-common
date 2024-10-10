@@ -1,0 +1,34 @@
+name: CI Doc Shim
+
+on:
+  pull_request:
+    paths:
+      - "**.md"
+      - "**.jpg"
+      - "**.png"
+      - "**.gif"
+      - "**.svg"
+      - adr/**
+      - docs/**
+      - .gitignore
+      - renovate.json
+      - .release-please-config.json
+      - release-please-config.json
+      - oscal-component.yaml
+      - CODEOWNERS
+      - LICENSE
+      - CONTRIBUTING.md
+      - SECURITY.md
+      - config/renovate.json5
+
+jobs:
+  validate:
+    strategy:
+      matrix:
+        type: [install, upgrade]
+        flavor: [upstream, registry1, unicorn]
+    uses: ./.github/workflows/callable-ci-docs-shim.yaml
+    with:
+      flavor: ${{ matrix.flavor }}
+      type: ${{ matrix.type }}
+    secrets: inherit # Inherits all secrets from the parent workflow.
