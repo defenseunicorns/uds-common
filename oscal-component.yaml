@@ -1,3 +1,6 @@
+# Copyright 2024 Defense Unicorns
+# SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
+
 # add the descriptions inline
 component-definition:
   uuid: fae03d9e-4cfc-47ca-b0e9-05dae10c557b
