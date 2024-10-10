@@ -17,9 +17,6 @@ include:
 #         ARCH: [amd64]
 
 test:
-  id_tokens:
-    CHAINGUARD_TOKEN:
-      aud: https://console-api.enforce.dev
   parallel:
     matrix:
       - FLAVOR: [upstream, registry1] # TODO need secrets to add other flavors

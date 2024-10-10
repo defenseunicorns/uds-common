@@ -16,6 +16,9 @@ spec:
       default: ${CHAINGUARD_IDENTITY}
 ---
 test:
+  id_tokens:
+    CHAINGUARD_TOKEN:
+      aud: https://console-api.enforce.dev
   #TODO rules update for upgrade check / flavor stuff
   rules:
     - if: $CI_MERGE_REQUEST_ID
