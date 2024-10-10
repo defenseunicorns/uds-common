@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.0.1](https://github.com/defenseunicorns/uds-common/compare/v1.0.0...v1.0.1) (2024-10-10)
+
+
+### Miscellaneous
+
+* **badging:** include unicorn flavor suggstion for bronze ([#288](https://github.com/defenseunicorns/uds-common/issues/288)) ([f668b06](https://github.com/defenseunicorns/uds-common/commit/f668b06f1597efd3c701a47ce28de1d8f298b1b8))
+* disable stale PR rebasing for renovate ([#284](https://github.com/defenseunicorns/uds-common/issues/284)) ([27ca69e](https://github.com/defenseunicorns/uds-common/commit/27ca69e53d980672b655b03ee854d2e7ea0462dc))
+* make all Maru references local includes ([#287](https://github.com/defenseunicorns/uds-common/issues/287)) ([727db0f](https://github.com/defenseunicorns/uds-common/commit/727db0fae26a4397361bab84de18dd253a755c79))
+
 ## [1.0.0](https://github.com/defenseunicorns/uds-common/compare/v0.13.1...v1.0.0) (2024-10-07)
 
 
