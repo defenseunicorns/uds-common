@@ -4,7 +4,7 @@ Date: 2024-06-28
 
 ## Status
 
-Accepted
+Superseded (by [0004-agpl-v3-for-all-uds-products.md](./0004-agpl-v3-for-all-uds-products.md))
 
 ## Context
 
