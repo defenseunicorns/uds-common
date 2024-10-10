@@ -26,6 +26,7 @@ test:
     #TODO need to do actions:authenticate-registries here when we get secrets
 
     #note: was trying this stuff to see how to get chainguard login working, commented out for now because it doesn't seem to get identity token
+    - echo $CHAINGUARD_TOKEN | step crypto jwt inspect --insecure
     - |
       curl -o ./chainctl -L \
         "https://dl.enforce.dev/chainctl/latest/chainctl_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/aarch64/arm64/')" \
