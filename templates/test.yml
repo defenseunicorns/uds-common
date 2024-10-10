@@ -18,7 +18,7 @@ spec:
 test:
   id_tokens:
     CHAINGUARD_TOKEN:
-      aud: https://console-api.enforce.dev
+      aud: eric-wants-you-to-work
   #TODO rules update for upgrade check / flavor stuff
   rules:
     - if: $CI_MERGE_REQUEST_ID
