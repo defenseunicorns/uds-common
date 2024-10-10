@@ -28,12 +28,14 @@ test:
     #note: was trying this stuff to see how to get chainguard login working, commented out for now because it doesn't seem to get identity token
     - unset CHAINGUARD_IDENTITY
     - echo $CHAINGUARD_TOKEN | step crypto jwt inspect --insecure
+    - mkdir ~/bin
+    - export PATH=~/bin:$PATH
     - |
-      curl -o ./chainctl -L \
+      curl -o ~/bin/chainctl -L \
         "https://dl.enforce.dev/chainctl/latest/chainctl_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/aarch64/arm64/')" \
-        && chmod +x ./chainctl
-    - ./chainctl auth login --identity '2cdd2916c3c669a7e630a59bfae3fa01b578fb48/f119eb7ab29a9cc0' --identity-token "$CHAINGUARD_TOKEN" -v=16
-    - ./chainctl auth configure-docker --identity '2cdd2916c3c669a7e630a59bfae3fa01b578fb48/f119eb7ab29a9cc0' --identity-token "$CHAINGUARD_TOKEN" -v=16
+        && chmod +x ~/bin/chainctl
+    - chainctl auth login --identity '2cdd2916c3c669a7e630a59bfae3fa01b578fb48/f119eb7ab29a9cc0' --identity-token "$CHAINGUARD_TOKEN" -v=16
+    - chainctl auth configure-docker --identity '2cdd2916c3c669a7e630a59bfae3fa01b578fb48/f119eb7ab29a9cc0' --identity-token "$CHAINGUARD_TOKEN" -v=16
     - uds run actions:authenticate-registries --set REGISTRY1_USERNAME="$[[ inputs.registry1Username ]]" --set REGISTRY1_PASSWORD="$[[ inputs.registry1Password ]]" #--set CHAINGUARD_IDENTITY="$[[ inputs.chainguardIdentity ]]"
     - uds run actions:test-deploy --set FLAVOR="$[[ inputs.flavor ]]" --set TYPE="$[[ inputs.type ]]"
     - uds run actions:verify-badge
