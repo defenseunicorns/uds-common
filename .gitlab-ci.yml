@@ -8,14 +8,6 @@ include:
       type: $TYPE
   # - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/publish@$CI_COMMIT_SHA
 
-# publish:
-#   needs: [test]
-#   parallel:
-#     matrix:
-#       - FLAVOR: [unicorn]
-#         TYPE: [install]
-#         ARCH: [amd64]
-
 test:
   parallel:
     matrix:
