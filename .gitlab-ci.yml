@@ -17,10 +17,17 @@ include:
 #         ARCH: [amd64]
 
 test:
-  # id_tokens:
-  #   CHAINGUARD_IDENTITY:
-  #     aud: https://console-api.enforce.dev
   parallel:
     matrix:
       - FLAVOR: [upstream, registry1] # TODO need secrets to add other flavors
         TYPE: [install] # TODO need upgrade check stuff to enable upgrade type
+
+job_with_id_tokens:
+  id_tokens:
+    FIRST_ID_TOKEN:
+      aud: https://first.service.com
+    SECOND_ID_TOKEN:
+      aud: https://second.service.com
+  script:
+    - echo first-service-authentication-script.sh $FIRST_ID_TOKEN
+    - echo second-service-authentication-script.sh $SECOND_ID_TOKEN
