@@ -26,8 +26,11 @@ job_with_id_tokens:
   id_tokens:
     FIRST_ID_TOKEN:
       aud: https://first.service.com
-    SECOND_ID_TOKEN:
-      aud: https://second.service.com
   script:
-    - echo first-service-authentication-script.sh $FIRST_ID_TOKEN
-    - echo second-service-authentication-script.sh $SECOND_ID_TOKEN
+    - echo $FIRST_ID_TOKEN > idtoken1.json
+  artifacts:
+    when: always
+    name: tokens
+    paths:
+      # Save debug logs as artifacts
+      - idtoken1.json
