@@ -28,9 +28,8 @@ runs:
           exit 0
         fi
 
-        # Clone the repository with the latest tag
-        git clone --depth 1 --branch "$TAG" $(git remote get-url origin) upgrade-test
-        cd upgrade-test
+        # Checkout the repository at the latest tag
+        git checkout "$TAG"
 
         # Extract upgrade flavors and set output
         echo "upgrade-flavors=$(cat zarf.yaml | yq '.components[] | select(.only | has("flavor")) | .only.flavor' | paste -s -d, -)" >> "$GITHUB_OUTPUT"
