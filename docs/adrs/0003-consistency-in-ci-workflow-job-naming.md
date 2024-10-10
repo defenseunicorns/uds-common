@@ -1,4 +1,4 @@
-# 2. Apache License, Version 2.0 (Apache-2.0) for All UDS Products
+# 3. Consistency in CI Workflow Job Naming
 
 Date: 2024-10-04
 
