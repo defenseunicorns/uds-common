@@ -32,12 +32,9 @@ test:
     - uds run actions:verify-badge
 
   after_script:
-    - uds run actions:debug-output
-    - uds run actions:save-logs
-
-    # TODO this would be better if we change debug-output and save-logs to take a directory name to write to
-    # gitlab can only attach artifacts that are under the project, not arbitrary dirs on the runner
-    - mkdir logs && cp /tmp/*.log logs && cp -R /tmp/uds-containerd-logs logs
+    - mkdir .ci_logs
+    - uds run actions:debug-output --set LOG_DIR=.ci_logs
+    - uds run actions:save-logs --set LOG_DIR=.ci_logs
 
   artifacts:
     when: always
