@@ -187,7 +187,7 @@ tasks:
           # Must be consistently versioned across flavors - this can take many forms but flavors should differ in image bases/builds not application versions.
 
           ZARF_PKG_VERSION=$(uds zarf tools yq '.metadata.version' "${PACKAGE_DIR}/zarf.yaml" | cut -d '-' -f1)
-          IMAGE_WITH_ZARF_VERSION_COUNT=$(uds zarf tools kubectl get pods -n "cert-manager" -o json | jq -c '.items[] | select(.spec.containers[].name == "istio-proxy")' | wc -l)
+          IMAGE_WITH_ZARF_VERSION_COUNT=$(uds zarf tools yq '.components[].images[]' "${PACKAGE_DIR}/zarf.yaml" | grep -o "${ZARF_PKG_VERSION}" | wc -l)
 
           if [ "$IMAGE_WITH_ZARF_VERSION_COUNT" -ge "$ZARF_COMPONENTS_FLAVOR_COUNT" ]; then
               gh_notice "  ✅ Version is consistent across flavors and package"
@@ -270,7 +270,7 @@ tasks:
 
               # Must deploy and operate successfully with Istio injection enabled in the namespace.
               POD_COUNT=$(uds zarf tools kubectl get pods -n "${NAMESPACE}" --no-headers | wc -l)
-              PDO_SIDECAR_COUNT=$(uds zarf tools kubectl get pods -n "${NAMESPACE}" -o json | jq -c '.items[] | select(.spec.containers[].name == "istio-proxy")' | wc -l)
+              POD_SIDECAR_COUNT=$(uds zarf tools kubectl get pods -n "${NAMESPACE}" -o json | jq -c '.items[] | select(.spec.containers[].name == "istio-proxy")' | wc -l)
 
               if [ "$POD_COUNT" -ne "$POD_SIDECAR_COUNT" ]; then
                   gh_error "  ❌ Not all pods have the istio sidecar"
