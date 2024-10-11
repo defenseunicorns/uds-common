@@ -2,7 +2,7 @@ spec:
   inputs:
     runsOn:
       default: uds
-      
+---
 commitlint:
   rules:
     - if: $CI_MERGE_REQUEST_ID

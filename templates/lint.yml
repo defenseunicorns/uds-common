@@ -2,7 +2,7 @@ spec:
   inputs:
     runsOn:
       default: uds
-      
+--- 
 lint:
   rules:
     - if: $CI_MERGE_REQUEST_ID
