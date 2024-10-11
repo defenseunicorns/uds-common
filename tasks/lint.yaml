@@ -152,7 +152,7 @@ tasks:
           done < .gitignore
 
           # Construct the command as a string
-          eval "$HOME/go/bin/addlicense -l \"AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial\" -check -s=only -v -c \"Defense Unicorns\" ${ignore_flags[@]} . 2>/dev/null"
+          eval "$HOME/go/bin/addlicense -l \"AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial\" -check -s=only -v -c \"Defense Unicorns\" ${ignore_flags[*]} . 2>/dev/null"
 
   - name: fix-license
     description: Add the SPDX license identifier to source files
@@ -170,4 +170,4 @@ tasks:
           done < .gitignore
 
           # Construct the command as a string
-          eval "$HOME/go/bin/addlicense -l \"AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial\" -s=only -v -c \"Defense Unicorns\" ${ignore_flags[@]} . 2>/dev/null"
+          eval "$HOME/go/bin/addlicense -l \"AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial\" -s=only -v -c \"Defense Unicorns\" ${ignore_flags[*]} . 2>/dev/null"
