@@ -45,22 +45,26 @@ tasks:
         with:
           team: ${{.inputs.team}}
 
-      - description: Remove cloned repo
+      - description: Remove copied repo
         cmd: rm -rf upgrade-test
 
-      - description: Fetch the most recent tags
-        cmd: git fetch --tags
+      - description: Copy repo into the upgrade-test folder
+        cmd: |
+          mkdir upgrade-test
 
-      - description: Clone latest tag
-        cmd: git clone --depth 1 --branch "$(git describe --tags "$(git rev-list --tags --max-count=1)")" "$(git remote get-url origin)" upgrade-test
+          shopt -s extglob dotglob
+          mv !(upgrade-test) upgrade-test
+          shopt -u dotglob
 
       - description: Create test bundle
         shell:
           linux: bash
           darwin: bash
+        dir: upgrade-test
         cmd: |
-          BUNDLE_VERSION=$(cat ${{ .inputs.bundle_path }}/uds-bundle.yaml | ./uds zarf tools yq .metadata.version)
-          cd upgrade-test || exit
+          BUNDLE_VERSION=$(cat ../${{ .inputs.bundle_path }}/uds-bundle.yaml | ./uds zarf tools yq .metadata.version)
+          TAG=$(git describe --tags $(git rev-list --tags --max-count=1) 2>/dev/null || echo "")
+          git checkout "$TAG"
 
           # VARIABLES
           PACKAGE_NAME=$(cat ${{ .inputs.path }}/zarf.yaml | yq .metadata.name)
@@ -93,5 +97,4 @@ tasks:
             exit 1
           fi
 
-          cd ..
           rm -rf upgrade-test
