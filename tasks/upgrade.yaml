@@ -97,4 +97,5 @@ tasks:
             exit 1
           fi
 
-          rm -rf upgrade-test
+      - description: Remove the upgrade-test folder
+        cmd: rm -rf upgrade-test
