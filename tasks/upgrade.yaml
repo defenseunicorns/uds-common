@@ -56,7 +56,7 @@ tasks:
           mkdir upgrade-test
 
           shopt -s extglob dotglob
-          mv !(upgrade-test) upgrade-test
+          cp -r !(upgrade-test) upgrade-test
           shopt -u dotglob
 
       - description: Create test bundle of last tag
@@ -94,7 +94,6 @@ tasks:
               --no-progress \
               ${{ .inputs.options }}
 
-            mkdir -p ../${{ .inputs.bundle_path }}
             mv "${{ .inputs.bundle_path }}/uds-bundle-${BUNDLE_NAME}-${{ .inputs.architecture }}-${PREVIOUS_BUNDLE_VERSION}.tar.zst" "../${{ .inputs.bundle_path }}/uds-bundle-${BUNDLE_NAME}-${{ .inputs.architecture }}-${BUNDLE_VERSION}.tar.zst"
           else
             echo "::warning::⚠️ Registry1 bundles cannot be made for 'arm64'"
