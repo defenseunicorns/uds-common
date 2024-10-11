@@ -1,7 +1,7 @@
-spec:
-  inputs:
-    runsOn:
-      default: uds
+# spec:
+#   inputs:
+#     runsOn:
+#       default: uds
       
 commitlint:
   rules:
@@ -19,5 +19,5 @@ commitlint:
     - |
       echo "module.exports = {extends: ['@commitlint/config-conventional']}" > commitlint.config.js
     - echo "$CI_MERGE_REQUEST_TITLE" | npx commitlint
-  tags:
-    - "$[[ inputs.runsOn ]]"
+  # tags:
+  #   - "$[[ inputs.runsOn ]]"
