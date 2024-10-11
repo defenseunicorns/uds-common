@@ -23,10 +23,10 @@ publish:
         --set REGISTRY1_USERNAME="${IRON_BANK_ROBOT_USERNAME}" \
         --set REGISTRY1_PASSWORD="${IRON_BANK_ROBOT_PASSWORD}" \
         --set GH_TOKEN="${GITHUB_TOKEN}" \
-        --set CHAINGUARD_IDENTITY="${CHAINGUARD_IDENTITY}" "${OPTIONS}"
+        --set CHAINGUARD_IDENTITY="${CHAINGUARD_IDENTITY}"
 
     # Publish Package
-    - uds run publish-package --set FLAVOR="${FLAVOR}" --no-progress
+    - uds run publish-package --set FLAVOR="${FLAVOR}" --no-progress "${OPTIONS}"
 
   after_script:
     # Save logs, which will run even if the script section fails
