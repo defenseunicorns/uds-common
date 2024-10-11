@@ -13,6 +13,8 @@ variables:
     default: ""
   - name: CHAINGUARD_IDENTITY
     default: ""
+  - name: CHAINGUARD_TOKEN
+    default: ""
   - name: CHART_PATH
     default: chart/
   - name: GROUP_NAME
@@ -132,17 +134,24 @@ tasks:
       - description: Chainguard Login
         if: ${{ ne .variables.CHAINGUARD_IDENTITY "" }}
         cmd: |
-          curl -o /usr/local/bin/chainctl -L \
-          "https://dl.enforce.dev/chainctl/latest/chainctl_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/aarch64/arm64/')" \
-          && chmod +x /usr/local/bin/chainctl
+          if [ -z "$GITLAB_CI" ]; then
+            curl -o /usr/local/bin/chainctl -L \
+            "https://dl.enforce.dev/chainctl/latest/chainctl_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/aarch64/arm64/')" \
+            && chmod +x /usr/local/bin/chainctl
+          fi
 
-          if chainctl auth login --identity "${{ .variables.CHAINGUARD_IDENTITY }}" -v=0; then
+          LOGIN_ARGS="--identity \"${{ .variables.CHAINGUARD_IDENTITY }}\" -v=0"
+          if [ -n "${{ .variables.CHAINGUARD_TOKEN }}" ]; then
+            LOGIN_ARGS="$LOGIN_ARGS --identity-token \"${{ .variables.CHAINGUARD_TOKEN }}\""
+          fi
+
+          if chainctl auth login $LOGIN_ARGS -v=0; then
             echo Logged in as ${{ .variables.CHAINGUARD_IDENTITY }}!
           else
             echo Unable to assume the identity ${{ .variables.CHAINGUARD_IDENTITY }}.
           exit 1
           fi
-          if ! chainctl auth configure-docker --identity "${{ .variables.CHAINGUARD_IDENTITY }}" -v=0; then
+          if ! chainctl auth configure-docker $LOGIN_ARGS -v=0; then
             echo Unable to register credential helper as ${{ .variables.CHAINGUARD_IDENTITY }}.
             exit 1
           fi

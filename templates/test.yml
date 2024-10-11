@@ -23,12 +23,11 @@ test:
   rules:
     - if: $CI_MERGE_REQUEST_ID
   script:
-    #TODO need to do actions:authenticate-registries here when we get secrets
-    - chainctl auth login --identity "$[[ inputs.chainguardIdentity ]]" --identity-token "$CHAINGUARD_TOKEN" -v=0
-    - chainctl auth configure-docker --identity "$[[ inputs.chainguardIdentity ]]" --identity-token "$CHAINGUARD_TOKEN" -v=0
-    #end temporary chainguard stuff
-
-    - uds run actions:authenticate-registries --set REGISTRY1_USERNAME="$[[ inputs.registry1Username ]]" --set REGISTRY1_PASSWORD="$[[ inputs.registry1Password ]]" #--set CHAINGUARD_IDENTITY="$[[ inputs.chainguardIdentity ]]"
+    - |
+      uds run actions:authenticate-registries --set REGISTRY1_USERNAME="$[[ inputs.registry1Username ]]" \
+                                              --set REGISTRY1_PASSWORD="$[[ inputs.registry1Password ]]" \
+                                              --set CHAINGUARD_IDENTITY="$[[ inputs.chainguardIdentity ]]" \
+                                              --set CHAINGUARD_TOKEN="$CHAINGUARD_TOKEN"
     - uds run actions:test-deploy --set FLAVOR="$[[ inputs.flavor ]]" --set TYPE="$[[ inputs.type ]]"
     - uds run actions:verify-badge
 
