@@ -17,6 +17,9 @@ spec:
     chainguardIdentity:
       default: ${CHAINGUARD_IDENTITY}
 ---
+find-tagged-flavors:
+  script:
+    - echo "hello i am find tagged flavors"
 test:
   id_tokens:
     CHAINGUARD_TOKEN:
