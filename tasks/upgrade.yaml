@@ -49,6 +49,9 @@ tasks:
         cmd: rm -rf upgrade-test
 
       - description: Copy repo into the upgrade-test folder
+        shell:
+          linux: bash
+          darwin: bash
         cmd: |
           mkdir upgrade-test
 
@@ -63,7 +66,7 @@ tasks:
         dir: upgrade-test
         cmd: |
           BUNDLE_VERSION=$(cat ../${{ .inputs.bundle_path }}/uds-bundle.yaml | ./uds zarf tools yq .metadata.version)
-          TAG=$(git describe --tags $(git rev-list --tags --max-count=1) 2>/dev/null || echo "")
+          TAG="$(git describe --tags "$(git rev-list --tags --max-count=1)" 2>/dev/null || echo '')"
           git checkout "$TAG"
 
           # VARIABLES
