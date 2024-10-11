@@ -50,7 +50,7 @@ publish:
     name: ${REPORTS_NAME}-${FLAVOR}-${CI_PIPELINE_ID}-${CI_JOB_ID}
 
   tags:
-    - "$[[ inputs.runsOn ]]"
+    - $[[ inputs.runsOn ]]
 #todo these should be inputs instead of variables
   variables:
     FLAVOR: ${FLAVOR}

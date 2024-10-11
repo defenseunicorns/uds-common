@@ -62,6 +62,6 @@ test:
       - logs/k3d-uds-*.log
       - oscal-assessment-results.yaml
   tags:
-    - "$[[ inputs.runsOn ]]"
+    - $[[ inputs.runsOn ]]
   # TODO need to figure out the report path and extra report artifact stuff too
   #      we may be able to do another "artifacts" section with a when keyed on report name/path inputs
