@@ -13,3 +13,5 @@ test:
     matrix:
       - FLAVOR: [upstream, registry1, unicorn] # TODO need secrets to add other flavors
         TYPE: [install] # TODO need upgrade check stuff to enable upgrade type
+      - FLAVOR: [upstream, registry1] # TODO need secrets to add other flavors
+        TYPE: [upgrade] # TODO need upgrade check stuff to enable upgrade type
