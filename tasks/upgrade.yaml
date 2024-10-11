@@ -56,7 +56,7 @@ tasks:
           mv !(upgrade-test) upgrade-test
           shopt -u dotglob
 
-      - description: Create test bundle
+      - description: Create test bundle of last tag
         shell:
           linux: bash
           darwin: bash
