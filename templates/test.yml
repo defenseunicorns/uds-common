@@ -1,7 +1,7 @@
 spec:
   inputs:
     runsOn:
-      default: ubuntu-latest
+      default: uds
     flavor:
     type:
     reports-path:
@@ -60,6 +60,7 @@ test:
       - logs/uds-containerd-logs
       - logs/k3d-uds-*.log
       - oscal-assessment-results.yaml
-
+  tags:
+    - "$[[ inputs.runsOn ]]"
   # TODO need to figure out the report path and extra report artifact stuff too
   #      we may be able to do another "artifacts" section with a when keyed on report name/path inputs

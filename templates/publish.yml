@@ -1,12 +1,30 @@
-# templates/publish.yaml
+spec:
+  inputs:
+    runsOn:
+      default: uds
+    flavor:
+    type:
+    reports-path:
+      default: ""
+    reports-name:
+      default: playwright-report
+
+
 publish:
+  rules:
+    - if: CI_COMMIT_TAG
+    - if: $CI_MERGE_REQUEST_ID
+      variables:         # Override DRY_RUN defined
+        DRY_RUN: "true"  # at the job level.
   script:
+    # Dry run on non-tag runs
+    - if [[ "$DRY_RUN" == "true" ]]; then OPTIONS="--dry-run"; fi
     # Environment setup
     - uds run actions:setup-environment \
         --set REGISTRY1_USERNAME="${IRON_BANK_ROBOT_USERNAME}" \
         --set REGISTRY1_PASSWORD="${IRON_BANK_ROBOT_PASSWORD}" \
         --set GH_TOKEN="${GITHUB_TOKEN}" \
-        --set CHAINGUARD_IDENTITY="${CHAINGUARD_IDENTITY}"
+        --set CHAINGUARD_IDENTITY="${CHAINGUARD_IDENTITY}" "${OPTIONS}"
 
     # Publish Package
     - uds run publish-package --set FLAVOR="${FLAVOR}" --no-progress
@@ -32,12 +50,11 @@ publish:
 
     name: ${REPORTS_NAME}-${FLAVOR}-${CI_PIPELINE_ID}-${CI_JOB_ID}
 
-# todo fix publish rules
-  rules:
-    - if: $CI_COMMIT_REF_NAME == "main"  # Adjust this condition as needed
-
+  tags:
+    - "$[[ inputs.runsOn ]]"
 #todo these should be inputs instead of variables
   variables:
     FLAVOR: ${FLAVOR}
     REPORTS_PATH: ${REPORTS_PATH:-}
     REPORTS_NAME: ${REPORTS_NAME:-playwright-report}
+    OPTIONS: ""
