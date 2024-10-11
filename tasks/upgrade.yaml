@@ -94,7 +94,8 @@ tasks:
               --no-progress \
               ${{ .inputs.options }}
 
-            mv "${{ .inputs.bundle_path }}/uds-bundle-${BUNDLE_NAME}-${{ .inputs.architecture }}-${PREVIOUS_BUNDLE_VERSION}.tar.zst" "../bundle/uds-bundle-${BUNDLE_NAME}-${{ .inputs.architecture }}-${BUNDLE_VERSION}.tar.zst"
+            mkdir -p ../${{ .inputs.bundle_path }}
+            mv "${{ .inputs.bundle_path }}/uds-bundle-${BUNDLE_NAME}-${{ .inputs.architecture }}-${PREVIOUS_BUNDLE_VERSION}.tar.zst" "../${{ .inputs.bundle_path }}/uds-bundle-${BUNDLE_NAME}-${{ .inputs.architecture }}-${BUNDLE_VERSION}.tar.zst"
           else
             echo "::warning::⚠️ Registry1 bundles cannot be made for 'arm64'"
             exit 1
