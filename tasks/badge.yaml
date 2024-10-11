@@ -270,7 +270,7 @@ tasks:
 
               # Must deploy and operate successfully with Istio injection enabled in the namespace.
               POD_COUNT=$(uds zarf tools kubectl get pods -n "${NAMESPACE}" --no-headers | wc -l)
-              POD_SIDECAR_COUNT=$(uds zarf tools kubectl get pods -n "${NAMESPACE}" -o json | jq -c '.items[] | select(.spec.containers[].name == "istio-proxy")' | wc -l)
+              POD_SIDECAR_COUNT=$(uds zarf tools kubectl get pods -n "${NAMESPACE}" -o yaml | uds zarf tools yq eval '[.items[] | select(.spec.containers[].name == "istio-proxy")] | length' -)
 
               if [ "$POD_COUNT" -ne "$POD_SIDECAR_COUNT" ]; then
                   gh_error "  ❌ Not all pods have the istio sidecar"
