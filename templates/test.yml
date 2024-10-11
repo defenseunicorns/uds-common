@@ -24,17 +24,10 @@ test:
     - if: $CI_MERGE_REQUEST_ID
   script:
     #TODO need to do actions:authenticate-registries here when we get secrets
-
-    #note: was trying this stuff to see how to get chainguard login working, commented out for now because it doesn't seem to get identity token
-    # - mkdir ~/bin
-    # - export PATH=~/bin:$PATH
-    # - |
-    #   curl -o ~/bin/chainctl -L \
-    #     "https://dl.enforce.dev/chainctl/latest/chainctl_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/aarch64/arm64/')" \
-    #     && chmod +x ~/bin/chainctl
-    # - sudo chainctl auth configure-docker || true # try to get it to make the symlink this way
-    - chainctl auth login --identity "$[[ inputs.chainguardIdentity ]]" --identity-token "$CHAINGUARD_TOKEN" -v=0
-    - chainctl auth configure-docker --identity "$[[ inputs.chainguardIdentity ]]" --identity-token "$CHAINGUARD_TOKEN" -v=0
+    - chainctl auth login --identity "$[[ inputs.chainguardIdentity ]]" -v=0
+    - chainctl auth configure-docker --identity "$[[ inputs.chainguardIdentity ]]" -v=0
+    # - chainctl auth login --identity "$[[ inputs.chainguardIdentity ]]" --identity-token "$CHAINGUARD_TOKEN" -v=0
+    # - chainctl auth configure-docker --identity "$[[ inputs.chainguardIdentity ]]" --identity-token "$CHAINGUARD_TOKEN" -v=0
     #end temporary chainguard stuff
 
     - uds run actions:authenticate-registries --set REGISTRY1_USERNAME="$[[ inputs.registry1Username ]]" --set REGISTRY1_PASSWORD="$[[ inputs.registry1Password ]]" #--set CHAINGUARD_IDENTITY="$[[ inputs.chainguardIdentity ]]"
