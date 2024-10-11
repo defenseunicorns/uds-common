@@ -78,6 +78,7 @@ Bronze packages:
 - [ ] **Must** release its package to the `ghcr.io/defenseunicorns/packages/<group>` namespace as the application's name (i.e. `ghcr.io/defenseunicorns/packages/uds/mattermost`).
 - [ ] **Must** not make the assumption that the `expose` interfaces are accessible to the bastion or pipeline deploying the package (i.e. `*.uds.dev`).
   > If web requests need to be made they should be done through a `Job` or `./uds zarf tools kubectl exec` as appropriate.
+- [ ] **Must** include application [metadata for Airgap App Store](../guidelines/metadata.md) publishing
 - [ ] **Should** lint their configurations with appropriate tooling, such as [`yamllint`](https://github.com/adrienverge/yamllint) and [`zarf dev lint`](https://docs.zarf.dev/commands/zarf_dev_lint/).
 - [ ] **Should** release a unicorn flavor package, providing a minimal CVE baseline
 
