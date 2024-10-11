@@ -28,7 +28,7 @@ variables:
   - name: OPTIONS
     default: ""
   - name: LOG_DIR
-    default: "/tmp"
+    default: /tmp
   - name: GO_VERSION
     default: 1.23.1
 
