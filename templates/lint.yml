@@ -1,8 +1,8 @@
-# spec:
-#   inputs:
-#     runsOn:
-#       default: uds
-
+spec:
+  inputs:
+    runsOn:
+      default: uds
+      
 lint:
   rules:
     - if: $CI_MERGE_REQUEST_ID
@@ -15,5 +15,5 @@ lint:
 
     # # Lint the repository
     - uds run lint:all --no-progress
-  # tags:
-  #   - "$[[ inputs.runsOn ]]"
+  tags:
+    - "$[[ inputs.runsOn ]]"
