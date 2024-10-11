@@ -32,7 +32,7 @@ test:
     #   curl -o ~/bin/chainctl -L \
     #     "https://dl.enforce.dev/chainctl/latest/chainctl_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/aarch64/arm64/')" \
     #     && chmod +x ~/bin/chainctl
-    - sudo ln -s /usr/local/bin/chainctl /usr/local/bin/docker-credential-cgr
+    - sudo chainctl auth configure-docker || exit 0 # try to get it to make the symlink this way
     - chainctl auth login --identity "$[[ inputs.chainguardIdentity ]]" --identity-token "$CHAINGUARD_TOKEN" -v=0
     - chainctl auth configure-docker --identity "$[[ inputs.chainguardIdentity ]]" --identity-token "$CHAINGUARD_TOKEN" -v=0
     #end temporary chainguard stuff
