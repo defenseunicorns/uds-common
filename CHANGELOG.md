@@ -1,5 +1,29 @@
 # Changelog
 
+## [1.1.0](https://github.com/defenseunicorns/uds-common/compare/v1.0.0...v1.1.0) (2024-10-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* update the license to AGPLv3 or Commercial ([#286](https://github.com/defenseunicorns/uds-common/issues/286))
+
+### Bug Fixes
+
+* modified jq command ([#292](https://github.com/defenseunicorns/uds-common/issues/292)) ([d566e86](https://github.com/defenseunicorns/uds-common/commit/d566e86c5a78f2124116113ea3ed35695caec5be))
+* simplify git command for flavor checks ([#290](https://github.com/defenseunicorns/uds-common/issues/290)) ([72c4e35](https://github.com/defenseunicorns/uds-common/commit/72c4e35d5f9f6ed877c184cf748e67a77e4fa771))
+* upgrade test not cloning in private repos ([#295](https://github.com/defenseunicorns/uds-common/issues/295)) ([1dde808](https://github.com/defenseunicorns/uds-common/commit/1dde808b943c554edcd401fb814d504ee74117c0))
+
+
+### Miscellaneous
+
+* **badging:** include unicorn flavor suggstion for bronze ([#288](https://github.com/defenseunicorns/uds-common/issues/288)) ([f668b06](https://github.com/defenseunicorns/uds-common/commit/f668b06f1597efd3c701a47ce28de1d8f298b1b8))
+* **deps:** update support-deps to v4.4.3 ([#282](https://github.com/defenseunicorns/uds-common/issues/282)) ([13d35ef](https://github.com/defenseunicorns/uds-common/commit/13d35ef9831c71cc217ef43f2c13562f40a3ec5b))
+* **deps:** update uds common package dependencies to v1.27.2 ([#229](https://github.com/defenseunicorns/uds-common/issues/229)) ([5b6a722](https://github.com/defenseunicorns/uds-common/commit/5b6a7223469bddf79be079baab1e3333a01c71e5))
+* disable stale PR rebasing for renovate ([#284](https://github.com/defenseunicorns/uds-common/issues/284)) ([27ca69e](https://github.com/defenseunicorns/uds-common/commit/27ca69e53d980672b655b03ee854d2e7ea0462dc))
+* have addlicense ignore gitignored files ([#294](https://github.com/defenseunicorns/uds-common/issues/294)) ([1bf662e](https://github.com/defenseunicorns/uds-common/commit/1bf662e890a238bf49234e9768d5fa7078d4fdb3))
+* make all Maru references local includes ([#287](https://github.com/defenseunicorns/uds-common/issues/287)) ([727db0f](https://github.com/defenseunicorns/uds-common/commit/727db0fae26a4397361bab84de18dd253a755c79))
+* update the license to AGPLv3 or Commercial ([#286](https://github.com/defenseunicorns/uds-common/issues/286)) ([2a9ca00](https://github.com/defenseunicorns/uds-common/commit/2a9ca00409f3bb513d2f256bcf1a91146b94d514))
+
 ## [1.0.0](https://github.com/defenseunicorns/uds-common/compare/v0.13.1...v1.0.0) (2024-10-07)
 
 

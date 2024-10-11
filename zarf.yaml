@@ -1,10 +1,13 @@
+# Copyright 2024 Defense Unicorns
+# SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
+
 # yaml-language-server: $schema=https://raw.githubusercontent.com/zarf-dev/zarf/main/zarf.schema.json
 kind: ZarfPackageConfig
 metadata:
   name: nginx
   description: UDS nginx package
   # x-release-please-start-version
-  version: 1.0.0
+  version: 1.1.0
   # x-release-please-end
 
 
@@ -25,7 +28,7 @@ components:
         valuesFiles:
           - values/upstream-values.yaml
     images:
-      - nginx:1.26.1
+      - nginx:1.27.2
 
   - name: nginx
     required: true
@@ -41,7 +44,7 @@ components:
         valuesFiles:
           - values/registry1-values.yaml
     images:
-      - registry1.dso.mil/ironbank/opensource/nginx/nginx:1.26.1
+      - registry1.dso.mil/ironbank/opensource/nginx/nginx:1.27.2
 
   - name: nginx
     required: true
@@ -55,4 +58,4 @@ components:
         valuesFiles:
           - values/unicorn-values.yaml
     images:
-      - cgr.dev/du-uds-defenseunicorns/nginx:1.26.1
+      - cgr.dev/du-uds-defenseunicorns/nginx:1.27.2

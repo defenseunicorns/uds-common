@@ -1,3 +1,6 @@
+# Copyright 2024 Defense Unicorns
+# SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
+
 name: Test-Flavor
 description: Check the flavor for the UDS package
 
@@ -21,16 +24,15 @@ runs:
       id: set-required
       run: |
         # Check if any tag exists
-        TAG=$(git describe --tags $(git rev-list --tags --max-count=1) 2>/dev/null || echo "")
+        TAG="$(git describe --tags "$(git rev-list --tags --max-count=1)" 2>/dev/null || echo '')"
 
         if [ -z "$TAG" ]; then
           echo "No Git tags found. Skipping step."
           exit 0
         fi
 
-        # Clone the repository with the latest tag
-        git clone --depth 1 --branch "$TAG" $(git remote get-url origin) upgrade-test
-        cd upgrade-test
+        # Checkout the repository at the latest tag
+        git checkout "$TAG"
 
         # Extract upgrade flavors and set output
         echo "upgrade-flavors=$(cat zarf.yaml | yq '.components[] | select(.only | has("flavor")) | .only.flavor' | paste -s -d, -)" >> "$GITHUB_OUTPUT"

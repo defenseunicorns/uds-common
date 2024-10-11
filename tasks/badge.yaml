@@ -1,3 +1,6 @@
+# Copyright 2024 Defense Unicorns
+# SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
+
 # yaml-language-server: $schema=https://raw.githubusercontent.com/defenseunicorns/uds-cli/main/tasks.schema.json
 
 variables:
@@ -267,7 +270,7 @@ tasks:
 
               # Must deploy and operate successfully with Istio injection enabled in the namespace.
               POD_COUNT=$(uds zarf tools kubectl get pods -n "${NAMESPACE}" --no-headers | wc -l)
-              POD_SIDECAR_COUNT=$(uds zarf tools kubectl get pods -n "${NAMESPACE}" -o json | jq '.items[] | select(.spec.containers[].name == "istio-proxy")' | wc -l)
+              POD_SIDECAR_COUNT=$(uds zarf tools kubectl get pods -n "${NAMESPACE}" -o yaml | uds zarf tools yq eval '[.items[] | select(.spec.containers[].name == "istio-proxy")] | length' -)
 
               if [ "$POD_COUNT" -ne "$POD_SIDECAR_COUNT" ]; then
                   gh_error "  ❌ Not all pods have the istio sidecar"
