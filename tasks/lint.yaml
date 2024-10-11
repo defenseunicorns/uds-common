@@ -139,9 +139,35 @@ tasks:
   - name: license
     description: Lint for the SPDX license identifier being in source files
     actions:
-      - cmd: "\"$HOME/go/bin/addlicense\" -l 'AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial' -check -s=only -v -c 'Defense Unicorns' ."
+      - shell:
+          darwin: bash
+          linux: bash
+        cmd: |
+          ignore_flags=()
+          while IFS= read -r line; do
+            # Skip comments and empty lines
+            [ -z "$line" ] || [[ "$line" =~ ^# ]] && continue
+            # Add the line to ignore_flags array with quotes around it
+            ignore_flags+=("-ignore" "\"$line\"")
+          done < .gitignore
+
+          # Construct the command as a string
+          eval "$HOME/go/bin/addlicense -l \"AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial\" -check -s=only -v -c \"Defense Unicorns\" ${ignore_flags[*]} . 2>/dev/null"
 
   - name: fix-license
     description: Add the SPDX license identifier to source files
     actions:
-      - cmd: "\"$HOME/go/bin/addlicense\" -l 'AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial' -s=only -v -c 'Defense Unicorns' ."
+      - shell:
+          darwin: bash
+          linux: bash
+        cmd: |
+          ignore_flags=()
+          while IFS= read -r line; do
+            # Skip comments and empty lines
+            [ -z "$line" ] || [[ "$line" =~ ^# ]] && continue
+            # Add the line to ignore_flags array with quotes around it
+            ignore_flags+=("-ignore" "\"$line\"")
+          done < .gitignore
+
+          # Construct the command as a string
+          eval "$HOME/go/bin/addlicense -l \"AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial\" -s=only -v -c \"Defense Unicorns\" ${ignore_flags[*]} . 2>/dev/null"
