@@ -139,19 +139,25 @@ tasks:
   - name: license
     description: Lint for the SPDX license identifier being in source files
     actions:
-      - cmd: |
-          ignore_flags=""
+      - shell:
+          darwin: bash
+          linux: bash
+        cmd: |
+          ignore_flags=()
           for line in $(grep -v '^#' .gitignore | grep -v '^$'); do
-            ignore_flags="$ignore_flags -ignore \"$line\""
+            ignore_flags+=("-ignore" "$line")
           done
-          "$HOME/go/bin/addlicense" -l 'AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial' -check -s=only -v -c 'Defense Unicorns' $ignore_flags .
+          "$HOME/go/bin/addlicense" -l "AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial" -check -s=only -v -c "Defense Unicorns" ${ignore_flags[@]} .
 
   - name: fix-license
     description: Add the SPDX license identifier to source files
     actions:
-      - cmd: |
-          ignore_flags=""
+      - shell:
+          darwin: bash
+          linux: bash
+        cmd: |
+          ignore_flags=()
           for line in $(grep -v '^#' .gitignore | grep -v '^$'); do
-            ignore_flags="$ignore_flags -ignore \"$line\""
+            ignore_flags+=("-ignore" "$line")
           done
-          "$HOME/go/bin/addlicense" -l 'AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial' -s=only -v -c 'Defense Unicorns' $ignore_flags .
+          "$HOME/go/bin/addlicense" -l "AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial" -s=only -v -c "Defense Unicorns" ${ignore_flags[@]} .
