@@ -4,6 +4,8 @@ spec:
       default: uds
     flavor:
     type:
+    log_dir:
+      default: .ci_logs
     reports-path:
       default: ""
     reports-name:
@@ -32,21 +34,21 @@ test:
     - uds run actions:verify-badge
 
   after_script:
-    - mkdir .ci_logs
-    - uds run actions:debug-output --set LOG_DIR=.ci_logs
-    - uds run actions:save-logs --set LOG_DIR=.ci_logs
+    - mkdir $[[ inputs.log_dir ]]
+    - uds run actions:debug-output --set LOG_DIR=$[[ inputs.log_dir ]]
+    - uds run actions:save-logs --set LOG_DIR=$[[ inputs.log_dir ]]
 
   artifacts:
     when: always
     name: debug-log-$[[ inputs.type ]]-$[[ inputs.flavor ]]-${CI_PIPELINE_ID}-${CI_JOB_ID}
     paths:
       # Save debug logs as artifacts
-      - logs/zarf-*.log
-      - logs/uds-*.log
-      - logs/maru-*.log
-      - logs/debug-*.log
-      - logs/uds-containerd-logs
-      - logs/k3d-uds-*.log
+      - $[[ inputs.log_dir ]]/zarf-*.log
+      - $[[ inputs.log_dir ]]/uds-*.log
+      - $[[ inputs.log_dir ]]/maru-*.log
+      - $[[ inputs.log_dir ]]/debug-*.log
+      - $[[ inputs.log_dir ]]/uds-containerd-logs
+      - $[[ inputs.log_dir ]]/k3d-uds-*.log
       - oscal-assessment-results.yaml
   tags:
     - $[[ inputs.runsOn ]]
