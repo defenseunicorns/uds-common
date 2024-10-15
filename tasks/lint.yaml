@@ -143,12 +143,14 @@ tasks:
           darwin: bash
           linux: bash
         cmd: |
-          if command -v addlicense &> /dev/null; then
-            echo "addlicense is installed"
+          # check for addlicense bin
+          if command -v addlicense &> /dev/null || [ -x "$HOME/go/bin/addlicense" ]; then
+              echo "addlicense installed"
           else
-            echo "Error: addlicense is not installed" >&2
-            exit 1
+              echo "Error: addlicense is not installed" >&2
+              exit 1
           fi
+
           ignore_flags=()
           while IFS= read -r line; do
             # Skip comments and empty lines
@@ -167,12 +169,14 @@ tasks:
           darwin: bash
           linux: bash
         cmd: |
-          if command -v addlicense &> /dev/null; then
-            echo "addlicense is installed"
+          # check for addlicense bin
+          if command -v addlicense &> /dev/null || [ -x "$HOME/go/bin/addlicense" ]; then
+              echo "addlicense installed"
           else
-            echo "Error: addlicense is not installed" >&2
-            exit 1
+              echo "Error: addlicense is not installed" >&2
+              exit 1
           fi
+
           ignore_flags=()
           while IFS= read -r line; do
             # Skip comments and empty lines
