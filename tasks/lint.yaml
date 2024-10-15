@@ -146,7 +146,8 @@ tasks:
           if command -v addlicense &> /dev/null; then
             echo "addlicense is installed"
           else
-            echo "addlicense is not installed"
+            echo "Error: addlicense is not installed" >&2
+            exit 1
           fi
           ignore_flags=()
           while IFS= read -r line; do
@@ -169,7 +170,8 @@ tasks:
           if command -v addlicense &> /dev/null; then
             echo "addlicense is installed"
           else
-            echo "addlicense is not installed"
+            echo "Error: addlicense is not installed" >&2
+            exit 1
           fi
           ignore_flags=()
           while IFS= read -r line; do
