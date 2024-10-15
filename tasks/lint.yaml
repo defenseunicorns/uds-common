@@ -143,6 +143,11 @@ tasks:
           darwin: bash
           linux: bash
         cmd: |
+          if command -v addlicense &> /dev/null; then
+            echo "addlicense is installed"
+          else
+            echo "addlicense is not installed"
+          fi
           ignore_flags=()
           while IFS= read -r line; do
             # Skip comments and empty lines
@@ -161,6 +166,11 @@ tasks:
           darwin: bash
           linux: bash
         cmd: |
+          if command -v addlicense &> /dev/null; then
+            echo "addlicense is installed"
+          else
+            echo "addlicense is not installed"
+          fi
           ignore_flags=()
           while IFS= read -r line; do
             # Skip comments and empty lines
