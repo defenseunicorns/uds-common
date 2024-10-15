@@ -139,4 +139,5 @@ Template CODEOWNERS file:
 # /* @name-of-established-known-team #optional addition to "uds-package-maintainers"
 
 /CODEOWNERS @defenseunicorns/uds-package-maintainers
+/LICENS* @jeff-mccoy @austenbryan
 ```
