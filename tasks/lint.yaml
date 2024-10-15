@@ -143,6 +143,14 @@ tasks:
           darwin: bash
           linux: bash
         cmd: |
+          # check for addlicense bin
+          if [ -x "$HOME/go/bin/addlicense" ]; then
+              echo "addlicense installed in $HOME/go/bin"
+          else
+              echo "Error: addlicense is not installed in $HOME/go/bin" >&2
+              exit 1
+          fi
+
           ignore_flags=()
           while IFS= read -r line; do
             # Skip comments and empty lines
@@ -161,6 +169,14 @@ tasks:
           darwin: bash
           linux: bash
         cmd: |
+          # check for addlicense bin
+          if [ -x "$HOME/go/bin/addlicense" ]; then
+              echo "addlicense installed in $HOME/go/bin"
+          else
+              echo "Error: addlicense is not installed in $HOME/go/bin" >&2
+              exit 1
+          fi
+
           ignore_flags=()
           while IFS= read -r line; do
             # Skip comments and empty lines
