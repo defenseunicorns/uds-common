@@ -144,10 +144,10 @@ tasks:
           linux: bash
         cmd: |
           # check for addlicense bin
-          if command -v addlicense &> /dev/null || [ -x "$HOME/go/bin/addlicense" ]; then
-              echo "addlicense installed"
+          if [ -x "$HOME/go/bin/addlicense" ]; then
+              echo "addlicense installed in $HOME/go/bin"
           else
-              echo "Error: addlicense is not installed" >&2
+              echo "Error: addlicense is not installed in $HOME/go/bin" >&2
               exit 1
           fi
 
