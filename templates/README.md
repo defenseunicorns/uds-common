@@ -19,17 +19,19 @@ include:
     inputs:
       flavor: $FLAVOR
       type: $TYPE
+      runsOn: $RUNNER
   - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/publish@$CI_COMMIT_SHA
     inputs:
       flavor: $FLAVOR
       type: $TYPE
-
+      runsOn: $RUNNER
 # Define a matrix for the test job to follow for the flavors that exist for your package
 test:
   parallel:
     matrix:
       - FLAVOR: [upstream, registry1, unicorn] # TODO need secrets to add other flavors
         TYPE: [install] # TODO need upgrade check stuff to enable upgrade type
+        RUNNER: [uds] # The tag of the runner to use 
       - FLAVOR: [upstream, registry1] # TODO need secrets to add other flavors
         TYPE: [upgrade] # TODO need upgrade check stuff to enable upgrade type
 
@@ -39,6 +41,15 @@ publish:
     matrix:
       - FLAVOR: [upstream, unicorn]
         ARCH: [amd64, arm64]
+        RUNNER: [uds]
       - FLAVOR: [registry1]
-        ARCH: [amd64]     
+        ARCH: [amd64]
+        RUNNER: [uds]
 ```
+
+## Repo Setup
+
+Setting up your gitlab repo to work properly with these components will require a few steps:
+
+1. Enable Protected Branch and set approval rules
+2. Create Gitlab Token for Scorecard Component to run and store in project variables.
