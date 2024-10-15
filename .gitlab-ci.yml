@@ -27,4 +27,4 @@ publish:
       - FLAVOR: [upstream, unicorn]
         ARCH: [amd64, arm64]
       - FLAVOR: [registry1]
-        ARCH: [amd64]     
+        ARCH: [amd64]
