@@ -1,0 +1,20 @@
+spec:
+  inputs:
+    runsOn:
+      default: uds
+
+---
+lint:
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+  script:
+    #todo this is still needed for yamllint to be on path
+    - export PATH=/home/ubuntu/.local/bin:$PATH
+
+    # # Install lint dependencies
+    - uds run lint:deps --no-progress
+
+    # # Lint the repository
+    - uds run lint:all --no-progress
+  tags:
+    - $[[ inputs.runsOn ]]

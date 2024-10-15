@@ -12,7 +12,7 @@ includes:
   - compliance: ./tasks/compliance.yaml
   - badge: ./tasks/badge.yaml
   - actions: ./tasks/actions.yaml
-  # - all: ./tasks/all.yaml
+
 
 tasks:
   - name: default
