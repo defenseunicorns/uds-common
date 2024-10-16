@@ -43,7 +43,7 @@ When integrating an application with UDS, consider the following requirements an
 Because one of the main goals of the Airgap App Store is to provide a trusted repository of vetted, packaged apps for National Security missions, we need to ensure these packages meet certain requirements. These packages should not be obviously malware, or maintained entirely or in majority by or in a foreign or aggressor nation/state.
 
 - [ ] Using your best judgment, run a Google search against the repository name and look for signs that it may be compromised or otherwise untrustworthy.
-- [ ] Validate the contributors to the repository by entering the repository into [OSS Insight](https://ossinsight.io) and checking the `People` tab to see where the majority of contributions came from. If you see significant contributions from suspicious locations, notify the Airgap App Store team before proceeding with further integration work. For example, [Harbor](https://ossinsight.io/analyze/goharbor/harbor#people) has an overwhelming number of contributions originating from within China.
+- [ ] Validate the contributors to the repository by entering the repository into [OSS Insight](https://ossinsight.io) and checking the `People` tab to see where the majority of contributions came from. If you see significant contributions from suspicious locations, notify the Airgap App Store team before proceeding with further integration work.
 
 ### Step 2 - Zarf Package
 
@@ -55,7 +55,7 @@ Your goal is to bundle the upstream Helm chart and images into a single Zarf pac
 - [ ] The Command `uds zarf dev generate` may be useful to generate an initial `zarf.yaml` file for your application.
 - [ ] Identify the application's images, the command `uds zarf dev find-images` may be useful.
 - [ ] The application may require additional configurations at build time or runtime, consider [Zarf Component Actions](https://docs.zarf.dev/ref/examples/component-actions/)
-- [ ] Start to monitor for the application reaching out to the internet For example [Sonarqube](https://github.com/defenseunicorns/uds-package-sonarqube/tree/main/src/monitoring-image) tries to download a jar file from Maven central to enable monitoring with Prometheus (it is not baked into their images) - this custom image takes a Chainguard busybox base, adds the correct jar file, and creates a simple script that calls itself "curl" that doesn't curl and instead copies the Jar file it already has to make that piece work in the Air Gap. Its basically a shim around the way the upstream chart works.
+- [ ] Start to monitor for the application reaching out to the internet For example [Sonarqube](https://github.com/defenseunicorns/uds-package-sonarqube/tree/main/src/monitoring-image) tries to download a jar file from Maven central to enable monitoring with Prometheus (it is not baked into their images) - this custom image takes a Chainguard busybox base, adds the correct jar file, and creates a simple script that calls itself "curl" that doesn't curl and instead copies the Jar file it already has to make that piece work in the Air Gap. It's basically a shim around the way the upstream chart works.
 
 #### Checkout
 Your repository has a `zarf.yaml`, you can build a single artifact with `uds zarf package create`, and deploy it to a [k3d-core-dev-slim cluster](https://github.com/defenseunicorns/uds-core?tab=readme-ov-file#uds-package-development) using `uds zarf package deploy`
