@@ -43,7 +43,7 @@ When integrating an application with UDS, consider the following requirements an
 Because one of the main goals of the Airgap App Store is to provide a trusted repository of vetted, packaged apps for National Security missions, we need to ensure these packages meet certain requirements. These packages should not be obviously malware, or maintained entirely or in majority by or in a foreign or aggressor nation/state.
 
 - [ ] Using your best judgment, run a Google search against the repository name and look for signs that it may be compromised or otherwise untrustworthy.
-- [ ] Validate the contributors to the repository by entering the repository into [OSS Insight](https://ossinsight.io) and checking the `People` tab to see where the majority of contributions came from. If you see significant contributions from suspicious locations, notify the Airgap App Store team before proceeding with further integration work.
+- [ ] Validate the contributors to the repository by entering the repository into [OSS Insight](https://ossinsight.io) and checking the `People` tab to see where the majority of contributions came from. If you see significant contributions or evidence of control/influence from suspicious locations, notify the Airgap App Store team before proceeding with further integration work.
 
 ### Step 2 - Zarf Package
 
