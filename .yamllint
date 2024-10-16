@@ -5,6 +5,7 @@ yaml-files:
 ignore:
   - src/nginx/
   - chart/templates/
+  - templates/
 
 rules:
   anchors: enable
