@@ -1,0 +1,95 @@
+spec:
+  inputs:
+    runsOn:
+      default: uds
+    flavor:
+    type:
+    log_dir:
+      default: .ci_logs
+    reports-path:
+      default: ""
+    reports-name:
+      default: playwright-report
+    registry1Username:
+      default: ${IRON_BANK_ROBOT_USERNAME}
+    registry1Password:
+      default: ${IRON_BANK_ROBOT_PASSWORD}
+    chainguardIdentity:
+      default: ${CHAINGUARD_IDENTITY}
+---
+find-tagged-flavors:
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+  artifacts:
+    reports:
+      dotenv: variables.env
+  script:
+    - |
+        # Check if any tag exists
+        TAG="$(git describe --tags "$(git rev-list --tags --max-count=1)" 2>/dev/null || echo '')"
+
+        if [ -z "$TAG" ]; then
+          echo "No Git tags found. Skipping step."
+          exit 0
+        fi
+
+        # Checkout the repository at the latest tag
+        git checkout "$TAG"
+
+        # Extract upgrade flavors and set output
+        echo "UPGRADE_FLAVORS=$(cat zarf.yaml | yq '.components[] | select(.only | has("flavor")) | .only.flavor' | paste -s -d, -)" >> variables.env
+test:
+  needs:
+    - job: find-tagged-flavors
+      artifacts: true
+  id_tokens:
+    CHAINGUARD_TOKEN:
+      aud: https://console-api.enforce.dev
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+      when: always
+  allow_failure:
+    exit_codes: 222 # using something here to exit with a warning
+  script:
+    - |
+      if [[ "$[[ inputs.type ]]" == "upgrade" && "$UPGRADE_FLAVORS" != *"$[[ inputs.flavor ]]"* ]]; then
+
+        # this is not ideal but gitlab rules are evaluated before any jobs run, so variables are not accessible in there
+        # at least this way we can exit with a warning
+        echo -e "\033[33mWARNING: Skipping the job as the '$[[ inputs.flavor ]]' flavor is not in upgrade flavors list '$UPGRADE_FLAVORS'\033[0m";
+
+        exit 222; #this signals gitlab to exit with a warning because of the value of allow_failure.exit_codes above.
+      fi
+    - touch job_not_skipped
+    - |
+      uds run actions:authenticate-registries --set REGISTRY1_USERNAME="$[[ inputs.registry1Username ]]" \
+                                              --set REGISTRY1_PASSWORD="$[[ inputs.registry1Password ]]" \
+                                              --set CHAINGUARD_IDENTITY="$[[ inputs.chainguardIdentity ]]" \
+                                              --set CHAINGUARD_TOKEN="$CHAINGUARD_TOKEN"
+    - uds run actions:test-deploy --set FLAVOR="$[[ inputs.flavor ]]" --set TYPE="$[[ inputs.type ]]"
+    - uds run actions:verify-badge
+
+  after_script:
+    - |
+      if [ -f job_not_skipped ]; then
+        mkdir $[[ inputs.log_dir ]]
+        uds run actions:debug-output --set LOG_DIR=$[[ inputs.log_dir ]]
+        uds run actions:save-logs --set LOG_DIR=$[[ inputs.log_dir ]]
+      fi
+
+  artifacts:
+    when: always
+    name: debug-log-$[[ inputs.type ]]-$[[ inputs.flavor ]]-${CI_PIPELINE_ID}-${CI_JOB_ID}
+    paths:
+      # Save debug logs as artifacts
+      - $[[ inputs.log_dir ]]/zarf-*.log
+      - $[[ inputs.log_dir ]]/uds-*.log
+      - $[[ inputs.log_dir ]]/maru-*.log
+      - $[[ inputs.log_dir ]]/debug-*.log
+      - $[[ inputs.log_dir ]]/uds-containerd-logs
+      - $[[ inputs.log_dir ]]/k3d-uds-*.log
+      - oscal-assessment-results.yaml
+  tags:
+    - $[[ inputs.runsOn ]]
+  # TODO need to figure out the report path and extra report artifact stuff too
+  #      we may be able to do another "artifacts" section with a when keyed on report name/path inputs

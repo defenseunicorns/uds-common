@@ -1,0 +1,23 @@
+spec:
+  inputs:
+    runsOn:
+      default: uds
+---
+commitlint:
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+  script:
+    #todo delete node install after new ami
+    - |
+      curl -fsSL https://deb.nodesource.com/setup_20.x -o nodesource_setup.sh
+      sudo -E bash nodesource_setup.sh
+      sudo apt-get install -y nodejs
+    #todo end of stuff to delete
+
+    - npm install --save-dev @commitlint/config-conventional@19.5.0
+    - npm install --save-dev @commitlint/cli@19.5.0
+    - |
+      echo "module.exports = {extends: ['@commitlint/config-conventional']}" > commitlint.config.js
+    - echo "$CI_MERGE_REQUEST_TITLE" | npx commitlint
+  tags:
+    - $[[ inputs.runsOn ]]
