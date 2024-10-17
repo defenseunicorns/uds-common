@@ -69,7 +69,7 @@ Bronze packages:
 - [ ] **Must** deploy and operate successfully with Istio injection enabled in the namespace.
 - [ ] **Must** implement Journey testing, covering the basic user flows and features of the application (see [Testing Guidelines](https://github.com/defenseunicorns/uds-common/blob/main/docs/uds-packages/guidelines/testing-guidelines.md))
 - [ ] **Must** implement Upgrade Testing to ensure that the current development package works when deployed over the previously released one. (see [Testing Guidelines](https://github.com/defenseunicorns/uds-common/blob/main/docs/uds-packages/guidelines/testing-guidelines.md))
-- [ ] **Must** be capable of operating within an internet-disconnected (air-gapped) environment
+- [ ] **Must** be capable of operating within an airgap (internet-disconnected) environment
 - [ ] **Must** be actively maintained by the package maintainers identified in CODEOWNERS [see #CODEOWNERS section for more information](https://github.com/defenseunicorns/uds-common/blob/main/docs/uds-packages/requirements/uds-package-requirements.md#codeowners)
 - [ ] **Must** be versioned using the UDS Package [Versioning scheme](https://github.com/defenseunicorns/uds-common/blob/main/docs/uds-packages/requirements/uds-package-requirements.md#versioning)
 - [ ] **Must** contain documentation under a `docs` folder at the root that describes how to configure the package and outlines package dependencies.
