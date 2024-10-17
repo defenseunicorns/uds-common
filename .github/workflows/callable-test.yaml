@@ -55,6 +55,8 @@ jobs:
           version: v${{ inputs.udsCliVersion }}
 
       - name: Clean Runner
+        # If we are on ubuntu-latest we should try to clean the disk since it is the thing that is most limiting
+        if: ${{ inputs.runsOn == 'ubuntu-latest' }}
         run: uds run actions:clean-gh-runner
         shell: bash
 

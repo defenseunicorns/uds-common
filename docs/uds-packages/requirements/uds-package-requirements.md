@@ -69,7 +69,7 @@ Bronze packages:
 - [ ] **Must** deploy and operate successfully with Istio injection enabled in the namespace.
 - [ ] **Must** implement Journey testing, covering the basic user flows and features of the application (see [Testing Guidelines](https://github.com/defenseunicorns/uds-common/blob/main/docs/uds-packages/guidelines/testing-guidelines.md))
 - [ ] **Must** implement Upgrade Testing to ensure that the current development package works when deployed over the previously released one. (see [Testing Guidelines](https://github.com/defenseunicorns/uds-common/blob/main/docs/uds-packages/guidelines/testing-guidelines.md))
-- [ ] **Must** be capable of operating within an internet-disconnected (air-gapped) environment
+- [ ] **Must** be capable of operating within an airgap (internet-disconnected) environment
 - [ ] **Must** be actively maintained by the package maintainers identified in CODEOWNERS [see #CODEOWNERS section for more information](https://github.com/defenseunicorns/uds-common/blob/main/docs/uds-packages/requirements/uds-package-requirements.md#codeowners)
 - [ ] **Must** be versioned using the UDS Package [Versioning scheme](https://github.com/defenseunicorns/uds-common/blob/main/docs/uds-packages/requirements/uds-package-requirements.md#versioning)
 - [ ] **Must** contain documentation under a `docs` folder at the root that describes how to configure the package and outlines package dependencies.
@@ -78,6 +78,7 @@ Bronze packages:
 - [ ] **Must** release its package to the `ghcr.io/defenseunicorns/packages/<group>` namespace as the application's name (i.e. `ghcr.io/defenseunicorns/packages/uds/mattermost`).
 - [ ] **Must** not make the assumption that the `expose` interfaces are accessible to the bastion or pipeline deploying the package (i.e. `*.uds.dev`).
   > If web requests need to be made they should be done through a `Job` or `./uds zarf tools kubectl exec` as appropriate.
+- [ ] **Must** include application [metadata for Airgap App Store](https://github.com/defenseunicorns/uds-common/blob/main/docs/uds-packages/guidelines/metadata-guidelines.md) publishing
 - [ ] **Should** lint their configurations with appropriate tooling, such as [`yamllint`](https://github.com/adrienverge/yamllint) and [`zarf dev lint`](https://docs.zarf.dev/commands/zarf_dev_lint/).
 - [ ] **Should** release a unicorn flavor package, providing a minimal CVE baseline
 
