@@ -9,8 +9,23 @@ tasks:
   - name: deps
     description: Install linting tool dependencies
     actions:
+      - description: Check if pipx is installed
+        cmd: |
+          if ! command -v pipx; then
+            echo "⚠️  pipx is not installed."
+
+            # Detect the OS and suggest the appropriate install method
+            if [ "$(uname)" = "Darwin" ]; then
+              echo "💡 Install pipx with: brew install pipx"
+            elif [ -f /etc/debian_version ]; then
+              echo "💡 Install pipx with: sudo apt update && sudo apt install pipx"
+            else
+              echo "💡 Please refer to your package manager to install pipx."
+            fi
+            exit 1
+          fi
       - description: Install yamllint via pip
-        cmd: CMD=pip && which $CMD || CMD=pip3 && $CMD install "yamllint>=1.30.0"
+        cmd: pipx install "yamllint>=1.30.0"
       - description: Install addlicense via go
         # renovate: datasource=github-tags depName=google/addlicense versioning=semver
         cmd: GOPATH="$HOME/go" go install github.com/google/addlicense@v1.1.1
@@ -140,7 +155,8 @@ tasks:
   - name: license
     description: Lint for the SPDX license identifier being in source files
     actions:
-      - shell:
+      - description: Checking for SPDX headers
+        shell:
           darwin: bash
           linux: bash
         cmd: |
@@ -166,7 +182,8 @@ tasks:
   - name: fix-license
     description: Add the SPDX license identifier to source files
     actions:
-      - shell:
+      - description: Adding SPDX headers
+        shell:
           darwin: bash
           linux: bash
         cmd: |
