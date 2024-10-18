@@ -3,64 +3,90 @@ spec:
     runsOn:
       default: uds
     flavor:
-    log_dir:
-      default: .ci_logs
+    artifact_dir:
+      default: .ci_artifacts
     reports-path:
       default: ""
-    reports-name:
-      default: playwright-report
     registry1Username:
       default: ${IRON_BANK_ROBOT_USERNAME}
     registry1Password:
       default: ${IRON_BANK_ROBOT_PASSWORD}
     chainguardIdentity:
       default: ${CHAINGUARD_IDENTITY}
+    targetRepo:
+      default: ${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}
 ---
+
 publish:
+  variables:
+    GIT_STRATEGY: clone
+    GIT_DEPTH: 0
   id_tokens:
     CHAINGUARD_TOKEN:
       aud: https://console-api.enforce.dev
   rules:
-    - if: CI_COMMIT_TAG
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
     - if: $CI_MERGE_REQUEST_ID
       variables:         # Override DRY_RUN defined
         DRY_RUN: "true"  # at the job level.
   script:
     # Dry run on non-tag runs
-    - if [[ "$DRY_RUN" == "true" ]]; then OPTIONS="--dry-run"; fi
+    - OPTIONS="--no-progress"
+    - if [[ "$DRY_RUN" == "true" ]]; then OPTIONS="$OPTIONS --dry-run"; fi
+
     # Environment setup
     - |
       uds run actions:authenticate-registries --set REGISTRY1_USERNAME="$[[ inputs.registry1Username ]]" \
                                               --set REGISTRY1_PASSWORD="$[[ inputs.registry1Password ]]" \
                                               --set CHAINGUARD_IDENTITY="$[[ inputs.chainguardIdentity ]]" \
-                                              --set CHAINGUARD_TOKEN="$CHAINGUARD_TOKEN"
+                                              --set CHAINGUARD_TOKEN="$CHAINGUARD_TOKEN" \
+                                              --set GITLAB_REGISTRY_URL="$CI_REGISTRY" \
+                                              --set GITLAB_REGISTRY_USER="$CI_REGISTRY_USER" \
+                                              --set GITLAB_REGISTRY_TOKEN="$CI_REGISTRY_PASSWORD"
+
+    # Check if release is necessary for flavor and exit early if not
+    - if ! uds-releaser check ${FLAVOR}; then echo "No release necessary"; exit 0; fi
+
+    # Modify zarf package and uds bundle to have the correct version
+    - uds-releaser update-yaml ${FLAVOR}
 
     # Publish Package
-    - uds run publish-package --set FLAVOR="${FLAVOR}" --no-progress "${OPTIONS}"
+    - |
+      # if [[ "$DRY_RUN" == "true" ]]; then
+      #   echo "Dry run, skipping publish"
+      #   echo 'Would have ran uds run publish-package --set FLAVOR="$[[ inputs.flavor ]]" --set VERSION="$(./uds-releaser show ${FLAVOR})" --set TARGET_REPO="$[[ inputs.targetRepo ]]" $OPTIONS'
+      # else
+        uds run publish-package --set FLAVOR="$[[ inputs.flavor ]]" --set VERSION="$(uds zarf tools yq ".flavors[] | select(.name == \"${FLAVOR}\") | .version" releaser.yaml)" --no-progress --set TARGET_REPO="$[[ inputs.targetRepo ]]" ${OPTIONS}
+      # fi
+
+    # Create tag and release
+    - |
+      if [[ "$DRY_RUN" == "true" ]]; then
+        echo "Dry run, skipping release"
+      else
+        uds-releaser release gitlab "${FLAVOR}"
+      fi
 
   after_script:
     # Save logs, which will run even if the script section fails
-    - mkdir $[[ inputs.log_dir ]]
-    - uds run actions:debug-output --set LOG_DIR=$[[ inputs.log_dir ]]
-    - uds run actions:save-logs --set LOG_DIR=$[[ inputs.log_dir ]]
+    - |
+      mkdir -p $[[ inputs.artifact_dir ]]/logs
+      uds run actions:debug-output --set LOG_DIR="$[[ inputs.artifact_dir ]]/logs"
+      uds run actions:save-logs --set LOG_DIR="$[[ inputs.artifact_dir ]]/logs"
+
+      # gitlab only supports one artifact unless you define a specific supported "report type"
+      # so in this generic case we will just add the reports to the included artifact dir
+      if [ -n "$[[ inputs.reports-path ]]" ]; then
+          cp -r "$[[ inputs.reports-path ]]" "$[[ inputs.artifact_dir ]]"
+      fi
 
   artifacts:
     when: always
-    name: debug-log-$[[ inputs.type ]]-$[[ inputs.flavor ]]-${CI_PIPELINE_ID}-${CI_JOB_ID}
+    name: artifacts-$[[ inputs.flavor ]]-${CI_PIPELINE_ID}-${CI_JOB_ID}
     paths:
       # Save debug logs as artifacts
-      - $[[ inputs.log_dir ]]/zarf-*.log
-      - $[[ inputs.log_dir ]]/uds-*.log
-      - $[[ inputs.log_dir ]]/maru-*.log
-      - $[[ inputs.log_dir ]]/debug-*.log
-      - $[[ inputs.log_dir ]]/uds-containerd-logs
-      - $[[ inputs.log_dir ]]/k3d-uds-*.log
+      - $[[ inputs.artifact_dir ]]
       - oscal-assessment-results.yaml
-
-      # todo: not sure if this is right
-      #     what if reports path isn't set to anything?
-      #     need to do whatever we do for test job
-      - $REPORTS_PATH
 
   tags:
     - $[[ inputs.runsOn ]]

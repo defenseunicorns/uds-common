@@ -1,30 +1,39 @@
 include:
-  # include the component located in the current project from the current SHA
   - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/commitlint@$CI_COMMIT_SHA
   - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/lint@$CI_COMMIT_SHA
   - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/test@$CI_COMMIT_SHA
     inputs:
+      # if you have additional report artifacts to add to the gitlab
+      # artifact zip file you can add the path here and the entire directory
+      # will be included
+      # reports-path: sample-reports/playwright
       flavor: $FLAVOR
       type: $TYPE
   - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/publish@$CI_COMMIT_SHA
     inputs:
+      reports-path: sample-reports/playwright
       flavor: $FLAVOR
-      type: $TYPE
+  - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/scorecard@$CI_COMMIT_SHA
 
-# Define a matrix for the test job to follow for the flavors that exist for your package
 test:
+  artifacts:
+    # if you have specific report types that are natively supported by
+    # gitlab you can include those here and they'll be included in addition to the
+    # artifact containing debug logs, oscal, etc.
+    # (e.g. Junit tests, sast reports, etc) 
+    # see: https://docs.gitlab.com/ee/ci/yaml/artifacts_reports.html
+    # reports:
+    #   junit: sample-reports/junit.xml
   parallel:
     matrix:
-      - FLAVOR: [upstream, registry1, unicorn] # TODO need secrets to add other flavors
-        TYPE: [install] # TODO need upgrade check stuff to enable upgrade type
-      - FLAVOR: [upstream, registry1] # TODO need secrets to add other flavors
-        TYPE: [upgrade] # TODO need upgrade check stuff to enable upgrade type
+      - FLAVOR: [upstream]
+        TYPE: [install]
+      # - FLAVOR: [upstream, registry1, unicorn]
+      #   TYPE: [install]
+      # - FLAVOR: [upstream, registry1]
+      #   TYPE: [upgrade]
 
-# Define matrix for publish job of flavors and architectures
 publish:
   parallel:
     matrix:
-      - FLAVOR: [upstream, unicorn]
-        ARCH: [amd64, arm64]
-      - FLAVOR: [registry1]
-        ARCH: [amd64]
+      - FLAVOR: [upstream]
