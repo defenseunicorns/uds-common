@@ -12,6 +12,10 @@ on:
       flavor:
         required: true
         type: string
+      options:
+        type: string
+        description: Additional options to set when running the test
+        default: ""
       reports-path:
         type: string
         description: The path to test outputs to upload
@@ -39,7 +43,7 @@ jobs:
         uses: defenseunicorns/setup-uds@b987a32bac3baeb67bfb08f5e1544e2f9076ee8a # v1.0.0
         with:
           # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
-          version: v0.17.0
+          version: v0.18.0
 
       - name: Environment setup
         run: |
@@ -50,8 +54,13 @@ jobs:
             --set CHAINGUARD_IDENTITY="${{ secrets.CHAINGUARD_IDENTITY }}"
         shell: bash
 
-      - name: Publish Package
-        run: uds run publish-package --set FLAVOR=${{ inputs.flavor }} --no-progress
+      - name: Publish Packages/Bundles
+        run: |
+          if uds run --list | grep -q 'publish-package'; then
+            uds run publish-package --set FLAVOR=${{ inputs.flavor }} --no-progress ${{ inputs.options }}
+          else
+            uds run publish-release --set FLAVOR=${{ inputs.flavor }} --no-progress ${{ inputs.options }}
+          fi
 
       - name: Save logs
         if: ${{ always() }}

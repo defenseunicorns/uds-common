@@ -11,10 +11,10 @@ Pinning to a specific tag of a task (rather than `main`) with renovate watching 
 
 ## Supported Tool Versions
 
-- UDS CLI: 0.17.0
-- UDS Core: 0.28.0
+- UDS CLI: 0.18.0
+- UDS Core: 0.29.0
 - K3D: 5.7.4
-- Lula: 0.8.0
+- Lula: 0.9.1
 
 > [!NOTE]
 > Zarf is not required for tasks in this repo, the vendored zarf (`uds zarf`) included with UDS CLI is used instead to prevent version mismatches.
@@ -89,6 +89,9 @@ There are multiple task files available in this repository with different object
 | **yaml** | Run YAML linting checks |
 | **oscal** | Run linting checks on OSCAL |
 | **shell** | Run shellcheck on all Maru tasks, GitHub workflows, and local shell scripts |
+| **license** | Lint for the SPDX license identifier being in source files |
+| **fix-license** | Add the SPDX license identifier to source files |
+| **tasks** | Dry run all tasks in the base tasks file |
 
 ### [badge.yaml](./tasks/badge.yaml)
 
@@ -111,6 +114,6 @@ There are multiple task files available in this repository with different object
 | **clean-gh-runner** | Cleanup unneeded files to free space on a GitHub runner |
 | **save-logs** | Save Pod and Node logs from a cluster and fix permissions |
 | **setup-environment** | Setup the runner environment for testing UDS Packages |
-| **test-deploy** | Test a deployment of the UDS package |
+| **test-deploy** | Test a deployment of a UDS package/bundle |
 | **verify-badge** | Perform verification to assist with UDS badge certification |
 | **determine-arch** | Determine the architecture of the current machine |

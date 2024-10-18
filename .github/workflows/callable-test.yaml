@@ -21,6 +21,10 @@ on:
       type:
         required: true
         type: string
+      options:
+        type: string
+        description: Additional options to set when running the test
+        default: ""
       reports-path:
         type: string
         description: The path to test outputs to upload
@@ -31,7 +35,7 @@ on:
       udsCliVersion:
         description: The uds-cli version to install
         # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
-        default: 0.17.0
+        default: 0.18.0
         type: string
 
 # Permissions for the GITHUB_TOKEN used by the workflow.
@@ -58,6 +62,8 @@ jobs:
           version: v${{ inputs.udsCliVersion }}
 
       - name: Clean Runner
+        # If we are on ubuntu-latest we should try to clean the disk since it is the thing that is most limiting
+        if: ${{ inputs.runsOn == 'ubuntu-latest' }}
         run: uds run actions:clean-gh-runner
         shell: bash
 
@@ -71,7 +77,7 @@ jobs:
         shell: bash
 
       - name: Test
-        run: uds run actions:test-deploy --set FLAVOR="${{ inputs.flavor }}" --set TYPE="${{ inputs.type }}"
+        run: uds run actions:test-deploy --set FLAVOR="${{ inputs.flavor }}" --set TYPE="${{ inputs.type }}" --set OPTIONS="${{ inputs.options }}"
         shell: bash
 
       - name: UDS Badge Verification
