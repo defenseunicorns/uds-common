@@ -20,7 +20,7 @@ test:
     # if you have specific report types that are natively supported by
     # gitlab you can include those here and they'll be included in addition to the
     # artifact containing debug logs, oscal, etc.
-    # (e.g. Junit tests, sast reports, etc) 
+    # (e.g. Junit tests, sast reports, etc)
     # see: https://docs.gitlab.com/ee/ci/yaml/artifacts_reports.html
     # reports:
     #   junit: sample-reports/junit.xml
