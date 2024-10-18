@@ -18,6 +18,10 @@ on:
       type:
         required: true
         type: string
+      options:
+        type: string
+        description: Additional options to set when running the test
+        default: ""
       reports-path:
         type: string
         description: The path to test outputs to upload
@@ -70,7 +74,7 @@ jobs:
         shell: bash
 
       - name: Test
-        run: uds run actions:test-deploy --set FLAVOR="${{ inputs.flavor }}" --set TYPE="${{ inputs.type }}"
+        run: uds run actions:test-deploy --set FLAVOR="${{ inputs.flavor }}" --set TYPE="${{ inputs.type }}" --set OPTIONS="${{ inputs.options }}"
         shell: bash
 
       - name: UDS Badge Verification

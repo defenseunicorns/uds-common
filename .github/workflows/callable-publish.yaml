@@ -12,6 +12,10 @@ on:
       flavor:
         required: true
         type: string
+      options:
+        type: string
+        description: Additional options to set when running the test
+        default: ""
       reports-path:
         type: string
         description: The path to test outputs to upload
@@ -48,7 +52,11 @@ jobs:
 
       - name: Publish Packages/Bundles
         run: |
-          uds run publish-package --set FLAVOR=${{ inputs.flavor }} --no-progress
+          if uds run --list | grep -q 'publish-package'; then
+            uds run publish-package --set FLAVOR=${{ inputs.flavor }} --no-progress ${{ inputs.options }}
+          else
+            uds run publish --set FLAVOR=${{ inputs.flavor }} --no-progress ${{ inputs.options }}
+          fi
 
       - name: Save logs
         if: ${{ always() }}
