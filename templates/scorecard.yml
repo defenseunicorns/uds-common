@@ -1,0 +1,30 @@
+run-scorecard:
+  #todo (ewyles) - decide correct time to run this. on github it runs on merge to main
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+  script:
+    - echo 'Running scorecard'
+    - docker run -e SCORECARD_EXPERIMENTAL=1 -e GITLAB_AUTH_TOKEN=$SCORECARD_TOKEN gcr.io/openssf/scorecard:stable --repo $CI_PROJECT_URL --format=json 1>openssf_scorecard.json
+    - echo -e "\e[0Ksection_start:`date +%s`:scorecard_section[collapsed=true]\r\e[0KScorecard JSON Output"
+    - cat openssf_scorecard.json | jq
+    - echo -e "\e[0Ksection_end:`date +%s`:scorecard_section\r\e[0K"
+
+    # todo (ewyles) - decide if we want to block on a minimum score at some point. Right now it just logs a warning
+    - |
+      # Minimum allowed score value
+      min_score=1.0
+
+      # Extract the score using jq
+      score=$(jq '.score' openssf_scorecard.json)
+
+      # Compare the score with the minimum allowed value
+      if (( $(echo "$score < $min_score" | bc -l) )); then
+        echo -e "\033[33mWARNING: The score ($score) is below the minimum allowed value ($min_score).\033[0m"
+      else
+        echo "The score ($score) meets or exceeds the minimum allowed value ($min_score)."
+      fi
+  artifacts:
+    when: always
+    name: openssf_scorecard.json
+    paths:
+      - openssf_scorecard.json

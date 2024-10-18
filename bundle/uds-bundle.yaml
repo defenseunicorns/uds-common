@@ -5,13 +5,9 @@ kind: UDSBundle
 metadata:
   name: test
   description: The testing UDS bundle
-  # x-release-please-start-version
-  version: 1.1.0
-  # x-release-please-end
+  version: devel
 
 packages:
   - name: nginx
     path: ../
-    # x-release-please-start-version
-    ref: 1.1.0
-    # x-release-please-end
+    ref: devel
