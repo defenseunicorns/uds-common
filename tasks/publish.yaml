@@ -8,8 +8,6 @@ variables:
   - name: FLAVOR
     default: upstream
   - name: TARGET_REPO
-  - name: VERSION
-    default: devel
 
 tasks:
   - name: package
@@ -27,6 +25,9 @@ tasks:
       name:
         description: The name of the package to publish
         default: ${PACKAGE_NAME}
+      version:
+        description: The version of the package to publish
+        required: true
     actions:
       - task: utils:determine-repo
         if: ${{ eq .variables.TARGET_REPO "" }}
@@ -38,7 +39,7 @@ tasks:
           - name: PACKAGE_NAME
       - description: Publish package for the supplied architecture
         cmd: |
-          ./uds zarf package publish "${{ .inputs.path }}/zarf-package-${{ .inputs.name }}-${{ .inputs.architecture }}-${VERSION}.tar.zst" "oci://${TARGET_REPO}"
+          ./uds zarf package publish "${{ .inputs.path }}/zarf-package-${{ .inputs.name }}-${{ .inputs.architecture }}-${{ .inputs.version }}.tar.zst" "oci://${TARGET_REPO}"
 
   - name: test-bundle
     description: Publish the test bundle for the supplied architecture
@@ -61,4 +62,4 @@ tasks:
           - name: BUNDLE_NAME
       - description: Publish bundle for the supplied architecture
         cmd: |
-          ./uds publish "${{ .inputs.path }}/uds-bundle-${{ .inputs.name }}-${{ .inputs.architecture }}-${VERSION}.tar.zst" "oci://${TARGET_REPO}/bundles" --no-progress
+          ./uds publish "${{ .inputs.path }}/uds-bundle-${{ .inputs.name }}-${{ .inputs.architecture }}-${{ .inputs.version }}.tar.zst" "oci://${TARGET_REPO}/bundles" --no-progress

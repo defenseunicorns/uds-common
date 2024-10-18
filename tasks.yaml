@@ -13,6 +13,12 @@ includes:
   - badge: ./tasks/badge.yaml
   - actions: ./tasks/actions.yaml
 
+variables:
+  - name: VERSION
+    # x-release-please-start-version
+    default: "1.1.0"
+    # x-release-please-end
+
 
 tasks:
   - name: default
@@ -107,3 +113,5 @@ tasks:
 
       - description: Publish the packages
         task: publish:package
+        with:
+          version: ${VERSION}
