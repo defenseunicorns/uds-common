@@ -11,7 +11,6 @@ include:
       type: $TYPE
   - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/publish@$CI_COMMIT_SHA
     inputs:
-      reports-path: sample-reports/playwright
       flavor: $FLAVOR
   - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/scorecard@$CI_COMMIT_SHA
 
