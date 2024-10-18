@@ -25,7 +25,7 @@ on:
         default: playwright-report
       timeout:
         type: number
-        default: 30
+        default: 40
 
 jobs:
   run:
