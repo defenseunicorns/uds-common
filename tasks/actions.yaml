@@ -136,13 +136,18 @@ tasks:
           echo "${{ .variables.GH_TOKEN }}" | uds zarf tools registry login -u "dummy" --password-stdin ghcr.io
 
   - name: test-deploy
-    description: Test a deployment of the UDS package
+    description: Test a deployment of a UDS package/bundle
     actions:
-      - description: Test installing the package
+      - description: Test installing the package/bundle
         if: ${{ eq .variables.TYPE "install" }}
-        cmd: ./uds run test-package --set FLAVOR=${{ .variables.FLAVOR }} ${{ .variables.OPTIONS }} --no-progress
+        cmd: |
+          if uds run --list | grep -q 'test-package'; then
+            ./uds run test-package --set FLAVOR=${{ .variables.FLAVOR }} ${{ .variables.OPTIONS }} --no-progress
+          else
+            ./uds run test-install --set FLAVOR=${{ .variables.FLAVOR }} ${{ .variables.OPTIONS }} --no-progress
+          fi
 
-      - description: Test upgrading the package
+      - description: Test upgrading the package/bundle
         if: ${{ eq .variables.TYPE "upgrade" }}
         cmd: ./uds run test-upgrade --set FLAVOR=${{ .variables.FLAVOR }} ${{ .variables.OPTIONS }} --no-progress
 

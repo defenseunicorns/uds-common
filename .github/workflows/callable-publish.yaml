@@ -46,8 +46,9 @@ jobs:
             --set CHAINGUARD_IDENTITY="${{ secrets.CHAINGUARD_IDENTITY }}"
         shell: bash
 
-      - name: Publish Package
-        run: uds run publish-package --set FLAVOR=${{ inputs.flavor }} --no-progress
+      - name: Publish Packages/Bundles
+        run: |
+          uds run publish-package --set FLAVOR=${{ inputs.flavor }} --no-progress
 
       - name: Save logs
         if: ${{ always() }}
