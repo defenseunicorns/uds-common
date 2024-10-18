@@ -3,6 +3,7 @@ yaml-files:
   - .yamllint
 
 ignore:
+  - tmp/
   - src/nginx/
   - chart/templates/
 
