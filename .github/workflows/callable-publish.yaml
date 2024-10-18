@@ -55,7 +55,7 @@ jobs:
           if uds run --list | grep -q 'publish-package'; then
             uds run publish-package --set FLAVOR=${{ inputs.flavor }} --no-progress ${{ inputs.options }}
           else
-            uds run publish --set FLAVOR=${{ inputs.flavor }} --no-progress ${{ inputs.options }}
+            uds run publish-release --set FLAVOR=${{ inputs.flavor }} --no-progress ${{ inputs.options }}
           fi
 
       - name: Save logs

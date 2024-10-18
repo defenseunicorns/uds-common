@@ -108,8 +108,8 @@ tasks:
 
 # CI will execute the following (via .github/workflows/callable-test.yaml and .github/workflows/callable-publish.yaml) so they need to be here with these names
 
-  - name: test-package
-    description: Test the nginx package from the current branch
+  - name: test-install
+    description: Test an install of the nginx package from the current branch
     actions:
       - description: Create a dev version of the package
         task: create-dev-package
@@ -135,7 +135,7 @@ tasks:
       - task: compliance:validate
       - task: compliance:evaluate
 
-  - name: publish-package
+  - name: publish-release
     description: Build and publish the packages
     actions:
       - description: Create the package
