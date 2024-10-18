@@ -189,19 +189,3 @@ tasks:
 
           # Construct the command as a string
           eval "$HOME/go/bin/addlicense -l \"AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial\" -s=only -v -c \"Defense Unicorns\" ${ignore_flags[*]} . 2>/dev/null"
-<<<<<<< Updated upstream
-=======
-
-  - name: tasks
-    description: Dry run all tasks in the base tasks file
-    actions:
-      - description: Dry run main tasks.yaml
-        cmd: |
-          tasks=$(./uds run --list=md | tail -n +3 | awk -F '|' '{gsub("\\*\\*", "", $2); print $2}')
-
-          # Loop through each command and execute with --dry-run
-          for task in $tasks; do
-            printf "\n\033[0;36mChecking '\033[1;33m%s\033[0;36m' with --dry-run\033[0m\n" "$task"
-            ./uds run "$task" --dry-run
-          done
->>>>>>> Stashed changes
