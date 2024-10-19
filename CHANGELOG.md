@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.1.1](https://github.com/defenseunicorns/uds-common/compare/v1.1.0...v1.1.1) (2024-10-18)
+
+
+### Bug Fixes
+
+* lint:deps producing unwanted file ([#297](https://github.com/defenseunicorns/uds-common/issues/297)) ([94db603](https://github.com/defenseunicorns/uds-common/commit/94db6033619ea5b62d00de52961bd7b5fa969517))
+* timeout too short on test workflows - allow adjustment on test/publish ([#314](https://github.com/defenseunicorns/uds-common/issues/314)) ([6ac1587](https://github.com/defenseunicorns/uds-common/commit/6ac1587f0553ed91e1f0a2f662e59dd0839d10a7))
+
+
+### Miscellaneous
+
+* add if to only run the clean runner task on ubuntu-latest ([#309](https://github.com/defenseunicorns/uds-common/issues/309)) ([10377e8](https://github.com/defenseunicorns/uds-common/commit/10377e875c105c69b2233cf8f0703c1951b2ebf1))
+* adds check for addlicense ([#303](https://github.com/defenseunicorns/uds-common/issues/303)) ([4fef014](https://github.com/defenseunicorns/uds-common/commit/4fef014b93368ac2b2cff8b01a6ab997db12a660))
+* **deps:** update uds common support dependencies ([#305](https://github.com/defenseunicorns/uds-common/issues/305)) ([429058f](https://github.com/defenseunicorns/uds-common/commit/429058f7a8a3e670ef59c0d385a4b58f90a31387))
+* **deps:** update uds common support dependencies to v0.29.1 ([#313](https://github.com/defenseunicorns/uds-common/issues/313)) ([bd27cc8](https://github.com/defenseunicorns/uds-common/commit/bd27cc8f5b08940626276ca338c9bf864bc5f054))
+* **docs:** fix overwritten requirement for metadata ([#296](https://github.com/defenseunicorns/uds-common/issues/296)) ([07fd1d3](https://github.com/defenseunicorns/uds-common/commit/07fd1d330374a79f0ff3278d972155ef80d83313))
+* improve task checks/linting and allow more options on test/publish ([#311](https://github.com/defenseunicorns/uds-common/issues/311)) ([894a2ce](https://github.com/defenseunicorns/uds-common/commit/894a2ce4d9c26015cc4842644c20eb92a9acd2a3))
+* make yamllint easier to run locally ([#312](https://github.com/defenseunicorns/uds-common/issues/312)) ([f44b244](https://github.com/defenseunicorns/uds-common/commit/f44b244c96f948e1193244067307642b6e9953cb))
+* update uds-package-requirements.md ([#306](https://github.com/defenseunicorns/uds-common/issues/306)) ([b7a6f09](https://github.com/defenseunicorns/uds-common/commit/b7a6f097014733e03b2f0b763e4654f3d3c89f78))
+
 ## [1.1.0](https://github.com/defenseunicorns/uds-common/compare/v1.0.0...v1.1.0) (2024-10-11)
 
 
