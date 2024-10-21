@@ -90,19 +90,21 @@ tasks:
     description: Setup the runner environment for testing UDS Packages
     actions:
       - description: Install k3d
+        env:
+          # renovate: datasource=github-tags depName=k3d-io/k3d versioning=semver-coerced
+          - K3D_VERSION=v5.7.4
         cmd: |
-          # renovate: datasource=github-tags depName=k3d-io/k3d versioning=semver
-          curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | TAG=v5.7.4 bash
+          curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | TAG="${K3D_VERSION}" bash
 
       - task: determine-arch
 
       - description: Install Lula
-        cmd: |
+        env:
           # renovate: datasource=github-tags depName=defenseunicorns/lula versioning=semver-coerced
-          LulaVersion=0.7.0
-          Platform=$(uname -s)
+          - LULA_VERSION=v0.9.1
+        cmd: |
           curl -o /usr/local/bin/lula -L \
-          "https://github.com/defenseunicorns/lula/releases/download/v${LulaVersion}/lula_v${LulaVersion}_${Platform}_${{ .variables.ARCH }}" \
+          "https://github.com/defenseunicorns/lula/releases/download/${LULA_VERSION}/lula_${LULA_VERSION}_$(uname -s)_${{ .variables.ARCH }}" \
           && chmod +x /usr/local/bin/lula
 
       - description: Iron Bank Login
@@ -134,13 +136,18 @@ tasks:
           echo "${{ .variables.GH_TOKEN }}" | uds zarf tools registry login -u "dummy" --password-stdin ghcr.io
 
   - name: test-deploy
-    description: Test a deployment of the UDS package
+    description: Test a deployment of a UDS package/bundle
     actions:
-      - description: Test installing the package
+      - description: Test installing the package/bundle
         if: ${{ eq .variables.TYPE "install" }}
-        cmd: ./uds run test-package --set FLAVOR=${{ .variables.FLAVOR }} ${{ .variables.OPTIONS }} --no-progress
+        cmd: |
+          if uds run --list | grep -q 'test-package'; then
+            ./uds run test-package --set FLAVOR=${{ .variables.FLAVOR }} ${{ .variables.OPTIONS }} --no-progress
+          else
+            ./uds run test-install --set FLAVOR=${{ .variables.FLAVOR }} ${{ .variables.OPTIONS }} --no-progress
+          fi
 
-      - description: Test upgrading the package
+      - description: Test upgrading the package/bundle
         if: ${{ eq .variables.TYPE "upgrade" }}
         cmd: ./uds run test-upgrade --set FLAVOR=${{ .variables.FLAVOR }} ${{ .variables.OPTIONS }} --no-progress
 

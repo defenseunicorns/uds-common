@@ -9,8 +9,23 @@ tasks:
   - name: deps
     description: Install linting tool dependencies
     actions:
+      - description: Check if pipx is installed
+        cmd: |
+          if ! command -v pipx; then
+            echo "⚠️  pipx is not installed."
+
+            # Detect the OS and suggest the appropriate install method
+            if [ "$(uname)" = "Darwin" ]; then
+              echo "💡 Install pipx with: brew install pipx"
+            elif [ -f /etc/debian_version ]; then
+              echo "💡 Install pipx with: sudo apt update && sudo apt install pipx"
+            else
+              echo "💡 Please refer to your package manager to install pipx."
+            fi
+            exit 1
+          fi
       - description: Install yamllint via pip
-        cmd: CMD=pip && which $CMD || CMD=pip3 && $CMD install yamllint>=1.30.0
+        cmd: pipx install "yamllint>=1.30.0"
       - description: Install addlicense via go
         # renovate: datasource=github-tags depName=google/addlicense versioning=semver
         cmd: GOPATH="$HOME/go" go install github.com/google/addlicense@v1.1.1
@@ -22,6 +37,7 @@ tasks:
       - task: oscal
       - task: shell
       - task: license
+      - task: tasks
 
   - name: yaml
     description: Run YAML linting checks
@@ -139,10 +155,19 @@ tasks:
   - name: license
     description: Lint for the SPDX license identifier being in source files
     actions:
-      - shell:
+      - description: Checking for SPDX headers
+        shell:
           darwin: bash
           linux: bash
         cmd: |
+          # check for addlicense bin
+          if [ -x "$HOME/go/bin/addlicense" ]; then
+              echo "addlicense installed in $HOME/go/bin"
+          else
+              echo "Error: addlicense is not installed in $HOME/go/bin" >&2
+              exit 1
+          fi
+
           ignore_flags=()
           while IFS= read -r line; do
             # Skip comments and empty lines
@@ -157,10 +182,19 @@ tasks:
   - name: fix-license
     description: Add the SPDX license identifier to source files
     actions:
-      - shell:
+      - description: Adding SPDX headers
+        shell:
           darwin: bash
           linux: bash
         cmd: |
+          # check for addlicense bin
+          if [ -x "$HOME/go/bin/addlicense" ]; then
+              echo "addlicense installed in $HOME/go/bin"
+          else
+              echo "Error: addlicense is not installed in $HOME/go/bin" >&2
+              exit 1
+          fi
+
           ignore_flags=()
           while IFS= read -r line; do
             # Skip comments and empty lines
@@ -171,3 +205,16 @@ tasks:
 
           # Construct the command as a string
           eval "$HOME/go/bin/addlicense -l \"AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial\" -s=only -v -c \"Defense Unicorns\" ${ignore_flags[*]} . 2>/dev/null"
+
+  - name: tasks
+    description: Dry run all tasks in the base tasks file
+    actions:
+      - description: Dry run tasks
+        cmd: |
+          tasks=$(./uds run --list=md | tail -n +3 | awk -F '|' '{gsub("\\*\\*", "", $2); print $2}')
+
+          # Loop through each command and execute with --dry-run
+          for task in $tasks; do
+            printf "\n\033[0;36mChecking '\033[1;33m%s\033[0;36m' with --dry-run\033[0m\n" "$task"
+            ./uds run "$task" --dry-run
+          done

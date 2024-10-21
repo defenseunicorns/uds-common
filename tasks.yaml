@@ -63,10 +63,53 @@ tasks:
       - description: Test the bundle
         task: test
 
+# CI will execute the following for uds-common specific checks so they need to be here with these names
+
+  - name: check-tasks-README
+    description: Test that `uds run --list=md` output is present in tasks/README.md
+    actions:
+      - description: Checking that all tasks are properly listed in tasks/README.md
+        shell:
+          linux: bash
+          darwin: bash
+        cmd: |
+          # Assume success unless a task is missing lines
+          full_success=true
+
+          # Loop through each YAML file in the tasks directory
+          for task_file in tasks/*.yaml; do
+            echo -e "\033[0;36mProcessing: $task_file\033[0m"
+
+            # Capture the output of `uds run --list=md -f <task-file>` line by line
+            task_output=$(uds run --list=md -f "$task_file")
+
+            # Assume success unless a line is missing
+            success=true
+
+            # Check each line of the output against the README
+            while IFS= read -r line; do
+              if ! grep -Fq "$line" tasks/README.md; then
+                echo -e "\033[1;31mMISSING:\033[0m '$line' from $task_file"
+                success=false
+                full_success=false
+              fi
+            done <<< "$task_output"
+
+            # If all lines matched, print success
+            if [ "$success" = true ]; then
+              echo -e "\033[1;32mSUCCESS:\033[0m All tasks from $task_file are documented in tasks/README.md"
+            else
+              echo -e "Run 'uds run --list=md -f $task_file' to fix"
+            fi
+          done
+          if [ "$full_success" = false ]; then
+            exit 1
+          fi
+
 # CI will execute the following (via .github/workflows/callable-test.yaml and .github/workflows/callable-publish.yaml) so they need to be here with these names
 
-  - name: test-package
-    description: Test the nginx package from the current branch
+  - name: test-install
+    description: Test an install of the nginx package from the current branch
     actions:
       - description: Create a dev version of the package
         task: create-dev-package
@@ -92,7 +135,7 @@ tasks:
       - task: compliance:validate
       - task: compliance:evaluate
 
-  - name: publish-package
+  - name: publish-release
     description: Build and publish the packages
     actions:
       - description: Create the package
@@ -108,5 +151,5 @@ tasks:
         task: publish:package
         with:
           # x-release-please-start-version
-          version: 1.1.0
+          version: 1.1.1
           # x-release-please-end
