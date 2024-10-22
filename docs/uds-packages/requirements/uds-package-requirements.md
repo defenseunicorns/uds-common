@@ -138,5 +138,6 @@ Template CODEOWNERS file:
 # /* @name-of-creator/s #optional during package creation to enable velocity
 # /* @name-of-established-known-team #optional addition to "uds-package-maintainers"
 
-/CODEOWNERS @defenseunicorns/uds-package-maintainers
+/CODEOWNERS @jeff-mccoy @daveworth 
+/LICENS* @jeff-mccoy @austenbryan
 ```
