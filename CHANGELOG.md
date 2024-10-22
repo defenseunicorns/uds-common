@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.2](https://github.com/defenseunicorns/uds-common/compare/v1.1.1...v1.1.2) (2024-10-22)
+
+
+### Miscellaneous
+
+* **docs:** update CODEOWNERS example ([#302](https://github.com/defenseunicorns/uds-common/issues/302)) ([cf9959f](https://github.com/defenseunicorns/uds-common/commit/cf9959f7121f35b56748d62df5400d4ed3ac273d))
+* improve badge verification and dep installs ([#316](https://github.com/defenseunicorns/uds-common/issues/316)) ([047cc5b](https://github.com/defenseunicorns/uds-common/commit/047cc5b52dacfbc77a60b2ea13d507237451c529))
+
 ## [1.1.1](https://github.com/defenseunicorns/uds-common/compare/v1.1.0...v1.1.1) (2024-10-18)
 
 
