@@ -135,8 +135,6 @@ tasks:
           registry: registry1.dso.mil
           registry_username: ${{ .variables.REGISTRY1_USERNAME }}
           registry_token: ${{ .variables.REGISTRY1_PASSWORD }}
-        # cmd: |
-        #   echo "${{ .variables.REGISTRY1_PASSWORD }}" | ./uds zarf tools registry login -u "${{ .variables.REGISTRY1_USERNAME }}" --password-stdin registry1.dso.mil
 
       - description: Chainguard Login
         if: ${{ ne .variables.CHAINGUARD_IDENTITY "" }}
@@ -171,8 +169,6 @@ tasks:
           registry: ghcr.io
           registry_username: dummy
           registry_token: ${{ .variables.GH_TOKEN }}
-        # cmd: |
-        #   echo "${{ .variables.GH_TOKEN }}" | uds zarf tools registry login -u "dummy" --password-stdin ghcr.io
 
       - description: Gitlab Registry Login
         if: ${{ ne .variables.GITLAB_REGISTRY_USER "" }}
@@ -181,8 +177,6 @@ tasks:
           registry: ${{ .variables.GITLAB_REGISTRY_URL }}
           registry_username: ${{ .variables.GITLAB_REGISTRY_USER }}
           registry_token: ${{ .variables.GITLAB_REGISTRY_TOKEN }}
-        # cmd: |
-        #   echo "${{ .variables.GITLAB_REGISTRY_TOKEN }}" | ./uds zarf tools registry login -u "${{ .variables.GITLAB_REGISTRY_USER }}" --password-stdin gitlab.burning.boats
 
       - description: Package Specific CI Setup
         cmd: |
