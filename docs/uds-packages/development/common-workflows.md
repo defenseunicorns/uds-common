@@ -1,11 +1,11 @@
 # Common GitHub Workflows
 
 This repository is designed to provide common workflows for downstream UDS Packages to consume and provide inputs into to run their CI checks.
-This helps to ensure consistency and helps improve these repos easily over time as Renovate watches this repo for changes.
+This ensures consistency and helps improve downstream repos over time as Renovate watches this repo for changes.
 
 ## Usage
 
-To use these common callable workflows you add a calling workflow for each `callable-*.yaml` workflow in this repository under `.github/workflows`.
+To use these callable workflows you add a calling workflow to your repository for each `callable-*.yaml` workflow in this repository under `.github/workflows`.
 You can find examples of these in other UDS Packages or in the [`uds-package-template`](https://github.com/defenseunicorns/uds-package-template/tree/main/.github/workflows).
 
 > [!NOTE]
