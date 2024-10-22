@@ -24,7 +24,7 @@ tasks:
         default: .
       version:
         description: The version of the package to publish
-        required: true        
+        required: true
       architecture:
         description: The architecture of the package to publish
         default: ${UDS_ARCH}
@@ -55,7 +55,7 @@ tasks:
         default: bundle
       version:
         description: The version of the bundle to publish
-        required: true        
+        required: true
       architecture:
         description: The architecture of the bundle to publish
         default: ${UDS_ARCH}
