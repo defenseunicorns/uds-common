@@ -257,6 +257,12 @@ tasks:
               gh_notice "  ℹ️  Endpoints: $ENDPOINTS"
 
               for ENDPOINT in $ENDPOINTS; do
+                  # Skip endpoints starting with a '*'
+                  if [[ "$ENDPOINT" == \** ]]; then
+                      gh_notice "  ⚠️  Skipping wildcard endpoint $ENDPOINT"
+                      continue
+                  fi
+
                   # Curl endpoint and check that status isn't 404 or 5XX
                   STATUS=$(curl -s -o /dev/null -w "%{http_code}" "https://$ENDPOINT")
                   if [ "$STATUS" -eq 404 ] || [[ $STATUS == 5* ]]; then
