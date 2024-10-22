@@ -13,7 +13,7 @@ include:
       # if you have additional report artifacts to add to the gitlab
       # artifact zip file you can add the path here and the entire directory
       # will be included
-      # reports-path: sample-reports/playwright
+      #reports-path: sample-reports/playwright
       runsOn: gitlab-runner-4c-amd64
       flavor: $FLAVOR
       type: $TYPE
@@ -24,10 +24,15 @@ include:
       # if you have additional report artifacts to add to the gitlab
       # artifact zip file you can add the path here and the entire directory
       # will be included
-      # reports-path: sample-reports/playwright
+      #reports-path: sample-reports/playwright
 
-      # if you override team here it will be included in the target repo for the oci publish (default is uds)
-      # team: my-team
+      # if setting target repo, this will be used directly for the oci publish
+      #targetRepo: ${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}
+
+      # if you override team here it will be included in the determined target repo
+      # for the oci publish (default is uds)
+      # only used if targetRepo is not set
+      #team: my-team
   - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/scorecard@$CI_COMMIT_SHA
     inputs:
       runsOn: gitlab-runner-4c-amd64

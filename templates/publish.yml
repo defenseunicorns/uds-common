@@ -17,7 +17,7 @@ spec:
     chainguardIdentity:
       default: ${CHAINGUARD_IDENTITY}
     targetRepo:
-      default: ${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}
+      default: ""
     team:
       default: uds
 ---
@@ -67,10 +67,17 @@ publish:
 
     # Publish Package
     - |
-        uds run publish-package --set FLAVOR="$[[ inputs.flavor ]]"\
+        if [[ -n "$[[ inputs.targetRepo ]]" ]]; then
+          echo uds run publish-package --set FLAVOR="$[[ inputs.flavor ]]"\
+                                     --set VERSION="$(uds zarf tools yq ".flavors[] | select(.name == \"${FLAVOR}\") | .version" releaser.yaml)"\
+                                     --set TARGET_REPO="$[[ inputs.targetRepo ]]"\
+                                     ${OPTIONS}
+        else
+          echo uds run publish-package --set FLAVOR="$[[ inputs.flavor ]]"\
                                      --set VERSION="$(uds zarf tools yq ".flavors[] | select(.name == \"${FLAVOR}\") | .version" releaser.yaml)"\
                                      --set TEAM="$[[ inputs.team ]]"\
                                      ${OPTIONS}
+        fi
 
     # Create tag and release
     - |
