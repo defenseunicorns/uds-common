@@ -1,6 +1,12 @@
 # Copyright 2024 Defense Unicorns
 # SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
 
+spec:
+  inputs:
+    runsOn:
+      default: uds
+
+---
 run-scorecard:
   #todo (ewyles) - decide correct time to run this. on github it runs on merge to main
   rules:
@@ -31,3 +37,5 @@ run-scorecard:
     name: openssf_scorecard.json
     paths:
       - openssf_scorecard.json
+  tags:
+    - $[[ inputs.runsOn ]]

@@ -39,6 +39,8 @@ find-tagged-flavors:
 
         # Extract upgrade flavors and set output
         echo "UPGRADE_FLAVORS=$(cat zarf.yaml | yq '.components[] | select(.only | has("flavor")) | .only.flavor' | paste -s -d, -)" >> variables.env
+  tags:
+    - $[[ inputs.runsOn ]]
 test:
   needs:
     - job: find-tagged-flavors

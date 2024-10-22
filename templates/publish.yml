@@ -18,6 +18,8 @@ spec:
       default: ${CHAINGUARD_IDENTITY}
     targetRepo:
       default: ${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}
+    team:
+      default: uds
 ---
 
 publish:
@@ -48,19 +50,27 @@ publish:
                                               --set GITLAB_REGISTRY_TOKEN="$CI_REGISTRY_PASSWORD"
 
     # Check if release is necessary for flavor and exit early if not
-    - if ! uds-releaser check ${FLAVOR}; then echo "No release necessary"; exit 0; fi
+    - |
+      if [[ "$DRY_RUN" == "true" ]]; then
+        echo "Dry run, skipping check if release is required: uds-releaser check ${FLAVOR}"
+      else
+        if ! uds-releaser check ${FLAVOR}; then echo "No release necessary"; exit 0; fi
+      fi
 
     # Modify zarf package and uds bundle to have the correct version
-    - uds-releaser update-yaml ${FLAVOR}
+    - |
+      if [[ "$DRY_RUN" == "true" ]]; then
+        echo "Dry run, skipping release command: uds-releaser update-yaml ${FLAVOR}"
+      else
+        uds-releaser update-yaml ${FLAVOR}
+      fi
 
     # Publish Package
     - |
-      # if [[ "$DRY_RUN" == "true" ]]; then
-      #   echo "Dry run, skipping publish"
-      #   echo 'Would have ran uds run publish-package --set FLAVOR="$[[ inputs.flavor ]]" --set VERSION="$(./uds-releaser show ${FLAVOR})" --set TARGET_REPO="$[[ inputs.targetRepo ]]" $OPTIONS'
-      # else
-        uds run publish-package --set FLAVOR="$[[ inputs.flavor ]]" --set VERSION="$(uds zarf tools yq ".flavors[] | select(.name == \"${FLAVOR}\") | .version" releaser.yaml)" --no-progress --set TARGET_REPO="$[[ inputs.targetRepo ]]" ${OPTIONS}
-      # fi
+        echo uds run publish-package --set FLAVOR="$[[ inputs.flavor ]]"\
+                                     --set VERSION="$(uds zarf tools yq ".flavors[] | select(.name == \"${FLAVOR}\") | .version" releaser.yaml)"\
+                                     --set TEAM="$[[ inputs.team ]]"\
+                                     ${OPTIONS}
 
     # Create tag and release
     - |
@@ -72,16 +82,17 @@ publish:
 
   after_script:
     # Save logs, which will run even if the script section fails
+    - echo -e "\e[0Ksection_start:`date +%s`:afterscript_section[collapsed=true]\r\e[0KAfter Script Output"
     - |
       mkdir -p $[[ inputs.artifact_dir ]]/logs
       uds run actions:debug-output --set LOG_DIR="$[[ inputs.artifact_dir ]]/logs"
       uds run actions:save-logs --set LOG_DIR="$[[ inputs.artifact_dir ]]/logs"
-
       # gitlab only supports one artifact unless you define a specific supported "report type"
       # so in this generic case we will just add the reports to the included artifact dir
       if [ -n "$[[ inputs.reports-path ]]" ]; then
           cp -r "$[[ inputs.reports-path ]]" "$[[ inputs.artifact_dir ]]"
       fi
+    - echo -e "\e[0Ksection_end:`date +%s`:afterscript_section\r\e[0K"
 
   artifacts:
     when: always

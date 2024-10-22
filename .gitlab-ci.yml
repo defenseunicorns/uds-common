@@ -3,19 +3,34 @@
 
 include:
   - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/commitlint@$CI_COMMIT_SHA
+    inputs:
+      runsOn: gitlab-runner-4c-amd64
   - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/lint@$CI_COMMIT_SHA
+    inputs:
+      runsOn: gitlab-runner-4c-amd64
   - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/test@$CI_COMMIT_SHA
     inputs:
       # if you have additional report artifacts to add to the gitlab
       # artifact zip file you can add the path here and the entire directory
       # will be included
       # reports-path: sample-reports/playwright
+      runsOn: gitlab-runner-4c-amd64
       flavor: $FLAVOR
       type: $TYPE
   - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/publish@$CI_COMMIT_SHA
     inputs:
+      runsOn: gitlab-runner-4c-amd64
       flavor: $FLAVOR
+      # if you have additional report artifacts to add to the gitlab
+      # artifact zip file you can add the path here and the entire directory
+      # will be included
+      # reports-path: sample-reports/playwright
+
+      # if you override team here it will be included in the target repo for the oci publish (default is uds)
+      # team: my-team
   - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/scorecard@$CI_COMMIT_SHA
+    inputs:
+      runsOn: gitlab-runner-4c-amd64
 
 test:
   artifacts:
