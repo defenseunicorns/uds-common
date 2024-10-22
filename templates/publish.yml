@@ -66,13 +66,19 @@ publish:
 
     # Publish Package
     - |
+        if uds run --list | grep -q 'publish-package'; then
+          TASK_NAME="publish-package"
+        else
+          TASK_NAME="publish-release"
+        fi
+
         if [[ -n "$[[ inputs.targetRepo ]]" ]]; then
-          uds run publish-package --set FLAVOR="$[[ inputs.flavor ]]"\
+          uds run $TASK_NAME --set FLAVOR="$[[ inputs.flavor ]]"\
                                      --set VERSION="$(uds zarf tools yq ".flavors[] | select(.name == \"${FLAVOR}\") | .version" releaser.yaml)"\
                                      --set TARGET_REPO="$[[ inputs.targetRepo ]]"\
                                      ${OPTIONS}
         else
-          uds run publish-package --set FLAVOR="$[[ inputs.flavor ]]"\
+          uds run $TASK_NAME --set FLAVOR="$[[ inputs.flavor ]]"\
                                      --set VERSION="$(uds zarf tools yq ".flavors[] | select(.name == \"${FLAVOR}\") | .version" releaser.yaml)"\
                                      --set TEAM="$[[ inputs.team ]]"\
                                      ${OPTIONS}
