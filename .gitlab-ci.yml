@@ -3,11 +3,7 @@
 
 include:
   - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/commitlint@$CI_COMMIT_SHA
-    inputs:
-      runsOn: gitlab-runner-4c-amd64
   - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/lint@$CI_COMMIT_SHA
-    inputs:
-      runsOn: gitlab-runner-4c-amd64
   - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/test@$CI_COMMIT_SHA
     inputs:
       # if you have additional report artifacts to add to the gitlab
@@ -34,8 +30,6 @@ include:
       # only used if targetRepo is not set
       #team: my-team
   - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/scorecard@$CI_COMMIT_SHA
-    inputs:
-      runsOn: gitlab-runner-4c-amd64
 
 test:
   artifacts:
