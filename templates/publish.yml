@@ -67,12 +67,12 @@ publish:
     # Publish Package
     - |
         if [[ -n "$[[ inputs.targetRepo ]]" ]]; then
-          echo uds run publish-package --set FLAVOR="$[[ inputs.flavor ]]"\
+          uds run publish-package --set FLAVOR="$[[ inputs.flavor ]]"\
                                      --set VERSION="$(uds zarf tools yq ".flavors[] | select(.name == \"${FLAVOR}\") | .version" releaser.yaml)"\
                                      --set TARGET_REPO="$[[ inputs.targetRepo ]]"\
                                      ${OPTIONS}
         else
-          echo uds run publish-package --set FLAVOR="$[[ inputs.flavor ]]"\
+          uds run publish-package --set FLAVOR="$[[ inputs.flavor ]]"\
                                      --set VERSION="$(uds zarf tools yq ".flavors[] | select(.name == \"${FLAVOR}\") | .version" releaser.yaml)"\
                                      --set TEAM="$[[ inputs.team ]]"\
                                      ${OPTIONS}
