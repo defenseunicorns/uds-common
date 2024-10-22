@@ -15,9 +15,16 @@ on:
       flavor:
         required: true
         type: string
+      timeout:
+        type: number
+        default: 20
       type:
         required: true
         type: string
+      options:
+        type: string
+        description: Additional options to set when running the test
+        default: ""
       reports-path:
         type: string
         description: The path to test outputs to upload
@@ -28,7 +35,7 @@ on:
       udsCliVersion:
         description: The uds-cli version to install
         # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
-        default: 0.17.0
+        default: 0.18.0
         type: string
 
 # Permissions for the GITHUB_TOKEN used by the workflow.
@@ -40,7 +47,7 @@ permissions:
 jobs:
   run:
     runs-on: ${{ inputs.runsOn }}
-    timeout-minutes: 20
+    timeout-minutes: ${{ inputs.timeout }}
     if: contains(inputs.upgrade-flavors, inputs.flavor) || inputs.type == 'install'
 
     steps:
@@ -70,7 +77,7 @@ jobs:
         shell: bash
 
       - name: Test
-        run: uds run actions:test-deploy --set FLAVOR="${{ inputs.flavor }}" --set TYPE="${{ inputs.type }}"
+        run: uds run actions:test-deploy --set FLAVOR="${{ inputs.flavor }}" --set TYPE="${{ inputs.type }}" --set OPTIONS="${{ inputs.options }}"
         shell: bash
 
       - name: UDS Badge Verification

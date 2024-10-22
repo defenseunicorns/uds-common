@@ -8,7 +8,6 @@ metadata:
   description: UDS nginx package
   version: devel
 
-
 variables:
   - name: DOMAIN
     default: uds.dev
