@@ -9,7 +9,9 @@ variables:
     default: upstream
   - name: TARGET_REPO
   - name: VERSION
-    default: devel
+    # x-release-please-start-version
+    default: 1.1.2
+    # x-release-please-end
   - name: TEAM
     default: uds
 
