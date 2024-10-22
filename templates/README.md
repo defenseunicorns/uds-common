@@ -19,21 +19,21 @@ include:
     inputs:
       flavor: $FLAVOR
       type: $TYPE
-      runsOn: $RUNNER
+      runsOn: gitlab-runner-4c-${ARCH}
   - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/publish@$CI_COMMIT_SHA
     inputs:
       flavor: $FLAVOR
-      type: $TYPE
-      runsOn: $RUNNER
+      runsOn: gitlab-runner-4c-${ARCH}
 # Define a matrix for the test job to follow for the flavors that exist for your package
 test:
   parallel:
     matrix:
-      - FLAVOR: [upstream, registry1, unicorn] # TODO need secrets to add other flavors
-        TYPE: [install] # TODO need upgrade check stuff to enable upgrade type
-        RUNNER: [uds] # The tag of the runner to use 
-      - FLAVOR: [upstream, registry1] # TODO need secrets to add other flavors
-        TYPE: [upgrade] # TODO need upgrade check stuff to enable upgrade type
+      - FLAVOR: [upstream, unicorn]
+        ARCH: [amd64, arm64]
+        TYPE: [install, upgrade]
+      - FLAVOR: [registry1]
+        ARCH: [amd64]
+        TYPE: [install, upgrade]
 
 # Define matrix for publish job of flavors and architectures
 publish:
@@ -41,10 +41,8 @@ publish:
     matrix:
       - FLAVOR: [upstream, unicorn]
         ARCH: [amd64, arm64]
-        RUNNER: [uds]
       - FLAVOR: [registry1]
         ARCH: [amd64]
-        RUNNER: [uds]
 ```
 
 ## Repo Setup

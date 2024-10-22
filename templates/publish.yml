@@ -4,7 +4,6 @@
 spec:
   inputs:
     runsOn:
-      default: uds
     flavor:
     artifact_dir:
       default: .ci_artifacts

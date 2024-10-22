@@ -4,7 +4,6 @@
 spec:
   inputs:
     runsOn:
-      default: uds
     flavor:
     type:
     artifact_dir:

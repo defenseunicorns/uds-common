@@ -4,7 +4,7 @@
 spec:
   inputs:
     runsOn:
-      default: uds
+      default: gitlab-runner-4c-amd64
 ---
 commitlint:
   rules:
