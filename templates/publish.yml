@@ -67,7 +67,7 @@ publish:
 
     # Publish Package
     - |
-        echo uds run publish-package --set FLAVOR="$[[ inputs.flavor ]]"\
+        uds run publish-package --set FLAVOR="$[[ inputs.flavor ]]"\
                                      --set VERSION="$(uds zarf tools yq ".flavors[] | select(.name == \"${FLAVOR}\") | .version" releaser.yaml)"\
                                      --set TEAM="$[[ inputs.team ]]"\
                                      ${OPTIONS}
