@@ -22,6 +22,9 @@ tasks:
       path:
         description: Path to the zarf package being published
         default: .
+      version:
+        description: The version of the package to publish
+        required: true        
       architecture:
         description: The architecture of the package to publish
         default: ${UDS_ARCH}
@@ -31,9 +34,6 @@ tasks:
       name:
         description: The name of the package to publish
         default: ${PACKAGE_NAME}
-      version:
-        description: The version of the package to publish
-        required: true        
     actions:
       - task: utils:determine-repo
         if: ${{ eq .variables.TARGET_REPO "" }}
@@ -53,6 +53,9 @@ tasks:
       path:
         description: Path to the UDS bundle being published
         default: bundle
+      version:
+        description: The version of the bundle to publish
+        required: true        
       architecture:
         description: The architecture of the bundle to publish
         default: ${UDS_ARCH}
