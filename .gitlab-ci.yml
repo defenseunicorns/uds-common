@@ -14,12 +14,12 @@ include:
       # artifact zip file you can add the path here and the entire directory
       # will be included
       #reports-path: sample-reports/playwright
-      runsOn: gitlab-runner-4c-amd64
+      runsOn: gitlab-runner-4c-${ARCH}
       flavor: $FLAVOR
       type: $TYPE
   - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/publish@$CI_COMMIT_SHA
     inputs:
-      runsOn: gitlab-runner-4c-amd64
+      runsOn: gitlab-runner-4c-${ARCH}
       flavor: $FLAVOR
       # if you have additional report artifacts to add to the gitlab
       # artifact zip file you can add the path here and the entire directory
@@ -48,14 +48,17 @@ test:
     #   junit: sample-reports/junit.xml
   parallel:
     matrix:
-      - FLAVOR: [upstream]
-        TYPE: [install]
-      # - FLAVOR: [upstream, registry1, unicorn]
-      #   TYPE: [install]
-      # - FLAVOR: [upstream, registry1]
-      #   TYPE: [upgrade]
+      - FLAVOR: [upstream, unicorn]
+        ARCH: [amd64, arm64]
+        TYPE: [install, upgrade]
+      - FLAVOR: [registry1]
+        ARCH: [amd64]
+        TYPE: [install, upgrade]
 
 publish:
   parallel:
     matrix:
-      - FLAVOR: [upstream]
+      - FLAVOR: [upstream, unicorn]
+        ARCH: [amd64, arm64]
+      - FLAVOR: [registry1]
+        ARCH: [amd64]

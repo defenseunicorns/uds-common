@@ -18,33 +18,7 @@ spec:
     chainguardIdentity:
       default: ${CHAINGUARD_IDENTITY}
 ---
-find-tagged-flavors:
-  rules:
-    - if: $CI_MERGE_REQUEST_ID
-  artifacts:
-    reports:
-      dotenv: variables.env
-  script:
-    - |
-        # Check if any tag exists
-        TAG="$(git describe --tags "$(git rev-list --tags --max-count=1)" 2>/dev/null || echo '')"
-
-        if [ -z "$TAG" ]; then
-          echo "No Git tags found. Skipping step."
-          exit 0
-        fi
-
-        # Checkout the repository at the latest tag
-        git checkout "$TAG"
-
-        # Extract upgrade flavors and set output
-        echo "UPGRADE_FLAVORS=$(cat zarf.yaml | yq '.components[] | select(.only | has("flavor")) | .only.flavor' | paste -s -d, -)" >> variables.env
-  tags:
-    - $[[ inputs.runsOn ]]
 test:
-  needs:
-    - job: find-tagged-flavors
-      artifacts: true
   id_tokens:
     CHAINGUARD_TOKEN:
       aud: https://console-api.enforce.dev
@@ -54,6 +28,23 @@ test:
   allow_failure:
     exit_codes: 222 # using something here to exit with a warning
   script:
+    - |
+      # Check if any tag exists
+      TAG="$(git describe --tags "$(git rev-list --tags --max-count=1)" 2>/dev/null || echo '')"
+
+      if [ -z "$TAG" ]; then
+        echo "No Git tags found. Skipping step."
+      else
+        # Checkout the repository at the latest tag
+        git checkout "$TAG"
+
+        # Extract upgrade flavors and set UPGRADE_FLAVORS
+        UPGRADE_FLAVORS=$(cat zarf.yaml | yq '.components[] | select(.only | has("flavor")) | .only.flavor' | paste -s -d, -)
+
+        # change back to the commit branch for the rest of the job
+        git checkout "$CI_COMMIT_BRANCH"
+      fi
+
     - |
       if [[ "$[[ inputs.type ]]" == "upgrade" && "$UPGRADE_FLAVORS" != *"$[[ inputs.flavor ]]"* ]]; then
 
