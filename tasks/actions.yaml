@@ -135,6 +135,12 @@ tasks:
         cmd: |
           echo "${{ .variables.GH_TOKEN }}" | uds zarf tools registry login -u "dummy" --password-stdin ghcr.io
 
+      - description: Package Specific CI Setup
+        cmd: |
+          if uds run --list | grep -q 'ci-setup'; then
+            ./uds run ci-setup --no-progress
+          fi
+
   - name: test-deploy
     description: Test a deployment of a UDS package/bundle
     actions:
