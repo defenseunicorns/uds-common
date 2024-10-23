@@ -147,11 +147,11 @@ tasks:
       - description: Create the package
         task: create:package
 
-      # - description: Setup the cluster
-      #   task: setup:k3d-test-cluster
+      - description: Setup the cluster
+        task: setup:k3d-test-cluster
 
-      # - description: Create deploy and test the bundle
-      #   task: create-deploy-test-bundle
+      - description: Create deploy and test the bundle
+        task: create-deploy-test-bundle
 
       - description: Publish the packages
         task: publish:package
