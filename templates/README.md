@@ -50,4 +50,4 @@ publish:
 Setting up your gitlab repo to work properly with these components will require a few steps:
 
 1. Enable a Protected Branch and set approval rules
-2. Create Gitlab Token for Scorecard Component to run and store in project variables.
+2. Create a GitLab Token for the Scorecard Component to run and store in project variables.
