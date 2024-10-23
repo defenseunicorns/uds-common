@@ -13,14 +13,14 @@ The .gitlab-ci.yml at the root of this repo serves as an example and test of how
 ```yaml
 include:
   # include the component from a published tag of uds-common
-  - component: $CI_SERVER_FQDN/packages/uds-common/commitlint@0.0.0
-  - component: $CI_SERVER_FQDN/packages/uds-common/lint@0.0.0
-  - component: $CI_SERVER_FQDN/packages/uds-common/test@0.0.0
+  - component: $CI_SERVER_FQDN/path/to/uds-common/commitlint@0.0.0
+  - component: $CI_SERVER_FQDN/path/to/uds-common/lint@0.0.0
+  - component: $CI_SERVER_FQDN/path/to/uds-common/test@0.0.0
     inputs:
       flavor: $FLAVOR
       type: $TYPE
       runsOn: gitlab-runner-4c-${ARCH}
-  - component: $CI_SERVER_FQDN/packages/uds-common/publish@0.0.0
+  - component: $CI_SERVER_FQDN/path/to/uds-common/publish@0.0.0
     inputs:
       flavor: $FLAVOR
       runsOn: gitlab-runner-4c-${ARCH}
