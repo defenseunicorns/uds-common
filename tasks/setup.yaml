@@ -52,7 +52,7 @@ tasks:
   - name: create-doug-user
     description: Creates a user named 'doug' in the uds realm of keycloak (using the default admin account)
     actions:
-      - description: Creating the 'doug' user int he 'uds' realm
+      - description: Creating the 'doug' user in the 'uds' realm
         cmd: |
           KEYCLOAK_ADMIN_PASSWORD=$(./uds zarf tools kubectl get secret -n keycloak keycloak-admin-password -o jsonpath='{.data.password}' | base64 -d)
           KEYCLOAK_ADMIN_TOKEN=$(curl -s --location "https://keycloak.admin.uds.dev/realms/master/protocol/openid-connect/token" \
