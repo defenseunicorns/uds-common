@@ -1,0 +1,110 @@
+# Copyright 2024 Defense Unicorns
+# SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
+
+spec:
+  inputs:
+    runs-on:
+    flavor:
+    artifact-dir:
+      default: .ci_artifacts
+    reports-path:
+      default: ""
+    registry1-username:
+      default: ${IRON_BANK_ROBOT_USERNAME}
+    registry1-password:
+      default: ${IRON_BANK_ROBOT_PASSWORD}
+    chainguard-identity:
+      default: ${CHAINGUARD_IDENTITY}
+    target-repo:
+      default: ""
+    team:
+      default: uds
+---
+publish:
+  variables:
+    GIT_STRATEGY: clone
+    GIT_DEPTH: 0
+  id_tokens:
+    CHAINGUARD_TOKEN:
+      aud: https://console-api.enforce.dev
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_MERGE_REQUEST_ID
+      variables:         # Override DRY_RUN defined
+        DRY_RUN: "true"  # at the job level.
+  script:
+    # Dry run on non-tag runs
+    - OPTIONS="--no-progress"
+    - if [[ "$DRY_RUN" == "true" ]]; then OPTIONS="$OPTIONS --dry-run"; fi
+
+    # Environment setup
+    - |
+      uds run actions:authenticate-registries --set REGISTRY1_USERNAME="$[[ inputs.registry1-username ]]" \
+                                              --set REGISTRY1_PASSWORD="$[[ inputs.registry1-password ]]" \
+                                              --set CHAINGUARD_IDENTITY="$[[ inputs.chainguard-identity ]]" \
+                                              --set CHAINGUARD_TOKEN="$CHAINGUARD_TOKEN" \
+                                              --set GITLAB_REGISTRY_URL="$CI_REGISTRY" \
+                                              --set GITLAB_REGISTRY_USER="$CI_REGISTRY_USER" \
+                                              --set GITLAB_REGISTRY_TOKEN="$CI_REGISTRY_PASSWORD"
+
+    # Check if release is necessary for flavor and exit early if not
+    - |
+      if ! uds-releaser check "${FLAVOR}"; then
+        echo "No release necessary"
+        [[ "$DRY_RUN" != "true" ]] && exit 0
+      fi
+
+    # Modify zarf package and uds bundle to have the correct version
+    - uds-releaser update-yaml ${FLAVOR}
+
+    # Publish Package
+    - |
+        if uds run --list | grep -q 'publish-package'; then
+          TASK_NAME="publish-package"
+        else
+          TASK_NAME="publish-release"
+        fi
+
+        ARGS="--set FLAVOR=\"$[[ inputs.flavor ]]\" \
+              --set VERSION=\"$(uds-releaser show ${FLAVOR} --version-only)\""
+
+        if [[ -n "$[[ inputs.target-repo ]]" ]]; then
+          ARGS+=" --set TARGET_REPO=\"$[[ inputs.target-repo ]]\""
+        else
+          ARGS+=" --set TEAM=\"$[[ inputs.team ]]\""
+        fi
+
+        uds run $TASK_NAME ${ARGS} ${OPTIONS}
+
+    # Create tag and release
+    - |
+      if [[ "$DRY_RUN" == "true" ]]; then
+        echo "Dry run, skipping release"
+      else
+        uds-releaser release gitlab "${FLAVOR}"
+      fi
+
+  after_script:
+    # Save logs, which will run even if the script section fails
+    - echo -e "\e[0Ksection_start:`date +%s`:afterscript_section[collapsed=true]\r\e[0KAfter Script Output"
+    - |
+      mkdir -p $[[ inputs.artifact-dir ]]/logs
+      uds run actions:debug-output --set LOG_DIR="$[[ inputs.artifact-dir ]]/logs"
+      uds run actions:save-logs --set LOG_DIR="$[[ inputs.artifact-dir ]]/logs"
+      # gitlab only supports one artifact unless you define a specific supported "report type"
+      # so in this generic case we will just add the reports to the included artifact dir
+      if [ -n "$[[ inputs.reports-path ]]" ]; then
+          cp -r "$[[ inputs.reports-path ]]" "$[[ inputs.artifact-dir ]]"
+      fi
+    - echo -e "\e[0Ksection_end:`date +%s`:afterscript_section\r\e[0K"
+
+  artifacts:
+    when: always
+    name: artifacts-$[[ inputs.flavor ]]-${CI_PIPELINE_ID}-${CI_JOB_ID}
+    paths:
+      # Save debug logs as artifacts
+      - $[[ inputs.artifact-dir ]]
+      - oscal-assessment-results.yaml
+
+  tags:
+    - $[[ inputs.runs-on ]]

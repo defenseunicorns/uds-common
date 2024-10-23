@@ -1,0 +1,89 @@
+# Copyright 2024 Defense Unicorns
+# SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
+
+spec:
+  inputs:
+    runs-on:
+    flavor:
+    type:
+    artifact-dir:
+      default: .ci_artifacts
+    reports-path:
+      default: ""
+    registry1-username:
+      default: ${IRON_BANK_ROBOT_USERNAME}
+    registry1-password:
+      default: ${IRON_BANK_ROBOT_PASSWORD}
+    chainguard-identity:
+      default: ${CHAINGUARD_IDENTITY}
+---
+test:
+  id_tokens:
+    CHAINGUARD_TOKEN:
+      aud: https://console-api.enforce.dev
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+      when: always
+  allow_failure:
+    exit_codes: 222 # using something here to exit with a warning
+  script:
+    - |
+      # Check if any tag exists
+      TAG="$(git describe --tags "$(git rev-list --tags --max-count=1)" 2>/dev/null || echo '')"
+
+      if [ -z "$TAG" ]; then
+        echo "No Git tags found. Skipping upgrade check."
+      else
+        # Checkout the repository at the latest tag
+        git checkout "$TAG"
+
+        # Extract upgrade flavors and set UPGRADE_FLAVORS
+        UPGRADE_FLAVORS=$(cat zarf.yaml | yq '.components[] | select(.only | has("flavor")) | .only.flavor' | paste -s -d, -)
+
+        # change back to the commit branch for the rest of the job
+        git checkout "$CI_COMMIT_BRANCH"
+      fi
+
+    - |
+      if [[ "$[[ inputs.type ]]" == "upgrade" && "$UPGRADE_FLAVORS" != *"$[[ inputs.flavor ]]"* ]]; then
+
+        # this is not ideal but gitlab rules are evaluated before any jobs run, so variables are not accessible in there
+        # at least this way we can exit with a warning
+        echo -e "\033[33mWARNING: Skipping the job as the '$[[ inputs.flavor ]]' flavor is not in upgrade flavors list '$UPGRADE_FLAVORS'\033[0m";
+
+        exit 222; #this signals gitlab to exit with a warning because of the value of allow_failure.exit_codes above.
+      fi
+    - touch job_not_skipped
+    - |
+      uds run actions:authenticate-registries --set REGISTRY1_USERNAME="$[[ inputs.registry1-username ]]" \
+                                              --set REGISTRY1_PASSWORD="$[[ inputs.registry1-password ]]" \
+                                              --set CHAINGUARD_IDENTITY="$[[ inputs.chainguard-identity ]]" \
+                                              --set CHAINGUARD_TOKEN="$CHAINGUARD_TOKEN" \
+                                              --set GITLAB_REGISTRY_URL="$CI_REGISTRY" \
+                                              --set GITLAB_REGISTRY_USER="$CI_REGISTRY_USER" \
+                                              --set GITLAB_REGISTRY_TOKEN="$CI_REGISTRY_PASSWORD"
+    - uds run actions:test-deploy --set FLAVOR="$[[ inputs.flavor ]]" --set TYPE="$[[ inputs.type ]]"
+    - uds run actions:verify-badge
+
+  after_script:
+    - |
+      if [ -f job_not_skipped ]; then
+        mkdir -p $[[ inputs.artifact-dir ]]/logs
+        uds run actions:debug-output --set LOG_DIR="$[[ inputs.artifact-dir ]]/logs"
+        uds run actions:save-logs --set LOG_DIR="$[[ inputs.artifact-dir ]]/logs"
+
+        # gitlab only supports one artifact unless you define a specific supported "report type"
+        # so in this generic case we will just add the reports to the included artifact dir
+        if [ -n "$[[ inputs.reports-path ]]" ]; then
+            cp -r "$[[ inputs.reports-path ]]" "$[[ inputs.artifact-dir ]]"
+        fi
+      fi
+
+  artifacts:
+    when: always
+    name: artifacts-$[[ inputs.type ]]-$[[ inputs.flavor ]]-${CI_PIPELINE_ID}-${CI_JOB_ID}
+    paths:
+      - $[[ inputs.artifact-dir ]]
+      - oscal-assessment-results.yaml
+  tags:
+    - $[[ inputs.runs-on ]]

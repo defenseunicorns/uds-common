@@ -1,0 +1,16 @@
+# Copyright 2024 Defense Unicorns
+# SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
+
+flavors:
+  - name: upstream
+    # x-release-please-start-version
+    version: 1.1.2
+    # x-release-please-end
+  - name: registry1
+    # x-release-please-start-version
+    version: 1.1.2
+    # x-release-please-end
+  - name: unicorn
+    # x-release-please-start-version
+    version: 1.1.2
+    # x-release-please-end

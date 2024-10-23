@@ -12,6 +12,7 @@
       "versioning": "default",
       "extra-files": [
         "bundle/uds-bundle.yaml",
+        "releaser.yaml",
         "tasks.yaml",
         "zarf.yaml"
       ]
