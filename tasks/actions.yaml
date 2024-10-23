@@ -236,7 +236,7 @@ tasks:
           - name: ARCH
 
   - name: registry-login
-    description: Log in to oci registry
+    description: Log in to an OCI registry
     inputs:
       registry:
         description: The registry to log in to
