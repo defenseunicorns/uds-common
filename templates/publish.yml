@@ -66,7 +66,7 @@ publish:
         fi
 
         ARGS="--set FLAVOR=\"$[[ inputs.flavor ]]\" \
-              --set VERSION=\"$(uds zarf tools yq ".flavors[] | select(.name == \"${FLAVOR}\") | .version" releaser.yaml)\""
+              --set VERSION=\"$(uds-releaser show ${FLAVOR} --version-only)\""
 
         if [[ -n "$[[ inputs.target-repo ]]" ]]; then
           ARGS+=" --set TARGET_REPO=\"$[[ inputs.target-repo ]]\""
