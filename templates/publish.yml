@@ -50,19 +50,13 @@ publish:
 
     # Check if release is necessary for flavor and exit early if not
     - |
-      if [[ "$DRY_RUN" == "true" ]]; then
-        echo "Dry run, skipping check if release is required: uds-releaser check ${FLAVOR}"
-      else
-        if ! uds-releaser check ${FLAVOR}; then echo "No release necessary"; exit 0; fi
+      if ! uds-releaser check "${FLAVOR}"; then
+        echo "No release necessary"
+        [[ "$DRY_RUN" != "true" ]] && exit 0
       fi
 
     # Modify zarf package and uds bundle to have the correct version
-    - |
-      if [[ "$DRY_RUN" == "true" ]]; then
-        echo "Dry run, skipping release command: uds-releaser update-yaml ${FLAVOR}"
-      else
-        uds-releaser update-yaml ${FLAVOR}
-      fi
+    - uds-releaser update-yaml ${FLAVOR}
 
     # Publish Package
     - |
@@ -72,17 +66,16 @@ publish:
           TASK_NAME="publish-release"
         fi
 
+        ARGS="--set FLAVOR=\"$[[ inputs.flavor ]]\" \
+              --set VERSION=\"$(uds zarf tools yq ".flavors[] | select(.name == \"${FLAVOR}\") | .version" releaser.yaml)\""
+
         if [[ -n "$[[ inputs.targetRepo ]]" ]]; then
-          uds run $TASK_NAME --set FLAVOR="$[[ inputs.flavor ]]"\
-                                     --set VERSION="$(uds zarf tools yq ".flavors[] | select(.name == \"${FLAVOR}\") | .version" releaser.yaml)"\
-                                     --set TARGET_REPO="$[[ inputs.targetRepo ]]"\
-                                     ${OPTIONS}
+          ARGS+=" --set TARGET_REPO=\"$[[ inputs.targetRepo ]]\""
         else
-          uds run $TASK_NAME --set FLAVOR="$[[ inputs.flavor ]]"\
-                                     --set VERSION="$(uds zarf tools yq ".flavors[] | select(.name == \"${FLAVOR}\") | .version" releaser.yaml)"\
-                                     --set TEAM="$[[ inputs.team ]]"\
-                                     ${OPTIONS}
+          ARGS+=" --set TEAM=\"$[[ inputs.team ]]\""
         fi
+
+        echo uds run $TASK_NAME ${ARGS} ${OPTIONS}
 
     # Create tag and release
     - |
