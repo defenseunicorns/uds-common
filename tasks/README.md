@@ -119,4 +119,4 @@ There are multiple task files available in this repository with different object
 | **test-deploy** | Test a deployment of a UDS package/bundle |
 | **verify-badge** | Perform verification to assist with UDS badge certification |
 | **determine-arch** | Determine the architecture of the current machine |
-| **registry-login** | Log in to oci registry |
+| **registry-login** | Log in to an OCI registry |
