@@ -8,7 +8,7 @@ This folder contains the GitLab CI Components for UDS Common, analogous to the G
 1. Publish
 1. Scorecard
 
-The .gitlab-ci.yml at the root of this repo serves as an example and test of how to call these components. That being said, a general example of how to include these components in your uds-package GitLab repo's pipelines would be as follows:
+The .gitlab-ci.yml at the root of this repo serves as an example and test of how to call these components. That being said, a general example of how to include these components in a GitLab `uds-package` is as follows:
 
 ```yaml
 include:
