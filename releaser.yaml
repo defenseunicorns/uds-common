@@ -3,8 +3,8 @@
 
 flavors:
   - name: upstream
-    version: 1.26.1-uds.0
+    version: 1.1.2
   - name: registry1
-    version: 1.26.1-uds.0
+    version: 1.1.2
   - name: unicorn
-    version: 1.26.1-uds.0
+    version: 1.1.2
