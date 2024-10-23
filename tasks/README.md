@@ -110,10 +110,13 @@ There are multiple task files available in this repository with different object
 
 | Name | Description |
 |------|-------------|
+| **authenticate-registries** | Log in to the registries for testing and publishing UDS Packages |
 | **debug-output** | Print debug output from a k8s cluster |
 | **clean-gh-runner** | Cleanup unneeded files to free space on a GitHub runner |
+| **install-deps** | Install the runner dependencies for testing UDS Packages |
 | **save-logs** | Save Pod and Node logs from a cluster and fix permissions |
 | **setup-environment** | Setup the runner environment for testing UDS Packages |
 | **test-deploy** | Test a deployment of a UDS package/bundle |
 | **verify-badge** | Perform verification to assist with UDS badge certification |
 | **determine-arch** | Determine the architecture of the current machine |
+| **registry-login** | Log in to an OCI registry |

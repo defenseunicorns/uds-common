@@ -8,7 +8,15 @@ variables:
     default: ""
   - name: GH_TOKEN
     default: ""
+  - name: GITLAB_REGISTRY_USER
+    default: ""
+  - name: GITLAB_REGISTRY_URL
+    default: ""
+  - name: GITLAB_REGISTRY_TOKEN
+    default: ""
   - name: CHAINGUARD_IDENTITY
+    default: ""
+  - name: CHAINGUARD_TOKEN
     default: ""
   - name: CHART_PATH
     default: chart/
@@ -22,6 +30,8 @@ variables:
     default: ""
   - name: OPTIONS
     default: ""
+  - name: LOG_DIR
+    default: /tmp
   - name: GO_VERSION
     default: 1.23.1
 
@@ -32,19 +42,19 @@ tasks:
       - description: Print basic debug info for a k8s cluster
         cmd: |
           echo "::group::kubectl get all"
-          uds zarf tools kubectl get all -A || echo "failed" | tee /tmp/debug-k-get-all.log
+          uds zarf tools kubectl get all -A || echo "failed" | tee ${{ .variables.LOG_DIR }}/debug-k-get-all.log
           echo "::endgroup::"
           echo "::group::kubectl get pv,pvc"
-          uds zarf tools kubectl get pv,pvc -A || echo "failed" | tee /tmp/debug-k-get-pv-pvc.log
+          uds zarf tools kubectl get pv,pvc -A || echo "failed" | tee ${{ .variables.LOG_DIR }}/debug-k-get-pv-pvc.log
           echo "::endgroup::"
           echo "::group::kubectl get package"
-          uds zarf tools kubectl get package -A || echo "failed" | tee /tmp/debug-k-get-package.log
+          uds zarf tools kubectl get package -A || echo "failed" | tee ${{ .variables.LOG_DIR }}/debug-k-get-package.log
           echo "::endgroup::"
           echo "::group::kubectl get events"
-          uds zarf tools kubectl get events -A --sort-by='.lastTimestamp' || echo "failed" | tee /tmp/debug-k-get-events.log
+          uds zarf tools kubectl get events -A --sort-by='.lastTimestamp' || echo "failed" | tee ${{ .variables.LOG_DIR }}/debug-k-get-events.log
           echo "::endgroup::"
           echo "::group::kubectl describe nodes"
-          uds zarf tools kubectl describe nodes k3d-uds-server-0 || echo "failed" | tee /tmp/debug-k-describe-node.log
+          uds zarf tools kubectl describe nodes k3d-uds-server-0 || echo "failed" | tee ${{ .variables.LOG_DIR }}/debug-k-describe-node.log
           echo "::endgroup::"
 
   - name: clean-gh-runner
@@ -70,7 +80,7 @@ tasks:
           CONTAINER_NAME="k3d-uds-server-0"
           if docker ps | grep -q "$CONTAINER_NAME"; then
             echo "Container $CONTAINER_NAME is running. Proceeding with log copy..."
-            docker cp "${CONTAINER_NAME}:/var/log/" /tmp/uds-containerd-logs
+            docker cp "${CONTAINER_NAME}:/var/log/" ${{ .variables.LOG_DIR }}/uds-containerd-logs
           else
             echo "Container $CONTAINER_NAME is not running. Skipping log copy."
           fi
@@ -78,16 +88,24 @@ tasks:
       - description: Dump Node Logs
         cmd: |
           docker ps --filter "name=k3d" --format "{{.Names}}" | while read -r line; do
-            docker logs "$line" 2> "/tmp/$line.log"
+            docker logs "$line" 2> "${{ .variables.LOG_DIR }}/$line.log"
           done
 
       - description: Fix log permissions
         cmd: |
-          sudo chown "$USER" /tmp/zarf-*.log || echo ""
-          sudo chown "$USER" /tmp/uds-*.log || echo ""
+          sudo chown "$USER" ${{ .variables.LOG_DIR }}/zarf-*.log || echo ""
+          sudo chown "$USER" ${{ .variables.LOG_DIR }}/uds-*.log || echo ""
 
   - name: setup-environment
     description: Setup the runner environment for testing UDS Packages
+    actions:
+      - description: Install dependencies
+        task: install-deps
+      - description: authenticate to the registries
+        task: authenticate-registries
+
+  - name: install-deps
+    description: Install the runner dependencies for testing UDS Packages
     actions:
       - description: Install k3d
         env:
@@ -107,33 +125,58 @@ tasks:
           "https://github.com/defenseunicorns/lula/releases/download/${LULA_VERSION}/lula_${LULA_VERSION}_$(uname -s)_${{ .variables.ARCH }}" \
           && chmod +x /usr/local/bin/lula
 
+  - name: authenticate-registries
+    description: Log in to the registries for testing and publishing UDS Packages
+    actions:
       - description: Iron Bank Login
         if: ${{ ne .variables.REGISTRY1_USERNAME "" }}
-        cmd: |
-          echo "${{ .variables.REGISTRY1_PASSWORD }}" | ./uds zarf tools registry login -u "${{ .variables.REGISTRY1_USERNAME }}" --password-stdin registry1.dso.mil
+        task: registry-login
+        with:
+          registry: registry1.dso.mil
+          registry_username: ${{ .variables.REGISTRY1_USERNAME }}
+          registry_token: ${{ .variables.REGISTRY1_PASSWORD }}
 
       - description: Chainguard Login
         if: ${{ ne .variables.CHAINGUARD_IDENTITY "" }}
         cmd: |
-          curl -o /usr/local/bin/chainctl -L \
-          "https://dl.enforce.dev/chainctl/latest/chainctl_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/aarch64/arm64/')" \
-          && chmod +x /usr/local/bin/chainctl
+          if [ -z "$GITLAB_CI" ]; then
+            curl -o /usr/local/bin/chainctl -L \
+            "https://dl.enforce.dev/chainctl/latest/chainctl_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/aarch64/arm64/')" \
+            && chmod +x /usr/local/bin/chainctl
+          fi
 
-          if chainctl auth login --identity "${{ .variables.CHAINGUARD_IDENTITY }}" -v=0; then
+          LOGIN_ARGS="--identity \"${{ .variables.CHAINGUARD_IDENTITY }}\""
+          TOKEN=${{ .variables.CHAINGUARD_TOKEN }}
+          if [ -n "$TOKEN" ]; then
+            LOGIN_ARGS="$LOGIN_ARGS --identity-token \"$TOKEN\""
+          fi
+
+          if eval chainctl auth login "$LOGIN_ARGS" -v=0; then
             echo Logged in as ${{ .variables.CHAINGUARD_IDENTITY }}!
           else
             echo Unable to assume the identity ${{ .variables.CHAINGUARD_IDENTITY }}.
           exit 1
           fi
-          if ! chainctl auth configure-docker --identity "${{ .variables.CHAINGUARD_IDENTITY }}" -v=0; then
+          if ! eval chainctl auth configure-docker "$LOGIN_ARGS" -v=0; then
             echo Unable to register credential helper as ${{ .variables.CHAINGUARD_IDENTITY }}.
             exit 1
           fi
 
-      - description: GHCR Login
+      - description: GHCR Registry Login
         if: ${{ ne .variables.GH_TOKEN "" }}
-        cmd: |
-          echo "${{ .variables.GH_TOKEN }}" | uds zarf tools registry login -u "dummy" --password-stdin ghcr.io
+        task: registry-login
+        with:
+          registry: ghcr.io
+          registry_username: dummy
+          registry_token: ${{ .variables.GH_TOKEN }}
+
+      - description: Gitlab Registry Login
+        if: ${{ ne .variables.GITLAB_REGISTRY_USER "" }}
+        task: registry-login
+        with:
+          registry: ${{ .variables.GITLAB_REGISTRY_URL }}
+          registry_username: ${{ .variables.GITLAB_REGISTRY_USER }}
+          registry_token: ${{ .variables.GITLAB_REGISTRY_TOKEN }}
 
       - description: Package Specific CI Setup
         cmd: |
@@ -179,7 +222,7 @@ tasks:
             --set GROUP_NAME="${{ .variables.GROUP_NAME }}" \
             --set COMMON_ZARF="${{ .variables.COMMON_ZARF }}"
 
-  # Common task
+  # Common tasks
   - name: determine-arch
     description: Determine the architecture of the current machine
     actions:
@@ -191,3 +234,22 @@ tasks:
           darwin: bash
         setVariables:
           - name: ARCH
+
+  - name: registry-login
+    description: Log in to an OCI registry
+    inputs:
+      registry:
+        description: The registry to log in to
+        required: true
+      registry_username:
+        description: The username to log in with
+        required: true
+        default: replace-me
+      registry_token:
+        description: The token to log in with
+        required: true
+    actions:
+      - description: Registry Login
+        cmd: |
+          set -x
+          echo "${{ .inputs.registry_token }}" | ./uds zarf tools registry login -u "${{ .inputs.registry_username }}" --password-stdin "${{ .inputs.registry }}"

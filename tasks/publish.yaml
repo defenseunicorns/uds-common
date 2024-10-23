@@ -7,6 +7,8 @@ includes:
 variables:
   - name: FLAVOR
     default: upstream
+  - name: TEAM
+    default: uds
 
 tasks:
   - name: package
@@ -30,7 +32,7 @@ tasks:
     actions:
       - task: utils:determine-repo
         with:
-          team: ${{.inputs.team}}
+          team: ${{.variables.TEAM}}
       - description: Get the current Zarf package name
         cmd: cat ${{ .inputs.path }}/zarf.yaml | ./uds zarf tools yq .metadata.name
         setVariables:

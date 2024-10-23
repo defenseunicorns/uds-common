@@ -1,0 +1,58 @@
+# Copyright 2024 Defense Unicorns
+# SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
+
+include:
+  - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/commitlint@$CI_COMMIT_SHA
+  - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/lint@$CI_COMMIT_SHA
+  - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/test@$CI_COMMIT_SHA
+    inputs:
+      # if you have additional report artifacts to add to the gitlab
+      # artifact zip file you can add the path here and the entire directory
+      # will be included
+      #reports-path: sample-reports/playwright
+      runs-on: gitlab-runner-4c-${ARCH}
+      flavor: $FLAVOR
+      type: $TYPE
+  - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/publish@$CI_COMMIT_SHA
+    inputs:
+      runs-on: gitlab-runner-4c-${ARCH}
+      flavor: $FLAVOR
+      # if you have additional report artifacts to add to the gitlab
+      # artifact zip file you can add the path here and the entire directory
+      # will be included
+      #reports-path: sample-reports/playwright
+
+      # if setting target repo, this will be used directly for the oci publish
+      #target-repo: ${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}
+
+      # if you override team here it will be included in the determined target repo
+      # for the oci publish (default is uds)
+      # only used if target-repo is not set
+      #team: my-team
+  - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/scorecard@$CI_COMMIT_SHA
+
+test:
+  artifacts:
+    # if you have specific report types that are natively supported by
+    # gitlab you can include those here and they'll be included in addition to the
+    # artifact containing debug logs, oscal, etc.
+    # (e.g. Junit tests, sast reports, etc)
+    # see: https://docs.gitlab.com/ee/ci/yaml/artifacts_reports.html
+    # reports:
+    #   junit: sample-reports/junit.xml
+  parallel:
+    matrix:
+      - FLAVOR: [upstream, unicorn]
+        ARCH: [amd64, arm64]
+        TYPE: [install, upgrade]
+      - FLAVOR: [registry1]
+        ARCH: [amd64]
+        TYPE: [install, upgrade]
+
+publish:
+  parallel:
+    matrix:
+      - FLAVOR: [upstream, unicorn]
+        ARCH: [amd64, arm64]
+      - FLAVOR: [registry1]
+        ARCH: [amd64]
