@@ -1,6 +1,6 @@
 # UDS Common GitLab CI Components
 
-This folder contains the GitLab CI Components for UDS Common, analogous to the github callable workflows under the `./github/workflows` directory. The included components are as follows:
+This folder contains the GitLab CI Components for UDS Common, analogous to the GitHub callable workflows under the `./github/workflows` directory. The included components are as follows:
 
 1. Lint
 1. Commitlint
