@@ -6,7 +6,7 @@ spec:
     runsOn:
     flavor:
     type:
-    artifact_dir:
+    artifact-dir:
       default: .ci_artifacts
     reports-path:
       default: ""
@@ -68,14 +68,14 @@ test:
   after_script:
     - |
       if [ -f job_not_skipped ]; then
-        mkdir -p $[[ inputs.artifact_dir ]]/logs
-        uds run actions:debug-output --set LOG_DIR="$[[ inputs.artifact_dir ]]/logs"
-        uds run actions:save-logs --set LOG_DIR="$[[ inputs.artifact_dir ]]/logs"
+        mkdir -p $[[ inputs.artifact-dir ]]/logs
+        uds run actions:debug-output --set LOG_DIR="$[[ inputs.artifact-dir ]]/logs"
+        uds run actions:save-logs --set LOG_DIR="$[[ inputs.artifact-dir ]]/logs"
 
         # gitlab only supports one artifact unless you define a specific supported "report type"
         # so in this generic case we will just add the reports to the included artifact dir
         if [ -n "$[[ inputs.reports-path ]]" ]; then
-            cp -r "$[[ inputs.reports-path ]]" "$[[ inputs.artifact_dir ]]"
+            cp -r "$[[ inputs.reports-path ]]" "$[[ inputs.artifact-dir ]]"
         fi
       fi
 
@@ -83,7 +83,7 @@ test:
     when: always
     name: artifacts-$[[ inputs.type ]]-$[[ inputs.flavor ]]-${CI_PIPELINE_ID}-${CI_JOB_ID}
     paths:
-      - $[[ inputs.artifact_dir ]]
+      - $[[ inputs.artifact-dir ]]
       - oscal-assessment-results.yaml
   tags:
     - $[[ inputs.runsOn ]]

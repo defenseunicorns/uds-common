@@ -5,7 +5,7 @@ spec:
   inputs:
     runsOn:
     flavor:
-    artifact_dir:
+    artifact-dir:
       default: .ci_artifacts
     reports-path:
       default: ""
@@ -96,13 +96,13 @@ publish:
     # Save logs, which will run even if the script section fails
     - echo -e "\e[0Ksection_start:`date +%s`:afterscript_section[collapsed=true]\r\e[0KAfter Script Output"
     - |
-      mkdir -p $[[ inputs.artifact_dir ]]/logs
-      uds run actions:debug-output --set LOG_DIR="$[[ inputs.artifact_dir ]]/logs"
-      uds run actions:save-logs --set LOG_DIR="$[[ inputs.artifact_dir ]]/logs"
+      mkdir -p $[[ inputs.artifact-dir ]]/logs
+      uds run actions:debug-output --set LOG_DIR="$[[ inputs.artifact-dir ]]/logs"
+      uds run actions:save-logs --set LOG_DIR="$[[ inputs.artifact-dir ]]/logs"
       # gitlab only supports one artifact unless you define a specific supported "report type"
       # so in this generic case we will just add the reports to the included artifact dir
       if [ -n "$[[ inputs.reports-path ]]" ]; then
-          cp -r "$[[ inputs.reports-path ]]" "$[[ inputs.artifact_dir ]]"
+          cp -r "$[[ inputs.reports-path ]]" "$[[ inputs.artifact-dir ]]"
       fi
     - echo -e "\e[0Ksection_end:`date +%s`:afterscript_section\r\e[0K"
 
@@ -111,7 +111,7 @@ publish:
     name: artifacts-$[[ inputs.flavor ]]-${CI_PIPELINE_ID}-${CI_JOB_ID}
     paths:
       # Save debug logs as artifacts
-      - $[[ inputs.artifact_dir ]]
+      - $[[ inputs.artifact-dir ]]
       - oscal-assessment-results.yaml
 
   tags:
