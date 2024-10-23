@@ -7,11 +7,6 @@ includes:
 variables:
   - name: FLAVOR
     default: upstream
-  - name: TARGET_REPO
-  - name: VERSION
-    # x-release-please-start-version
-    default: 1.1.2
-    # x-release-please-end
   - name: TEAM
     default: uds
 
@@ -36,7 +31,6 @@ tasks:
         default: ${PACKAGE_NAME}
     actions:
       - task: utils:determine-repo
-        if: ${{ eq .variables.TARGET_REPO "" }}
         with:
           team: ${{.variables.TEAM}}
       - description: Get the current Zarf package name
@@ -64,7 +58,6 @@ tasks:
         default: ${BUNDLE_NAME}
     actions:
       - task: utils:determine-repo
-        if: ${{ eq .variables.TARGET_REPO "" }}
       - description: Get the current UDS Bundle name
         cmd: cat ${{ .inputs.path }}/uds-bundle.yaml | ./uds zarf tools yq .metadata.name
         setVariables:
