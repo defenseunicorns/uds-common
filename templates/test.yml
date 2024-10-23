@@ -32,7 +32,7 @@ test:
       TAG="$(git describe --tags "$(git rev-list --tags --max-count=1)" 2>/dev/null || echo '')"
 
       if [ -z "$TAG" ]; then
-        echo "No Git tags found. Skipping step."
+        echo "No Git tags found. Skipping upgrade check."
       else
         # Checkout the repository at the latest tag
         git checkout "$TAG"
