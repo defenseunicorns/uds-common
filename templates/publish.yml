@@ -74,7 +74,7 @@ publish:
           ARGS+=" --set TEAM=\"$[[ inputs.team ]]\""
         fi
 
-        echo uds run $TASK_NAME ${ARGS} ${OPTIONS}
+        uds run $TASK_NAME ${ARGS} ${OPTIONS}
 
     # Create tag and release
     - |
