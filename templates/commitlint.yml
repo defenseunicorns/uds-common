@@ -3,7 +3,7 @@
 
 spec:
   inputs:
-    runsOn:
+    runs-on:
       default: gitlab-runner-4c-amd64
 ---
 commitlint:
@@ -16,4 +16,4 @@ commitlint:
       echo "module.exports = {extends: ['@commitlint/config-conventional']}" > commitlint.config.js
     - echo "$CI_MERGE_REQUEST_TITLE" | npx commitlint
   tags:
-    - $[[ inputs.runsOn ]]
+    - $[[ inputs.runs-on ]]

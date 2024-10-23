@@ -3,9 +3,8 @@
 
 spec:
   inputs:
-    runsOn:
+    runs-on:
       default: gitlab-runner-4c-amd64
-
 ---
 lint:
   rules:
@@ -20,4 +19,4 @@ lint:
     # Lint the repository
     - uds run lint:all --no-progress
   tags:
-    - $[[ inputs.runsOn ]]
+    - $[[ inputs.runs-on ]]

@@ -3,9 +3,8 @@
 
 spec:
   inputs:
-    runsOn:
+    runs-on:
       default: gitlab-runner-4c-amd64
-
 ---
 run-scorecard:
   #todo (ewyles) - decide correct time to run this. on github it runs on merge to main
@@ -38,4 +37,4 @@ run-scorecard:
     paths:
       - openssf_scorecard.json
   tags:
-    - $[[ inputs.runsOn ]]
+    - $[[ inputs.runs-on ]]

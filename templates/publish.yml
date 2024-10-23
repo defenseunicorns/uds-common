@@ -3,24 +3,23 @@
 
 spec:
   inputs:
-    runsOn:
+    runs-on:
     flavor:
     artifact-dir:
       default: .ci_artifacts
     reports-path:
       default: ""
-    registry1Username:
+    registry1-username:
       default: ${IRON_BANK_ROBOT_USERNAME}
-    registry1Password:
+    registry1-password:
       default: ${IRON_BANK_ROBOT_PASSWORD}
-    chainguardIdentity:
+    chainguard-identity:
       default: ${CHAINGUARD_IDENTITY}
-    targetRepo:
+    target-repo:
       default: ""
     team:
       default: uds
 ---
-
 publish:
   variables:
     GIT_STRATEGY: clone
@@ -40,9 +39,9 @@ publish:
 
     # Environment setup
     - |
-      uds run actions:authenticate-registries --set REGISTRY1_USERNAME="$[[ inputs.registry1Username ]]" \
-                                              --set REGISTRY1_PASSWORD="$[[ inputs.registry1Password ]]" \
-                                              --set CHAINGUARD_IDENTITY="$[[ inputs.chainguardIdentity ]]" \
+      uds run actions:authenticate-registries --set REGISTRY1_USERNAME="$[[ inputs.registry1-username ]]" \
+                                              --set REGISTRY1_PASSWORD="$[[ inputs.registry1-password ]]" \
+                                              --set CHAINGUARD_IDENTITY="$[[ inputs.chainguard-identity ]]" \
                                               --set CHAINGUARD_TOKEN="$CHAINGUARD_TOKEN" \
                                               --set GITLAB_REGISTRY_URL="$CI_REGISTRY" \
                                               --set GITLAB_REGISTRY_USER="$CI_REGISTRY_USER" \
@@ -69,8 +68,8 @@ publish:
         ARGS="--set FLAVOR=\"$[[ inputs.flavor ]]\" \
               --set VERSION=\"$(uds zarf tools yq ".flavors[] | select(.name == \"${FLAVOR}\") | .version" releaser.yaml)\""
 
-        if [[ -n "$[[ inputs.targetRepo ]]" ]]; then
-          ARGS+=" --set TARGET_REPO=\"$[[ inputs.targetRepo ]]\""
+        if [[ -n "$[[ inputs.target-repo ]]" ]]; then
+          ARGS+=" --set TARGET_REPO=\"$[[ inputs.target-repo ]]\""
         else
           ARGS+=" --set TEAM=\"$[[ inputs.team ]]\""
         fi
@@ -108,4 +107,4 @@ publish:
       - oscal-assessment-results.yaml
 
   tags:
-    - $[[ inputs.runsOn ]]
+    - $[[ inputs.runs-on ]]
