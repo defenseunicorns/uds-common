@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.2.0](https://github.com/defenseunicorns/uds-common/compare/v1.1.2...v1.2.0) (2024-10-24)
+
+
+### Features
+
+* support gitlab ([#283](https://github.com/defenseunicorns/uds-common/issues/283)) ([9ac2019](https://github.com/defenseunicorns/uds-common/commit/9ac201912622886aa6c6a25c1d0cd086b23b5567))
+
+
+### Miscellaneous
+
+* **deps:** update support-deps to v3.27.0 ([#318](https://github.com/defenseunicorns/uds-common/issues/318)) ([8b6e67e](https://github.com/defenseunicorns/uds-common/commit/8b6e67e8f0ffa1300a75bc3d8d1df916dbddb2f8))
+* update workflow permissions ([#321](https://github.com/defenseunicorns/uds-common/issues/321)) ([9f5c844](https://github.com/defenseunicorns/uds-common/commit/9f5c844238529b92eef7ee97f1b6f5713ec371ca))
+
 ## [1.1.2](https://github.com/defenseunicorns/uds-common/compare/v1.1.1...v1.1.2) (2024-10-22)
 
 
