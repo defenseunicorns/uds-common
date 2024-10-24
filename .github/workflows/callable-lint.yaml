@@ -11,6 +11,10 @@ on:
   # This allows other repositories to call this workflow in a reusable way
   workflow_call:
 
+# Permissions for the GITHUB_TOKEN used by the workflow.
+permissions:
+  contents: read # Allows reading the content of the repository.
+
 jobs:
   run:
     runs-on: ubuntu-latest

@@ -27,6 +27,12 @@ on:
         type: number
         default: 40
 
+# Permissions for the GITHUB_TOKEN used by the workflow.
+permissions:
+  contents: read # Allows reading the content of the repository.
+  packages: read # Allows reading the content of the repository's packages.
+  id-token: write
+
 jobs:
   run:
     runs-on: ${{ inputs.runsOn }}
