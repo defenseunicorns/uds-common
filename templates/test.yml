@@ -38,7 +38,7 @@ test:
         git checkout "$TAG"
 
         # Extract upgrade flavors and set UPGRADE_FLAVORS
-        UPGRADE_FLAVORS=$(cat zarf.yaml | yq '.components[] | select(.only | has("flavor")) | .only.flavor' | paste -s -d, -)
+        UPGRADE_FLAVORS=$(cat zarf.yaml | yq '.components[] | select(.only | has("flavor")) | .only.flavor' | paste -s -d, - || echo "") 
 
         # change back to the commit branch for the rest of the job
         git checkout "$CI_COMMIT_BRANCH"
