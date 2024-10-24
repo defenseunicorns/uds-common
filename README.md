@@ -1,5 +1,6 @@
 # 🦄 UDS Common
 
+[<img alt="Made for UDS" src="https://raw.githubusercontent.com/defenseunicorns/uds-common/refs/heads/main/docs/assets/made-for-uds.svg" height="20px"/>](https://github.com/defenseunicorns/uds-core)
 [![Latest Release](https://img.shields.io/github/v/release/defenseunicorns/uds-common)](https://github.com/defenseunicorns/uds-common/releases)
 [![Build Status](https://img.shields.io/github/actions/workflow/status/defenseunicorns/uds-common/release.yaml)](https://github.com/defenseunicorns/uds-common/actions/workflows/release.yaml)
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/defenseunicorns/uds-common/badge)](https://api.securityscorecards.dev/projects/github.com/defenseunicorns/uds-common)
