@@ -35,5 +35,5 @@ runs:
         git checkout "$TAG"
 
         # Extract upgrade flavors and set output
-        echo "upgrade-flavors=$(cat zarf.yaml | yq '.components[] | select(.only | has("flavor")) | .only.flavor' | paste -s -d, -)" >> "$GITHUB_OUTPUT"
+        echo "upgrade-flavors=$(cat zarf.yaml | yq '.components[] | select(.only | has("flavor")) | .only.flavor' | paste -s -d, - || echo '')" >> "$GITHUB_OUTPUT"
       shell: bash
