@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.2.0](https://github.com/defenseunicorns/uds-common/compare/v1.1.2...v1.2.0) (2024-10-25)
+
+
+### Features
+
+* support gitlab ([#283](https://github.com/defenseunicorns/uds-common/issues/283)) ([9ac2019](https://github.com/defenseunicorns/uds-common/commit/9ac201912622886aa6c6a25c1d0cd086b23b5567))
+
+
+### Bug Fixes
+
+* don't fail if `zarf.yaml` not found in tag ([#322](https://github.com/defenseunicorns/uds-common/issues/322)) ([e4ef2ab](https://github.com/defenseunicorns/uds-common/commit/e4ef2ab9d752acfd0323eb551d84822311708b25))
+
+
+### Miscellaneous
+
+* **deps:** update support-deps to v3.27.0 ([#318](https://github.com/defenseunicorns/uds-common/issues/318)) ([8b6e67e](https://github.com/defenseunicorns/uds-common/commit/8b6e67e8f0ffa1300a75bc3d8d1df916dbddb2f8))
+* update workflow permissions ([#321](https://github.com/defenseunicorns/uds-common/issues/321)) ([9f5c844](https://github.com/defenseunicorns/uds-common/commit/9f5c844238529b92eef7ee97f1b6f5713ec371ca))
+
 ## [1.1.2](https://github.com/defenseunicorns/uds-common/compare/v1.1.1...v1.1.2) (2024-10-22)
 
 
