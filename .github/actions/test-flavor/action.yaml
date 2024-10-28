@@ -10,7 +10,7 @@ outputs:
     description: Indicates if the upgrade should be skipped
 
 inputs:
-  zarf-yaml:
+  check-flavor-zarf-yaml:
     default: zarf.yaml
     description: Relative path of a zarf.yaml containing flavors to check
 
@@ -40,5 +40,5 @@ runs:
         git checkout "$TAG"
 
         # Extract upgrade flavors and set output
-        echo "upgrade-flavors=$(cat ${{ inputs.zarf-yaml }} | yq '.components[] | select(.only | has("flavor")) | .only.flavor' | paste -s -d, - || echo '')" >> "$GITHUB_OUTPUT"
+        echo "upgrade-flavors=$(cat ${{ inputs.check-flavor-zarf-yaml }} | yq '.components[] | select(.only | has("flavor")) | .only.flavor' | paste -s -d, - || echo '')" >> "$GITHUB_OUTPUT"
       shell: bash

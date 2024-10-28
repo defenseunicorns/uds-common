@@ -16,6 +16,8 @@ spec:
       default: ${IRON_BANK_ROBOT_PASSWORD}
     chainguard-identity:
       default: ${CHAINGUARD_IDENTITY}
+    check-flavor-zarf-yaml:
+      default: zarf.yaml
 ---
 test:
   id_tokens:
@@ -38,7 +40,7 @@ test:
         git checkout "$TAG"
 
         # Extract upgrade flavors and set UPGRADE_FLAVORS
-        UPGRADE_FLAVORS=$(cat zarf.yaml | yq '.components[] | select(.only | has("flavor")) | .only.flavor' | paste -s -d, - || echo "")
+        UPGRADE_FLAVORS=$(cat $[[ inputs.check-flavor-zarf-yaml ]] | yq '.components[] | select(.only | has("flavor")) | .only.flavor' | paste -s -d, - || echo "")
 
         # change back to the commit branch for the rest of the job
         git checkout -
