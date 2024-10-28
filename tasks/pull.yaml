@@ -40,7 +40,7 @@ tasks:
         cmd: |
           if [ "${{ .inputs.spoof_release }}" != "false" ]; then
             CURRENT_VERSION=$(cat ${{ .inputs.path }}/zarf.yaml | yq .metadata.version)
-            test -f "${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${UDS_ARCH}-${CURRENT_VERSION}.tar.zst" || mv "${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${UDS_ARCH}-*.tar.zst" "${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${UDS_ARCH}-${CURRENT_VERSION}.tar.zst"
+            test -f "${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${UDS_ARCH}-${CURRENT_VERSION}.tar.zst" || mv "${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${UDS_ARCH}-${LATEST_VERSION%-*}.tar.zst" "${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${UDS_ARCH}-${CURRENT_VERSION}.tar.zst"
           fi
 
   - name: latest-bundle-release
@@ -72,5 +72,5 @@ tasks:
         cmd: |
           if [ "${{ .inputs.spoof_release }}" != "false" ]; then
             CURRENT_VERSION=$(cat ${{ .inputs.path }}/uds-bundle.yaml | yq .metadata.version)
-            test -f "${{ .inputs.path }}/uds-bundle-${BUNDLE_NAME}-${UDS_ARCH}-${CURRENT_VERSION}.tar.zst" || mv "${{ .inputs.path }}/uds-bundle-${BUNDLE_NAME}-${UDS_ARCH}-*.tar.zst" "${{ .inputs.path }}/uds-bundle-${BUNDLE_NAME}-${UDS_ARCH}-${CURRENT_VERSION}.tar.zst"
+            test -f "${{ .inputs.path }}/uds-bundle-${BUNDLE_NAME}-${UDS_ARCH}-${CURRENT_VERSION}.tar.zst" || mv "${{ .inputs.path }}/uds-bundle-${BUNDLE_NAME}-${UDS_ARCH}-${LATEST_VERSION}.tar.zst" "${{ .inputs.path }}/uds-bundle-${BUNDLE_NAME}-${UDS_ARCH}-${CURRENT_VERSION}.tar.zst"
           fi
