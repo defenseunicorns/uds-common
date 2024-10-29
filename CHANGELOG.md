@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.2.2](https://github.com/defenseunicorns/uds-common/compare/v1.2.1...v1.2.2) (2024-10-29)
+
+
+### Features
+
+* allow alternate paths for the check flavor zarf.yaml ([#326](https://github.com/defenseunicorns/uds-common/issues/326)) ([d3ecafd](https://github.com/defenseunicorns/uds-common/commit/d3ecafdf8a124c8b722b34e41097bf08fe5b8036))
+
+
+### Miscellaneous
+
+* **deps:** update uds common support dependencies to v0.30.0 ([#328](https://github.com/defenseunicorns/uds-common/issues/328)) ([2c8bb0d](https://github.com/defenseunicorns/uds-common/commit/2c8bb0dfdd86611b32601fc9c4083fba6ea735aa))
+
 ## [1.2.1](https://github.com/defenseunicorns/uds-common/compare/v1.2.0...v1.2.1) (2024-10-28)
 
 
