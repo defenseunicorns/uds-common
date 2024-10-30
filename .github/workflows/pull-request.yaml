@@ -19,4 +19,5 @@ jobs:
         contents: read # Allows reading the content of the repository.
         packages: read # Allows reading the content of the repository's packages.
         id-token: write
+        pull-requests: read # Allows reading pull requests
     uses: ./.github/workflows/callable-pull-request.yaml
