@@ -7,17 +7,19 @@ on:
   workflow_call:
     inputs:
       runsOn:
-        required: true
         type: string
+        default: ubuntu-latest
       upgrade-flavors:
         required: true
         type: string
-      flavor:
+      flavors:
         required: true
         type: string
-      type:
+        default: "['upstream', 'unicorn', 'registry1']"
+      types:
         required: true
         type: string
+        default: "['install', 'upgrade']"
       reports-path:
         type: string
         description: The path to test outputs to upload
@@ -103,8 +105,8 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        type: [install, upgrade]
-        flavor: [upstream, unicorn, registry1]
+        types: [install, upgrade]
+        flavors: ${{ fromJson(inputs.flavors) }}
     uses: ./.github/workflows/callable-test.yaml
     with:
       upgrade-flavors: ${{ needs.check-flavor.outputs.upgrade-flavors }}
@@ -121,10 +123,10 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        type: [install, upgrade]
-        flavor: [upstream, unicorn, registry1]
+        type: ${{ fromJson(inputs.types) }}
+        flavor: ${{ fromJson(inputs.flavors) }}
     steps:
-      - name: Shim for ${{ inputs.type }} ${{ inputs.flavor }}
+      - name: Shim for ${{ matrix.type }} ${{ matrix.flavor }}
         run: |
           echo "Documentation-only change detected; marking ${{ inputs.type }} ${{ inputs.flavor }} as successful."
 
