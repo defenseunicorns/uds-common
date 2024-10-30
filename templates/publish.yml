@@ -65,16 +65,20 @@ publish:
           TASK_NAME="publish-release"
         fi
 
-        ARGS="--set FLAVOR=\"$[[ inputs.flavor ]]\" \
-              --set VERSION=\"$(uds-releaser show ${FLAVOR} --version-only)\""
+        ARGS=(
+          --set FLAVOR="$[[ inputs.flavor ]]"
+          --set VERSION="$(uds-releaser show $[[ inputs.flavor ]] --version-only)"
+        )
 
         if [[ -n "$[[ inputs.target-repo ]]" ]]; then
-          ARGS+=" --set TARGET_REPO=\"$[[ inputs.target-repo ]]\""
+          ARGS+=(--set TARGET_REPO="$[[ inputs.target-repo ]]")
         else
-          ARGS+=" --set TEAM=\"$[[ inputs.team ]]\""
+          ARGS+=(--set TEAM="$[[ inputs.team ]]")
         fi
 
-        uds run $TASK_NAME ${ARGS} ${OPTIONS}
+        echo Running $TASK_NAME "${ARGS[@]}" ${OPTIONS}
+
+        uds run $TASK_NAME "${ARGS[@]}" ${OPTIONS}
 
     # Create tag and release
     - |
