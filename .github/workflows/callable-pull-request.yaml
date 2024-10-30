@@ -127,10 +127,14 @@ jobs:
 
 
   lint:
+    permissions:
+      pull-requests: read
     uses: ./.github/workflows/callable-lint.yaml
     secrets: inherit
 
 
   commitlint:
+    permissions:
+      pull-requests: read
     uses: ./.github/workflows/callable-commitlint.yaml
     secrets: inherit
