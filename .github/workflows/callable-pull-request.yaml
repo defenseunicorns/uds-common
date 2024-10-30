@@ -129,6 +129,7 @@ jobs:
   lint:
     permissions:
       pull-requests: read
+      contents: read
     uses: ./.github/workflows/callable-lint.yaml
     secrets: inherit
 
