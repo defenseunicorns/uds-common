@@ -17,7 +17,7 @@ The repo itself contains:
 - [VSCode configuration](config/.vscode) to setup syntax highlighting for different tooling in your IDE.
 - [An example](.) UDS Package for Nginx that demonstrates the general structure and acts as a test for the common tasks.
 
-## Task Usage
+## Task Usage 
 
 Common `tasks` can be included in downstream repositories and executed with `uds run`.  You can learn more about the common tasks in this repo on the [tasks README](./tasks/README.md).
 
