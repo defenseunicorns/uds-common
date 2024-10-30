@@ -10,11 +10,9 @@ on:
         type: string
         default: ubuntu-latest
       flavors:
-        required: true
         type: string
         default: "['upstream', 'unicorn', 'registry1']"
       types:
-        required: true
         type: string
         default: "['install', 'upgrade']"
       reports-path:
