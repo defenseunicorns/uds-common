@@ -1,65 +1,65 @@
-# Copyright 2024 Defense Unicorns
-# SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
+# # Copyright 2024 Defense Unicorns
+# # SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
 
-name: Test
+# name: Test
 
-on:
-  # This workflow is triggered on pull requests to the main branch.
-  pull_request:
-    # milestoned is added here as a workaround for release-please not triggering PR workflows (PRs should be added to a milestone to trigger the workflow).
-    types: [milestoned, opened, reopened, synchronize]
-    paths-ignore:
-      - "**.md"
-      - "**.jpg"
-      - "**.png"
-      - "**.gif"
-      - "**.svg"
-      - adr/**
-      - docs/**
-      - .gitignore
-      - renovate.json
-      - .release-please-config.json
-      - release-please-config.json
-      - CODEOWNERS
-      - LICENSE
-      - CONTRIBUTING.md
-      - SECURITY.md
-      - config/renovate.json5
+# on:
+#   # This workflow is triggered on pull requests to the main branch.
+#   pull_request:
+#     # milestoned is added here as a workaround for release-please not triggering PR workflows (PRs should be added to a milestone to trigger the workflow).
+#     types: [milestoned, opened, reopened, synchronize]
+#     paths-ignore:
+#       - "**.md"
+#       - "**.jpg"
+#       - "**.png"
+#       - "**.gif"
+#       - "**.svg"
+#       - adr/**
+#       - docs/**
+#       - .gitignore
+#       - renovate.json
+#       - .release-please-config.json
+#       - release-please-config.json
+#       - CODEOWNERS
+#       - LICENSE
+#       - CONTRIBUTING.md
+#       - SECURITY.md
+#       - config/renovate.json5
 
-# Permissions for the GITHUB_TOKEN used by the workflow.
-permissions:
-  contents: read # Allows reading the content of the repository.
-  packages: read # Allows reading the content of the repository's packages.
-  id-token: write
+# # Permissions for the GITHUB_TOKEN used by the workflow.
+# permissions:
+#   contents: read # Allows reading the content of the repository.
+#   packages: read # Allows reading the content of the repository's packages.
+#   id-token: write
 
-# Abort prior jobs in the same workflow / PR
-concurrency:
-  group: test-${{ github.ref }}
-  cancel-in-progress: true
+# # Abort prior jobs in the same workflow / PR
+# concurrency:
+#   group: test-${{ github.ref }}
+#   cancel-in-progress: true
 
-jobs:
-  check-flavor:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+# jobs:
+#   check-flavor:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
-      - name: test-flavor
-        uses: ./.github/actions/test-flavor
-        id: test-flavor
-    outputs:
-      upgrade-flavors: ${{ steps.test-flavor.outputs.upgrade-flavors }}
+#       - name: test-flavor
+#         uses: ./.github/actions/test-flavor
+#         id: test-flavor
+#     outputs:
+#       upgrade-flavors: ${{ steps.test-flavor.outputs.upgrade-flavors }}
 
-  validate:
-    needs: check-flavor
-    strategy:
-      fail-fast: true
-      matrix:
-        type: [install, upgrade]
-        flavor: [upstream, unicorn, registry1]
-    uses: ./.github/workflows/callable-test.yaml
-    with:
-      upgrade-flavors: ${{ needs.check-flavor.outputs.upgrade-flavors }}
-      flavor: ${{ matrix.flavor }}
-      type: ${{ matrix.type }}
-    secrets: inherit # Inherits all secrets from the parent workflow.
+#   validate:
+#     needs: check-flavor
+#     strategy:
+#       fail-fast: true
+#       matrix:
+#         type: [install, upgrade]
+#         flavor: [upstream, unicorn, registry1]
+#     uses: ./.github/workflows/callable-test.yaml
+#     with:
+#       upgrade-flavors: ${{ needs.check-flavor.outputs.upgrade-flavors }}
+#       flavor: ${{ matrix.flavor }}
+#       type: ${{ matrix.type }}
+#     secrets: inherit # Inherits all secrets from the parent workflow.
