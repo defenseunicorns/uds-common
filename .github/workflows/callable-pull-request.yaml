@@ -9,9 +9,6 @@ on:
       runsOn:
         type: string
         default: ubuntu-latest
-      upgrade-flavors:
-        required: true
-        type: string
       flavors:
         required: true
         type: string
