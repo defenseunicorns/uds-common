@@ -99,10 +99,11 @@ jobs:
     needs: 
       - check-flavor
       - paths-filter
+    if: needs.paths-filter.outputs.main == 'true'
     strategy:
       fail-fast: true
       matrix:
-        types: [install, upgrade]
+        types: ${{ fromJson(inputs.types) }}
         flavors: ${{ fromJson(inputs.flavors) }}
     uses: ./.github/workflows/callable-test.yaml
     with:
@@ -116,7 +117,7 @@ jobs:
     needs: paths-filter
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    if: needs.paths-filter.outputs.main == 'true'
+    if: needs.paths-filter.outputs.docs == 'true'
     strategy:
       fail-fast: true
       matrix:
