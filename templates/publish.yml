@@ -49,13 +49,13 @@ publish:
 
     # Check if release is necessary for flavor and exit early if not
     - |
-      if ! uds-releaser check "${FLAVOR}"; then
+      if ! uds-releaser check "$[[ inputs.flavor ]]"; then
         echo "No release necessary"
         [[ "$DRY_RUN" != "true" ]] && exit 0
       fi
 
     # Modify zarf package and uds bundle to have the correct version
-    - uds-releaser update-yaml ${FLAVOR}
+    - uds-releaser update-yaml $[[ inputs.flavor ]]
 
     # Publish Package
     - |
@@ -85,7 +85,7 @@ publish:
       if [[ "$DRY_RUN" == "true" ]]; then
         echo "Dry run, skipping release"
       else
-        uds-releaser release gitlab "${FLAVOR}"
+        uds-releaser release gitlab "$[[ inputs.flavor ]]"
       fi
 
   after_script:
