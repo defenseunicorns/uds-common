@@ -85,7 +85,7 @@ publish:
       if [[ "$DRY_RUN" == "true" ]]; then
         echo "Dry run, skipping release"
       else
-        uds-releaser release gitlab "${FLAVOR}"
+        uds-releaser release gitlab "$[[ inputs.flavor ]]"
       fi
 
   after_script:
