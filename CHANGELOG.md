@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.3.0](https://github.com/defenseunicorns/uds-common/compare/v1.2.2...v1.3.0) (2024-11-18)
+
+
+### Features
+
+* allow keycloak_group to be specified as input in create-doug-user task ([#332](https://github.com/defenseunicorns/uds-common/issues/332)) ([cf7cbdd](https://github.com/defenseunicorns/uds-common/commit/cf7cbddefc1abf96bab238fa185908eab1da194c))
+
+
+### Bug Fixes
+
+* add git reset in upgrade-test directory for better local devx ([#337](https://github.com/defenseunicorns/uds-common/issues/337)) ([2c0ca17](https://github.com/defenseunicorns/uds-common/commit/2c0ca174540f4a138648c56058e5a1216d62c617))
+* gitlab publish being broken due to bash weirdness ([#329](https://github.com/defenseunicorns/uds-common/issues/329)) ([e7a3c69](https://github.com/defenseunicorns/uds-common/commit/e7a3c6969cb77c1560da2ae93f48cb5759a002f2))
+* update UDS Opeator link in guide.md ([#336](https://github.com/defenseunicorns/uds-common/issues/336)) ([66cbe6f](https://github.com/defenseunicorns/uds-common/commit/66cbe6f63597d1eeeb9c177084067bc90aa0d469))
+* use flavor from inputs instead of $FLAVOR variable ([#335](https://github.com/defenseunicorns/uds-common/issues/335)) ([398bbe5](https://github.com/defenseunicorns/uds-common/commit/398bbe58d5eac6f365b705a8fad80a7eb920202b))
+
+
+### Miscellaneous
+
+* **deps:** update uds common support dependencies ([#334](https://github.com/defenseunicorns/uds-common/issues/334)) ([d95aafa](https://github.com/defenseunicorns/uds-common/commit/d95aafabbc53c6f3c6034c71bdee28f4841733eb))
+
 ## [1.2.2](https://github.com/defenseunicorns/uds-common/compare/v1.2.1...v1.2.2) (2024-10-29)
 
 
