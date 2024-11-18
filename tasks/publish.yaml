@@ -116,7 +116,7 @@ tasks:
 
             if [ -z "${GITLAB_CI}" ]; then
               uds-releaser release gitlab "${{ .variables.flavor }}"
-            else if [ -z "${GITHUB_ACTION}"]; then
+            elif [ -z "${GITHUB_ACTION}" ]; then
               uds-releaser release github "${{ .variables.flavor }}"
             else
               echo "Unsupported platform"
