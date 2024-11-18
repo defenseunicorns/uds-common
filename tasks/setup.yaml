@@ -54,7 +54,7 @@ tasks:
     inputs:
       keycloak_group:
         description: Group to add user to
-        default: ""
+        default: "$KEYCLOAK_GROUP"
         required: false
     actions:
       - description: Creating the 'doug' user in the 'uds' realm
