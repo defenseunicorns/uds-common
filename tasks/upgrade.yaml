@@ -65,6 +65,7 @@ tasks:
           darwin: bash
         dir: upgrade-test
         cmd: |
+          git reset --hard HEAD
           BUNDLE_VERSION=$(cat ../${{ .inputs.bundle_path }}/uds-bundle.yaml | ./uds zarf tools yq .metadata.version)
           TAG="$(git describe --tags "$(git rev-list --tags --max-count=1)" 2>/dev/null || echo '')"
           git checkout "$TAG"

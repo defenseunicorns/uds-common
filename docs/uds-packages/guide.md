@@ -56,7 +56,7 @@ Your repository has a `zarf.yaml`, you can build a single artifact with `uds zar
 
 Your goal is to integrate the Zarf package application with [UDS Core](https://github.com/defenseunicorns/uds-core), using `uds-package.yaml` custom resource.
 
-- [ ] If you haven't already, read the docs on [UDS Operator](https://uds.defenseunicorns.com/core/configuration/uds-operator/)
+- [ ] If you haven't already, read the docs on [UDS Operator](https://uds.defenseunicorns.com/reference/configuration/uds-operator/)
 
 - [ ] [UDS Package Practices](https://github.com/defenseunicorns/uds-common/blob/main/docs/uds-packages/requirements/uds-package-requirements.md) provides an extensive list of best practices, considerations, and tasks for a package to be "Made for UDS"
 
