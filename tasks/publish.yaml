@@ -35,18 +35,18 @@ tasks:
       - if: ${{ eq .variables.ENABLE_UDS_RELEASER "false" }}
         task: release-please-publish
         with:
-          path: ${{ .inputs.path }}
-          version: ${{ .inputs.version }}
-          architecture: ${{ .inputs.architecture }}
-          team: ${{ .inputs.team }}
-          name: ${{ .inputs.name }}
+          path: "${{ .inputs.path }}"
+          version: "${{ .inputs.version }}"
+          architecture: "${{ .inputs.architecture }}"
+          team: "${{ .inputs.team }}"
+          name: "${{ .inputs.name }}"
       - if: ${{ eq .variables.ENABLE_UDS_RELEASER "true" }}
         task: uds-releaser-publish
         with:
-          path: ${{ .inputs.path }}
-          architecture: ${{ .inputs.architecture }}
-          team: ${{ .inputs.team }}
-          name: ${{ .inputs.name }}
+          path: "${{ .inputs.path }}"
+          architecture: "${{ .inputs.architecture }}"
+          team: "${{ .inputs.team }}"
+          name: "${{ .inputs.name }}"
 
   - name: release-please-publish
     inputs:
