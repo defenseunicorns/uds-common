@@ -26,6 +26,9 @@ on:
       timeout:
         type: number
         default: 40
+      uds-releaser:
+        type: boolean
+        default: false
 
 # Permissions for the GITHUB_TOKEN used by the workflow.
 permissions:
@@ -60,12 +63,31 @@ jobs:
             --set CHAINGUARD_IDENTITY="${{ secrets.CHAINGUARD_IDENTITY }}"
         shell: bash
 
-      - name: Publish Packages/Bundles
+      - name: Publish Packages/Bundles - release-please
+        if: ${{ inputs.uds-releaser == false }}
         run: |
           if uds run --list | grep -q 'publish-package'; then
             uds run publish-package --set FLAVOR=${{ inputs.flavor }} --no-progress ${{ inputs.options }}
           else
             uds run publish-release --set FLAVOR=${{ inputs.flavor }} --no-progress ${{ inputs.options }}
+          fi
+
+      - name: Publish Packages/Bundles - uds-releaser
+        if: ${{ inputs.uds-releaser == true }}
+        run: |
+          if uds-releaser check "${{ inputs.flavor }}"; then
+            uds-releaser update-yaml ${{ inputs.flavor }}
+            if uds run --list | grep -q 'publish-package'; then
+              uds run publish-package \
+                --set FLAVOR=${{ inputs.flavor }} \
+                --set ENABLE_UDS_RELEASER=true \
+                --no-progress ${{ inputs.options }}
+            else
+              uds run publish-release \
+                --set FLAVOR=${{ inputs.flavor }} \
+                --set ENABLE_UDS_RELEASER=true \
+                --no-progress ${{ inputs.options }}
+            fi
           fi
 
       - name: Save logs

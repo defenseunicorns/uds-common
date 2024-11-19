@@ -11,8 +11,6 @@ variables:
     default: uds
   - name: ENABLE_UDS_RELEASER
     default: "false"
-  - name: DRY_RUN
-    default: "false"
 
 tasks:
   - name: package
@@ -107,21 +105,15 @@ tasks:
           linux: bash
           darwin: bash
         cmd: |
-          if ! uds-releaser check "${{ .inputs.flavor }}" > /dev/null 2>&1; then
-            echo "No release necessary"
+          ./uds zarf package publish "${{ .inputs.path }}/zarf-package-${{ .inputs.name }}-${{ .inputs.architecture }}-$(uds-releaser show ${{ .variables.flavor }} --version-only).tar.zst" "oci://${TARGET_REPO}"
+
+          if [ -n "${GITLAB_CI}" ]; then
+            uds-releaser release gitlab "${{ .variables.flavor }}"
+          elif [ -n "${GITHUB_ACTION}" ]; then
+            uds-releaser release github "${{ .variables.flavor }}"
           else
-            uds-releaser update-yaml ${{ .inputs.flavor }}
-
-            ./uds zarf package publish "${{ .inputs.path }}/zarf-package-${{ .inputs.name }}-${{ .inputs.architecture }}-$(uds-releaser show ${{ .variables.flavor }} --version-only).tar.zst" "oci://${TARGET_REPO}"
-
-            if [ -z "${GITLAB_CI}" ]; then
-              uds-releaser release gitlab "${{ .variables.flavor }}"
-            elif [ -z "${GITHUB_ACTION}" ]; then
-              uds-releaser release github "${{ .variables.flavor }}"
-            else
-              echo "Unsupported platform"
-              exit 11
-            fi
+            echo "Unsupported platform"
+            exit 11
           fi
 
   - name: test-bundle
