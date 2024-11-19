@@ -101,16 +101,13 @@ tasks:
         setVariables:
           - name: PACKAGE_NAME
       - description: publish using uds-releaser
-        shell:
-          linux: bash
-          darwin: bash
         cmd: |
-          ./uds zarf package publish "${{ .inputs.path }}/zarf-package-${{ .inputs.name }}-${{ .inputs.architecture }}-$(uds-releaser show ${{ .variables.flavor }} --version-only).tar.zst" "oci://${TARGET_REPO}"
-
+          ./uds zarf package publish "${{ .inputs.path }}/zarf-package-${{ .inputs.name }}-${{ .inputs.architecture }}-$(uds-releaser show ${{ .variables.FLAVOR }} --version-only).tar.zst" "oci://${TARGET_REPO}"
+          
           if [ -n "${GITLAB_CI}" ]; then
-            uds-releaser release gitlab "${{ .variables.flavor }}"
+            uds-releaser release gitlab "${{ .variables.FLAVOR }}"
           elif [ -n "${GITHUB_ACTION}" ]; then
-            uds-releaser release github "${{ .variables.flavor }}"
+            uds-releaser release github "${{ .variables.FLAVOR }}"
           else
             echo "Unsupported platform"
             exit 11
