@@ -14,6 +14,10 @@ variables:
     default: ""
   - name: GITLAB_REGISTRY_TOKEN
     default: ""
+  - name: GHCR_REGISTRY_USER
+    default: ""
+  - name: GHCR_REGISTRY_TOKEN
+    default: ""
   - name: CHAINGUARD_IDENTITY
     default: ""
   - name: CHAINGUARD_TOKEN
@@ -177,6 +181,14 @@ tasks:
           registry: ${{ .variables.GITLAB_REGISTRY_URL }}
           registry_username: ${{ .variables.GITLAB_REGISTRY_USER }}
           registry_token: ${{ .variables.GITLAB_REGISTRY_TOKEN }}
+
+      - description: GHCR Registry Login from GitLab
+        if: ${{ ne .variables.GHCR_REGISTRY_USER "" }}
+        task: registry-login
+        with:
+          registry: ghcr.io
+          registry_username: ${{ .variables.GHCR_REGISTRY_USER }}
+          registry_token: ${{ .variables.GHCR_REGISTRY_TOKEN }}
 
       - description: Package Specific CI Setup
         cmd: |
