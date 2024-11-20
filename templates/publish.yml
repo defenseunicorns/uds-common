@@ -45,7 +45,9 @@ publish:
                                               --set CHAINGUARD_TOKEN="$CHAINGUARD_TOKEN" \
                                               --set GITLAB_REGISTRY_URL="$CI_REGISTRY" \
                                               --set GITLAB_REGISTRY_USER="$CI_REGISTRY_USER" \
-                                              --set GITLAB_REGISTRY_TOKEN="$CI_REGISTRY_PASSWORD"
+                                              --set GITLAB_REGISTRY_TOKEN="$CI_REGISTRY_PASSWORD" \
+                                              --set GHCR_REGISTRY_USER="$GH_USER_READ_ONLY" \
+                                              --set GHCR_REGISTRY_TOKEN="$GH_PAT_READ_ONLY"
 
     # Check if release is necessary for flavor and exit early if not
     - |
