@@ -76,6 +76,8 @@ jobs:
 
       - name: Publish Packages/Bundles - uds-releaser
         if: ${{ inputs.uds-releaser == true }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           if uds-releaser check "${{ inputs.flavor }}"; then
             uds-releaser update-yaml ${{ inputs.flavor }}
