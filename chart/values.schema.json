@@ -5,155 +5,79 @@
       "type": "string"
     },
     "custom": {
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string"
-        },
+      "type": "array",
+      "items": {
+        "type": "object",
         "properties": {
-          "type": "object",
-          "properties": {
-            "custom": {
-              "type": "object",
-              "properties": {
-                "type": {
-                  "type": "string"
-                },
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "type": "string"
-                    },
-                    "properties": {
-                      "type": "object",
-                      "properties": {
-                        "direction": {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string"
-                            },
-                            "enum": {
-                              "type": "array",
-                              "items": {
-                                "type": "string"
-                              }
-                            }
-                          }
-                        },
-                        "selector": {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string"
-                            },
-                            "additionalProperties": {
-                              "type": "object",
-                              "properties": {
-                                "type": {
-                                  "type": "string"
-                                }
-                              }
-                            }
-                          }
-                        },
-                        "port": {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string"
-                            }
-                          }
-                        },
-                        "description": {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string"
-                            }
-                          }
-                        },
-                        "remoteNamespace": {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string"
-                            }
-                          }
-                        },
-                        "remoteSelector": {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string"
-                            },
-                            "additionalProperties": {
-                              "type": "object",
-                              "properties": {
-                                "type": {
-                                  "type": "string"
-                                }
-                              }
-                            }
-                          }
-                        },
-                        "remoteGenerated": {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string"
-                            },
-                            "enum": {
-                              "type": "array",
-                              "items": {
-                                "type": "string"
-                              }
-                            }
-                          }
-                        }
-                      }
-                    },
-                    "required": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
-                    },
-                    "oneOf": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "required": {
-                            "type": "array",
-                            "items": {
-                              "type": "string"
-                            }
-                          },
-                          "properties": {
-                            "type": "object",
-                            "properties": {
-                              "remoteGenerated": {
-                                "type": "object",
-                                "properties": {
-                                  "not": {
-                                    "type": "object",
-                                    "properties": {}
-                                  }
-                                }
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
+          "direction": {
+            "type": "string",
+            "enum": [
+              "Egress",
+              "Ingress"
+            ]
+          },
+          "selector": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "port": {
+            "type": "number"
+          },
+          "description": {
+            "type": "string"
+          },
+          "remoteNamespace": {
+            "type": "string"
+          },
+          "remoteSelector": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "remoteGenerated": {
+            "type": "string",
+            "enum": [
+              "Anywhere",
+              "CloudMetadata",
+              "IntraNamespace",
+              "KubeAPI"
+            ]
+          }
+        },
+        "required": [
+          "direction",
+          "selector",
+          "port"
+        ],
+        "oneOf": [
+          {
+            "required": [
+              "remoteNamespace",
+              "remoteSelector"
+            ],
+            "properties": {
+              "remoteGenerated": {
+                "not": {}
+              }
+            }
+          },
+          {
+            "required": [
+              "remoteGenerated"
+            ],
+            "properties": {
+              "remoteNamespace": {
+                "not": {}
+              },
+              "remoteSelector": {
+                "not": {}
               }
             }
           }
-        }
+        ]
       }
     }
   }

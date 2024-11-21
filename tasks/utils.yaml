@@ -81,7 +81,7 @@ tasks:
       - description: "Find and generate schema for each values.yaml file"
         cmd: |
             # Enable debugging
-            # set -x
+            set -x
 
             # Directory containing predefined schemas
             SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -102,6 +102,9 @@ tasks:
               echo "Schema file not found: $schema_file"
               exit 1
             fi
+            # Read the custom schema into a variable
+            CUSTOM_SCHEMA=$(cat "$schema_file")
+
 
             find "${{ .inputs.base_dir }}" -name "values.yaml" | while read -r values_file; do
               schema_file_output="$(dirname "$values_file")/values.schema.json"
@@ -116,29 +119,8 @@ tasks:
                 exit 1
               fi
 
-              # Use jq to generate the schema
-              jq --slurpfile customSchema "$schema_file" '
-              def predefined_schemas:
-                {
-                  "custom": $customSchema[0]
-                };
-
-              def inject_predefined_schemas($schemas):
-                walk(
-                  if type == "object" then
-                    reduce ($schemas | keys_unsorted[]) as $k
-                      (.;
-                        if has($k) then
-                          .[$k] = $schemas[$k]
-                        else
-                          .
-                        end
-                      )
-                  else
-                    .
-                  end
-                );
-
+              # Generate the base schema
+              jq '
               def to_schema:
                 if type == "object" then
                   {
@@ -166,20 +148,25 @@ tasks:
                   {"type": "number"}
                 elif type == "boolean" then
                   {"type": "boolean"}
+                elif type == "null" then
+                  {"type": "null"}
                 else
                   {}
                 end;
 
-              ( inject_predefined_schemas(predefined_schemas)
-                | to_schema
-              )
+              ( . | to_schema )
+              ' temp.json > base_schema.json
 
-              ' temp.json > "$schema_file_output"
+              # Replace the custom field in the base schema with the predefined schema
+              jq \
+                --argjson customSchema "$CUSTOM_SCHEMA" \
+                '.properties.custom = $customSchema' \
+                base_schema.json > "$schema_file_output"
 
               echo "JSON schema generated at $schema_file_output"
 
               # Clean up temporary files
-              rm temp.json
+              rm temp.json base_schema.json
             done
 
   - name: check-values-schemas
@@ -243,29 +230,18 @@ tasks:
                 "custom": $customSchema[0]
               };
 
-            def inject_predefined_schemas($schemas):
-              walk(
-                if type == "object" then
-                  reduce ($schemas | keys_unsorted[]) as $k
-                    (.;
-                      if has($k) then
-                        .[$k] = $schemas[$k]
-                      else
-                        .
-                      end
-                    )
-                else
-                  .
-                end
-              );
-
-            def to_schema:
-              if type == "object" then
+            def to_schema($schemas; $path):
+              if ($schemas | getpath($path)?) != null then
+                $schemas | getpath($path)
+              elif type == "object" then
                 {
                   "type": "object",
                   "properties": (
                     to_entries
-                    | map({key: .key, value: (.value | to_schema)})
+                    | map({
+                        key: .key,
+                        value: (.value | to_schema($schemas; $path + [.key]))
+                      })
                     | from_entries
                   )
                 }
@@ -274,7 +250,7 @@ tasks:
                   "type": "array",
                   "items": (
                     if length > 0 then
-                      .[0] | to_schema
+                      .[0] | to_schema($schemas; $path + [0])
                     else
                       {}
                     end
@@ -290,9 +266,7 @@ tasks:
                 {}
               end;
 
-            ( inject_predefined_schemas(predefined_schemas)
-              | to_schema
-            )
+            ( . | to_schema(predefined_schemas; []) )
             ' temp.json > "$temp_generated_schema"
 
             # Clean up temp.json
