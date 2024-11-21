@@ -41,7 +41,7 @@ jobs:
     runs-on: ${{ inputs.runsOn }}
     timeout-minutes: ${{ inputs.timeout }}
     permissions:
-      contents: read
+      contents: write
       packages: write
       id-token: write
 
