@@ -1,6 +1,6 @@
 # Copyright 2024 Defense Unicorns
 # SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
-# yaml-language-server: $schema=/Users/zmiller/src/2024/uds-common/chart/values.schema.json
+# yaml-language-server: $schema=../chart/values.schema.json
 
 domain: "###ZARF_VAR_DOMAIN###"
 

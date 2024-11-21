@@ -81,7 +81,7 @@ tasks:
       - description: "Find and generate schema for each values.yaml file"
         cmd: |
             # Enable debugging
-            set -x
+            # set -x
 
             # Directory containing predefined schemas
             SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -187,7 +187,6 @@ tasks:
           SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
           SCHEMAS_DIR="$SCRIPT_DIR/schemas"
 
-          # Define the key and corresponding schema file
           key="custom"
           schema_file="$SCHEMAS_DIR/custom_schema.json"
 
@@ -197,25 +196,19 @@ tasks:
             exit 1
           fi
 
-          # Loop through all values.yaml files
-          find "${{ .inputs.base_dir }}" -name "values.yaml" | while read -r values_file; do
-            # Get the directory of the current values.yaml file
-            chart_dir="$(dirname "$values_file")"
-            echo "Processing chart directory: $chart_dir"
+          # Read the custom schema into a variable
+          CUSTOM_SCHEMA=$(cat "$schema_file")
 
-            # Paths to existing and generated schema files
-            existing_schema="$chart_dir/values.schema.json"
-            temp_generated_schema="$(mktemp)"
+          # Collect all values.yaml files
+          values_files=$(find "${{ .inputs.base_dir }}" -name "values.yaml")
 
-            # Check if existing schema exists
-            if [ ! -f "$existing_schema" ]; then
-                echo "Existing schema not found at $existing_schema"
-                differences_found=1
-                continue
-            fi
+          # Iterate over the values.yaml files using a for loop
+          for values_file in $values_files; do
+            schema_file_output="$(dirname "$values_file")/values.schema.json"
+            echo "Processing $values_file..."
 
             # Convert YAML to JSON
-            ./uds zarf tools yq eval -o=json "$values_file" > temp.json
+            yq eval -o=json "$values_file" > temp.json
 
             # Ensure temp.json exists
             if [ ! -f temp.json ]; then
@@ -223,25 +216,15 @@ tasks:
               exit 1
             fi
 
-            # Use jq to generate the schema with predefined schema injection
-            jq --slurpfile customSchema "$schema_file" '
-            def predefined_schemas:
-              {
-                "custom": $customSchema[0]
-              };
-
-            def to_schema($schemas; $path):
-              if ($schemas | getpath($path)?) != null then
-                $schemas | getpath($path)
-              elif type == "object" then
+            # Generate the base schema
+            jq '
+            def to_schema:
+              if type == "object" then
                 {
                   "type": "object",
                   "properties": (
                     to_entries
-                    | map({
-                        key: .key,
-                        value: (.value | to_schema($schemas; $path + [.key]))
-                      })
+                    | map({key: .key, value: (.value | to_schema)})
                     | from_entries
                   )
                 }
@@ -250,7 +233,7 @@ tasks:
                   "type": "array",
                   "items": (
                     if length > 0 then
-                      .[0] | to_schema($schemas; $path + [0])
+                      .[0] | to_schema
                     else
                       {}
                     end
@@ -262,15 +245,33 @@ tasks:
                 {"type": "number"}
               elif type == "boolean" then
                 {"type": "boolean"}
+              elif type == "null" then
+                {"type": "null"}
               else
                 {}
               end;
 
-            ( . | to_schema(predefined_schemas; []) )
-            ' temp.json > "$temp_generated_schema"
+            ( . | to_schema )
+            ' temp.json > base_schema.json
 
-            # Clean up temp.json
-            rm temp.json
+            # Replace the custom field in the base schema with the predefined schema
+            jq \
+              --argjson customSchema "$CUSTOM_SCHEMA" \
+              '.properties.custom = $customSchema' \
+              base_schema.json > temp_generated_schema.json
+
+            # Clean up temporary files
+            rm temp.json base_schema.json
+
+            # Paths to existing and generated schemas
+            existing_schema="$schema_file_output"
+            temp_generated_schema="temp_generated_schema.json"
+
+            if [ ! -f "$existing_schema" ]; then
+                echo "Existing schema not found at $existing_schema"
+                differences_found=1
+                continue
+            fi
 
             # Normalize both JSON schemas (sort keys recursively)
             normalized_existing="$(mktemp)"
@@ -284,9 +285,9 @@ tasks:
             diff_exit_code=$?
 
             if [ $diff_exit_code -eq 0 ]; then
-                echo "Schemas match for chart at $chart_dir."
+                echo "Schemas match for chart at $(dirname "$values_file")."
             else
-                echo "Schemas do not match for chart at $chart_dir!"
+                echo "Schemas do not match for chart at $(dirname "$values_file")!"
                 echo "Differences:"
                 echo "$diff_output"
                 differences_found=1
