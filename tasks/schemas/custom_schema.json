@@ -1,0 +1,81 @@
+{
+    "type": "object",
+    "properties": {
+        "custom": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "direction": {
+                        "type": "string",
+                        "enum": [
+                            "Egress",
+                            "Ingress"
+                        ]
+                    },
+                    "selector": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "string"
+                        }
+                    },
+                    "port": {
+                        "type": "number"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "remoteNamespace": {
+                        "type": "string"
+                    },
+                    "remoteSelector": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "string"
+                        }
+                    },
+                    "remoteGenerated": {
+                        "type": "string",
+                        "enum": [
+                            "Anywhere",
+                            "CloudMetadata",
+                            "IntraNamespace",
+                            "KubeAPI"
+                        ]
+                    }
+                },
+                "required": [
+                    "direction",
+                    "selector",
+                    "port"
+                ],
+                "oneOf": [
+                    {
+                        "required": [
+                            "remoteNamespace",
+                            "remoteSelector"
+                        ],
+                        "properties": {
+                            "remoteGenerated": {
+                                "not": {}
+                            }
+                        }
+                    },
+                    {
+                        "required": [
+                            "remoteGenerated"
+                        ],
+                        "properties": {
+                            "remoteNamespace": {
+                                "not": {}
+                            },
+                            "remoteSelector": {
+                                "not": {}
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    }
+}

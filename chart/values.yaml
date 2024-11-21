@@ -3,7 +3,7 @@
 
 domain: "###ZARF_VAR_DOMAIN###"
 
-# custom:
+custom: []
 #    # Notice no `remoteGenerated` field here on custom internal rule
 #   - direction: Ingress
 #     selector:

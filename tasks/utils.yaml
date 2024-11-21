@@ -44,3 +44,288 @@ tasks:
         mute: true
         setVariables:
           - name: TARGET_REPO
+
+  - name: pull-standard-schema-objects
+    description: Output standard schema objects for uds-packages
+    inputs:
+      version:
+        description: Version of uds-common to pull schemas from
+        # x-release-please-start-version
+        default: values-schema-task
+        # x-release-please-end
+    actions:
+      - cmd: |
+          repo_url=$(git config --get remote.origin.url)
+
+          # Extract the repository name from the URL
+          repo_name=$(basename -s .git "$repo_url")
+
+          if [ "$repo_name" = "uds-common" ]; then
+              ref="$(git rev-parse --abbrev-ref HEAD)"
+          else
+              ref="${{ .inputs.version }}"
+          echo "Pull predefined schemas from uds-common"
+          mkdir -p schemas
+          curl -o ./schemas/custom_schema.json "https://raw.githubusercontent.com/defenseunicorns/uds-common/$ref/tasks/schemas/custom_schema.json"
+
+  - name: generate-values-schemas
+    description: Recursively generate JSON schemas for all values.yaml files in a base directory.
+    inputs:
+      base_dir:
+        description: "Base directory to search for values.yaml files"
+        default: "./chart"
+        required: true
+    actions:
+      - task: pull-standard-schema-objects
+      - description: "Find and generate schema for each values.yaml file"
+        cmd: |
+            # Enable debugging
+            # set -x
+
+            # Directory containing predefined schemas
+            SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+            SCHEMAS_DIR="$SCRIPT_DIR/schemas"
+
+            KEYS="custom"
+            SCHEMA_FILES="$SCHEMAS_DIR/custom_schema.json"
+
+            # Prepare jq arguments to load all schemas using --slurpfile
+            # Since we have only one key, we can hardcode this part
+            key="custom"
+            schema_file="$SCHEMAS_DIR/custom_schema.json"
+
+            # Debugging: Print the schema_file variable
+            echo "schema_file: '$schema_file'"
+
+            if [ ! -f "$schema_file" ]; then
+              echo "Schema file not found: $schema_file"
+              exit 1
+            fi
+
+            find "${{ .inputs.base_dir }}" -name "values.yaml" | while read -r values_file; do
+              schema_file_output="$(dirname "$values_file")/values.schema.json"
+              echo "Generating schema for $values_file..."
+
+              # Convert YAML to JSON
+              ./uds zarf tools yq eval -o=json "$values_file" > temp.json
+
+              # Ensure temp.json exists
+              if [ ! -f temp.json ]; then
+                echo "Error: temp.json not found."
+                exit 1
+              fi
+
+              # Use jq to generate the schema
+              jq --slurpfile customSchema "$schema_file" '
+              def predefined_schemas:
+                {
+                  "custom": $customSchema[0]
+                };
+
+              def inject_predefined_schemas($schemas):
+                walk(
+                  if type == "object" then
+                    reduce ($schemas | keys_unsorted[]) as $k
+                      (.;
+                        if has($k) then
+                          .[$k] = $schemas[$k]
+                        else
+                          .
+                        end
+                      )
+                  else
+                    .
+                  end
+                );
+
+              def to_schema:
+                if type == "object" then
+                  {
+                    "type": "object",
+                    "properties": (
+                      to_entries
+                      | map({key: .key, value: (.value | to_schema)})
+                      | from_entries
+                    )
+                  }
+                elif type == "array" then
+                  {
+                    "type": "array",
+                    "items": (
+                      if length > 0 then
+                        .[0] | to_schema
+                      else
+                        {}
+                      end
+                    )
+                  }
+                elif type == "string" then
+                  {"type": "string"}
+                elif type == "number" then
+                  {"type": "number"}
+                elif type == "boolean" then
+                  {"type": "boolean"}
+                else
+                  {}
+                end;
+
+              ( inject_predefined_schemas(predefined_schemas)
+                | to_schema
+              )
+
+              ' temp.json > "$schema_file_output"
+
+              echo "JSON schema generated at $schema_file_output"
+
+              # Clean up temporary files
+              rm temp.json
+            done
+
+  - name: check-values-schemas
+    description: Recursively check if JSON schemas are up-to-date for all values.yaml files in a base directory.
+    inputs:
+      base_dir:
+        description: "Base directory to search for values.yaml files"
+        default: "./chart"
+        required: true
+    actions:
+      - task: pull-standard-schema-objects
+      - description: "Find and check schema for each values.yaml file"
+        cmd: |
+          set +e
+          differences_found=0
+
+          # Directory containing predefined schemas
+          SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+          SCHEMAS_DIR="$SCRIPT_DIR/schemas"
+
+          # Define the key and corresponding schema file
+          key="custom"
+          schema_file="$SCHEMAS_DIR/custom_schema.json"
+
+          # Check if the schema file exists
+          if [ ! -f "$schema_file" ]; then
+            echo "Schema file not found: $schema_file"
+            exit 1
+          fi
+
+          # Loop through all values.yaml files
+          find "${{ .inputs.base_dir }}" -name "values.yaml" | while read -r values_file; do
+            # Get the directory of the current values.yaml file
+            chart_dir="$(dirname "$values_file")"
+            echo "Processing chart directory: $chart_dir"
+
+            # Paths to existing and generated schema files
+            existing_schema="$chart_dir/values.schema.json"
+            temp_generated_schema="$(mktemp)"
+
+            # Check if existing schema exists
+            if [ ! -f "$existing_schema" ]; then
+                echo "Existing schema not found at $existing_schema"
+                differences_found=1
+                continue
+            fi
+
+            # Convert YAML to JSON
+            ./uds zarf tools yq eval -o=json "$values_file" > temp.json
+
+            # Ensure temp.json exists
+            if [ ! -f temp.json ]; then
+              echo "Error: temp.json not found."
+              exit 1
+            fi
+
+            # Use jq to generate the schema with predefined schema injection
+            jq --slurpfile customSchema "$schema_file" '
+            def predefined_schemas:
+              {
+                "custom": $customSchema[0]
+              };
+
+            def inject_predefined_schemas($schemas):
+              walk(
+                if type == "object" then
+                  reduce ($schemas | keys_unsorted[]) as $k
+                    (.;
+                      if has($k) then
+                        .[$k] = $schemas[$k]
+                      else
+                        .
+                      end
+                    )
+                else
+                  .
+                end
+              );
+
+            def to_schema:
+              if type == "object" then
+                {
+                  "type": "object",
+                  "properties": (
+                    to_entries
+                    | map({key: .key, value: (.value | to_schema)})
+                    | from_entries
+                  )
+                }
+              elif type == "array" then
+                {
+                  "type": "array",
+                  "items": (
+                    if length > 0 then
+                      .[0] | to_schema
+                    else
+                      {}
+                    end
+                  )
+                }
+              elif type == "string" then
+                {"type": "string"}
+              elif type == "number" then
+                {"type": "number"}
+              elif type == "boolean" then
+                {"type": "boolean"}
+              else
+                {}
+              end;
+
+            ( inject_predefined_schemas(predefined_schemas)
+              | to_schema
+            )
+            ' temp.json > "$temp_generated_schema"
+
+            # Clean up temp.json
+            rm temp.json
+
+            # Normalize both JSON schemas (sort keys recursively)
+            normalized_existing="$(mktemp)"
+            normalized_generated="$(mktemp)"
+
+            jq -S . "$existing_schema" > "$normalized_existing"
+            jq -S . "$temp_generated_schema" > "$normalized_generated"
+
+            # Compare the normalized schemas
+            diff_output=$(diff "$normalized_existing" "$normalized_generated")
+            diff_exit_code=$?
+
+            if [ $diff_exit_code -eq 0 ]; then
+                echo "Schemas match for chart at $chart_dir."
+            else
+                echo "Schemas do not match for chart at $chart_dir!"
+                echo "Differences:"
+                echo "$diff_output"
+                differences_found=1
+            fi
+
+            # Clean up temporary files
+            rm "$normalized_existing" "$normalized_generated" "$temp_generated_schema"
+
+          done
+
+          if [ $differences_found -eq 1 ]; then
+              echo "Schema differences found."
+              exit 1
+          else
+              echo "All schemas match."
+              exit 0
+          fi
