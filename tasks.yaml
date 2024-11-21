@@ -12,6 +12,7 @@ includes:
   - compliance: ./tasks/compliance.yaml
   - badge: ./tasks/badge.yaml
   - actions: ./tasks/actions.yaml
+  - utils: ./tasks/utils.yaml
 
 variables:
   - name: VERSION

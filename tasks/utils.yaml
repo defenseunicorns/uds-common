@@ -64,6 +64,7 @@ tasks:
               ref="$(git rev-parse --abbrev-ref HEAD)"
           else
               ref="${{ .inputs.version }}"
+          fi
           echo "Pull predefined schemas from uds-common"
           mkdir -p schemas
           curl -o ./schemas/custom_schema.json "https://raw.githubusercontent.com/defenseunicorns/uds-common/$ref/tasks/schemas/custom_schema.json"

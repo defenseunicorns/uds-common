@@ -13,3 +13,4 @@ insecure*
 zarf
 tmp-tasks.yaml
 upgrade-test/
+schemas*

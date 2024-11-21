@@ -38,6 +38,7 @@ tasks:
       - task: shell
       - task: license
       - task: tasks
+      - task: utils:check-values-schemas
 
   - name: yaml
     description: Run YAML linting checks
