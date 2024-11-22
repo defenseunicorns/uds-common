@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.4.0](https://github.com/defenseunicorns/uds-common/compare/v1.3.0...v1.4.0) (2024-11-22)
+
+
+### Features
+
+* login to ghcr from gitlab for upgrade tests and avoiding rate limiting ([#343](https://github.com/defenseunicorns/uds-common/issues/343)) ([e299d1c](https://github.com/defenseunicorns/uds-common/commit/e299d1c9b6c8d1cb9af3f087e62a98ba2793bbd9))
+
+
+### Miscellaneous
+
+* **deps:** update uds common support dependencies ([#344](https://github.com/defenseunicorns/uds-common/issues/344)) ([9365b36](https://github.com/defenseunicorns/uds-common/commit/9365b36350a93b263a7248c41229684241959691))
+* **deps:** update uds common support dependencies to v0.32.0 ([#347](https://github.com/defenseunicorns/uds-common/issues/347)) ([14f4841](https://github.com/defenseunicorns/uds-common/commit/14f48411704c4df466f3f5c47f6cb90e84a592fb))
+* fix broken links and change name of package integration guide ([#346](https://github.com/defenseunicorns/uds-common/issues/346)) ([c470dea](https://github.com/defenseunicorns/uds-common/commit/c470dea2c0dc108164ceab9acb7b567af703a48e))
+* update uds-package-requirements with new CODEOWNERS reqs ([#339](https://github.com/defenseunicorns/uds-common/issues/339)) ([462b7e9](https://github.com/defenseunicorns/uds-common/commit/462b7e9d45bcfdf5fae54b09cd51e112a713214a))
+
 ## [1.3.0](https://github.com/defenseunicorns/uds-common/compare/v1.2.2...v1.3.0) (2024-11-18)
 
 
