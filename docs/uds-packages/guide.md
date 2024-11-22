@@ -18,7 +18,7 @@ Integrating a Package fundamentally means:
 
 ### Licensing Considerations
 
-- Defense Unicorns creates Apache 2.0 licensed products exclusively, see the [Open Source Policy](https://github.com/defenseunicorns/uds-common/blob/main/docs/adrs/0002-apache-2.0-for-all-uds-products.md).
+- Defense Unicorns has adopted the Affero General Public License (v3) for all UDS products, with the option for a commercial license for partners who require it. [Open Source Policy](https://github.com/defenseunicorns/uds-common/blob/main/docs/adrs/0004-agpl-v3-for-all-uds-products.md).
 - Vendors in the marketplace will carry forward their license and associated fees.
 - When in doubt, ask in the #product-support channel in Slack. Legal and Business considerations are being evaluated.
 
@@ -30,7 +30,7 @@ Before beginning the integration process, familiarize yourself with the followin
 1. [UDS Capabilities Documentation](https://uds.defenseunicorns.com/overview/uds-structure/#uds-core-capabilities): Provides information about UDS, UDS CLI, UDS Core, and UDS Bundles.
 2. [Zarf Documentation](https://docs.zarf.dev): Zarf is a tool for declarative creation & distribution of software packages.
 3. [UDS Common Repository](https://github.com/defenseunicorns/uds-common): Contains information and best practices for UDS integration.
-4. [UDS Applications Tracker](https://www.notion.so/138e512f24fc805b9d87f952b289cf4f?v=7be5d4ddbcd94d2580b1388fe935c166): Lists many backlogged and completed applications for UDS integration.
+4. **UDS Applications Tracker**: Lists many backlogged and completed applications for UDS integration.
 5. Briefly review [Pepr Documentation](https://docs.pepr.dev/): it may become useful when you begin integrating with UDS Core.
 
 ## Integration Checklist
