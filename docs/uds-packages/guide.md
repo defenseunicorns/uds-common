@@ -1,4 +1,4 @@
-# UDS Marketplace Package Integration Guide
+# UDS Airgap App Store Package Integration Guide
 
 ## Introduction
 
@@ -30,7 +30,7 @@ Before beginning the integration process, familiarize yourself with the followin
 1. [UDS Capabilities Documentation](https://uds.defenseunicorns.com/overview/uds-structure/#uds-core-capabilities): Provides information about UDS, UDS CLI, UDS Core, and UDS Bundles.
 2. [Zarf Documentation](https://docs.zarf.dev): Zarf is a tool for declarative creation & distribution of software packages.
 3. [UDS Common Repository](https://github.com/defenseunicorns/uds-common): Contains information and best practices for UDS integration.
-4. [UDS Applications Tracker](https://coda.io/d/Product_dGmk3eNjmm8/Applications_suCbOWqL#_lu8fEKSc): Lists many backlogged and completed applications for UDS integration.
+4. [UDS Applications Tracker](https://www.notion.so/138e512f24fc805b9d87f952b289cf4f?v=7be5d4ddbcd94d2580b1388fe935c166): Lists many backlogged and completed applications for UDS integration.
 5. Briefly review [Pepr Documentation](https://docs.pepr.dev/): it may become useful when you begin integrating with UDS Core.
 
 ## Integration Checklist
