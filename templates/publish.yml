@@ -39,13 +39,15 @@ publish:
 
     # Environment setup
     - |
-      uds run actions:setup-environment --set REGISTRY1_USERNAME="$[[ inputs.registry1-username ]]" \
-                                        --set REGISTRY1_PASSWORD="$[[ inputs.registry1-password ]]" \
-                                        --set CHAINGUARD_IDENTITY="$[[ inputs.chainguard-identity ]]" \
-                                        --set CHAINGUARD_TOKEN="$CHAINGUARD_TOKEN" \
-                                        --set GITLAB_REGISTRY_URL="$CI_REGISTRY" \
-                                        --set GITLAB_REGISTRY_USER="$CI_REGISTRY_USER" \
-                                        --set GITLAB_REGISTRY_TOKEN="$CI_REGISTRY_PASSWORD"
+      uds run actions:authenticate-registries --set REGISTRY1_USERNAME="$[[ inputs.registry1-username ]]" \
+                                              --set REGISTRY1_PASSWORD="$[[ inputs.registry1-password ]]" \
+                                              --set CHAINGUARD_IDENTITY="$[[ inputs.chainguard-identity ]]" \
+                                              --set CHAINGUARD_TOKEN="$CHAINGUARD_TOKEN" \
+                                              --set GITLAB_REGISTRY_URL="$CI_REGISTRY" \
+                                              --set GITLAB_REGISTRY_USER="$CI_REGISTRY_USER" \
+                                              --set GITLAB_REGISTRY_TOKEN="$CI_REGISTRY_PASSWORD"
+
+    - sudo uds run actions:install-deps
 
     # Check if release is necessary for flavor and exit early if not
     - |
