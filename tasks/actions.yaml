@@ -14,6 +14,10 @@ variables:
     default: ""
   - name: GITLAB_REGISTRY_TOKEN
     default: ""
+  - name: GHCR_REGISTRY_USER
+    default: ""
+  - name: GHCR_REGISTRY_TOKEN
+    default: ""
   - name: CHAINGUARD_IDENTITY
     default: ""
   - name: CHAINGUARD_TOKEN
@@ -110,7 +114,7 @@ tasks:
       - description: Install k3d
         env:
           # renovate: datasource=github-tags depName=k3d-io/k3d versioning=semver-coerced
-          - K3D_VERSION=v5.7.4
+          - K3D_VERSION=v5.7.5
         cmd: |
           curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | TAG="${K3D_VERSION}" bash
 
@@ -119,7 +123,7 @@ tasks:
       - description: Install Lula
         env:
           # renovate: datasource=github-tags depName=defenseunicorns/lula versioning=semver-coerced
-          - LULA_VERSION=v0.11.0
+          - LULA_VERSION=v0.12.0
         cmd: |
           curl -o /usr/local/bin/lula -L \
           "https://github.com/defenseunicorns/lula/releases/download/${LULA_VERSION}/lula_${LULA_VERSION}_$(uname -s)_${{ .variables.ARCH }}" \
@@ -186,6 +190,14 @@ tasks:
           registry: ${{ .variables.GITLAB_REGISTRY_URL }}
           registry_username: ${{ .variables.GITLAB_REGISTRY_USER }}
           registry_token: ${{ .variables.GITLAB_REGISTRY_TOKEN }}
+
+      - description: GHCR Registry Login from GitLab
+        if: ${{ ne .variables.GHCR_REGISTRY_USER "" }}
+        task: registry-login
+        with:
+          registry: ghcr.io
+          registry_username: ${{ .variables.GHCR_REGISTRY_USER }}
+          registry_token: ${{ .variables.GHCR_REGISTRY_TOKEN }}
 
       - description: Package Specific CI Setup
         cmd: |

@@ -7,6 +7,8 @@
         "config:base",
         "helpers:pinGitHubActionDigests",
     ],
+    // Include test folders in checks
+    "ignorePresets": [":ignoreModulesAndTests"],
     // Disable reviewers getting added by renovate to limit notification noise
     "reviewersFromCodeOwners": false,
     "timezone": "America/New_York",
@@ -122,7 +124,7 @@
         },
         // Matches images where you need to override the image reference in a Helm Value (i.e. https://github.com/defenseunicorns/uds-capability-rook-ceph/blob/f190c32688e80ad72df6389bcb150b35d779d0f0/values/cluster-values.yaml#L3-L4)
         {
-            "fileMatch": ["\\.*\\.ya?ml$"],
+            "fileMatch": [".*\\.ya?ml$"],
             "matchStrings": [
                 // Test: https://regex101.com/r/k5ebjz/1
                 "# renovate: image=(?<depName>.*?)\\s*image:\\s.*:(?<currentValue>[^\\s\"]*)",
@@ -131,7 +133,7 @@
         },
         // Matches individual images in a `zarf.yaml`'s `images:` section that are tagged with a version (allowing for # renovate overrides)
         {
-            "fileMatch": [ "(^|/)zarf\\.ya?ml$" ],
+            "fileMatch": [ "(^|/)zarf\\.yaml$" ],
             "matchStrings": [
                 // Test: https://regex101.com/r/Bd8IBp/1
                 "- ['\"]?(?<depName>[^\"'\\s]+):(?<currentValue>[^\"'\\s]+)['\"]?( # renovate:( versioning=(?<versioning>.*?))?( extractVersion=(?<extractVersion>.*?))?)?(\\s|$)"
@@ -142,7 +144,7 @@
         },
         // Matches individual helm charts in a `zarf.yaml`'s `charts:` section that specify `version` then `url`, selecting correct options for Git or Helm repos
         {
-            "fileMatch": [ "(^|/)zarf\\.ya?ml$" ],
+            "fileMatch": [ "(^|/)zarf\\.yaml$" ],
             "matchStringsStrategy": "recursive",
             "matchStrings": [
                 // Match the chart section. Test: https://regex101.com/r/1DL0tI/3
@@ -157,7 +159,7 @@
         },
         // Matches individual helm charts in a `zarf.yaml`'s `charts:` section that specify `url` then `version`, selecting correct options for Git or Helm repos
         {
-            "fileMatch": [ "(^|/)zarf.yaml$" ],
+            "fileMatch": [ "(^|/)zarf\\.yaml$" ],
             "matchStringsStrategy": "recursive",
             "matchStrings": [
                 // Match the chart section. Test: https://regex101.com/r/1DL0tI/3
@@ -172,7 +174,7 @@
         },
         // Matches individual helm oci charts in a `zarf.yaml`'s `charts:` section that specify `version` then `url`
         {
-            "fileMatch": [ "(^|/)zarf\\.ya?ml$" ],
+            "fileMatch": [ "(^|/)zarf\\.yaml$" ],
             "matchStringsStrategy": "recursive",
             "matchStrings": [
                 // Match the chart section. Test: https://regex101.com/r/1DL0tI/3
@@ -186,7 +188,7 @@
         },
         // Matches individual helm oci charts in a `zarf.yaml`'s `charts:` section that specify `url` then `version`
         {
-            "fileMatch": [ "(^|/)zarf.yaml$" ],
+            "fileMatch": [ "(^|/)zarf\\.yaml$" ],
             "matchStringsStrategy": "recursive",
             "matchStrings": [
                 // Match the chart section. Test: https://regex101.com/r/1DL0tI/3
@@ -200,7 +202,7 @@
         },
         // Matches individual kustomizations in a `zarf.yaml`'s `manifests:` section using a github url with a ref
         {
-            "fileMatch": [ "(^|/)zarf\\.ya?ml$" ],
+            "fileMatch": [ "(^|/)zarf\\.yaml$" ],
             "matchStringsStrategy": "recursive",
             "matchStrings": [
                 // Match the manifests section. Test: https://regex101.com/r/BCfsGu/1
@@ -215,7 +217,7 @@
         },
         // Matches oci packages in a `uds-bundle.yaml`'s `zarf-packages:` section that specify `repository` then `ref`
         {
-            "fileMatch": [ "(^|/)uds-bundle.yaml$" ],
+            "fileMatch": [ "(^|/)uds-bundle\\.yaml$" ],
             "matchStringsStrategy": "recursive",
             "matchStrings": [
                 // Match the parts of a chart entry. Test: https://regex101.com/r/IFgEw0/1

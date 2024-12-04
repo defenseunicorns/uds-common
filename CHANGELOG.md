@@ -1,5 +1,40 @@
 # Changelog
 
+## [1.4.0](https://github.com/defenseunicorns/uds-common/compare/v1.3.0...v1.4.0) (2024-11-22)
+
+
+### Features
+
+* login to ghcr from gitlab for upgrade tests and avoiding rate limiting ([#343](https://github.com/defenseunicorns/uds-common/issues/343)) ([e299d1c](https://github.com/defenseunicorns/uds-common/commit/e299d1c9b6c8d1cb9af3f087e62a98ba2793bbd9))
+
+
+### Miscellaneous
+
+* **deps:** update uds common support dependencies ([#344](https://github.com/defenseunicorns/uds-common/issues/344)) ([9365b36](https://github.com/defenseunicorns/uds-common/commit/9365b36350a93b263a7248c41229684241959691))
+* **deps:** update uds common support dependencies to v0.32.0 ([#347](https://github.com/defenseunicorns/uds-common/issues/347)) ([14f4841](https://github.com/defenseunicorns/uds-common/commit/14f48411704c4df466f3f5c47f6cb90e84a592fb))
+* fix broken links and change name of package integration guide ([#346](https://github.com/defenseunicorns/uds-common/issues/346)) ([c470dea](https://github.com/defenseunicorns/uds-common/commit/c470dea2c0dc108164ceab9acb7b567af703a48e))
+* update uds-package-requirements with new CODEOWNERS reqs ([#339](https://github.com/defenseunicorns/uds-common/issues/339)) ([462b7e9](https://github.com/defenseunicorns/uds-common/commit/462b7e9d45bcfdf5fae54b09cd51e112a713214a))
+
+## [1.3.0](https://github.com/defenseunicorns/uds-common/compare/v1.2.2...v1.3.0) (2024-11-18)
+
+
+### Features
+
+* allow keycloak_group to be specified as input in create-doug-user task ([#332](https://github.com/defenseunicorns/uds-common/issues/332)) ([cf7cbdd](https://github.com/defenseunicorns/uds-common/commit/cf7cbddefc1abf96bab238fa185908eab1da194c))
+
+
+### Bug Fixes
+
+* add git reset in upgrade-test directory for better local devx ([#337](https://github.com/defenseunicorns/uds-common/issues/337)) ([2c0ca17](https://github.com/defenseunicorns/uds-common/commit/2c0ca174540f4a138648c56058e5a1216d62c617))
+* gitlab publish being broken due to bash weirdness ([#329](https://github.com/defenseunicorns/uds-common/issues/329)) ([e7a3c69](https://github.com/defenseunicorns/uds-common/commit/e7a3c6969cb77c1560da2ae93f48cb5759a002f2))
+* update UDS Opeator link in guide.md ([#336](https://github.com/defenseunicorns/uds-common/issues/336)) ([66cbe6f](https://github.com/defenseunicorns/uds-common/commit/66cbe6f63597d1eeeb9c177084067bc90aa0d469))
+* use flavor from inputs instead of $FLAVOR variable ([#335](https://github.com/defenseunicorns/uds-common/issues/335)) ([398bbe5](https://github.com/defenseunicorns/uds-common/commit/398bbe58d5eac6f365b705a8fad80a7eb920202b))
+
+
+### Miscellaneous
+
+* **deps:** update uds common support dependencies ([#334](https://github.com/defenseunicorns/uds-common/issues/334)) ([d95aafa](https://github.com/defenseunicorns/uds-common/commit/d95aafabbc53c6f3c6034c71bdee28f4841733eb))
+
 ## [1.2.2](https://github.com/defenseunicorns/uds-common/compare/v1.2.1...v1.2.2) (2024-10-29)
 
 
