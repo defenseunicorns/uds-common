@@ -35,7 +35,7 @@ on:
       udsCliVersion:
         description: The uds-cli version to install
         # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
-        default: 0.19.0
+        default: 0.19.2
         type: string
       requires_license:
         type: boolean
