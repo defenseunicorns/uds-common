@@ -21,8 +21,9 @@ tasks:
           CONTAINER_IMAGES=$(./uds zarf tools yq -r '[.components.[].images] | flatten | .[]' "${ZARF_YAML}" | grep -ve '.sig' | grep -ve '.att')
           for image in $CONTAINER_IMAGES; do
             filename=$(echo "${image}" | sed 's%/%_%g' | sed 's%:%-%g')
+            output_file="${OUTPUT_DIR}/${filename}".json
 
-            "${GRYPE_CMD}" -q "${image}" -o json > "${OUTPUT_DIR}/${filename}"
+            "${GRYPE_CMD}" -q "${image}" -o json > "${output_file}"
 
-            ./uds zarf tools yq "${OUTPUT_DIR}/${filename}"
+            ./uds zarf tools yq "${output_file}"
           done
