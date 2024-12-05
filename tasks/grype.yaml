@@ -18,9 +18,9 @@ tasks:
     actions:
       - description: Run grype scan against zarf.yaml componentes images
         cmd: |
-          CONTAINER_IMAGES=$(./uds zarf tools yq -r '[.components.[].images] | flatten | .[]' "${ZARF_YAML}")
+          CONTAINER_IMAGES=$(./uds zarf tools yq -r '[.components.[].images] | flatten | .[]' "${ZARF_YAML}" | grep -ve '.sig' | grep -ve '.att')
           for image in $CONTAINER_IMAGES; do
             filename=$(echo "${image}" | sed 's%/%_%g' | sed 's%:%-%g')
-
+  
             "${GRYPE_CMD}" -q "${image}" -o json > "${OUTPUT_DIR}/${filename}"
           done
