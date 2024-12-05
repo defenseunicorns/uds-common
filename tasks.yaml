@@ -13,12 +13,6 @@ includes:
   - badge: ./tasks/badge.yaml
   - actions: ./tasks/actions.yaml
 
-variables:
-  - name: VERSION
-    # x-release-please-start-version
-    default: 1.4.0
-    # x-release-please-end
-
 tasks:
   - name: default
     description: Create and deploy the nginx package on a fresh cluster
