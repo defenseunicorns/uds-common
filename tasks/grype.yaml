@@ -22,5 +22,5 @@ tasks:
           for image in $CONTAINER_IMAGES; do
             filename=$(echo "${image}" | sed 's%/%_%g' | sed 's%:%-%g')
 
-            "${GRYPE_CMD}" -q "${image}" -o json > "${OUTPUT_DIR}/${filename}"
+            "${GRYPE_CMD}" "${image}" -o json > "${OUTPUT_DIR}/${filename}"
           done
