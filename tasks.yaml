@@ -5,6 +5,7 @@ includes:
   - setup: ./tasks/setup.yaml
   - create: ./tasks/create.yaml
   - deploy: ./tasks/deploy.yaml
+  - grype: ./tasks/grype.yaml
   - lint: ./tasks/lint.yaml
   - publish: ./tasks/publish.yaml
   - pull: ./tasks/pull.yaml
