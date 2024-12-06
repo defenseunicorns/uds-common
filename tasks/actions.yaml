@@ -144,6 +144,7 @@ tasks:
       - task: determine-arch
       - description: Install Grype
         env:
+          # renovate: datasource=github-tags depName=anchore/grype versioning=semver
           - GRYPE_VERSION=v0.85.0
         cmd: |
           trimmed_version=$(echo "${GRYPE_VERSION}" | sed 's/v//')
