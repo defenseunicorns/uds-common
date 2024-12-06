@@ -136,10 +136,8 @@ tasks:
         env:
           - GRYPE_VESRION=0.85.0
         cmd: |
-          echo "https://github.com/anchore/grype/releases/download/v${GRYPE_VERSION}/grype_${GRYPE_VERSION}_$(uname -s)_${{ .variables.ARCH }}.tar.gz"
           curl -L "https://github.com/anchore/grype/releases/download/v${GRYPE_VERSION}/grype_${GRYPE_VERSION}_$(uname -s)_${{ .variables.ARCH }}.tar.gz" -o - \
-            | tar -zOx grype \
-            > /usr/local/bin/grype
+            | tar -zOx grype > /usr/local/bin/grype
           chmod +x /usr/local/bin/grype
 
   - name: authenticate-registries
