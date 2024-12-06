@@ -1,6 +1,6 @@
 # Changelog
 
-## [2.0.0](https://github.com/defenseunicorns/uds-common/compare/v1.4.0...v2.0.0) (2024-12-06)
+## [1.5.0](https://github.com/defenseunicorns/uds-common/compare/v1.4.0...v1.5.0) (2024-12-06)
 
 
 ### ⚠ BREAKING CHANGES
