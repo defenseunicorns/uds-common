@@ -18,7 +18,7 @@ on:
       - docs/**
       - .gitignore
       - renovate.json
-      - .release-please-config.json
+      - .release-please-manifest.json
       - release-please-config.json
       - CODEOWNERS
       - LICENSE
