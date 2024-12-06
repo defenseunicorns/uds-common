@@ -63,9 +63,9 @@ jobs:
       - name: Publish Packages/Bundles
         run: |
           if uds run --list | grep -q 'publish-package'; then
-            uds run publish-package --set FLAVOR=${{ inputs.flavor }} --no-progress ${{ inputs.options }}
+            UDS_USE_CHECKPOINT=false uds run publish-package --set FLAVOR=${{ inputs.flavor }} --no-progress ${{ inputs.options }}
           else
-            uds run publish-release --set FLAVOR=${{ inputs.flavor }} --no-progress ${{ inputs.options }}
+            UDS_USE_CHECKPOINT=false uds run publish-release --set FLAVOR=${{ inputs.flavor }} --no-progress ${{ inputs.options }}
           fi
 
       - name: Save logs
