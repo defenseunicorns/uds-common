@@ -146,7 +146,8 @@ tasks:
         env:
           - GRYPE_VERSION=v0.85.0
         cmd: |
-          curl -sL "https://github.com/anchore/grype/releases/download/${GRYPE_VERSION}/grype_$(echo ${GRYPE_VERSION} | sed 's/v//')_$(uname -s)_${{ .variables.ARCH }}.tar.gz" -o - \
+          trimmed_version=$(echo "${GRYPE_VERSION}" | sed 's/v//')
+          curl -sL "https://github.com/anchore/grype/releases/download/${GRYPE_VERSION}/grype_${trimmed_version}_$(uname -s)_${{ .variables.ARCH }}.tar.gz" -o - \
             | tar -zOx grype > /usr/local/bin/grype
           chmod +x /usr/local/bin/grype
 
