@@ -5,6 +5,7 @@
 
 ### ⚠ BREAKING CHANGES
 
+* fix the release process ([#355](https://github.com/defenseunicorns/uds-common/issues/355))
 * **deps:** update uds common support dependencies ([#354](https://github.com/defenseunicorns/uds-common/issues/354))
 
 ### Features
@@ -15,10 +16,12 @@
 ### Bug Fixes
 
 * check tests directories in renovate updates ([#351](https://github.com/defenseunicorns/uds-common/issues/351)) ([61385c2](https://github.com/defenseunicorns/uds-common/commit/61385c2fc0463e125e1914d59c4d7288976c5628))
+* quote conditional and add use chkpt false ([#357](https://github.com/defenseunicorns/uds-common/issues/357)) ([4cda4d9](https://github.com/defenseunicorns/uds-common/commit/4cda4d94ca965781e57e36000a8b7159197533be))
 
 
 ### Miscellaneous
 
+* fix the release process ([#355](https://github.com/defenseunicorns/uds-common/issues/355)) ([517932c](https://github.com/defenseunicorns/uds-common/commit/517932c890e0be62a87ef3f44ce88f9f3f587d5b))
 * **deps:** update uds common package dependencies to v1.27.3 ([#349](https://github.com/defenseunicorns/uds-common/issues/349)) ([4fbe49f](https://github.com/defenseunicorns/uds-common/commit/4fbe49f520cfa2c8ca38a39b829a7b2c782bae47))
 * **deps:** update uds common support dependencies ([#348](https://github.com/defenseunicorns/uds-common/issues/348)) ([4430e46](https://github.com/defenseunicorns/uds-common/commit/4430e46bcd30092cb25e24bc278b54602602c3fb))
 * **deps:** update uds common support dependencies ([#354](https://github.com/defenseunicorns/uds-common/issues/354)) ([511d894](https://github.com/defenseunicorns/uds-common/commit/511d8940991eaba185dd52d11a3d37efa7defcd8))

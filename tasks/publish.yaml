@@ -40,7 +40,7 @@ tasks:
           architecture: ${{ .inputs.architecture }}
           team: ${{ .inputs.team }}
           name: ${{ .inputs.name }}
-      - if: ${{ eq .variables.ENABLE_UDS_RELEASER true }}
+      - if: ${{ eq .variables.ENABLE_UDS_RELEASER "true" }}
         task: uds-releaser-publish
         with:
           path: ${{ .inputs.path }}
@@ -69,7 +69,7 @@ tasks:
     actions:
       - task: utils:determine-repo
         with:
-          team: ${{.variables.TEAM}}
+          team: ${{ .variables.TEAM }}
       - description: Get the current Zarf package name
         cmd: cat ${{ .inputs.path }}/zarf.yaml | ./uds zarf tools yq .metadata.name
         setVariables:
@@ -97,7 +97,7 @@ tasks:
     actions:
       - task: utils:determine-repo
         with:
-          team: ${{.variables.TEAM}}
+          team: ${{ .variables.TEAM }}
       - description: Get the current Zarf package name
         cmd: cat ${{ .inputs.path }}/zarf.yaml | ./uds zarf tools yq .metadata.name
         setVariables:
