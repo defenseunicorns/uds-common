@@ -49,6 +49,8 @@ publish:
                                               --set GHCR_REGISTRY_USER="$GH_USER_READ_ONLY" \
                                               --set GHCR_REGISTRY_TOKEN="$GH_PAT_READ_ONLY"
 
+    - sudo uds run actions:install-deps
+
     # Check if release is necessary for flavor and exit early if not
     - |
       if ! uds-releaser check "$[[ inputs.flavor ]]"; then
@@ -69,7 +71,7 @@ publish:
 
         ARGS=(
           --set FLAVOR="$[[ inputs.flavor ]]"
-          --set VERSION="$(uds-releaser show $[[ inputs.flavor ]] --version-only)"
+          --set ENABLE_UDS_RELEASER=true
         )
 
         if [[ -n "$[[ inputs.target-repo ]]" ]]; then
@@ -80,15 +82,7 @@ publish:
 
         echo Running $TASK_NAME "${ARGS[@]}" ${OPTIONS}
 
-        uds run $TASK_NAME "${ARGS[@]}" ${OPTIONS}
-
-    # Create tag and release
-    - |
-      if [[ "$DRY_RUN" == "true" ]]; then
-        echo "Dry run, skipping release"
-      else
-        uds-releaser release gitlab "$[[ inputs.flavor ]]"
-      fi
+        UDS_USE_CHECKPOINT=false uds run $TASK_NAME "${ARGS[@]}" ${OPTIONS}
 
   after_script:
     # Save logs, which will run even if the script section fails

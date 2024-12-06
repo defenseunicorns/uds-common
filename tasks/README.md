@@ -12,7 +12,7 @@ Pinning to a specific tag of a task (rather than `main`) with renovate watching 
 ## Supported Tool Versions
 
 - UDS CLI: 0.19.2
-- UDS Core: 0.32.0
+- UDS Core: 0.32.1
 - K3D: 5.7.5
 - Lula: 0.12.0
 
@@ -59,6 +59,8 @@ There are multiple task files available in this repository with different object
 | Name | Description |
 |------|-------------|
 | **package** | Publish the UDS package for the supplied architecture |
+| **release-please-publish** | Publish the UDS package using release-please based workflows |
+| **uds-releaser-publish** | Publish the UDS package using uds-releaser based workflows |
 | **test-bundle** | Publish the test bundle for the supplied architecture |
 
 ### [pull.yaml](./tasks/remove.yaml)
