@@ -3,14 +3,11 @@
 
 flavors:
   - name: upstream
-    # x-release-please-start-version
-    version: 1.4.0
-    # x-release-please-end
+    # renovate: datasource=docker depName=nginx versioning=semver-coerced
+    version: 1.27.3
   - name: registry1
-    # x-release-please-start-version
-    version: 1.4.0
-    # x-release-please-end
+    # renovate: datasource=docker depName=registry1.dso.mil/ironbank/opensource/nginx/nginx versioning=semver-coerced
+    version: 1.27.3
   - name: unicorn
-    # x-release-please-start-version
-    version: 1.4.0
-    # x-release-please-end
+    # renovate: datasource=docker depName=cgr.dev/du-uds-defenseunicorns/nginx versioning=semver-coerced
+    version: 1.27.3

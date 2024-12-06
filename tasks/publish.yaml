@@ -9,10 +9,47 @@ variables:
     default: upstream
   - name: TEAM
     default: uds
+  - name: ENABLE_UDS_RELEASER
+    default: "false"
 
 tasks:
   - name: package
     description: Publish the UDS package for the supplied architecture
+    inputs:
+      path:
+        description: Path to the zarf package being published
+        default: .
+      version:
+        description: The version of the package to publish
+        required: true
+      architecture:
+        description: The architecture of the package to publish
+        default: ${UDS_ARCH}
+      team:
+        description: The team publishing the package
+        default: uds
+      name:
+        description: The name of the package to publish
+        default: ${PACKAGE_NAME}
+    actions:
+      - if: ${{ eq .variables.ENABLE_UDS_RELEASER "false" }}
+        task: release-please-publish
+        with:
+          path: ${{ .inputs.path }}
+          version: ${{ .inputs.version }}
+          architecture: ${{ .inputs.architecture }}
+          team: ${{ .inputs.team }}
+          name: ${{ .inputs.name }}
+      - if: ${{ eq .variables.ENABLE_UDS_RELEASER true }}
+        task: uds-releaser-publish
+        with:
+          path: ${{ .inputs.path }}
+          architecture: ${{ .inputs.architecture }}
+          team: ${{ .inputs.team }}
+          name: ${{ .inputs.name }}
+
+  - name: release-please-publish
+    description: Publish the UDS package using release-please based workflows
     inputs:
       path:
         description: Path to the zarf package being published
@@ -40,6 +77,43 @@ tasks:
       - description: Publish package for the supplied architecture
         cmd: |
           ./uds zarf package publish "${{ .inputs.path }}/zarf-package-${{ .inputs.name }}-${{ .inputs.architecture }}-${{ .inputs.version }}.tar.zst" "oci://${TARGET_REPO}"
+
+
+  - name: uds-releaser-publish
+    description: Publish the UDS package using uds-releaser based workflows
+    inputs:
+      path:
+        description: Path to the zarf package being published
+        default: .
+      architecture:
+        description: The architecture of the package to publish
+        default: ${UDS_ARCH}
+      team:
+        description: The team publishing the package
+        default: uds
+      name:
+        description: The name of the package to publish
+        default: ${PACKAGE_NAME}
+    actions:
+      - task: utils:determine-repo
+        with:
+          team: ${{.variables.TEAM}}
+      - description: Get the current Zarf package name
+        cmd: cat ${{ .inputs.path }}/zarf.yaml | ./uds zarf tools yq .metadata.name
+        setVariables:
+          - name: PACKAGE_NAME
+      - description: publish using uds-releaser
+        cmd: |
+          ./uds zarf package publish "${{ .inputs.path }}/zarf-package-${{ .inputs.name }}-${{ .inputs.architecture }}-$(uds-releaser show ${{ .variables.FLAVOR }} --version-only).tar.zst" "oci://${TARGET_REPO}"
+
+          if [ -n "${GITLAB_CI}" ]; then
+            uds-releaser release gitlab "${{ .variables.FLAVOR }}"
+          elif [ -n "${GITHUB_ACTION}" ]; then
+            uds-releaser release github "${{ .variables.FLAVOR }}"
+          else
+            echo "Unsupported platform"
+            exit 11
+          fi
 
   - name: test-bundle
     description: Publish the test bundle for the supplied architecture
