@@ -25,7 +25,7 @@ tasks:
     actions:
       - description: Create k3d cluster with slim UDS Core
         cmd: |
-          if [ "$(uname -s)" = "Linux" ] && [ "$USE_CHECKPOINT" = "true" ] && [ "${{ .inputs.snapshots "true" }}" = "false" ]; then
+          if [ "$(uname -s)" = "Linux" ] && [ "$USE_CHECKPOINT" = "true" ] && [ "${{ .inputs.snapshots }}" = "false" ]; then
             ./uds zarf package deploy oci://defenseunicorns/dev/uds/checkpoints/k3d-core-slim-dev:${{ .inputs.version }} --confirm --no-progress ${{ .inputs.options }}
           else
             ./uds deploy oci://defenseunicorns/uds/${{ if eq .inputs.snapshots "true" }}snapshots/${{ end }}bundles/k3d-core-slim-dev:${{ .inputs.version }} --set INSECURE_ADMIN_PASSWORD_GENERATION=${{ .inputs.insecure_keycloak_admin }} --confirm --no-progress ${{ .inputs.options }}
