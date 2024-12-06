@@ -5,7 +5,7 @@ kind: UDSBundle
 metadata:
   name: test
   description: The testing UDS bundle
-  version: 1.27.3
+  version: dev
 
 packages:
   - name: nginx
