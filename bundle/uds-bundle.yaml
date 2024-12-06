@@ -10,4 +10,4 @@ metadata:
 packages:
   - name: nginx
     path: ../
-    ref: 1.27.3
+    ref: dev
