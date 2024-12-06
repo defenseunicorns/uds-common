@@ -39,15 +39,11 @@ jobs:
           uds run actions:setup-environment \
             --set GH_TOKEN="${{ secrets.GITHUB_TOKEN }}"
         shell: bash
-
-      - uses: anchore/scan-action/download-grype@v3
-        id: grype
-
       - name: run grype scan
         id: scan
         run: |
           OUTPUT_DIR=$(mktemp -d)
-          uds run grype:scan --no-progress --set GRYPE_CMD="${{steps.grype.outputs.cmd}}" --set OUTPUT_DIR="${OUTPUT_DIR}" --set ZARF_YAML="${{inputs.zarf_yaml}}"
+          uds run grype:scan --no-progress --set OUTPUT_DIR="${OUTPUT_DIR}" --set ZARF_YAML="${{inputs.zarf_yaml}}"
           echo "output_dir=${OUTPUT_DIR}" > "$GITHUB_OUTPUT"
 
       - uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3

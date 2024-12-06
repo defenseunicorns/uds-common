@@ -129,6 +129,18 @@ tasks:
           "https://github.com/defenseunicorns/lula/releases/download/${LULA_VERSION}/lula_${LULA_VERSION}_$(uname -s)_${{ .variables.ARCH }}" \
           && chmod +x /usr/local/bin/lula
 
+  - name: install-grype
+    description: Install grype for container and SBOM scans
+    actions:
+      - description: Install Grype
+        env:
+          - GRYPE_VESRION=v0.85.0
+        cmd: |
+          curl -L "https://github.com/anchore/grype/releases/download/${GRYPE_VERSION}/grype_0.85.0_$(uname -s)_${{ .variables.ARCH }}.tar.gz" -o - \
+            | tar -zOx grype \
+            > /usr/local/bin/grype
+          chmod +x /usr/local/bin/grype
+
   - name: authenticate-registries
     description: Log in to the registries for testing and publishing UDS Packages
     actions:

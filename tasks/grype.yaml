@@ -5,8 +5,6 @@ includes:
   - utils: ./actions.yaml
 
 variables:
-  - name: GRYPE_CMD
-    default: grype
   - name: OUTPUT_DIR
     default: scans
   - name: ZARF_YAML
@@ -16,6 +14,8 @@ tasks:
   - name: scan
     description: Execute grype scan on container images in zarf.yaml
     actions:
+      - task: actions:install-grype
+
       - description: Run grype scan against zarf.yaml components.*.images
         cmd: |
           CONTAINER_IMAGES=$(./uds zarf tools yq -r '[.components.[].images] | flatten | .[]' "${ZARF_YAML}" | grep -ve '.sig' | grep -ve '.att')
@@ -23,7 +23,7 @@ tasks:
             filename=$(echo "${image}" | sed 's%/%_%g' | sed 's%:%-%g')
             output_file="${OUTPUT_DIR}/${filename}".json
 
-            "${GRYPE_CMD}" -q "${image}" -o json > "${output_file}"
+            grype -q "${image}" -o json > "${output_file}"
 
             ./uds zarf tools yq "${output_file}"
           done
