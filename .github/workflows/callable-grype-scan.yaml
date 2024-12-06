@@ -34,11 +34,6 @@ jobs:
           # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
           version: v0.19.2
 
-      - name: Environment setup
-        run: |
-          uds run actions:setup-environment \
-            --set GH_TOKEN="${{ secrets.GITHUB_TOKEN }}"
-        shell: bash
       - name: run grype scan
         id: scan
         run: |
