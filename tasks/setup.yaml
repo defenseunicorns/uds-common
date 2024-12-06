@@ -20,12 +20,15 @@ tasks:
       insecure_keycloak_admin:
         description: Automatically set a keycloak admin username / password
         default: "true"
+      use_checkpoint:
+        description: Whether to use the checkpoint release for faster cluster starts on Linux
+        default: ${USE_CHECKPOINT}
       options:
         description: For setting deploy time variables and flags
     actions:
       - description: Create k3d cluster with slim UDS Core
         cmd: |
-          if [ "$(uname -s)" = "Linux" ] && [ "$USE_CHECKPOINT" = "true" ] && [ "${{ .inputs.snapshots }}" = "false" ]; then
+          if [ "$(uname -s)" = "Linux" ] && [ "${{ .inputs.use_checkpoint }}" = "true" ] && [ "${{ .inputs.snapshots }}" = "false" ]; then
             ./uds zarf package deploy oci://ghcr.io/defenseunicorns/dev/uds/checkpoints/k3d-core-slim-dev:${{ .inputs.version }} --confirm --no-progress ${{ .inputs.options }}
           else
             ./uds deploy oci://defenseunicorns/uds/${{ if eq .inputs.snapshots "true" }}snapshots/${{ end }}bundles/k3d-core-slim-dev:${{ .inputs.version }} --set INSECURE_ADMIN_PASSWORD_GENERATION=${{ .inputs.insecure_keycloak_admin }} --confirm --no-progress ${{ .inputs.options }}
