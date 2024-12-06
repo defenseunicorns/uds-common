@@ -139,7 +139,7 @@ tasks:
           && chmod +x /usr/local/bin/uds-releaser
 
   - name: install-grype
-    description: Install grype for container and SBOM scans
+    description: Install the grype for vulnerability scanning
     actions:
       - task: determine-arch
       - description: Install Grype
