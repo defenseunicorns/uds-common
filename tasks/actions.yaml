@@ -133,6 +133,11 @@ tasks:
     description: Install grype for container and SBOM scans
     actions:
       - task: determine-arch
+      - description: debug
+        env:
+          - GRYPE_VERSION=v0.85.0
+        cmd: |
+          echo "https://github.com/anchore/grype/releases/download/v${GRYPE_VERSION}/grype_$(echo ${GRYPE_VERSION} | sed 's/v//')_$(uname -s)_${{ .variables.ARCH }}.tar.gz"
       - description: Install Grype
         env:
           - GRYPE_VERSION=v0.85.0
