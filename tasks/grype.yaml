@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
 
 includes:
-  - utils: ./actions.yaml
+  - actions: ./actions.yaml
 
 variables:
   - name: OUTPUT_DIR
