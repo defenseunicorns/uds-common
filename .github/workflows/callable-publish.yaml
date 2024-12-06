@@ -69,9 +69,9 @@ jobs:
         if: ${{ inputs.uds-releaser == false }}
         run: |
           if uds run --list | grep -q 'publish-package'; then
-            UDS_USE_CHECKPOINT=false uds run publish-package --set FLAVOR=${{ inputs.flavor }} --no-progress ${{ inputs.options }}
+            uds run publish-package --set USE_CHECKPOINT=false --set FLAVOR=${{ inputs.flavor }} --no-progress ${{ inputs.options }}
           else
-            UDS_USE_CHECKPOINT=false uds run publish-release --set FLAVOR=${{ inputs.flavor }} --no-progress ${{ inputs.options }}
+            uds run publish-release --set USE_CHECKPOINT=false --set FLAVOR=${{ inputs.flavor }} --no-progress ${{ inputs.options }}
           fi
 
       - name: Publish Packages/Bundles - uds-releaser
@@ -83,11 +83,13 @@ jobs:
             uds-releaser update-yaml ${{ inputs.flavor }}
             if uds run --list | grep -q 'publish-package'; then
               uds run publish-package \
+                --set USE_CHECKPOINT=false \
                 --set FLAVOR=${{ inputs.flavor }} \
                 --set ENABLE_UDS_RELEASER=true \
                 --no-progress ${{ inputs.options }}
             else
               uds run publish-release \
+                --set USE_CHECKPOINT=false \
                 --set FLAVOR=${{ inputs.flavor }} \
                 --set ENABLE_UDS_RELEASER=true \
                 --no-progress ${{ inputs.options }}
