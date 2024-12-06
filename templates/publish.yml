@@ -80,7 +80,7 @@ publish:
 
         echo Running $TASK_NAME "${ARGS[@]}" ${OPTIONS}
 
-        uds run $TASK_NAME "${ARGS[@]}" ${OPTIONS}
+        UDS_USE_CHECKPOINT=false uds run $TASK_NAME "${ARGS[@]}" ${OPTIONS}
 
     # Create tag and release
     - |
