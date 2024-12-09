@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.1](https://github.com/defenseunicorns/uds-common/compare/v1.5.0...v1.5.1) (2024-12-09)
+
+
+### Miscellaneous
+
+* add a renovate rule for handling uds versions from upstream ones ([#359](https://github.com/defenseunicorns/uds-common/issues/359)) ([34dfed1](https://github.com/defenseunicorns/uds-common/commit/34dfed162e220d6cdbb13b8910a78ff3d00d1f08))
+
 ## [1.5.0](https://github.com/defenseunicorns/uds-common/compare/v1.4.0...v1.5.0) (2024-12-06)
 
 
