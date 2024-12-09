@@ -149,5 +149,3 @@ tasks:
 
       - description: Publish the packages
         task: publish:package
-        with:
-          version: ${VERSION}

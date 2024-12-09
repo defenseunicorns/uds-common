@@ -92,6 +92,22 @@
             ],
             "datasourceTemplate": "npm"
         },
+        // Matches specified datasources where a uds.x package version needs to be updated from an upstream source 
+        {
+            "fileMatch": [".*\\.ya?ml$"],
+            "matchStringsStrategy": "recursive",
+            "matchStrings": [
+                // Test: https://regex101.com/r/a7CxKB/1
+                "# renovate-uds: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( extractVersion=(?<extractVersion>.*?))?( registryUrl=(?<registryUrl>.*?))?\\s.*:\\s*['\"]?[v0-9].*?['\"]?(\\s|$)",
+                // Test: https://regex101.com/r/TIh2K7/1
+                ":\\s*['\"]?[v0-9].*?['\"]?(\\s|$)",
+                // Test: https://regex101.com/r/euvVHz/1
+                "(?<currentValue>[v0-9][^\\n\\\"\\s]*)-uds\\.\\d+"
+            ],
+            "autoReplaceStringTemplate": "{{{newValue}}}-uds.0",
+            "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver-coerced{{/if}}",
+            "extractVersionTemplate": "{{#if extractVersion}}{{{extractVersion}}}{{else}}^(?<version>.*)${{/if}}"
+        },
         // Matches specified datasources where a colon separates the version on the following line (i.e. https://github.com/defenseunicorns/zarf/blob/7e91d3b9823b52fe6d0f563d692c8af57faa6005/examples/big-bang/zarf.yaml#L5)
         {
             "fileMatch": [".*\\.ya?ml$"],
