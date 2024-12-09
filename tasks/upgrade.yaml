@@ -83,7 +83,7 @@ tasks:
             --no-progress \
             -o ${{ .inputs.path }}
 
-          mv "${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${{ .inputs.architecture }}-${LATEST_VERSION%-*}.tar.zst" "${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${{ .inputs.architecture }}-${LOCAL_VERSION}.tar.zst"
+          mv -n "${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${{ .inputs.architecture }}-${LATEST_VERSION%-*}.tar.zst" "${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${{ .inputs.architecture }}-${LOCAL_VERSION}.tar.zst"
 
           # Run any dependency commands (i.e. uds run dependencies:create)
           sh -c "${{ .inputs.dep_commands }}"
