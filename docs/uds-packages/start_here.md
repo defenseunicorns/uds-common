@@ -2,7 +2,8 @@
 
 This Quick Start is intended to provide the most concise and direct path to creating a Bronze UDS package.
 
-> [!TIP] Why?
+> [!TIP]
+> **Why?**
 > Defense Unicorns is focused on making software conveniently available to the warfighter. _wherever the mission may take them_.
 >
 > Creating a UDS package makes that piece of software compatible and available in the UDS ecosystem.
@@ -12,12 +13,12 @@ This Quick Start is intended to provide the most concise and direct path to crea
     <img src=".images/wat-no-not-that-wat.png" alt="alt text" width="200">
 </p>
 
-1. `git clone https://github.com/defenseunicorns/uds-package-template.git` find and replace variables
+1. `git clone https://github.com/defenseunicorns/uds-package-template.git` then find and replace template variables
 2. `zarf dev generate -h` to generate a `zarf.yaml` file from a helm chart
    1. Replace the `common/zarf.yaml` with the generated
 3. Update the `zarf.yaml` (top-level)  with the correct reference. Add the required images to the `upstream` flavor
    1. Remove the `-unicorn` flavor for now
-4. Update the `bundle/uds-bundle.yaml` with the correct reference
+4. Update the `bundle/uds-bundle.yaml` with the correct metadata and package reference(s)
 5. `uds run dev` to create a local package, local cluster, and deploy the package
    1. troubleshoot and retry as needed
 6. update the `chart/templates/uds-package.yaml` as appropriate, read [this](https://uds.defenseunicorns.com/reference/configuration/uds-operator/)
@@ -38,3 +39,4 @@ This Quick Start is intended to provide the most concise and direct path to crea
 
 - [Create UDS Package CLI](https://github.com/defenseunicorns/create-uds-package): A CLI to create a UDS package. _very much in alpha development, PRs and issues welcome_
 - [UDS Package Creation GPT Assistant](https://chatgpt.com/g/g-675141f7d7f481919152bec2a1177888-uds-package-creation-assistant): A GPT assitant that is built from UDS package documentaiton and examples. _very much in alpha development, feedback welcome in #airgap-appstore-apps slack channel_
+- [UDS Package Kit](https://github.com/defenseunicorns/uds-pk): UDS Package Kit is a tool designed to assist in developing, maintaining, and publishing UDS Packages.
