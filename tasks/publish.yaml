@@ -21,7 +21,7 @@ tasks:
         default: .
       version:
         description: The version of the package to publish
-        required: true
+        default: ${VERSION}
       architecture:
         description: The architecture of the package to publish
         default: ${UDS_ARCH}
