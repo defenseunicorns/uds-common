@@ -21,7 +21,7 @@ This Quick Start is intended to provide the most concise and direct path to crea
 4. `uds run dev` to create a local package, local cluster, and deploy the package
    1. troubleshoot and retry as needed
 5. update the `chart/templates/uds-package.yaml` as appropriate, read [this](https://uds.defenseunicorns.com/reference/configuration/uds-operator/)
-6. `uds run dev` -> troubleshoot and retry
+6. `uds run test-package` -> troubleshoot and retry
 7. `git commit && git push` Observe CI, troubleshoot and update
 8.  add `-unicorn` flavor to the `zarf.yaml` push and troubleshoot failing CI
 9.  Add tests
