@@ -1,0 +1,56 @@
+assessment-results:
+  import-ap:
+    href: ""
+  metadata:
+    last-modified: 2024-12-12T12:44:29.602961067-07:00
+    oscal-version: 1.1.2
+    published: 2024-12-12T12:44:29.602961067-07:00
+    remarks: Assessment Results generated from Lula
+    title: '[System Name] Security Assessment Results (SAR)'
+    version: 0.0.1
+  results:
+    - description: Assessment results for performing Validations with Lula version v0.8.0
+      findings:
+        - description: |
+            Control Implementation: d2afb4c4-2cd8-5305-a6cc-d1bc7b388d0c / Implemented Requirement: 7faf6742-a23d-41c1-9ba7-2072494aedc2
+            # Control Implementation
+            User accounts that have expired, no longer in use, in violation of policy, or have been inactive for 35 days are disabled within 24 hours.
+          related-observations:
+            - observation-uuid: 206ac2f4-87eb-484c-9090-37326ab63f8f
+          target:
+            status:
+              state: not-satisfied
+            target-id: ac-2.3
+            type: objective-id
+          title: 'Validation Result - Control: ac-2.3'
+          uuid: 3ccb5bc9-4ad4-4316-bc45-806fcf169f79
+      observations:
+        - collected: 2024-12-12T12:44:29.602202648-07:00
+          description: |
+            [TEST]: 35d926df-efbb-445a-b26b-2917199ec558 - podinfo-health-check
+          methods:
+            - TEST
+          relevant-evidence:
+            - description: |
+                Result: not-satisfied
+              remarks: |
+                Error running validation: provider Evaluate error: opa validation not performed - no resources to validate
+          uuid: 206ac2f4-87eb-484c-9090-37326ab63f8f
+      props:
+        - name: threshold
+          ns: https://docs.lula.dev/oscal/ns
+          value: "false"
+        - name: target
+          ns: https://docs.lula.dev/oscal/ns
+          value: https://raw.githubusercontent.com/GSA/fedramp-automation/93ca0e20ff5e54fc04140613476fba80f08e3c7d/dist/content/rev5/baselines/json/FedRAMP_rev5_HIGH-baseline-resolved-profile_catalog.json
+      reviewed-controls:
+        control-selections:
+          - description: Controls Assessed by Lula
+            include-controls:
+              - control-id: ac-2.3
+        description: Controls validated
+        remarks: Validation performed may indicate full or partial satisfaction
+      start: 2024-12-12T12:44:29.602952791-07:00
+      title: Lula Validation Result
+      uuid: 66a7291d-b733-429b-b40e-9ceb79d72a69
+  uuid: 1933632f-01ba-4b95-8ca6-8d360e84c92a
