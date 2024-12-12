@@ -36,7 +36,7 @@ tasks:
 
           curl -vvvv -H "Authorization: Bearer $GITHUB_TOKEN" \
             -L -o checkpoint.zip \
-            "https://github.com/defenseunicorns/uds-core/actions/runs/12304958953/artifacts/2314278346"
+            "https://github.com/defenseunicorns/uds-core/actions/artifacts/2314278346/zip"
           unzip checkpoint.zip -d checkpoint
           cd checkpoint
           ./uds zarf package deploy zarf-package-k3d-core-slim-dev-amd64-0.32.1.tar.zst --confirm --no-progress ${{ .inputs.options }}
