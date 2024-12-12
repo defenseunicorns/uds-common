@@ -28,11 +28,18 @@ tasks:
     actions:
       - description: Create k3d cluster with slim UDS Core
         cmd: |
-          if [ "$(uname -s)" = "Linux" ] && [ "${{ .inputs.use_checkpoint }}" = "true" ] && [ "${{ .inputs.snapshots }}" = "false" ]; then
-            ./uds zarf package deploy oci://ghcr.io/defenseunicorns/dev/uds/checkpoints/k3d-core-slim-dev:${{ .inputs.version }} --confirm --no-progress ${{ .inputs.options }}
-          else
-            ./uds deploy oci://defenseunicorns/uds/${{ if eq .inputs.snapshots "true" }}snapshots/${{ end }}bundles/k3d-core-slim-dev:${{ .inputs.version }} --set INSECURE_ADMIN_PASSWORD_GENERATION=${{ .inputs.insecure_keycloak_admin }} --confirm --no-progress ${{ .inputs.options }}
-          fi
+          # if [ "$(uname -s)" = "Linux" ] && [ "${{ .inputs.use_checkpoint }}" = "true" ] && [ "${{ .inputs.snapshots }}" = "false" ]; then
+          #   ./uds zarf package deploy oci://ghcr.io/defenseunicorns/dev/uds/checkpoints/k3d-core-slim-dev:${{ .inputs.version }} --confirm --no-progress ${{ .inputs.options }}
+          # else
+          #   ./uds deploy oci://defenseunicorns/uds/${{ if eq .inputs.snapshots "true" }}snapshots/${{ end }}bundles/k3d-core-slim-dev:${{ .inputs.version }} --set INSECURE_ADMIN_PASSWORD_GENERATION=${{ .inputs.insecure_keycloak_admin }} --confirm --no-progress ${{ .inputs.options }}
+          # fi
+
+          curl -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -L -o checkpoint.zip \
+            "https://github.com/defenseunicorns/uds-core/actions/runs/12304958953/artifacts/2314278346"
+          unzip checkpoint.zip -d checkpoint
+          cd checkpoint
+          ./uds zarf package deploy zarf-package-k3d-core-slim-dev-amd64-0.32.1.tar.zst --confirm --no-progress ${{ .inputs.options }}
 
   - name: k3d-full-cluster
     description: Creates a k3d cluster for testing based on the K3d + UDS Core Full bundle

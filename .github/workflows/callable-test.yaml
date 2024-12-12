@@ -78,9 +78,7 @@ jobs:
 
       - name: Test
         run: |
-          sudo cp /home/runner/uds /home/packer/uds
-          sudo chown 1000:1000 /home/packer/uds
-          sudo -u packer -H sh -c "/home/packer/uds run actions:test-deploy --set FLAVOR=\"${{ inputs.flavor }}\" --set TYPE=\"${{ inputs.type }}\" --set OPTIONS=\"${{ inputs.options }}\""
+          uds run actions:test-deploy --set FLAVOR="${{ inputs.flavor }}" --set TYPE="${{ inputs.type }}" --set OPTIONS="${{ inputs.options }}"
         shell: bash
 
       - name: UDS Badge Verification
