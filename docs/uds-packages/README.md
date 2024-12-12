@@ -13,9 +13,10 @@ This Quick Start is intended to provide the most concise and direct path to crea
     <img src=".images/wat-no-not-that-wat.png" alt="alt text" width="200">
 </p>
 
-1. `git clone https://github.com/defenseunicorns/uds-package-template.git` then find and replace template variables
+1. `git clone https://github.com/defenseunicorns/uds-package-template.git uds-package-<name>` then find and replace template variables
+    1. `rm -rf .git/ && git init`
 2. `zarf dev generate -h` to generate a `zarf.yaml` file from a helm chart
-   1. Replace the `common/zarf.yaml` with the generated
+   1. Update the `common/zarf.yaml` with the generated component in zarf.yaml, be sure to retain the component-config reference.
    2. The template variable replacement updates the `zarf.yaml` (top-level) with the correct reference. Confirm the package looks correct and remove the `-unicorn` flavor for now
 3. Update the `bundle/uds-bundle.yaml` with the correct metadata and package reference(s)
 4. `uds run dev` to create a local package, local cluster, and deploy the package
