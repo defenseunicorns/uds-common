@@ -79,6 +79,8 @@ jobs:
       - name: Test
         run: uds run actions:test-deploy --set FLAVOR="${{ inputs.flavor }}" --set TYPE="${{ inputs.type }}" --set OPTIONS="${{ inputs.options }}"
         shell: bash
+        env:
+          TMPDIR: /github/home
 
       - name: UDS Badge Verification
         run: uds run actions:verify-badge
