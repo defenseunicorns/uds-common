@@ -14,7 +14,7 @@ Pinning to a specific tag of a task (rather than `main`) with renovate watching 
 - UDS CLI: 0.19.2
 - UDS Core: 0.32.1
 - K3D: 5.7.5
-- Lula: 0.12.0
+- Lula: 0.13.0
 
 > [!NOTE]
 > Zarf is not required for tasks in this repo, the vendored zarf (`uds zarf`) included with UDS CLI is used instead to prevent version mismatches.
