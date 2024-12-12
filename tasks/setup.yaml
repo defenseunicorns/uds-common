@@ -34,7 +34,7 @@ tasks:
           #   ./uds deploy oci://defenseunicorns/uds/${{ if eq .inputs.snapshots "true" }}snapshots/${{ end }}bundles/k3d-core-slim-dev:${{ .inputs.version }} --set INSECURE_ADMIN_PASSWORD_GENERATION=${{ .inputs.insecure_keycloak_admin }} --confirm --no-progress ${{ .inputs.options }}
           # fi
 
-          curl -H "Authorization: Bearer $GITHUB_TOKEN" \
+          curl -vvvv -H "Authorization: Bearer $GITHUB_TOKEN" \
             -L -o checkpoint.zip \
             "https://github.com/defenseunicorns/uds-core/actions/runs/12304958953/artifacts/2314278346"
           unzip checkpoint.zip -d checkpoint
