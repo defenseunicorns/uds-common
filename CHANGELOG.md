@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.6.0](https://github.com/defenseunicorns/uds-common/compare/v1.5.1...v1.6.0) (2024-12-13)
+
+
+### Features
+
+* move mirror ci to publish step ([#367](https://github.com/defenseunicorns/uds-common/issues/367)) ([f03863c](https://github.com/defenseunicorns/uds-common/commit/f03863c34294c86534f2694d15c2f195c071f1aa))
+
+
+### Miscellaneous
+
+* **deps:** update uds common support dependencies ([#358](https://github.com/defenseunicorns/uds-common/issues/358)) ([a192e5e](https://github.com/defenseunicorns/uds-common/commit/a192e5e855f68fb13782626bfb562232896d8707))
+* **docs:** add uds-package quickstart ([#363](https://github.com/defenseunicorns/uds-common/issues/363)) ([0554d10](https://github.com/defenseunicorns/uds-common/commit/0554d10cdd46b7c8b856201e4b03da8756025d7f))
+* refine how bundles are published to require fewer inputs ([#365](https://github.com/defenseunicorns/uds-common/issues/365)) ([9b9f7c0](https://github.com/defenseunicorns/uds-common/commit/9b9f7c0098bfeab51dc5decc10c3276218894d35))
+
 ## [1.5.1](https://github.com/defenseunicorns/uds-common/compare/v1.5.0...v1.5.1) (2024-12-10)
 
 
