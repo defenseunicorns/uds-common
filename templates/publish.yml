@@ -90,7 +90,6 @@ publish:
 
     # Mirror package to github
     - |
-        set -x
         if [[ "$[[ inputs.mirror ]]" == "true" ]]; then
           export PKG_VERSION="$(uds-releaser show $[[ inputs.flavor ]] --version-only)"
           export PKG_NAME="$(yq '.metadata.name' zarf.yaml)"
@@ -103,7 +102,7 @@ publish:
             --form "variables[FLAVOR]=$[[ inputs.flavor ]]" \
             --form "variables[ARCH]=${arch}" \
             --form ref=main "${CI_API_V4_URL}/projects/$[[ inputs.mirror-project-id ]]/trigger/pipeline"
-        fi  1
+        fi
 
 
   after_script:
