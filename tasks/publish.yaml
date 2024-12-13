@@ -123,7 +123,7 @@ tasks:
         default: bundle
       version:
         description: The version of the bundle to publish
-        required: true
+        default: ${BUNDLE_VERSION}
       architecture:
         description: The architecture of the bundle to publish
         default: ${UDS_ARCH}
@@ -136,6 +136,10 @@ tasks:
         cmd: cat ${{ .inputs.path }}/uds-bundle.yaml | ./uds zarf tools yq .metadata.name
         setVariables:
           - name: BUNDLE_NAME
+      - description: Get the current UDS Bundle version
+        cmd: cat ${{ .inputs.path }}/uds-bundle.yaml | ./uds zarf tools yq .metadata.version
+        setVariables:
+          - name: BUNDLE_VERSION
       - description: Publish bundle for the supplied architecture
         cmd: |
           ./uds publish "${{ .inputs.path }}/uds-bundle-${{ .inputs.name }}-${{ .inputs.architecture }}-${{ .inputs.version }}.tar.zst" "oci://${TARGET_REPO}/bundles" --no-progress
