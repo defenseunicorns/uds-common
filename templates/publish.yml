@@ -100,7 +100,7 @@ publish:
             --form "variables[PROJECT_NAMESPACE]=${CI_PROJECT_NAMESPACE}" \
             --form "variables[PACKAGE_NAME]=${PKG_NAME}" \
             --form "variables[FLAVOR]=$[[ inputs.flavor ]]" \
-            --form "variables[ARCH]=$[[ inputs.arch ]]" \
+            --form "variables[ARCH]=${arch}" \
             --form ref=main "${CI_API_V4_URL}/projects/$[[ inputs.mirror-project-id ]]/trigger/pipeline"
         fi  1
 
