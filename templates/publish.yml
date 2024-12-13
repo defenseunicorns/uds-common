@@ -22,7 +22,7 @@ spec:
     mirror:
       default: "true"
     mirror-project-id:
-      default: "${MIRROR_PROJECT_ID}"
+      default: ${MIRROR_PROJECT_ID}
 ---
 publish:
   variables:
