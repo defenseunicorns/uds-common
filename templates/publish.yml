@@ -22,7 +22,7 @@ spec:
     mirror:
       default: "true"
     mirror-project-id:
-      default: "11"
+      default: "${MIRROR_PROJECT_ID}"
 ---
 publish:
   variables:
@@ -88,6 +88,7 @@ publish:
 
         UDS_USE_CHECKPOINT=false uds run $TASK_NAME "${ARGS[@]}" ${OPTIONS}
 
+    # TODO: @corang - this will be removed upon deployment of uds registry
     # Mirror package to github
     - |
         if [[ "$[[ inputs.mirror ]]" == "true" ]]; then
