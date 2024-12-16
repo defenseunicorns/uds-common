@@ -96,6 +96,11 @@ jobs:
             fi
           fi
 
+      - name: Debug Output
+        if: ${{ always() }}
+        run: uds run actions:debug-output
+        shell: bash
+
       - name: Save logs
         if: ${{ always() }}
         run: uds run actions:save-logs
