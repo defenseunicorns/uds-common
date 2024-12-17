@@ -11,7 +11,7 @@ commitlint:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - npm install --save-dev @commitlint/config-conventional@19.6.0
-    - npm install --save-dev @commitlint/cli@19.6.0
+    - npm install --save-dev @commitlint/cli@19.6.1
     - |
       echo "module.exports = {extends: ['@commitlint/config-conventional']}" > commitlint.config.js
     - echo "$CI_MERGE_REQUEST_TITLE" | npx commitlint
