@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.6.1](https://github.com/defenseunicorns/uds-common/compare/v1.6.0...v1.6.1) (2024-12-18)
+
+
+### Miscellaneous
+
+* add debug output to callable-publish ([#369](https://github.com/defenseunicorns/uds-common/issues/369)) ([6a39c6c](https://github.com/defenseunicorns/uds-common/commit/6a39c6cb4ca7fbe1f602df8fde43e749ffc04179))
+* **deps:** update uds common support dependencies ([#368](https://github.com/defenseunicorns/uds-common/issues/368)) ([ec46da4](https://github.com/defenseunicorns/uds-common/commit/ec46da45aab596eecd14f0cfee37a52534b00c30))
+* **deps:** update uds common support dependencies ([#371](https://github.com/defenseunicorns/uds-common/issues/371)) ([4e4a6bc](https://github.com/defenseunicorns/uds-common/commit/4e4a6bc5cef83096ad0e6f5cd6083d6d40f02b67))
+
 ## [1.6.0](https://github.com/defenseunicorns/uds-common/compare/v1.5.1...v1.6.0) (2024-12-13)
 
 
