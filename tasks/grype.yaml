@@ -1,0 +1,29 @@
+# Copyright 2024 Defense Unicorns
+# SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
+
+includes:
+  - actions: ./actions.yaml
+
+variables:
+  - name: OUTPUT_DIR
+    default: scans
+  - name: ZARF_YAML
+    default: zarf.yaml
+
+tasks:
+  - name: scan
+    description: Execute grype scan on container images in zarf.yaml
+    actions:
+      - task: actions:install-grype
+
+      - description: Run grype scan against zarf.yaml components.*.images
+        cmd: |
+          CONTAINER_IMAGES=$(./uds zarf tools yq -r '[.components.[].images] | flatten | .[]' "${ZARF_YAML}" | grep -ve '.sig' | grep -ve '.att')
+          for image in $CONTAINER_IMAGES; do
+            filename=$(echo "${image}" | sed 's%/%_%g' | sed 's%:%-%g')
+            output_file="${OUTPUT_DIR}/${filename}".json
+
+            grype -q "${image}" -o json > "${output_file}"
+
+            ./uds zarf tools yq "${output_file}"
+          done
