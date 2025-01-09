@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.6.2](https://github.com/defenseunicorns/uds-common/compare/v1.6.1...v1.6.2) (2025-01-09)
+
+
+### Bug Fixes
+
+* flavors containing a dash will fail on the upgrade task ([#375](https://github.com/defenseunicorns/uds-common/issues/375)) ([9acba5e](https://github.com/defenseunicorns/uds-common/commit/9acba5e299bc53ceeec6a985db02e23e1107b899))
+
+
+### Miscellaneous
+
+* **deps:** update uds common support dependencies ([#372](https://github.com/defenseunicorns/uds-common/issues/372)) ([2b2b3d2](https://github.com/defenseunicorns/uds-common/commit/2b2b3d27dc9cb47b79eedbf741c95af8f7bb8acf))
+
 ## [1.6.1](https://github.com/defenseunicorns/uds-common/compare/v1.6.0...v1.6.1) (2024-12-18)
 
 
