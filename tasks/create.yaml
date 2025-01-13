@@ -60,7 +60,7 @@ tasks:
     inputs:
       path:
         description: Path to the image being built
-        default: "."
+        default: .
       tag:
         description: The tag of the image to build
         default: ${IMAGE_TAG}
