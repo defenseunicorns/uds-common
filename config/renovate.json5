@@ -126,7 +126,7 @@
             "fileMatch": [".*\\.ya?ml$", ".*\\.sh$", ".*\\.?Dockerfile$"],
             "matchStrings": [
                 // Test: https://regex101.com/r/b53bEF/2
-                "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( extractVersion=(?<extractVersion>.*?))?( registryUrl=(?<registryUrl>.*?))?\\s.*[A-Z]+=['\"]?(?<currentValue>[v0-9].*?)['\"]?(\\s|$)"
+                "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( extractVersion=(?<extractVersion>.*?))?( registryUrl=(?<registryUrl>.*?))?\\s.*[A-Z]+=['\"]?(?<currentValue>[v0-9].*?)['\"]?(\\s|$)",
                 // Test: https://regex101.com/r/I6FpuD/1
                 "<!-- renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( extractVersion=(?<extractVersion>.*?))?( registryUrl=(?<registryUrl>.*?))? -->\\s.*[A-Z]+=['\"]?(?<currentValue>[v0-9].*?)['\"]?(\\s|$)"
             ],
@@ -138,7 +138,7 @@
             "fileMatch": [".*\\.ya?ml$"],
             "matchStrings": [
                 // Test: https://regex101.com/r/p3Cpjx/1
-                "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s.*brew.*@\\s*['\"]?(?<currentValue>[v0-9].*?)['\"]?(\\s|$)"
+                "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s.*brew.*@\\s*['\"]?(?<currentValue>[v0-9].*?)['\"]?(\\s|$)",
                 // Test: https://regex101.com/r/R0q5QF/1
                 "<!-- renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))? -->\\s.*brew.*@\\s*['\"]?(?<currentValue>[v0-9].*?)['\"]?(\\s|$)"
             ],
