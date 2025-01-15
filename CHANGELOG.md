@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.4](https://github.com/defenseunicorns/uds-common/compare/v1.6.3...v1.6.4) (2025-01-15)
+
+
+### Miscellaneous
+
+* remove schedule limitations on common renovate ([#381](https://github.com/defenseunicorns/uds-common/issues/381)) ([4fa00d6](https://github.com/defenseunicorns/uds-common/commit/4fa00d626863d7a9a118494ded28dd408e0ef97d))
+
 ## [1.6.3](https://github.com/defenseunicorns/uds-common/compare/v1.6.2...v1.6.3) (2025-01-15)
 
 
