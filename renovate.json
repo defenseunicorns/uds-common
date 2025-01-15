@@ -10,7 +10,6 @@
   "branchConcurrentLimit": 0,
   "prConcurrentLimit": 0,
   "prHourlyLimit": 0,
-  "schedule": ["after 7am and before 9am every weekday"],
   "separateMajorMinor": false,
   "regexManagers": [
     {
