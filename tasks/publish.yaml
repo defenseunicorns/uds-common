@@ -11,6 +11,7 @@ variables:
     default: uds
   - name: ENABLE_UDS_RELEASER
     default: "false"
+  - name: BASE_REPO
 
 tasks:
   - name: package
@@ -70,6 +71,7 @@ tasks:
       - task: utils:determine-repo
         with:
           team: ${{ .variables.TEAM }}
+          base_repo: ${{ .variables.BASE_REPO }}
       - description: Get the current Zarf package name
         cmd: cat ${{ .inputs.path }}/zarf.yaml | ./uds zarf tools yq .metadata.name
         setVariables:
@@ -98,6 +100,7 @@ tasks:
       - task: utils:determine-repo
         with:
           team: ${{ .variables.TEAM }}
+          base_repo: ${{ .variables.BASE_REPO }}
       - description: Get the current Zarf package name
         cmd: cat ${{ .inputs.path }}/zarf.yaml | ./uds zarf tools yq .metadata.name
         setVariables:
