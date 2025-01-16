@@ -15,7 +15,7 @@ spec:
       default: ${IRON_BANK_ROBOT_PASSWORD}
     chainguard-identity:
       default: ${CHAINGUARD_IDENTITY}
-    target-repo:
+    base-repo:
       default: ""
     team:
       default: uds
@@ -78,8 +78,8 @@ publish:
           --set ENABLE_UDS_RELEASER=true
         )
 
-        if [[ -n "$[[ inputs.target-repo ]]" ]]; then
-          ARGS+=(--set TARGET_REPO="$[[ inputs.target-repo ]]")
+        if [[ -n "$[[ inputs.base-repo ]]" ]]; then
+          ARGS+=(--set BASE_REPO="$[[ inputs.base-repo ]]")
         else
           ARGS+=(--set TEAM="$[[ inputs.team ]]")
         fi

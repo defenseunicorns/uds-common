@@ -135,6 +135,8 @@ tasks:
         default: ${BUNDLE_NAME}
     actions:
       - task: utils:determine-repo
+        with:
+          base_repo: ${{ .variables.BASE_REPO }}
       - description: Get the current UDS Bundle name
         cmd: cat ${{ .inputs.path }}/uds-bundle.yaml | ./uds zarf tools yq .metadata.name
         setVariables:

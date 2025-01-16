@@ -4,7 +4,6 @@
 variables:
   - name: FLAVOR
     default: upstream
-  - name: TARGET_REPO
 
 tasks:
   - name: determine-repo
@@ -23,16 +22,11 @@ tasks:
         description: Whether this is a snapshot release
         default: "false"
     actions:
-      - description: Use existing TARGET_REPO value from variable
-        # if the caller explicitly set a value for TARGET_REPO we'll use it
-        if: ${{ ne .variables.TARGET_REPO "" }}
-        cmd: echo "Using supplied value TARGET_REPO=${TARGET_REPO}"
       - description: Determine repository for the given flavor/type of release
-        if: ${{ eq .variables.TARGET_REPO "" }}
         cmd: |
           repo="${{.inputs.base_repo}}"
           # unicorn flavor = private repository
-          if [ "${{.inputs.flavor}}" = "unicorn" ]; then
+          if [ "${{.inputs.flavor}}" = "unicorn" ] && [ "${{.inputs.base_repo}}" = "ghcr.io/defenseunicorns/packages" ]; then
             repo="${repo}/private"
           fi
           repo="${repo}/${{.inputs.team}}"
