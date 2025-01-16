@@ -4,6 +4,7 @@
 variables:
   - name: FLAVOR
     default: upstream
+  - name: TARGET_REPO
 
 tasks:
   - name: determine-repo
@@ -24,14 +25,19 @@ tasks:
     actions:
       - description: Determine repository for the given flavor/type of release
         cmd: |
-          repo="${{.inputs.base_repo}}"
+          # DEPRECATED: TARGET_REPO being set directly is deprecated but not removed yet
+          if [ -n "$TARGET_REPO" ]; then
+            echo "$TARGET_REPO"
+            exit 0
+          fi
+          repo="${{ .inputs.base_repo }}"
           # unicorn flavor = private repository
-          if [ "${{.inputs.flavor}}" = "unicorn" ] && [ "${{.inputs.base_repo}}" = "ghcr.io/defenseunicorns/packages" ]; then
+          if [ "${{ .inputs.flavor }}" = "unicorn" ] && [ "${{ .inputs.base_repo }}" = "ghcr.io/defenseunicorns/packages" ]; then
             repo="${repo}/private"
           fi
-          repo="${repo}/${{.inputs.team}}"
+          repo="${repo}/${{ .inputs.team }}"
           # snapshots = snapshot repository
-          if [ "${{.inputs.snapshot}}" = "true" ]; then
+          if [ "${{ .inputs.snapshot }}" = "true" ]; then
             repo="${repo}/snapshots"
           fi
           echo "${repo}"
