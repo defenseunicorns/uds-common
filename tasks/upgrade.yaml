@@ -7,6 +7,7 @@ includes:
 variables:
   - name: FLAVOR
     default: upstream
+  - name: BASE_REPO
 
 tasks:
   - name: create-latest-tag-bundle
@@ -28,10 +29,6 @@ tasks:
         description: The team you want to pull the package from
         default: uds
 
-      target_repo:
-        description: The repository to pull from
-        default: ghcr.io/defenseunicorns/packages
-
       architecture:
         description: The architecture of the package to create
         default: ${UDS_ARCH}
@@ -43,7 +40,8 @@ tasks:
     actions:
       - task: utils:determine-repo
         with:
-          team: ${{.inputs.team}}
+          team: ${{ .inputs.team }}
+          base_repo: ${{ .variables.BASE_REPO }}
 
       - description: Remove copied repo
         cmd: rm -rf upgrade-test
