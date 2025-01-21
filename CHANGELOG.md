@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.7.0](https://github.com/defenseunicorns/uds-common/compare/v1.6.3...v1.7.0) (2025-01-17)
+
+
+### Features
+
+* add ability to specify base repo when publishing ([#385](https://github.com/defenseunicorns/uds-common/issues/385)) ([eab2d8e](https://github.com/defenseunicorns/uds-common/commit/eab2d8ea0ccec52d31cf282cef1335b7a44d01bb))
+
+
+### Miscellaneous
+
+* **deps:** update uds common support dependencies to v5.8.1 ([#386](https://github.com/defenseunicorns/uds-common/issues/386)) ([2cf5511](https://github.com/defenseunicorns/uds-common/commit/2cf55113fb67b7774af32ee5b57aff52f4a60f02))
+* remove schedule limitations on common renovate ([#381](https://github.com/defenseunicorns/uds-common/issues/381)) ([4fa00d6](https://github.com/defenseunicorns/uds-common/commit/4fa00d626863d7a9a118494ded28dd408e0ef97d))
+
+## [1.6.3](https://github.com/defenseunicorns/uds-common/compare/v1.6.2...v1.6.3) (2025-01-15)
+
+
+### Miscellaneous
+
+* add support for markdown comments to renovate config ([#378](https://github.com/defenseunicorns/uds-common/issues/378)) ([b29df6c](https://github.com/defenseunicorns/uds-common/commit/b29df6c35f39610fadb63157706c8deb37ba174a))
+* **deps:** update uds common support dependencies ([#380](https://github.com/defenseunicorns/uds-common/issues/380)) ([ecd4bf0](https://github.com/defenseunicorns/uds-common/commit/ecd4bf001378753dd870685084917f6cd7f119f4))
+* **deps:** update uds core to v0.34.0 ([#382](https://github.com/defenseunicorns/uds-common/issues/382)) ([2acb52c](https://github.com/defenseunicorns/uds-common/commit/2acb52ce910ea90c313159b57f99f0ebd728735d))
+
 ## [1.6.2](https://github.com/defenseunicorns/uds-common/compare/v1.6.1...v1.6.2) (2025-01-09)
 
 

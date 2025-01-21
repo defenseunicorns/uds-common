@@ -7,6 +7,7 @@ includes:
 variables:
   - name: FLAVOR
     default: upstream
+  - name: BASE_REPO
 
 tasks:
   - name: latest-package-release
@@ -25,6 +26,7 @@ tasks:
       - task: utils:determine-repo
         with:
           team: ${{.inputs.team}}
+          base_repo: ${{ .variables.BASE_REPO }}
       - description: Get the current Zarf package name
         cmd: cat ${{ .inputs.path }}/zarf.yaml | yq .metadata.name
         setVariables:
@@ -57,6 +59,8 @@ tasks:
         default: ghcr.io/defenseunicorns/packages/uds/bundles
     actions:
       - task: utils:determine-repo
+        with:
+          base_repo: ${{ .variables.BASE_REPO }}
       - description: Get the current uds bundle name
         cmd: cat ${{ .inputs.path }}/uds-bundle.yaml | yq .metadata.name
         setVariables:
