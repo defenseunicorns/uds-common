@@ -40,6 +40,7 @@ There are multiple task files available in this repository with different object
 |------|-------------|
 | **package** | Create the UDS Zarf Package in the repository |
 | **test-bundle** | Create the test bundle (bundling package + dependencies for testing) |
+| **image** | Create the image for the supplied architecture |
 
 ### [deploy.yaml](./tasks/deploy.yaml)
 
@@ -62,6 +63,7 @@ There are multiple task files available in this repository with different object
 | **release-please-publish** | Publish the UDS package using release-please based workflows |
 | **uds-releaser-publish** | Publish the UDS package using uds-releaser based workflows |
 | **test-bundle** | Publish the test bundle for the supplied architecture |
+| **image** | Publish the given image |
 
 ### [pull.yaml](./tasks/remove.yaml)
 
