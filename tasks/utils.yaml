@@ -36,6 +36,7 @@ tasks:
             repo="${repo}/private"
           fi
           # Use substring matching to not apply when in the uds-packages org
+          # shellcheck disable=SC2193
           if [[ "${{ .inputs.base_repo }}" != *"ghcr.io/uds-packages"* ]]; then
             repo="${repo}/${{ .inputs.team }}"
           fi
