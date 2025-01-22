@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.2](https://github.com/defenseunicorns/uds-common/compare/v1.7.1...v1.7.2) (2025-01-22)
+
+
+### Miscellaneous
+
+* fix mv command on upgrade tests ([#389](https://github.com/defenseunicorns/uds-common/issues/389)) ([a5100c4](https://github.com/defenseunicorns/uds-common/commit/a5100c4f88764736eed14a9153e9cd03b000b5db))
+
 ## [1.7.1](https://github.com/defenseunicorns/uds-common/compare/v1.7.0...v1.7.1) (2025-01-22)
 
 
