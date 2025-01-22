@@ -32,15 +32,23 @@ tasks:
           fi
           repo="${{ .inputs.base_repo }}"
           # unicorn flavor = private repository
-          if [ "${{ .inputs.flavor }}" = "unicorn" ] && [ "${{ .inputs.base_repo }}" = "ghcr.io/defenseunicorns/packages" ]; then
+          if [ "${{ .inputs.flavor }}" = "unicorn" ]; then
             repo="${repo}/private"
           fi
-          repo="${repo}/${{ .inputs.team }}"
+          # Use substring matching to not apply when in the uds-packages org
+          # shellcheck disable=SC2193
+          if [[ "${{ .inputs.base_repo }}" != *"ghcr.io/uds-packages"* ]]; then
+            repo="${repo}/${{ .inputs.team }}"
+          fi
+
           # snapshots = snapshot repository
           if [ "${{ .inputs.snapshot }}" = "true" ]; then
             repo="${repo}/snapshots"
           fi
           echo "${repo}"
         mute: true
+        shell:
+          darwin: bash
+          linux: bash
         setVariables:
           - name: TARGET_REPO
