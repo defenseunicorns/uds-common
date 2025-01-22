@@ -82,7 +82,7 @@ tasks:
             -o ${{ .inputs.path }}
 
           if [ ! -e "${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${{ .inputs.architecture }}-${LOCAL_VERSION}.tar.zst" ]; then
-            mv -n "${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${{ .inputs.architecture }}-${LATEST_VERSION%-"${FLAVOR}"}.tar.zst" "${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${{ .inputs.architecture }}-${LOCAL_VERSION}.tar.zst"
+            mv "${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${{ .inputs.architecture }}-${LATEST_VERSION%-"${FLAVOR}"}.tar.zst" "${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${{ .inputs.architecture }}-${LOCAL_VERSION}.tar.zst"
           fi
 
           # Run any dependency commands (i.e. uds run dependencies:create)
