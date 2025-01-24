@@ -65,7 +65,7 @@ Bronze packages:
 
 - [ ] **Should** be created from the [UDS Package Template](https://github.com/defenseunicorns/uds-package-template)
 - [ ] **Must** be declaratively bundled in a [Zarf package](https://docs.zarf.dev/ref/create/)
-- [ ] **Must** define any external interfaces under the `expose` key in the [UDS Package Custom Resource](https://github.com/defenseunicorns/uds-core/blob/main/docs/reference/configuration/uds-operator.md)
+- [ ] **Must** define any external interfaces under the `expose` key in the [UDS Package Custom Resource](https://github.com/defenseunicorns/uds-core/blob/main/docs/reference/configuration/UDS%20operator/package.md#example-uds-package-cr)
 - [ ] **Must** deploy and operate successfully with Istio injection enabled in the namespace.
 - [ ] **Must** implement Journey testing, covering the basic user flows and features of the application (see [Testing Guidelines](https://github.com/defenseunicorns/uds-common/blob/main/docs/uds-packages/guidelines/testing-guidelines.md))
 - [ ] **Must** implement Upgrade Testing to ensure that the current development package works when deployed over the previously released one. (see [Testing Guidelines](https://github.com/defenseunicorns/uds-common/blob/main/docs/uds-packages/guidelines/testing-guidelines.md))
