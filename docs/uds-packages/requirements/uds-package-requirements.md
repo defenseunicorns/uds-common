@@ -38,8 +38,8 @@ _a Silver UDS Package integrates with the main features of the UDS Operator, is 
 Silver packages:
 
 - [ ] **Must** satisfy all the requirements of [Bronze](https://github.com/defenseunicorns/uds-common/blob/main/docs/uds-packages/requirements/uds-package-requirements.md#bronze) Packages
-- [ ] **Must** define network policies under the `allow` key as required in the [UDS Package Custom Resource](https://github.com/defenseunicorns/uds-core/blob/main/docs/reference/configuration/uds-operator.md)
-- [ ] **Must** (except if the application provides no end user login) use and create a Keycloak client through the `sso` key. [UDS Package Custom Resource](https://github.com/defenseunicorns/uds-core/blob/main/docs/reference/configuration/uds-operator.md)
+- [ ] **Must** define network policies under the `allow` key as required in the [UDS Package Custom Resource](https://github.com/defenseunicorns/uds-core/blob/main/docs/reference/configuration/UDS%20operator/package.md#example-uds-package-cr)
+- [ ] **Must** (except if the application provides no end user login) use and create a Keycloak client through the `sso` key. [UDS Package Custom Resource](https://github.com/defenseunicorns/uds-core/blob/main/docs/reference/configuration/UDS%20operator/package.md#example-uds-package-cr)
 - [ ] **Must** (except if the application provides no application metrics) implement monitors for each application metrics endpoint using it's built-in chart monitors, `monitor` key, or manual monitors in the config chart.
 - [ ] **Must** integrate declaratively (i.e. no clickops) with the UDS Operator
 - [ ] **Should** expose all configuration (`uds.dev` CRs, additional `Secrets`/`ConfigMap`s, etc) through a Helm chart (ideally in a `chart` or `charts` directory).
