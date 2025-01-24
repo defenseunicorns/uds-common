@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.7.3](https://github.com/defenseunicorns/uds-common/compare/v1.7.2...v1.7.3) (2025-01-24)
+
+
+### Miscellaneous
+
+* add private back to other orgs and restrict teams ([#394](https://github.com/defenseunicorns/uds-common/issues/394)) ([c0ac619](https://github.com/defenseunicorns/uds-common/commit/c0ac619ba46fdc477996c947b527a1563dd81e8a))
+* **deps:** update support-deps to v3.28.3 ([#392](https://github.com/defenseunicorns/uds-common/issues/392)) ([32d768c](https://github.com/defenseunicorns/uds-common/commit/32d768c2f1ddb4bbdc96bb8545b2df6d10575fd6))
+* **deps:** update uds common support dependencies ([#395](https://github.com/defenseunicorns/uds-common/issues/395)) ([fdc8578](https://github.com/defenseunicorns/uds-common/commit/fdc8578692fa9bf3cf0494d7e6e1e8a7cbb7e00d))
+
 ## [1.7.2](https://github.com/defenseunicorns/uds-common/compare/v1.7.1...v1.7.2) (2025-01-22)
 
 
