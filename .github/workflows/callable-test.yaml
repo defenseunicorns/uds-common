@@ -84,6 +84,11 @@ jobs:
         run: uds run actions:verify-badge
         shell: bash
 
+      - name: Package Debug Output
+        if: ${{ always() }}
+        run: uds run debug-output
+        shell: bash
+
       - name: Debug Output
         if: ${{ always() }}
         run: uds run actions:debug-output
