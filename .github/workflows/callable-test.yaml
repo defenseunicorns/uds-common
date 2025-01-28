@@ -34,10 +34,6 @@ on:
         type: boolean
         description: "Whether to append LICENSE_KEY to the test command"
         default: false
-    secrets:
-      LICENSE_KEY:
-        required: false
-        description: "License key for packages that require it"        
 
 # Permissions for the GITHUB_TOKEN used by the workflow.
 permissions:
