@@ -30,6 +30,10 @@ on:
         # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
         default: 0.17.0
         type: string
+      requires_license:
+        type: boolean
+        description: "Whether to append LICENSE_KEY to the test command"
+        default: false        
 
 # Permissions for the GITHUB_TOKEN used by the workflow.
 permissions:
@@ -70,7 +74,7 @@ jobs:
         shell: bash
 
       - name: Test
-        run: uds run actions:test-deploy --set FLAVOR="${{ inputs.flavor }}" --set TYPE="${{ inputs.type }}" --set LICENSE_KEY="${{ secrets.LICENSE_KEY }}"
+        run: uds run actions:test-deploy --set FLAVOR="${{ inputs.flavor }}" --set TYPE="${{ inputs.type }}"${{ inputs.requires_license == true && ' --set LICENSE_KEY="' + secrets.LICENSE_KEY + '"' || '' }}
         shell: bash
 
       - name: UDS Badge Verification
