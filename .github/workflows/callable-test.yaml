@@ -75,7 +75,7 @@ jobs:
 
       - name: Test
         run: |
-          if [[ "${{ inputs.requires_license }}" == "true" ]]; then
+          if ${{ inputs.requires_license }}; then
             uds run actions:test-deploy \
               --set FLAVOR="${{ inputs.flavor }}" \
               --set TYPE="${{ inputs.type }}" \
