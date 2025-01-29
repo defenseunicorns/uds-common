@@ -74,17 +74,7 @@ jobs:
         shell: bash
 
       - name: Test
-        run: |
-          if ${{ inputs.requires_license }}; then
-            uds run actions:test-deploy \
-              --set FLAVOR="${{ inputs.flavor }}" \
-              --set TYPE="${{ inputs.type }}" \
-              --set LICENSE_KEY="${{ secrets.LICENSE_KEY }}"
-          else
-            uds run actions:test-deploy \
-              --set FLAVOR="${{ inputs.flavor }}" \
-              --set TYPE="${{ inputs.type }}"
-          fi
+        run: uds run actions:test-deploy --set FLAVOR="${{ inputs.flavor }}" --set TYPE="${{ inputs.type }}" --set LICENSE_KEY="${{ secrets.LICENSE_KEY }}"
         shell: bash
 
       - name: UDS Badge Verification
