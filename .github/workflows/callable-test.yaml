@@ -74,7 +74,7 @@ jobs:
         shell: bash
 
       - name: Test
-        run: uds run actions:test-deploy --set FLAVOR="${{ inputs.flavor }}" --set TYPE="${{ inputs.type }}" --set OPTIONS="--set LICENSE_KEY='${{ secrets.LICENSE_KEY }}'"
+        run: uds run actions:test-deploy --set FLAVOR="${{ inputs.flavor }}" --set TYPE="${{ inputs.type }}" --set OPTIONS="--set LICENSE_KEY=${{ secrets.LICENSE_KEY }}"
         shell: bash
 
       - name: UDS Badge Verification
