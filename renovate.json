@@ -11,32 +11,52 @@
   "prConcurrentLimit": 0,
   "prHourlyLimit": 0,
   "separateMajorMinor": false,
-  "regexManagers": [
+  "customManagers": [
     {
+      "customType": "regex",
       "depNameTemplate": "defenseunicorns/uds-core",
-      "fileMatch": ["tasks/README\\.md"],
-      "matchStrings": ["- UDS Core: (?<currentValue>.*)"],
+      "fileMatch": [
+        "tasks/README\\.md"
+      ],
+      "matchStrings": [
+        "- UDS Core: (?<currentValue>.*)"
+      ],
       "datasourceTemplate": "github-tags",
       "extractVersionTemplate": "^v(?<version>.*)$"
     },
     {
+      "customType": "regex",
       "depNameTemplate": "defenseunicorns/uds-cli",
-      "fileMatch": ["tasks/README\\.md"],
-      "matchStrings": ["- UDS CLI: (?<currentValue>.*)"],
+      "fileMatch": [
+        "tasks/README\\.md"
+      ],
+      "matchStrings": [
+        "- UDS CLI: (?<currentValue>.*)"
+      ],
       "datasourceTemplate": "github-tags",
       "extractVersionTemplate": "^v(?<version>.*)$"
     },
     {
+      "customType": "regex",
       "depNameTemplate": "k3d-io/k3d",
-      "fileMatch": ["tasks/README\\.md"],
-      "matchStrings": ["- K3D: (?<currentValue>.*)"],
+      "fileMatch": [
+        "tasks/README\\.md"
+      ],
+      "matchStrings": [
+        "- K3D: (?<currentValue>.*)"
+      ],
       "datasourceTemplate": "github-tags",
       "extractVersionTemplate": "^v(?<version>.*)$"
     },
     {
+      "customType": "regex",
       "depNameTemplate": "defenseunicorns/lula",
-      "fileMatch": ["tasks/README\\.md"],
-      "matchStrings": ["- Lula: (?<currentValue>.*)"],
+      "fileMatch": [
+        "tasks/README\\.md"
+      ],
+      "matchStrings": [
+        "- Lula: (?<currentValue>.*)"
+      ],
       "datasourceTemplate": "github-tags",
       "extractVersionTemplate": "^v(?<version>.*)$"
     }
@@ -44,15 +64,23 @@
   "packageRules": [
     {
       "groupName": "UDS Common Support Dependencies",
-      "labels": ["support-deps"],
+      "labels": [
+        "support-deps"
+      ],
       "commitMessageTopic": "support-deps",
-      "packagePatterns": ["*"]
+      "matchPackageNames": [
+        "*"
+      ]
     },
     {
       "groupName": "UDS Common Package Dependencies",
-      "labels": ["package-deps"],
+      "labels": [
+        "package-deps"
+      ],
       "commitMessageTopic": "package-deps",
-      "matchPackagePatterns": [".*nginx.*"]
+      "matchPackageNames": [
+        "/.*nginx.*/"
+      ]
     }
   ]
 }
