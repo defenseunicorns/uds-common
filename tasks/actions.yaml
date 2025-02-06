@@ -212,14 +212,14 @@ tasks:
         if: ${{ eq .variables.TYPE "install" }}
         cmd: |
           if uds run --list | grep -q 'test-package'; then
-            ./uds run test-package --set FLAVOR=${{ .variables.FLAVOR }} ${{ .variables.OPTIONS }} --no-progress
+            ./uds ${{ .variables.OPTIONS }} run test-package --set FLAVOR=${{ .variables.FLAVOR }} --no-progress
           else
-            ./uds run test-install --set FLAVOR=${{ .variables.FLAVOR }} ${{ .variables.OPTIONS }} --no-progress
+            ./uds ${{ .variables.OPTIONS }} run test-install --set FLAVOR=${{ .variables.FLAVOR }} --no-progress
           fi
 
       - description: Test upgrading the package/bundle
         if: ${{ eq .variables.TYPE "upgrade" }}
-        cmd: ./uds run test-upgrade --set FLAVOR=${{ .variables.FLAVOR }} ${{ .variables.OPTIONS }} --no-progress
+        cmd: ./uds ${{ .variables.OPTIONS }} run test-upgrade --set FLAVOR=${{ .variables.FLAVOR }} --no-progress
 
   - name: verify-badge
     description: Perform verification to assist with UDS badge certification
