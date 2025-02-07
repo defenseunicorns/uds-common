@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.8.0](https://github.com/defenseunicorns/uds-common/compare/v1.7.4...v1.8.0) (2025-02-07)
+
+
+### Features
+
+* do not run commitlint on draft MRs ([#405](https://github.com/defenseunicorns/uds-common/issues/405)) ([a1c0aaa](https://github.com/defenseunicorns/uds-common/commit/a1c0aaa6b86b56935f43c6514d2c70d96b091938))
+* expose UDS CLI flag options for GitLab test template ([#407](https://github.com/defenseunicorns/uds-common/issues/407)) ([3ad5594](https://github.com/defenseunicorns/uds-common/commit/3ad5594e71de922f2e11f970e4eb30238eb28931))
+
+
+### Bug Fixes
+
+* update uds-package-requirements.md ([#396](https://github.com/defenseunicorns/uds-common/issues/396)) ([22d8f2d](https://github.com/defenseunicorns/uds-common/commit/22d8f2dd638e424c7c96f1b835afca35c014d88f))
+
+
+### Miscellaneous
+
+* **config:** migrate renovate config ([#402](https://github.com/defenseunicorns/uds-common/issues/402)) ([d7ae1d2](https://github.com/defenseunicorns/uds-common/commit/d7ae1d2d522dd3b497ed376e13c253d8448be152))
+* **deps:** update nginx to v1.27.4 ([#404](https://github.com/defenseunicorns/uds-common/issues/404)) ([407615e](https://github.com/defenseunicorns/uds-common/commit/407615e94c9f9bf8a09ebba5480a7846b784c542))
+* **deps:** update uds common support dependencies ([#408](https://github.com/defenseunicorns/uds-common/issues/408)) ([e581eec](https://github.com/defenseunicorns/uds-common/commit/e581eec15af81aeedcc3207f5a710d32aa5766f0))
+* **deps:** update zarf to v0.48.1 ([#406](https://github.com/defenseunicorns/uds-common/issues/406)) ([07d8f11](https://github.com/defenseunicorns/uds-common/commit/07d8f118512c4752d001383304224006e1cb4e7c))
+
 ## [1.7.4](https://github.com/defenseunicorns/uds-common/compare/v1.7.3...v1.7.4) (2025-02-04)
 
 
