@@ -159,56 +159,78 @@ tasks:
   - name: license
     description: Lint for the SPDX license identifier being in source files
     actions:
-      - description: Checking for SPDX headers
+      - description: Checking for SPDX headers using YAML config
         shell:
           darwin: bash
           linux: bash
         cmd: |
-          # check for addlicense bin
-          if [ -x "$HOME/go/bin/addlicense" ]; then
-              echo "addlicense installed in $HOME/go/bin"
-          else
-              echo "Error: addlicense is not installed in $HOME/go/bin" >&2
-              exit 1
+          CONFIG_FILE=".license_config.yaml"
+
+          # Parse configuration from YAML (only license, copyright, and ignore)
+          LICENSE=$(uds zarf tools yq e '.license' "$CONFIG_FILE")
+          COPYRIGHT=$(uds zarf tools yq e '.copyright' "$CONFIG_FILE")
+
+          # Exit if license or copyright are not provided
+          if [ -z "$LICENSE" ] || [ "$LICENSE" = "null" ] || [ -z "$COPYRIGHT" ] || [ "$COPYRIGHT" = "null" ]; then
+            echo "License or copyright configuration not provided; exiting."
+            exit 0
           fi
 
-          ignore_flags=()
-          while IFS= read -r line; do
-            # Skip comments and empty lines
-            [ -z "$line" ] || [[ "$line" =~ ^# ]] && continue
-            # Add the line to ignore_flags array with quotes around it
-            ignore_flags+=("-ignore" "\"$line\"")
-          done < .gitignore
+          # Check for addlicense binary
+          if [ ! -x "$HOME/go/bin/addlicense" ]; then
+            echo "Error: addlicense is not installed in $HOME/go/bin" >&2
+            exit 1
+          fi
 
-          # Construct the command as a string
-          eval "$HOME/go/bin/addlicense -l \"AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial\" -check -s=only -v -c \"Defense Unicorns\" ${ignore_flags[*]} . 2>/dev/null"
+          # Build ignore flags from config file
+          ignore_flags=()
+          while IFS= read -r pattern; do
+            [ -z "$pattern" ] && continue
+            ignore_flags+=("-ignore" "\"$pattern\"")
+          done < <(uds zarf tools yq e '.ignore[]' "$CONFIG_FILE")
+
+          # Construct the addlicense command with hard-coded flags for checking
+          cmd="$HOME/go/bin/addlicense -l \"$LICENSE\" -check -s=only -v -c \"$COPYRIGHT\" ${ignore_flags[*]} . 2>/dev/null"
+          echo "Running: $cmd"
+          eval "$cmd"
 
   - name: fix-license
     description: Add the SPDX license identifier to source files
     actions:
-      - description: Adding SPDX headers
+      - description: Adding SPDX headers using YAML config
         shell:
           darwin: bash
           linux: bash
         cmd: |
-          # check for addlicense bin
-          if [ -x "$HOME/go/bin/addlicense" ]; then
-              echo "addlicense installed in $HOME/go/bin"
-          else
-              echo "Error: addlicense is not installed in $HOME/go/bin" >&2
-              exit 1
+          CONFIG_FILE=".license_config.yaml"
+
+          # Parse configuration from YAML (only license, copyright, and ignore)
+          LICENSE=$(uds zarf tools yq e '.license' "$CONFIG_FILE")
+          COPYRIGHT=$(uds zarf tools yq e '.copyright' "$CONFIG_FILE")
+
+          # Exit if license or copyright are not provided
+          if [ -z "$LICENSE" ] || [ "$LICENSE" = "null" ] || [ -z "$COPYRIGHT" ] || [ "$COPYRIGHT" = "null" ]; then
+            echo "License or copyright configuration not provided; exiting."
+            exit 0
           fi
 
-          ignore_flags=()
-          while IFS= read -r line; do
-            # Skip comments and empty lines
-            [ -z "$line" ] || [[ "$line" =~ ^# ]] && continue
-            # Add the line to ignore_flags array with quotes around it
-            ignore_flags+=("-ignore" "\"$line\"")
-          done < .gitignore
+          # Check for addlicense binary
+          if [ ! -x "$HOME/go/bin/addlicense" ]; then
+            echo "Error: addlicense is not installed in $HOME/go/bin" >&2
+            exit 1
+          fi
 
-          # Construct the command as a string
-          eval "$HOME/go/bin/addlicense -l \"AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial\" -s=only -v -c \"Defense Unicorns\" ${ignore_flags[*]} . 2>/dev/null"
+          # Build ignore flags from config file
+          ignore_flags=()
+          while IFS= read -r pattern; do
+            [ -z "$pattern" ] && continue
+            ignore_flags+=("-ignore" "\"$pattern\"")
+          done < <(uds zarf tools yq e '.ignore[]' "$CONFIG_FILE")
+
+          # Construct the addlicense command with hard-coded flags for fixing (omitting -check)
+          cmd="$HOME/go/bin/addlicense -l \"$LICENSE\" -s=only -v -c \"$COPYRIGHT\" ${ignore_flags[*]} . 2>/dev/null"
+          echo "Running: $cmd"
+          eval "$cmd"
 
   - name: tasks
     description: Dry run all tasks in the base tasks file
