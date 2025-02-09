@@ -181,9 +181,9 @@ tasks:
             exit 0
           fi
 
-          # Check for addlicense binary
-          if [ ! -x "$HOME/go/bin/addlicense" ]; then
-            echo "Error: addlicense is not installed in $HOME/go/bin" >&2
+          # Check for addlicense binary in $PATH
+          if ! command -v addlicense >/dev/null 2>&1; then
+            echo "Error: addlicense is not found in PATH" >&2
             exit 1
           fi
 
@@ -226,9 +226,9 @@ tasks:
             exit 0
           fi
 
-          # Check for addlicense binary
-          if [ ! -x "$HOME/go/bin/addlicense" ]; then
-            echo "Error: addlicense is not installed in $HOME/go/bin" >&2
+          # Check for addlicense binary in $PATH
+          if ! command -v addlicense >/dev/null 2>&1; then
+            echo "Error: addlicense is not found in PATH" >&2
             exit 1
           fi
 
