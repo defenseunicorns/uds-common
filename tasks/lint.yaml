@@ -188,9 +188,8 @@ tasks:
               exit 1
             fi
           fi
-  
 
-  # Build ignore flags if the config file exists
+          # Build ignore flags if the config file exists
           ignore_flags=()
           if [ -f "$CONFIG_FILE" ]; then
             while IFS= read -r pattern; do
