@@ -209,7 +209,7 @@ tasks:
           darwin: bash
           linux: bash
         cmd: |
-          CONFIG_FILE="license_config.yaml"
+          CONFIG_FILE=".license_config.yaml"
 
           # If the config file exists, parse its values; otherwise, use default values.
           if [ -f "$CONFIG_FILE" ]; then
