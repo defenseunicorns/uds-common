@@ -114,7 +114,7 @@ tasks:
       - description: Install k3d
         env:
           # renovate: datasource=github-tags depName=k3d-io/k3d versioning=semver-coerced
-          - K3D_VERSION=v5.8.1
+          - K3D_VERSION=v5.8.2
         cmd: |
           curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | TAG="${K3D_VERSION}" bash
 
