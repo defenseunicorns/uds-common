@@ -84,6 +84,16 @@ There are multiple task files available in this repository with different object
 
 ### [lint.yaml](./tasks/lint.yaml)
 
+This task file defines a set of linting commands to ensure code quality and compliance. It includes tasks to install linting tool dependencies, perform checks on YAML files and OSCAL configurations, validate shell scripts with shellcheck, and verify or add the SPDX license identifier in source files. Both the `license` and `fix-license` tasks parse a `.license_config.yaml` file in the project root directory, but will default to the Defense Unicorns dual-license if the file is not present.
+
+#### Example `.license_config.yaml`
+
+```yaml
+license: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
+copyright: Defense Unicorns
+ignore: [] # an array of paths to ignore
+```
+
 | Name | Description |
 |------|-------------|
 | **deps** | Install linting tool dependencies |
