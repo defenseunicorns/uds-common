@@ -80,7 +80,9 @@ publish:
 
         if [[ -n "$[[ inputs.base-repo ]]" ]]; then
           ARGS+=(--set BASE_REPO="$[[ inputs.base-repo ]]")
-        else
+        fi
+
+        if [[ -n "$[[ inputs.team ]]" ]]; then
           ARGS+=(--set TEAM="$[[ inputs.team ]]")
         fi
 
