@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.8.1](https://github.com/defenseunicorns/uds-common/compare/v1.8.0...v1.8.1) (2025-02-20)
+
+
+### Miscellaneous
+
+* **deps:** update k3d to v5.8.2 ([#411](https://github.com/defenseunicorns/uds-common/issues/411)) ([2b5ffb5](https://github.com/defenseunicorns/uds-common/commit/2b5ffb5c773f74efb94834ae5cc49ea2341fb391))
+* **deps:** update uds common support dependencies ([#413](https://github.com/defenseunicorns/uds-common/issues/413)) ([1576d4e](https://github.com/defenseunicorns/uds-common/commit/1576d4e167c4650d510432acada4891b36b0042f))
+
 ## [1.8.0](https://github.com/defenseunicorns/uds-common/compare/v1.7.4...v1.8.0) (2025-02-07)
 
 
