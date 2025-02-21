@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.9.0](https://github.com/defenseunicorns/uds-common/compare/v1.8.1...v1.9.0) (2025-02-21)
+
+
+### Features
+
+* add license config support ([#409](https://github.com/defenseunicorns/uds-common/issues/409)) ([6a7fbc3](https://github.com/defenseunicorns/uds-common/commit/6a7fbc32a4befa0259f8e7f0be4c244cf2413619))
+
+
+### Bug Fixes
+
+* add ignored_version input for upgrades ([#417](https://github.com/defenseunicorns/uds-common/issues/417)) ([27a6ace](https://github.com/defenseunicorns/uds-common/commit/27a6acea0f111c2843246742cff663af25a0d86d))
+* pass down team input ([#414](https://github.com/defenseunicorns/uds-common/issues/414)) ([309fd16](https://github.com/defenseunicorns/uds-common/commit/309fd168a0832d8fd3e9e0c7edf12cf36a3d89ce))
+
 ## [1.8.1](https://github.com/defenseunicorns/uds-common/compare/v1.8.0...v1.8.1) (2025-02-20)
 
 
