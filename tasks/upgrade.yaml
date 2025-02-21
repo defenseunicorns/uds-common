@@ -67,6 +67,7 @@ tasks:
           darwin: bash
         dir: upgrade-test
         cmd: |
+          set -x
           git reset --hard HEAD
           BUNDLE_VERSION=$(cat ../${{ .inputs.bundle_path }}/uds-bundle.yaml | ./uds zarf tools yq .metadata.version)
           TAG="$(git describe --tags "$(git rev-list --tags --max-count=1)" 2>/dev/null || echo '')"
@@ -75,10 +76,10 @@ tasks:
           # VARIABLES
           PACKAGE_NAME=$(cat ${{ .inputs.path }}/zarf.yaml | ./uds zarf tools yq .metadata.name)
           LOCAL_VERSION=$(cat ${{ .inputs.path }}/zarf.yaml | ./uds zarf tools yq .metadata.version)
-          if [[ "${{ .inputs.ignored_versions }}" != "" ]]; then
-            LATEST_VERSION=$(./uds zarf tools registry ls "${TARGET_REPO}/${PACKAGE_NAME}" | grep -v "${{ .inputs.ignored_versions }}" | grep "${FLAVOR}" | sort -V | tail -1)
-          else
+          if [[ -z "${{ .inputs.ignored_versions }}" ]]; then
             LATEST_VERSION=$(./uds zarf tools registry ls "${TARGET_REPO}/${PACKAGE_NAME}" | grep "${FLAVOR}" | sort -V | tail -1)
+          else
+            LATEST_VERSION=$(./uds zarf tools registry ls "${TARGET_REPO}/${PACKAGE_NAME}" | grep -v "${{ .inputs.ignored_versions }}" | grep "${FLAVOR}" | sort -V | tail -1)
           fi
           BUNDLE_NAME=$(cat ${{ .inputs.bundle_path }}/uds-bundle.yaml | ./uds zarf tools yq .metadata.name)
           PREVIOUS_BUNDLE_VERSION=$(cat ${{ .inputs.bundle_path }}/uds-bundle.yaml | ./uds zarf tools yq .metadata.version)
