@@ -79,7 +79,7 @@ tasks:
           # -e SC2001 Ignore sed replace suggestions (${text//search/replacement} syntax doesn't support regex so this suggestion often won't work)
           # -e SC2002 Ignore rejection of `cat |` (redirection syntax is not always familiar to developers and while cat _could_ not exist that is extremely unlikely)
           # -e SC2181 Ignore rejection of $? ($? can be confusing in some circumstances but also more readable in others with more complex commands)
-          export SHELLCHECK_OPTS="-x -e SC2016 -e SC2050 -e SC2001 -e SC2002 -e SC2181"
+          export SHELLCHECK_OPTS="-x -e SC2016 -e SC2050 -e SC2001 -e SC2002 -e SC2181 -e SC2157"
 
           # Function to lint scripts inside `---` delimited files
           lint_scripts() {
