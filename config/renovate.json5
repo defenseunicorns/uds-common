@@ -305,6 +305,18 @@
             "datasourceTemplate": "docker",
             // Match versioning used on UDS packages. Test: https://regex101.com/r/BGkYHX/4
             "versioningTemplate": "regex:^v?(?<major>\\d+)(\\.(?<minor>\\d+))?(\\.(?<patch>\\d+))?(-uds\\.(?<build>\\d))?(-(?<compatibility>\\w+)?)?(.*?)?$"
+        },
+        // Matches playwright docker image tags, set by default for packages in package template: https://github.com/uds-packages/template/blob/3df17ca97a778dd3acb25fab47b3d38e59b663ea/tasks/test.yaml#L71
+        {
+            "customType": "regex",
+            "fileMatch": [
+                "^tasks/test.yaml$"
+                ],
+            "matchStrings": [
+                "(?<depName>mcr\\.microsoft\\.com/playwright):(?<currentValue>v[\\w.-]+)"
+            ],
+            "datasourceTemplate": "docker",
+            "versioningTemplate": "docker"
         }
     ],
     "packageRules": [
