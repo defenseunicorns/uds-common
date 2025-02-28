@@ -313,7 +313,7 @@
                 "^tasks/test.yaml$"
                 ],
             "matchStrings": [
-                \\ Test: https://regex101.com/r/SRZycH/2
+                // Test: https://regex101.com/r/SRZycH/2
                 "(?<depName>mcr\\.microsoft\\.com/playwright):(?<currentValue>v[\\w.-]+)"
             ],
             "datasourceTemplate": "docker",
