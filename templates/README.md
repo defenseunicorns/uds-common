@@ -7,6 +7,7 @@ This folder contains the GitLab CI Components for UDS Common, analogous to the G
 1. Test
 1. Publish
 1. Scorecard
+1. Deploy
 
 The .gitlab-ci.yml at the root of this repo serves as an example and test of how to call these components. That being said, a general example of how to include these components in a GitLab `uds-package` is as follows:
 
@@ -19,11 +20,14 @@ include:
     inputs:
       flavor: $FLAVOR
       type: $TYPE
-      runsOn: gitlab-runner-4c-${ARCH}
+      runs-on: gitlab-runner-4c-${ARCH}
   - component: $CI_SERVER_FQDN/path/to/uds-common/publish@0.0.0
     inputs:
       flavor: $FLAVOR
-      runsOn: gitlab-runner-4c-${ARCH}
+      runs-on: gitlab-runner-4c-${ARCH}
+  - component: $CI_SERVER_FQDN/path/to/uds-common/deploy@0.0.0
+    inputs:
+      environment: dev
 # Define a matrix for the test job to follow for the flavors that exist for your package
 test:
   parallel:
