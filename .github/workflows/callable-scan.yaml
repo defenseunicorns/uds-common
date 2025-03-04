@@ -80,9 +80,9 @@ jobs:
           fail-build: false
 
       - name: upload sarif as artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
-          name: sarif
+          name: sarif-${{ matrix.image }}
           path: ${{ steps.scan.outputs.sarif }}
 
       - name: Upload SARIF for ${{ matrix.image }}
