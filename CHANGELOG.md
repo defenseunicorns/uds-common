@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.10.0](https://github.com/defenseunicorns/uds-common/compare/v1.9.1...v1.10.0) (2025-03-04)
+
+
+### Features
+
+* create deploy template ([#423](https://github.com/defenseunicorns/uds-common/issues/423)) ([72dfee3](https://github.com/defenseunicorns/uds-common/commit/72dfee3dd83fb6a6d06eb677cf0ef86627f756bb))
+
+
+### Miscellaneous
+
+* **deps:** update support-deps to v4.1.4 ([#420](https://github.com/defenseunicorns/uds-common/issues/420)) ([c79df16](https://github.com/defenseunicorns/uds-common/commit/c79df165549b39898d403545754641d45e991eaa))
+* **deps:** update uds common support dependencies to v0.22.0 ([#419](https://github.com/defenseunicorns/uds-common/issues/419)) ([24742af](https://github.com/defenseunicorns/uds-common/commit/24742afdc308540fd0e844045bf9da95029e7aab))
+* **deps:** update uds core to v0.37.0 ([#424](https://github.com/defenseunicorns/uds-common/issues/424)) ([5959d1e](https://github.com/defenseunicorns/uds-common/commit/5959d1e28b8ace6ad87bc8737e2b912dedfe9d26))
+* migrate renovate extends config ([#422](https://github.com/defenseunicorns/uds-common/issues/422)) ([a353f5d](https://github.com/defenseunicorns/uds-common/commit/a353f5d8adbb59dee5d31a1cdbfb55fa630ab22b))
+
 ## [1.9.1](https://github.com/defenseunicorns/uds-common/compare/v1.9.0...v1.9.1) (2025-02-24)
 
 
