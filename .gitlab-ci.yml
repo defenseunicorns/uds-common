@@ -23,11 +23,11 @@ include:
       #reports-path: sample-reports/playwright
 
       # if setting target repo, this will be used directly for the oci publish
-      #target-repo: ${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}
+      #base-repo: ${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}
 
       # if you override team here it will be included in the determined target repo
       # for the oci publish (default is uds)
-      # only used if target-repo is not set
+      # only used if base-repo is not set
       #team: my-team
   - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/scorecard@$CI_COMMIT_SHA
 

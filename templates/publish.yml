@@ -15,10 +15,14 @@ spec:
       default: ${IRON_BANK_ROBOT_PASSWORD}
     chainguard-identity:
       default: ${CHAINGUARD_IDENTITY}
-    target-repo:
+    base-repo:
       default: ""
     team:
       default: uds
+    mirror:
+      default: "true"
+    mirror-project-id:
+      default: ${MIRROR_PROJECT_ID}
 ---
 publish:
   variables:
@@ -74,15 +78,35 @@ publish:
           --set ENABLE_UDS_RELEASER=true
         )
 
-        if [[ -n "$[[ inputs.target-repo ]]" ]]; then
-          ARGS+=(--set TARGET_REPO="$[[ inputs.target-repo ]]")
-        else
+        if [[ -n "$[[ inputs.base-repo ]]" ]]; then
+          ARGS+=(--set BASE_REPO="$[[ inputs.base-repo ]]")
+        fi
+
+        if [[ -n "$[[ inputs.team ]]" ]]; then
           ARGS+=(--set TEAM="$[[ inputs.team ]]")
         fi
 
         echo Running $TASK_NAME "${ARGS[@]}" ${OPTIONS}
 
         UDS_USE_CHECKPOINT=false uds run $TASK_NAME "${ARGS[@]}" ${OPTIONS}
+
+    # TODO: @corang - this will be removed upon deployment of uds registry
+    # Mirror package to github
+    - |
+        if [[ "$[[ inputs.mirror ]]" == "true" ]]; then
+          export PKG_VERSION="$(uds-releaser show $[[ inputs.flavor ]] --version-only)"
+          export PKG_NAME="$(yq '.metadata.name' zarf.yaml)"
+          curl -sS --request POST \
+            --form "token=${CI_JOB_TOKEN}" \
+            --form "variables[VERSION]=${PKG_VERSION}" \
+            --form "variables[PROJECT_NAME]=${CI_PROJECT_NAME}" \
+            --form "variables[PROJECT_NAMESPACE]=${CI_PROJECT_NAMESPACE}" \
+            --form "variables[PACKAGE_NAME]=${PKG_NAME}" \
+            --form "variables[FLAVOR]=$[[ inputs.flavor ]]" \
+            --form "variables[ARCH]=${arch}" \
+            --form ref=main "${CI_API_V4_URL}/projects/$[[ inputs.mirror-project-id ]]/trigger/pipeline"
+        fi
+
 
   after_script:
     # Save logs, which will run even if the script section fails

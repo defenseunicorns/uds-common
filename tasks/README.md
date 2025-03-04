@@ -11,10 +11,10 @@ Pinning to a specific tag of a task (rather than `main`) with renovate watching 
 
 ## Supported Tool Versions
 
-- UDS CLI: 0.19.2
-- UDS Core: 0.32.1
-- K3D: 5.7.5
-- Lula: 0.12.0
+- UDS CLI: 0.22.0
+- UDS Core: 0.37.0
+- K3D: 5.8.3
+- Lula: 0.16.0
 
 > [!NOTE]
 > Zarf is not required for tasks in this repo, the vendored zarf (`uds zarf`) included with UDS CLI is used instead to prevent version mismatches.
@@ -83,6 +83,16 @@ There are multiple task files available in this repository with different object
 | **determine-repo** | Determines the OCI repository that this flavor should go into (i.e. 'unicorn' should be private) |
 
 ### [lint.yaml](./tasks/lint.yaml)
+
+This task file defines a set of linting commands to ensure code quality and compliance. It includes tasks to install linting tool dependencies, perform checks on YAML files and OSCAL configurations, validate shell scripts with shellcheck, and verify or add the SPDX license identifier in source files. Both the `license` and `fix-license` tasks parse a `.license_config.yaml` file in the project root directory, but will default to the Defense Unicorns dual-license if the file is not present.
+
+#### Example `.license_config.yaml`
+
+```yaml
+license: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
+copyright: Defense Unicorns
+ignore: [] # an array of paths to ignore
+```
 
 | Name | Description |
 |------|-------------|

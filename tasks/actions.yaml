@@ -114,7 +114,7 @@ tasks:
       - description: Install k3d
         env:
           # renovate: datasource=github-tags depName=k3d-io/k3d versioning=semver-coerced
-          - K3D_VERSION=v5.7.5
+          - K3D_VERSION=v5.8.3
         cmd: |
           curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | TAG="${K3D_VERSION}" bash
 
@@ -123,7 +123,7 @@ tasks:
       - description: Install Lula
         env:
           # renovate: datasource=github-tags depName=defenseunicorns/lula versioning=semver-coerced
-          - LULA_VERSION=v0.12.0
+          - LULA_VERSION=v0.16.0
         cmd: |
           curl -o /usr/local/bin/lula -L \
           "https://github.com/defenseunicorns/lula/releases/download/${LULA_VERSION}/lula_${LULA_VERSION}_$(uname -s)_${{ .variables.ARCH }}" \
