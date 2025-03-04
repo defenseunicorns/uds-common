@@ -5,9 +5,9 @@ name: Scan
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [main]
   schedule:
-    - cron: '0 */12 * * *'
+    - cron: 0 */12 * * *
   # This workflow is triggered on pull requests to the main branch.
   pull_request:
     paths-ignore:
