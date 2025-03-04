@@ -1,0 +1,35 @@
+# Copyright 2024 Defense Unicorns
+# SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
+
+spec:
+  inputs:
+    config:
+    environment:
+    runs-on:
+      default: gitlab-runner-4c-amd64
+    registry1-username:
+      default: ${IRON_BANK_ROBOT_USERNAME}
+    registry1-password:
+      default: ${IRON_BANK_ROBOT_PASSWORD}
+    chainguard-identity:
+      default: ${CHAINGUARD_IDENTITY}
+---
+deploy:$[[ inputs.environment ]]:
+  script:
+    # Authenticate registries
+    - |
+      uds run actions:authenticate-registries --set REGISTRY1_USERNAME="$[[ inputs.registry1-username ]]" \
+                                              --set REGISTRY1_PASSWORD="$[[ inputs.registry1-password ]]" \
+                                              --set CHAINGUARD_IDENTITY="$[[ inputs.chainguard-identity ]]" \
+                                              --set CHAINGUARD_TOKEN="$CHAINGUARD_TOKEN" \
+                                              --set GITLAB_REGISTRY_URL="$CI_REGISTRY" \
+                                              --set GITLAB_REGISTRY_USER="$CI_REGISTRY_USER" \
+                                              --set GITLAB_REGISTRY_TOKEN="$CI_REGISTRY_PASSWORD" \
+                                              --set GHCR_REGISTRY_USER="$GH_USER_READ_ONLY" \
+                                              --set GHCR_REGISTRY_TOKEN="$GH_PAT_READ_ONLY"
+    # Create package
+    - uds run create:package
+    # Deploy package
+    - uds run deploy:package --set ZARF_CONFIG="$[[ inputs.config ]]"
+  tags:
+    - $[[ inputs.runs-on ]]
