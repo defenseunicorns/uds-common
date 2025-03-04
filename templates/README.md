@@ -47,6 +47,13 @@ publish:
         ARCH: [amd64, arm64]
       - FLAVOR: [registry1]
         ARCH: [amd64]
+
+# Example deploy job for a prototype environment where the kube context is set up
+deploy:dev:
+  before_script:
+    - aws eks update-kubeconfig --region xxx --name xxx
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 ```
 
 ## Repo Setup
