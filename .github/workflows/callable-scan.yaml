@@ -55,7 +55,6 @@ jobs:
   scan-images:
     needs: get-image-list
     runs-on: ubuntu-latest
-    name: Scan ${{ matrix.image }}
     strategy:
       matrix:
         image: ${{ fromJson(needs.get-image-list.outputs.image_name_list) }}
@@ -87,7 +86,7 @@ jobs:
         id: scan
         uses: anchore/scan-action@v6.1.0
         with:
-          image: "${{ steps.get-image.outputs.image }}"
+          image: ${{ steps.get-image.outputs.image }}
           fail-build: false
 
       - name: Upload SARIF
