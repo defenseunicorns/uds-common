@@ -82,14 +82,20 @@ jobs:
           docker tag ${{ matrix.image }} "$NEW_TAG"
           echo "NEW_TAG=$NEW_TAG" >> "$GITHUB_OUTPUT"
 
-      - name: Scan image ${{ matrix.image }}
+      - name: Scan image
         id: scan
         uses: anchore/scan-action@v6.1.0
         with:
           image: ${{ steps.retag.outputs.NEW_TAG }}
           fail-build: false
 
-      - name: Upload SARIF for ${{ matrix.image }}
+      - name: Upload SARIF as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sarif
+          path: ${{ steps.scan.outputs.sarif }}
+
+      - name: Upload SARIF
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: ${{ steps.scan.outputs.sarif }}
