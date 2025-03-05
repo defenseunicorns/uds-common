@@ -33,6 +33,7 @@ jobs:
   get-image-list:
     runs-on: ubuntu-latest
     outputs:
+      image_name_list: ${{ steps.get-image-list.outputs.image_list }}
       image_list: ${{ steps.get-image-list.outputs.image_list }}
     steps:
       - name: Checkout repository
@@ -46,7 +47,9 @@ jobs:
       - name: Get image list from zarf.yaml
         id: get-image-list
         run: |
-          IMAGE_LIST=$(uds zarf tools yq -r -o=json -I=0 '{"include": [.components.[].images] | flatten | unique | map(select((test(".sig") | not) and (test(".att") | not)) | {"image": split(":")[0], "tag": split(":")[1]})}' ${{ inputs.zarfYamlPath }})
+          IMAGE_NAME_LIST=$(uds zarf tools yq -r -o=json -I=0 '[.components.[].images] | flatten | unique | . |= map(select((test(".sig") | not) and (test(".att") | not)) | split(":")[0])' ${{ inputs.zarfYamlPath }})
+          IMAGE_LIST=$(uds zarf tools yq -r -o=json -I=0 '[.components.[].images] | flatten | unique | . |= map(select((test(".sig") | not) and (test(".att") | not)) | {"name": split(":")[0], "tag": split(":")[1]})' ${{ inputs.zarfYamlPath }})
+          echo "image_name_list=$IMAGE_NAME_LIST" >> "$GITHUB_OUTPUT"
           echo "image_list=$IMAGE_LIST" >> "$GITHUB_OUTPUT"
 
   scan-images:
@@ -54,7 +57,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Scan ${{ matrix.image }}
     strategy:
-      matrix: ${{ fromJson(needs.get-image-list.outputs.image_list) }}
+      matrix: ${{ fromJson(needs.get-image-list.outputs.image_name_list) }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -77,7 +80,7 @@ jobs:
         id: scan
         uses: anchore/scan-action@v6.1.0
         with:
-          image: "${{ matrix.image }}:${{ matrix.tag }}"
+          image: "${{ matrix.image }}:$(echo ${{ needs.get-image-list.outputs.image_list }} | yq -r '.[] | select(.name == \"${{ matrix.image }}\") | .tag')"
           fail-build: false
 
       - name: Upload SARIF
