@@ -72,18 +72,22 @@ jobs:
             --set CHAINGUARD_IDENTITY="${{ secrets.CHAINGUARD_IDENTITY }}"
         shell: bash
 
+      - name: Pull and retag image
+        id: retag
+        run: |
+          docker pull ${{ matrix.image }}
+          IMAGE_PATH=$(echo ${{ matrix.image }} | cut -d ':' -f 1)
+          IMAGE_PATH_SHA_SHORT=$(echo ${IMAGE_PATH} | sha256sum | cut -c1-12)
+          NEW_TAG="${IMAGE_PATH}:${IMAGE_PATH_SHA_SHORT}"
+          docker tag ${{ matrix.image }} "$NEW_TAG"
+          echo "NEW_TAG=$NEW_TAG" >> "$GITHUB_OUTPUT"
+
       - name: Scan image ${{ matrix.image }}
         id: scan
         uses: anchore/scan-action@v6.1.0
         with:
-          image: ${{ matrix.image }}
+          image: ${{ steps.retag.outputs.NEW_TAG }}
           fail-build: false
-
-      - name: upload sarif as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: sarif
-          path: ${{ steps.scan.outputs.sarif }}
 
       - name: Upload SARIF for ${{ matrix.image }}
         uses: github/codeql-action/upload-sarif@v3
