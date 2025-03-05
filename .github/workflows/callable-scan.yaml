@@ -77,11 +77,17 @@ jobs:
             --set CHAINGUARD_IDENTITY="${{ secrets.CHAINGUARD_IDENTITY }}"
         shell: bash
 
+      - name: Get full image
+        id: get-image
+        run: |
+          echo "image=${{ matrix.image }}:$(echo '${{ needs.get-image-list.outputs.image_list }}' | yq -r '.[] | select(.name == "${{ matrix.image }}") | .tag')" >> "$GITHUB_OUTPUT"
+        shell: bash
+
       - name: Scan image
         id: scan
         uses: anchore/scan-action@v6.1.0
         with:
-          image: "${{ matrix.image }}:$(echo ${{ needs.get-image-list.outputs.image_list }} | yq -r '.[] | select(.name == \"${{ matrix.image }}\") | .tag')"
+          image: "${{ steps.get-image.outputs.image }}"
           fail-build: false
 
       - name: Upload SARIF
