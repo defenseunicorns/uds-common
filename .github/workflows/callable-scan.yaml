@@ -33,7 +33,7 @@ jobs:
   get-image-list:
     runs-on: ubuntu-latest
     outputs:
-      image_name_list: ${{ steps.get-image-list.outputs.image_list }}
+      image_name_list: ${{ steps.get-image-list.outputs.image_name_list }}
       image_list: ${{ steps.get-image-list.outputs.image_list }}
     steps:
       - name: Checkout repository
