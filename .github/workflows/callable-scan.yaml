@@ -86,7 +86,7 @@ jobs:
         id: scan
         uses: anchore/scan-action@v6.1.0
         with:
-          image: ${{ steps.get-image.outputs.image }}
+          image: "${{ steps.get-image.outputs.image }}"
           fail-build: false
 
       - name: Post Process SARIF
