@@ -118,8 +118,12 @@ jobs:
           }
           ')
 
+          line_hash=$(awk "NR==$line_number" "${{ inputs.zarfYamlPath }}" | sha256sum | cut -d' ' -f1)
+
+          jq ".runs[].results[].partialFingerprints.primaryLocationLineHash = ${line_hash}" ${{ steps.scan.outputs.sarif }} | sed 's/&/\\u0026/g' | sed 's/>/\\u003e/g' > ${{ steps.scan.outputs.sarif }}.mid
+
           # Create new sarif file with modified physicalLocation
-          jq ".runs[].results[].locations[].physicalLocation = ${NEW_LOCATION}" ${{ steps.scan.outputs.sarif }} | sed 's/&/\\u0026/g' | sed 's/>/\\u003e/g' > ${{ steps.scan.outputs.sarif }}.new
+          jq ".runs[].results[].locations[].physicalLocation = ${NEW_LOCATION}" ${{ steps.scan.outputs.sarif }}.mid | sed 's/&/\\u0026/g' | sed 's/>/\\u003e/g' > ${{ steps.scan.outputs.sarif }}.new
 
       - name: Upload SARIF
         uses: github/codeql-action/upload-sarif@v3
