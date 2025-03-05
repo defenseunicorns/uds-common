@@ -77,7 +77,7 @@ jobs:
         id: scan
         uses: anchore/scan-action@v6.1.0
         with:
-          image: "${{ matrix.image-tag.image }}:${{ matrix.image-tag.tag }}"
+          image: "${{ matrix.image }}:${{ matrix.tag }}"
           fail-build: false
 
       - name: Upload SARIF as artifact
