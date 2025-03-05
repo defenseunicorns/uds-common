@@ -89,7 +89,39 @@ jobs:
           image: ${{ steps.get-image.outputs.image }}
           fail-build: false
 
+      - name: Post Process SARIF
+        shell: bash
+        run: |
+          # Find the line number of the image in the zarf.yaml file
+          location=$(grep -n -o '[^\w/-]${{ matrix.image }}:' "${{ inputs.zarfYamlPath }}" | head -n 1)
+
+          if [ -z "$location" ]; then
+            echo "String not found"
+            exit 1
+          fi
+
+          line_number=$(echo "$location" | cut -d: -f1)
+          end_column=$(grep '[^\w/]${{ matrix.image }}:' zarf.yaml | wc -m)
+
+          # Create new physicalLocation json object
+          NEW_LOCATION=$(jq -n --arg line_number "$line_number" --arg end_column "$end_column" '
+          {
+            "artifactLocation": {
+              "uri": "${{ inputs.zarfYamlPath }}"
+            },
+            region: {
+              startLine: $line_number | tonumber,
+              startColumn: 1 | tonumber,
+              endLine: $line_number | tonumber,
+              endColumn: $end_column | tonumber
+            }
+          }
+          ')
+
+          # Create new sarif file with modified physicalLocation
+          jq ".runs[].results[].locations[].physicalLocation = ${NEW_LOCATION}" ${{ steps.scan.outputs.sarif }} | sed 's/&/\\u0026/g' | sed 's/>/\\u003e/g' > ${{ steps.scan.outputs.sarif }}.new
+
       - name: Upload SARIF
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: ${{ steps.scan.outputs.sarif }}
+          sarif_file: ${{ steps.scan.outputs.sarif }}.new
