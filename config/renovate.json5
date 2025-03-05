@@ -275,18 +275,18 @@
         },
         // Matches individual helm packages in a `zarf.yaml`'s `charts:` section that are stored in a GitLab package registry
         {
-          "customType": "regex",
-          "fileMatch": [
-            "(^|/)zarf\\.yaml$"
-          ],
-          "matchStringsStrategy": "recursive",
-          "matchStrings": [
-            "(?m)charts:(.|\\n)*?(^\\s{4}[\\w:]+|\\n$|^\\s{2}-)",
-            "(?m)name:(.|\\n)+?(^\\s{4}[\\w\\-:]+|\\n$|^\\s{2}-|^\\s{6}-)",
-            "(?m)name:(.|\\n)*?version:\\s*[\"']?(?<currentValue>.+?)[\"']?$(.|\\n)*?url:\\s*[\"']?(?<gitlabUrl>https?:\\/\\/(?:[^\\/]*gitlab[^\\/]*)\\/.*?api\\/v4\\/projects\\/.*?\\/packages\\/helm\\/stable)[\"']?(.|\\n)*?repoName:\\s*[\"']?(?<depName>[^\"'\\n]+)[\"']?"
-          ],
-          "datasourceTemplate": "gitlab-packages",
-          "depNameTemplate": "{{{depName}}}"
+            "customType": "regex",
+            "fileMatch": [
+                "(^|/)zarf\\.yaml$"
+            ],
+            "matchStringsStrategy": "recursive",
+            "matchStrings": [
+                "(?m)charts:(.|\\n)*?(^\\s{4}[\\w:]+|\\n$|^\\s{2}-)",
+                "(?m)name:(.|\\n)+?(^\\s{4}[\\w\\-:]+|\\n$|^\\s{2}-|^\\s{6}-)",
+                "(?m)name:(.|\\n)*?version:\\s*[\"']?(?<currentValue>.+?)[\"']?$(.|\\n)*?url:\\s*[\"']?(?<registryUrl>https?:\\/\\/(?:[^\\/]*gitlab[^\\/]*)?)(?:\\/.*?api\\/v4\\/projects\\/.*?\\/packages\\/helm\\/stable)[\"']?(.|\\n)*?repoName:\\s*[\"']?(?<depName>[^\"'\\n]+)[\"']?"
+            ],
+            "datasourceTemplate": "gitlab-packages",
+            "registryUrlTemplate": "{{{registryUrl}}}"
         },
         // Matches individual kustomizations in a `zarf.yaml`'s `manifests:` section using a github url with a ref
         {
