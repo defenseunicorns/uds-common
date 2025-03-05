@@ -46,14 +46,15 @@ jobs:
       - name: Get image list from zarf.yaml
         id: get-image-list
         run: |
-          IMAGE_LIST=$(uds zarf tools yq -r -o=json -I=0 '[.components.[].images] | flatten | unique | . |= map(select((test(".sig") | not) and (test(".att") | not)))' ${{ inputs.zarfYamlPath }})
+          IMAGE_LIST=$(uds zarf tools yq -r -o=json -I=0 '[.components.[].images] | flatten | unique | . |= map(select((test(".sig") | not) and (test(".att") | not)) | {"image": split(":")[0], "tag": split(":")[1]})' ${{ inputs.zarfYamlPath }})
           echo "image_list=$IMAGE_LIST" >> "$GITHUB_OUTPUT"
   scan-images:
     needs: get-image-list
     runs-on: ubuntu-latest
+    name: Scan ${{ matrix.image }}
     strategy:
       matrix:
-        image: ${{ fromJson(needs.get-image-list.outputs.image_list) }}
+        includes: ${{ fromJson(needs.get-image-list.outputs.image_list) }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -72,21 +73,11 @@ jobs:
             --set CHAINGUARD_IDENTITY="${{ secrets.CHAINGUARD_IDENTITY }}"
         shell: bash
 
-      - name: Pull and retag image
-        id: retag
-        run: |
-          docker pull ${{ matrix.image }}
-          IMAGE_PATH=$(echo ${{ matrix.image }} | cut -d ':' -f 1)
-          IMAGE_PATH_SHA_SHORT=$(echo ${IMAGE_PATH} | sha256sum | cut -c1-12)
-          NEW_TAG="${IMAGE_PATH}:${IMAGE_PATH_SHA_SHORT}"
-          docker tag ${{ matrix.image }} "$NEW_TAG"
-          echo "NEW_TAG=$NEW_TAG" >> "$GITHUB_OUTPUT"
-
       - name: Scan image
         id: scan
         uses: anchore/scan-action@v6.1.0
         with:
-          image: ${{ steps.retag.outputs.NEW_TAG }}
+          image: "${{ matrix.image }}:${{ matrix.tag }}"
           fail-build: false
 
       - name: Upload SARIF as artifact
