@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.2](https://github.com/defenseunicorns/uds-common/compare/v1.10.1...v1.10.2) (2025-03-07)
+
+
+### Bug Fixes
+
+* hotfix uds-pk download ([#433](https://github.com/defenseunicorns/uds-common/issues/433)) ([8a6b09c](https://github.com/defenseunicorns/uds-common/commit/8a6b09c51c5a09191f15b0b7d33b14fb8d5c5fb8))
+
 ## [1.10.1](https://github.com/defenseunicorns/uds-common/compare/v1.10.0...v1.10.1) (2025-03-07)
 
 
