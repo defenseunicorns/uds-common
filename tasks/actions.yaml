@@ -132,7 +132,7 @@ tasks:
       - description: Install uds-releaser
         env:
           # renovate: datasource=github-tags depName=defenseunicorns/uds-releaser versioning=semver-coerced
-          - UDS_RELEASER_VERSION=v0.0.6
+          - UDS_RELEASER_VERSION=v0.0.7
         cmd: |
           curl -o /usr/local/bin/uds-releaser -L \
           "https://github.com/defenseunicorns/uds-releaser/releases/download/${UDS_RELEASER_VERSION}/uds-releaser_${UDS_RELEASER_VERSION}_$(uname -s)_${{ .variables.ARCH }}" \
