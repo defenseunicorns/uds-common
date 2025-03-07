@@ -8,7 +8,7 @@ spec:
 ---
 lint:
   rules:
-    - if: $CI_MERGE_REQUEST_ID
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     # this is needed for yamllint to be on path
     - export PATH=/home/ubuntu/.local/bin:$PATH
