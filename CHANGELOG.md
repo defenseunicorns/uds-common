@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.3](https://github.com/defenseunicorns/uds-common/compare/v1.10.2...v1.10.3) (2025-03-07)
+
+
+### Miscellaneous
+
+* **deps:** update release-please to v4.2.0 ([#432](https://github.com/defenseunicorns/uds-common/issues/432)) ([3efbda5](https://github.com/defenseunicorns/uds-common/commit/3efbda5e0f47c400acecf84ea8cd47a3cf98056d))
+
 ## [1.10.2](https://github.com/defenseunicorns/uds-common/compare/v1.10.1...v1.10.2) (2025-03-07)
 
 
