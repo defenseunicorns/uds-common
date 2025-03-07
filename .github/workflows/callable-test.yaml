@@ -35,7 +35,7 @@ on:
       udsCliVersion:
         description: The uds-cli version to install
         # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
-        default: 0.22.0
+        default: 0.23.0
         type: string
 
 # Permissions for the GITHUB_TOKEN used by the workflow.
