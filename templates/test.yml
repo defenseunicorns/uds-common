@@ -26,7 +26,7 @@ test:
     CHAINGUARD_TOKEN:
       aud: https://console-api.enforce.dev
   rules:
-    - if: $CI_MERGE_REQUEST_ID
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       when: always
   allow_failure:
     exit_codes: 222 # using something here to exit with a warning

@@ -9,7 +9,7 @@ spec:
 run-scorecard:
   #todo (ewyles) - decide correct time to run this. on github it runs on merge to main
   rules:
-    - if: $CI_MERGE_REQUEST_ID
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - echo 'Running scorecard'
     - docker run -e SCORECARD_EXPERIMENTAL=1 -e GITLAB_AUTH_TOKEN=$SCORECARD_TOKEN gcr.io/openssf/scorecard:stable --repo $CI_PROJECT_URL --format=json 1>openssf_scorecard.json
