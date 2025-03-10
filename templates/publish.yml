@@ -94,7 +94,7 @@ publish:
     # Mirror package to github
     - |
         if [[ "$[[ inputs.mirror ]]" == "true" ]]; then
-          export PKG_VERSION="$(uds-releaser show $[[ inputs.flavor ]] --version-only)"
+          export PKG_VERSION="$(uds-releaser release show $[[ inputs.flavor ]] --version-only)"
           export PKG_NAME="$(yq '.metadata.name' zarf.yaml)"
           curl -sS --request POST \
             --form "token=${CI_JOB_TOKEN}" \
