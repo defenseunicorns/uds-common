@@ -107,7 +107,7 @@ tasks:
           - name: PACKAGE_NAME
       - description: publish using uds-releaser
         cmd: |
-          ./uds zarf package publish "${{ .inputs.path }}/zarf-package-${{ .inputs.name }}-${{ .inputs.architecture }}-$(uds-releaser show ${{ .variables.FLAVOR }} --version-only).tar.zst" "oci://${TARGET_REPO}"
+          ./uds zarf package publish "${{ .inputs.path }}/zarf-package-${{ .inputs.name }}-${{ .inputs.architecture }}-$(uds-releaser release show ${{ .variables.FLAVOR }} --version-only).tar.zst" "oci://${TARGET_REPO}"
 
           if [ -n "${GITLAB_CI}" ]; then
             uds-releaser release gitlab "${{ .variables.FLAVOR }}"
