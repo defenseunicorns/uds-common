@@ -188,9 +188,13 @@ tasks:
             exit 1
           fi
 
-          # Check for addlicense binary
-          if [ ! -x "$HOME/go/bin/addlicense" ]; then
-            echo "Error: addlicense is not installed in $HOME/go/bin" >&2
+          # Check for addlicense binary. Look in $PATH first with fallback to $HOME/go/bin
+          if command -v addlicense >/dev/null 2>&1; then
+            ADDLICENSE_CMD="addlicense"
+          elif [ -x "$HOME/go/bin/addlicense" ]; then
+            ADDLICENSE_CMD="$HOME/go/bin/addlicense"
+          else
+            echo "Error: addlicense is not found in PATH or in $HOME/go/bin" >&2
             exit 1
           fi
 
@@ -216,7 +220,7 @@ tasks:
           if [ "${{ .inputs.fix }}" != "true" ]; then
             check_flag="-check"
           fi
-          cmd="$HOME/go/bin/addlicense -l \"$LICENSE\" $check_flag -s=only -v -c \"$COPYRIGHT\" ${ignore_flags[*]} . 2>/dev/null"
+          cmd="$ADDLICENSE_CMD -l \"$LICENSE\" $check_flag -s=only -v -c \"$COPYRIGHT\" ${ignore_flags[*]} . 2>/dev/null"
           echo "Running: $cmd"
           eval "$cmd"
 
