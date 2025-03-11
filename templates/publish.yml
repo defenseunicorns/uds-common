@@ -33,7 +33,7 @@ publish:
       aud: https://console-api.enforce.dev
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-    - if: $CI_MERGE_REQUEST_ID
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       variables:         # Override DRY_RUN defined
         DRY_RUN: "true"  # at the job level.
   script:
