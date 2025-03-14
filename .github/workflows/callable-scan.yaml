@@ -84,7 +84,7 @@ jobs:
             for FLAVOR in ${FLAVORS}; do
               TAG=$(gh api -H "Accept: application/vnd.github.v3+json" "/orgs/${REPO_OWNER}/packages/container/${PACKAGE}/versions" | jq -r "[.[] | select(.metadata.container.tags[] | contains(\"${FLAVOR}\"))] | .[0].metadata.container.tags[0]")
 
-              if [[ -z "$TAG" ]]; then
+              if [[ "$TAG" == "null" ]]; then
                 echo "No tag found for package ${PACKAGE} with flavor ${FLAVOR}"
                 continue
               else
