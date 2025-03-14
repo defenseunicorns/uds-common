@@ -73,18 +73,28 @@ jobs:
 
           COMBINED_JSON="[]"
 
+          FLAVORS=$(uds zarf tools yq -r '.components[].only.flavor' ${{ inputs.zarfYamlPath }})
+
           for PACKAGE in ${PACKAGES}; do
-            TAG=$(gh api -H "Accept: application/vnd.github.v3+json" "/orgs/${REPO_OWNER}/packages/container/${PACKAGE}/versions" | jq -r '.[0].metadata.container.tags[0]')
-            IMAGE="ghcr.io/${REPO_OWNER}/${PACKAGE}"
+            for FLAVOR in ${FLAVORS}; do
+              TAG=$(gh api -H "Accept: application/vnd.github.v3+json" "/orgs/${REPO_OWNER}/packages/container/${PACKAGE}/versions" | jq -r "[.[] | select(.metadata.container.tags[] | contains(\"${FLAVOR}\"))] | .[0].metadata.container.tags[0]")
 
-            manifestDigest=$(crane manifest "${IMAGE}:${TAG}" | jq -r '.manifests[0].digest')
+              if [[ -z "$TAG" ]]; then
+                echo "No tag found for package ${PACKAGE} with flavor ${FLAVOR}"
+                continue
+              else
+                IMAGE="ghcr.io/${REPO_OWNER}/${PACKAGE}"
 
-            tarDigest=$(crane manifest "${IMAGE}@${manifestDigest}" | jq -r '.layers[] | select(.annotations["org.opencontainers.image.title"] == "sboms.tar") | .digest')
+                manifestDigest=$(crane manifest "${IMAGE}:${TAG}" | jq -r '.manifests[0].digest')
 
-            sbomList=$(crane blob "${IMAGE}@${tarDigest}" | tar -tv | grep json | awk '{print $6}')
+                tarDigest=$(crane manifest "${IMAGE}@${manifestDigest}" | jq -r '.layers[] | select(.annotations["org.opencontainers.image.title"] == "sboms.tar") | .digest')
 
-            for sbom in $sbomList; do
-              COMBINED_JSON=$(echo "${COMBINED_JSON}" | jq -c --arg imageDigest "${IMAGE}@${tarDigest}" --arg sbomName "${sbom}" '. + [{imageDigest: $imageDigest, sbomName: $sbomName}]')
+                sbomList=$(crane blob "${IMAGE}@${tarDigest}" | tar -tv | grep json | awk '{print $6}')
+
+                for sbom in $sbomList; do
+                  COMBINED_JSON=$(echo "${COMBINED_JSON}" | jq -c --arg imageDigest "${IMAGE}@${tarDigest}" --arg sbomName "${sbom}" '. + [{imageDigest: $imageDigest, sbomName: $sbomName}]')
+                done
+              fi
             done
           done
 
@@ -137,6 +147,7 @@ jobs:
         run: |
           NAME=$(jq -r '.metadata.component.name + "@" + .metadata.component.version' ${{ steps.scan.outputs.cyclonedx-json }})
           NAME="${NAME//\//_}"
+          NAME="${NAME/docker.io_library_/}"
           mv ${{ steps.scan.outputs.cyclonedx-json }} "${NAME}.json"
           echo "artifactName=${NAME}" >> "$GITHUB_OUTPUT"
 
@@ -184,6 +195,7 @@ jobs:
         run: |
           NAME=$(jq -r '.metadata.component.name + "@" + .metadata.component.version' ${{ steps.scan.outputs.cyclonedx-json }})
           NAME="${NAME//\//_}"
+          NAME="${NAME/docker.io_library_/}"
           mv ${{ steps.scan.outputs.cyclonedx-json }} "${NAME}.json"
           echo "artifactName=${NAME}" >> "$GITHUB_OUTPUT"
 
