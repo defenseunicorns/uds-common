@@ -53,7 +53,7 @@ jobs:
           REPO_NAME: ${{ github.event.repository.name }}
         run: |
           PACKAGES=""
-          PACKAGE_NAME=$(echo "$BASE_REPO" | awk -F'/' 'BEGIN{OFS="/"} {if (NF > 2) {for (i=3; i<=NF; i++) printf (i==3 ? $i : "/"$i); print ""} else print ""}')$(yq e '.metadata.name' zarf.yaml)
+          PACKAGE_NAME=$(echo "$BASE_REPO" | awk -F'/' 'BEGIN{OFS="/"} {if (NF > 2) {for (i=3; i<=NF; i++) printf (i==3 ? $i : "/"$i); print ""} else print ""}')/$(yq e '.metadata.name' zarf.yaml)
 
           # Check for the public package
           if gh api --silent /orgs/"$REPO_OWNER"/packages/container/"$PACKAGE_NAME" >/dev/null 2>&1; then
@@ -61,7 +61,11 @@ jobs:
           fi
 
           # Check for the private package variant
-          PRIVATE_PACKAGE="${PACKAGE_NAME}-private"
+          if [[ $REPO_OWNER == "defenseunicorns" ]]; then
+            PRIVATE_PACKAGE=$(echo "$PACKAGE_NAME" | sed 's/packages/&\/private/')
+          else
+            PRIVATE_PACKAGE="private/$PACKAGE_NAME"
+          fi
           if gh api --silent /orgs/"$REPO_OWNER"/packages/container/"$PRIVATE_PACKAGE" >/dev/null 2>&1; then
             PACKAGES="$PACKAGES $PRIVATE_PACKAGE"
           fi
