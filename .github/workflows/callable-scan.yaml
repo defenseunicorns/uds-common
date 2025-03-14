@@ -51,13 +51,13 @@ jobs:
 
       - name: Get SBOMs
         id: get-sboms
+        shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
           BASE_REPO: ${{ inputs.baseRepo }}
           REPO_OWNER: ${{ github.repository_owner }}
           REPO_NAME: ${{ github.event.repository.name }}
         run: |
-          set -euxo pipefail
           PACKAGES=""
           PACKAGE_NAME=$(echo "$BASE_REPO" | awk -F'/' 'BEGIN{OFS="/"} {if (NF > 2) {for (i=3; i<=NF; i++) printf (i==3 ? $i : "/"$i); print ""} else print ""}')/$(yq e '.metadata.name' zarf.yaml)
 
