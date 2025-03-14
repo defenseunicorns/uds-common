@@ -1,5 +1,31 @@
 # Changelog
 
+## [1.10.3](https://github.com/defenseunicorns/uds-common/compare/v1.10.2...v1.10.3) (2025-03-10)
+
+
+### Bug Fixes
+
+* show command is now under release ([#437](https://github.com/defenseunicorns/uds-common/issues/437)) ([9ff9c7e](https://github.com/defenseunicorns/uds-common/commit/9ff9c7e88b80db89285df43face4c9b5914468dc))
+
+
+### Miscellaneous
+
+* **deps:** update release-please to v4.2.0 ([#432](https://github.com/defenseunicorns/uds-common/issues/432)) ([3efbda5](https://github.com/defenseunicorns/uds-common/commit/3efbda5e0f47c400acecf84ea8cd47a3cf98056d))
+
+## [1.10.2](https://github.com/defenseunicorns/uds-common/compare/v1.10.1...v1.10.2) (2025-03-07)
+
+
+### Bug Fixes
+
+* hotfix uds-pk download ([#433](https://github.com/defenseunicorns/uds-common/issues/433)) ([8a6b09c](https://github.com/defenseunicorns/uds-common/commit/8a6b09c51c5a09191f15b0b7d33b14fb8d5c5fb8))
+
+## [1.10.1](https://github.com/defenseunicorns/uds-common/compare/v1.10.0...v1.10.1) (2025-03-07)
+
+
+### Miscellaneous
+
+* **deps:** update uds common support dependencies ([#427](https://github.com/defenseunicorns/uds-common/issues/427)) ([066d202](https://github.com/defenseunicorns/uds-common/commit/066d20274b4eacf7e3c55c7dac8a4c2035daa499))
+
 ## [1.10.0](https://github.com/defenseunicorns/uds-common/compare/v1.9.1...v1.10.0) (2025-03-04)
 
 
