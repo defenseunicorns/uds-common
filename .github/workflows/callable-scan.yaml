@@ -252,7 +252,8 @@ jobs:
               sbomName=$(echo "$sbomScan" | cut -d "@" -f 1)
 
               if [[ "$imageName" == "$sbomName" ]]; then
-                COMMENT_MARKDOWN+=$(go run main.go compare-scans "sbom-scan-results/$sbomScan" "image-scan-results/$imageScan")
+                # Allow different images is necessary because of implied urls with docker hub images (i.e. docker.io/library isn't always present)
+                COMMENT_MARKDOWN+=$(go run main.go compare-scans "sbom-scan-results/$sbomScan" "image-scan-results/$imageScan --allow-different-images")
               fi
             done
           done
