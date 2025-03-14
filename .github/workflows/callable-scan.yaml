@@ -6,6 +6,10 @@ name: Callable-Scan
 on:
   workflow_call:
     inputs:
+      baseRepo:
+        description: The base url to look for packages at
+        default: ghcr.io/defenseunicorns/packages
+        type: string
       udsCliVersion:
         description: The uds-cli version to install
         # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
@@ -20,9 +24,8 @@ on:
 permissions:
   contents: read # Allows reading the content of the repository.
   packages: read # Allows reading the content of the repository's packages.
-  id-token: write
-  security-events: write
-  actions: read
+  id-token: write # Allows authentication to Chainguard via OIDC.
+  pull-requests: write # Allows writing the scan results comment to the pull request.
 
 # Abort prior jobs in the same workflow / PR
 concurrency:
@@ -30,11 +33,62 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  get-image-list:
+  get-sboms:
     runs-on: ubuntu-latest
     outputs:
-      image_name_list: ${{ steps.get-image-list.outputs.image_name_list }}
-      image_list: ${{ steps.get-image-list.outputs.image_list }}
+      sboms: ${{ steps.get-sboms.outputs.sboms }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Setup crane
+        uses: imjasonh/setup-crane@v0.4
+
+      - name: Get SBOMs
+        id: get-sboms
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BASE_URL: ${{ inputs.baseRepo }}
+          REPO_OWNER: ${{ github.repository_owner }}
+          REPO_NAME: ${{ github.event.repository.name }}
+        run: |
+          PACKAGES=""
+          PACKAGE_NAME=$(yq e '.metadata.name' zarf.yaml)
+
+          # Check for the public package
+          if gh api --silent /orgs/"$REPO_OWNER"/packages/container/"$PACKAGE_NAME" >/dev/null 2>&1; then
+            PACKAGES="$PACKAGES $PACKAGE_NAME"
+          fi
+
+          # Check for the private package variant
+          PRIVATE_PACKAGE="${PACKAGE_NAME}-private"
+          if gh api --silent /orgs/"$REPO_OWNER"/packages/container/"$PRIVATE_PACKAGE" >/dev/null 2>&1; then
+            PACKAGES="$PACKAGES $PRIVATE_PACKAGE"
+          fi
+
+          COMBINED_JSON="[]"
+
+          for PACKAGE in ${PACKAGES}; do
+            TAG=$(gh api -H "Accept: application/vnd.github.v3+json" /orgs/${REPO_OWNER}/packages/container/${PACKAGE}/versions | jq -r '.[0].metadata.container.tags[0]')
+            IMAGE="ghcr.io/${REPO_OWNER}/${PACKAGE}"
+
+            manifestDigest=$(crane manifest ${IMAGE}:${TAG} | jq -r '.manifests[0].digest')
+
+            tarDigest=$(crane manifest "${IMAGE}@${manifestDigest}" | jq -r '.layers[] | select(.annotations["org.opencontainers.image.title"] == "sboms.tar") | .digest')
+
+            sbomList=$(crane blob "${IMAGE}@${tarDigest}" | tar -tv | grep json | awk '{print $6}')
+
+            for sbom in $sbomList; do
+              COMBINED_JSON=$(echo "${COMBINED_JSON}" | jq -c --arg imageDigest "${IMAGE}@${tarDigest}" --arg sbomName "${sbom}" '. + [{imageDigest: $imageDigest, sbomName: $sbomName}]')
+            done
+          done
+
+          echo "sboms=${COMBINED_JSON}" >> "$GITHUB_OUTPUT"
+
+  get-images:
+    runs-on: ubuntu-latest
+    outputs:
+      images: ${{ steps.get-images.outputs.images }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -44,20 +98,54 @@ jobs:
         with:
           version: v${{ inputs.udsCliVersion }}
 
-      - name: Get image list from zarf.yaml
-        id: get-image-list
+      - name: Get Images
+        id: get-images
         run: |
-          IMAGE_NAME_LIST=$(uds zarf tools yq -r -o=json -I=0 '[.components.[].images] | flatten | unique | . |= map(select((test(".sig") | not) and (test(".att") | not)) | split(":")[0])'  ${{ inputs.zarfYamlPath }})
-          IMAGE_LIST=$(uds zarf tools yq -r -o=json -I=0 '[.components.[].images] | flatten | unique | . |= map(select((test(".sig") | not) and (test(".att") | not)) | {"name": split(":")[0], "tag": split(":")[1]})' ${{ inputs.zarfYamlPath }})
-          echo "image_name_list=$IMAGE_NAME_LIST" >> "$GITHUB_OUTPUT"
-          echo "image_list=$IMAGE_LIST" >> "$GITHUB_OUTPUT"
+          IMAGES=$(uds zarf tools yq -r -o=json -I=0 '[.components.[].images] | flatten | unique | map(select((test(".sig") | not) and (test(".att") | not)))' ${{ inputs.zarfYamlPath }})
+          echo "images=$IMAGES" >> "$GITHUB_OUTPUT"
 
-  scan-images:
-    needs: get-image-list
+  scan-sboms:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        image: ${{ fromJson(needs.get-image-list.outputs.image_name_list) }}
+        include: ${{ fromJson(needs.get-sboms.outputs.sboms) }}
+    needs: get-sboms
+    steps:
+      - name: Setup crane
+        uses: imjasonh/setup-crane@v0.4
+
+      - name: Download SBOM
+        run: |
+          crane blob "${{ matrix.imageDigest }}" | tar -xvf - "${{ matrix.sbomName }}"
+
+      - name: Scan SBOM
+        uses: anchore/scan-action@v6
+        id: scan
+        with:
+          sbom: "${{ matrix.sbomName }}"
+          fail-build: false
+          output-format: cyclonedx-json
+
+      - name: Format artifact name
+        id: format-artifact-name
+        run: |
+          NAME=$(jq -r '.metadata.component.name + "@" + .metadata.component.version' ${{ steps.scan.outputs.cyclonedx-json }})
+          NAME="${NAME//\//_}"
+          mv ${{ steps.scan.outputs.cyclonedx-json }} ${NAME}.json
+          echo "artifactName=${NAME}" >> $GITHUB_OUTPUT
+
+      - name: Upload scan results
+        uses: actions/upload-artifact@v4
+        with:
+          name: scan-sbom-${{ steps.format-artifact-name.outputs.artifactName }}
+          path: ${{ steps.format-artifact-name.outputs.artifactName }}.json
+
+  scan-images:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        image: ${{ fromJson(needs.get-images.outputs.images) }}
+    needs: get-images
     steps:
       - name: Checkout repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -76,56 +164,181 @@ jobs:
             --set CHAINGUARD_IDENTITY="${{ secrets.CHAINGUARD_IDENTITY }}"
         shell: bash
 
-      - name: Get full image
-        id: get-image
-        run: |
-          echo "image=${{ matrix.image }}:$(echo '${{ needs.get-image-list.outputs.image_list }}' | yq -r '.[] | select(.name == "${{ matrix.image }}") | .tag')" >> "$GITHUB_OUTPUT"
-        shell: bash
-
       - name: Scan image
         id: scan
         uses: anchore/scan-action@v6.1.0
         with:
-          image: "${{ steps.get-image.outputs.image }}"
+          image: "${{ matrix.image }}"
           fail-build: false
+          output-format: cyclonedx-json
 
-      - name: Post Process SARIF
-        shell: bash
+      - name: Format artifact name
+        id: format-artifact-name
         run: |
-          # Find the line number of the image in the zarf.yaml file
-          location=$(grep -n -o '[^\w/-]${{ matrix.image }}:' "${{ inputs.zarfYamlPath }}" | head -n 1)
+          NAME=$(jq -r '.metadata.component.name + "@" + .metadata.component.version' ${{ steps.scan.outputs.cyclonedx-json }})
+          NAME="${NAME//\//_}"
+          mv ${{ steps.scan.outputs.cyclonedx-json }} ${NAME}.json
+          echo "artifactName=${NAME}" >> $GITHUB_OUTPUT
 
-          if [ -z "$location" ]; then
-            echo "String not found"
-            exit 1
-          fi
-
-          line_number=$(echo "$location" | cut -d: -f1)
-          end_column=$(grep '[^\w/]${{ matrix.image }}:' zarf.yaml | wc -m)
-
-          # Create new physicalLocation json object
-          NEW_LOCATION=$(jq -n --arg line_number "$line_number" --arg end_column "$end_column" '
-          {
-            "artifactLocation": {
-              "uri": "${{ inputs.zarfYamlPath }}"
-            },
-            region: {
-              startLine: $line_number | tonumber,
-              startColumn: 1 | tonumber,
-              endLine: $line_number | tonumber,
-              endColumn: $end_column | tonumber
-            }
-          }
-          ')
-
-          line_hash=$(awk "NR==$line_number" "${{ inputs.zarfYamlPath }}" | sha256sum | cut -d' ' -f1)
-
-          jq ".runs[].results[].partialFingerprints.primaryLocationLineHash = \"${line_hash}:1\"" ${{ steps.scan.outputs.sarif }} | sed 's/&/\\u0026/g' | sed 's/>/\\u003e/g' > ${{ steps.scan.outputs.sarif }}.mid
-
-          # Create new sarif file with modified physicalLocation
-          jq ".runs[].results[].locations[].physicalLocation = ${NEW_LOCATION}" ${{ steps.scan.outputs.sarif }}.mid | sed 's/&/\\u0026/g' | sed 's/>/\\u003e/g' > ${{ steps.scan.outputs.sarif }}.new
-
-      - name: Upload SARIF
-        uses: github/codeql-action/upload-sarif@v3
+      - name: Upload scan results
+        uses: actions/upload-artifact@v4
         with:
-          sarif_file: ${{ steps.scan.outputs.sarif }}.new
+          name: scan-image-${{ steps.format-artifact-name.outputs.artifactName }}
+          path: ${{ steps.format-artifact-name.outputs.artifactName }}.json
+
+  compare-scans:
+    runs-on: ubuntu-latest
+    needs: [scan-sboms, scan-images]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: defenseunicorns/uds-pk
+          ref: vuln-scan-compare
+
+      - name: Download sbom scan results from GitHub Actions Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: sbom-scan-results
+          pattern: scan-sbom-*
+          merge-multiple: true
+
+      - name: Download image scan results from GitHub Actions Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: image-scan-results
+          pattern: scan-image-*
+          merge-multiple: true
+
+      - name: Compare scans
+        run: |
+          sbomScans=$(ls sbom-scan-results)
+          imageScans=$(ls image-scan-results)
+
+          # the repo we cloned has uds-pk that has the command compare-scans. We need to find scans with the same image name and compare them using the uncompiled go
+          # binary. The output is bunch of markdown.
+
+          COMMENT_MARKDOWN=""
+
+          for imageScan in $imageScans; do
+            imageName=$(echo $imageScan | cut -d "@" -f 1)
+
+            for sbomScan in $sbomScans; do
+              sbomName=$(echo $sbomScan | cut -d "@" -f 1)
+
+              if [[ "$imageName" == "$sbomName" ]]; then
+                COMMENT_MARKDOWN+=$(go run main.go compare-scans sbom-scan-results/$sbomScan image-scan-results/$imageScan)
+              fi
+            done
+          done
+
+          echo "${COMMENT_MARKDOWN}" > comment.md
+
+      - name: Post comment
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          comment-tag: "scan-results"
+          file-path: comment.md
+
+
+
+
+  # get-image-list:
+  #   runs-on: ubuntu-latest
+  #   outputs:
+  #     image_name_list: ${{ steps.get-image-list.outputs.image_name_list }}
+  #     image_list: ${{ steps.get-image-list.outputs.image_list }}
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+  #     - name: Install UDS CLI
+  #       uses: defenseunicorns/setup-uds@ab842abcad1f7a3305c2538e3dd1950d0daacfa5 # v1.0.1
+  #       with:
+  #         version: v${{ inputs.udsCliVersion }}
+
+  #     - name: Get image list from zarf.yaml
+  #       id: get-image-list
+  #       run: |
+  #         IMAGE_NAME_LIST=$(uds zarf tools yq -r -o=json -I=0 '[.components.[].images] | flatten | unique | . |= map(select((test(".sig") | not) and (test(".att") | not)) | split(":")[0])'  ${{ inputs.zarfYamlPath }})
+  #         IMAGE_LIST=$(uds zarf tools yq -r -o=json -I=0 '[.components.[].images] | flatten | unique | . |= map(select((test(".sig") | not) and (test(".att") | not)) | {"name": split(":")[0], "tag": split(":")[1]})' ${{ inputs.zarfYamlPath }})
+  #         echo "image_name_list=$IMAGE_NAME_LIST" >> "$GITHUB_OUTPUT"
+  #         echo "image_list=$IMAGE_LIST" >> "$GITHUB_OUTPUT"
+
+  # scan-images:
+  #   needs: get-image-list
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix:
+  #       image: ${{ fromJson(needs.get-image-list.outputs.image_name_list) }}
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+  #     - name: Install UDS CLI
+  #       uses: defenseunicorns/setup-uds@ab842abcad1f7a3305c2538e3dd1950d0daacfa5 # v1.0.1
+  #       with:
+  #         version: v${{ inputs.udsCliVersion }}
+
+  #     - name: Environment setup
+  #       run: |
+  #           uds run actions:setup-environment \
+  #           --set REGISTRY1_USERNAME="${{ secrets.IRON_BANK_ROBOT_USERNAME }}" \
+  #           --set REGISTRY1_PASSWORD="${{ secrets.IRON_BANK_ROBOT_PASSWORD }}" \
+  #           --set GH_TOKEN="${{ secrets.GITHUB_TOKEN }}" \
+  #           --set CHAINGUARD_IDENTITY="${{ secrets.CHAINGUARD_IDENTITY }}"
+  #       shell: bash
+
+  #     - name: Get full image
+  #       id: get-image
+  #       run: |
+  #         echo "image=${{ matrix.image }}:$(echo '${{ needs.get-image-list.outputs.image_list }}' | yq -r '.[] | select(.name == "${{ matrix.image }}") | .tag')" >> "$GITHUB_OUTPUT"
+  #       shell: bash
+
+  #     - name: Scan image
+  #       id: scan
+  #       uses: anchore/scan-action@v6.1.0
+  #       with:
+  #         image: "${{ steps.get-image.outputs.image }}"
+  #         fail-build: false
+
+  #     - name: Post Process SARIF
+  #       shell: bash
+  #       run: |
+  #         # Find the line number of the image in the zarf.yaml file
+  #         location=$(grep -n -o '[^\w/-]${{ matrix.image }}:' "${{ inputs.zarfYamlPath }}" | head -n 1)
+
+  #         if [ -z "$location" ]; then
+  #           echo "String not found"
+  #           exit 1
+  #         fi
+
+  #         line_number=$(echo "$location" | cut -d: -f1)
+  #         end_column=$(grep '[^\w/]${{ matrix.image }}:' zarf.yaml | wc -m)
+
+  #         # Create new physicalLocation json object
+  #         NEW_LOCATION=$(jq -n --arg line_number "$line_number" --arg end_column "$end_column" '
+  #         {
+  #           "artifactLocation": {
+  #             "uri": "${{ inputs.zarfYamlPath }}"
+  #           },
+  #           region: {
+  #             startLine: $line_number | tonumber,
+  #             startColumn: 1 | tonumber,
+  #             endLine: $line_number | tonumber,
+  #             endColumn: $end_column | tonumber
+  #           }
+  #         }
+  #         ')
+
+  #         line_hash=$(awk "NR==$line_number" "${{ inputs.zarfYamlPath }}" | sha256sum | cut -d' ' -f1)
+
+  #         jq ".runs[].results[].partialFingerprints.primaryLocationLineHash = \"${line_hash}:1\"" ${{ steps.scan.outputs.sarif }} | sed 's/&/\\u0026/g' | sed 's/>/\\u003e/g' > ${{ steps.scan.outputs.sarif }}.mid
+
+  #         # Create new sarif file with modified physicalLocation
+  #         jq ".runs[].results[].locations[].physicalLocation = ${NEW_LOCATION}" ${{ steps.scan.outputs.sarif }}.mid | sed 's/&/\\u0026/g' | sed 's/>/\\u003e/g' > ${{ steps.scan.outputs.sarif }}.new
+
+  #     - name: Upload SARIF
+  #       uses: github/codeql-action/upload-sarif@v3
+  #       with:
+  #         sarif_file: ${{ steps.scan.outputs.sarif }}.new
