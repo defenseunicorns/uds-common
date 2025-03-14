@@ -52,6 +52,7 @@ jobs:
           REPO_OWNER: ${{ github.repository_owner }}
           REPO_NAME: ${{ github.event.repository.name }}
         run: |
+          set -euxo pipefail
           PACKAGES=""
           PACKAGE_NAME=$(echo "$BASE_REPO" | awk -F'/' 'BEGIN{OFS="/"} {if (NF > 2) {for (i=3; i<=NF; i++) printf (i==3 ? $i : "/"$i); print ""} else print ""}')/$(yq e '.metadata.name' zarf.yaml)
 
@@ -76,7 +77,7 @@ jobs:
             TAG=$(gh api -H "Accept: application/vnd.github.v3+json" "/orgs/${REPO_OWNER}/packages/container/${PACKAGE}/versions" | jq -r '.[0].metadata.container.tags[0]')
             IMAGE="ghcr.io/${REPO_OWNER}/${PACKAGE}"
 
-            manifestDigest=$(crane manifest" ${IMAGE}:${TAG}" | jq -r '.manifests[0].digest')
+            manifestDigest=$(crane manifest "${IMAGE}:${TAG}" | jq -r '.manifests[0].digest')
 
             tarDigest=$(crane manifest "${IMAGE}@${manifestDigest}" | jq -r '.layers[] | select(.annotations["org.opencontainers.image.title"] == "sboms.tar") | .digest')
 
