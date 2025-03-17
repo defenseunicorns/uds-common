@@ -54,6 +54,7 @@ jobs:
           curl -sL "https://github.com/google/go-containerregistry/releases/download/${CRANE_VERSION}/go-containerregistry_linux_x86_64.tar.gz" > go-containerregistry.tar.gz
           sudo tar -zxvf go-containerregistry.tar.gz -C /usr/local/bin/ crane
           sudo chmod 755 /usr/local/bin/crane
+          echo "${{ github.token }}" | crane auth login ghcr.io --username "dummy" --password-stdin
 
       - name: Get SBOMs
         id: get-sboms
@@ -145,6 +146,7 @@ jobs:
           curl -sL "https://github.com/google/go-containerregistry/releases/download/${CRANE_VERSION}/go-containerregistry_linux_x86_64.tar.gz" > go-containerregistry.tar.gz
           sudo tar -zxvf go-containerregistry.tar.gz -C /usr/local/bin/ crane
           sudo chmod 755 /usr/local/bin/crane
+          echo "${{ github.token }}" | crane auth login ghcr.io --username "dummy" --password-stdin
 
       - name: Download SBOM
         run: |
