@@ -280,6 +280,8 @@ jobs:
         # with:
         #   comment-tag: scan-results
         #   file-path: comment.md
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           gh pr comment ${{ github.event.pull_request.number }} \
             --repo ${{ github.repository }} \
