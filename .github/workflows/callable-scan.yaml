@@ -276,7 +276,13 @@ jobs:
           echo "${COMMENT_MARKDOWN}" > comment.md
 
       - name: Post comment
-        uses: thollander/actions-comment-pull-request@v3
-        with:
-          comment-tag: scan-results
-          file-path: comment.md
+        # uses: thollander/actions-comment-pull-request@v3
+        # with:
+        #   comment-tag: scan-results
+        #   file-path: comment.md
+        run: |
+          gh pr comment ${{ github.event.pull_request.number }} \
+          --repo ${{ github.repository }} \
+          --body-file comment.md \
+          --edit-last
+          --create-if-none
