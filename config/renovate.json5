@@ -67,8 +67,8 @@
                 ".*(\\.ya?ml|\\.json)$"
             ],
             "matchStrings": [
-                // Test: https://regex101.com/r/r1nWoZ/1
-                "https:\\/\\/raw\\.githubusercontent\\.com\\/(?<depName>[^\\/]+\\/[^\\/]+)\\/(?<currentValue>[^\\/]+)"
+                // Test: https://regex101.com/r/az0LMu/2
+                "https:\\/\\/raw\\.githubusercontent\\.com\\/(?<depName>[^\\/]+\\/[^\\/]+)\\/(refs\\/tags\\/)?(?<currentValue>[^\\/]+)",
             ],
             "versioningTemplate": "semver-coerced",
             "datasourceTemplate": "github-tags"
