@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.10.4](https://github.com/defenseunicorns/uds-common/compare/v1.10.3...v1.10.4) (2025-03-20)
+
+
+### Bug Fixes
+
+* **lint:license:** check addlicense binary in PATH with fallback of $HOME/go/bin ([#429](https://github.com/defenseunicorns/uds-common/issues/429)) ([cc8c83d](https://github.com/defenseunicorns/uds-common/commit/cc8c83d70f3b84b6a23587658524716b00e2743f))
+* update renovate config to support raw github references with/without 'refs/tags/' in the url ([#442](https://github.com/defenseunicorns/uds-common/issues/442)) ([0811039](https://github.com/defenseunicorns/uds-common/commit/0811039d20c11ac51a916c9961dfbd25b74b34f4))
+
+
+### Miscellaneous
+
+* **deps:** update uds common support dependencies ([#441](https://github.com/defenseunicorns/uds-common/issues/441)) ([ceb3e93](https://github.com/defenseunicorns/uds-common/commit/ceb3e93cb90a5a8e13d2b7066c577712b7c6b881))
+
 ## [1.10.3](https://github.com/defenseunicorns/uds-common/compare/v1.10.2...v1.10.3) (2025-03-10)
 
 
