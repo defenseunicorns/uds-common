@@ -26,7 +26,7 @@ on:
       timeout:
         type: number
         default: 40
-      uds-releaser:
+      uds-pk:
         type: boolean
         default: false
 
@@ -66,7 +66,7 @@ jobs:
         shell: bash
 
       - name: Publish Packages/Bundles - release-please
-        if: ${{ inputs.uds-releaser == false }}
+        if: ${{ inputs.uds-pk == false }}
         run: |
           if uds run --list | grep -q 'publish-package'; then
             uds run publish-package --set USE_CHECKPOINT=false --set FLAVOR=${{ inputs.flavor }} --no-progress ${{ inputs.options }}
@@ -74,13 +74,13 @@ jobs:
             uds run publish-release --set USE_CHECKPOINT=false --set FLAVOR=${{ inputs.flavor }} --no-progress ${{ inputs.options }}
           fi
 
-      - name: Publish Packages/Bundles - uds-releaser
-        if: ${{ inputs.uds-releaser == true }}
+      - name: Publish Packages/Bundles - uds-pk
+        if: ${{ inputs.uds-pk == true }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if uds-releaser check "${{ inputs.flavor }}"; then
-            uds-releaser update-yaml ${{ inputs.flavor }}
+          if uds-pk release check "${{ inputs.flavor }}"; then
+            uds-pk release update-yaml ${{ inputs.flavor }}
             if uds run --list | grep -q 'publish-package'; then
               uds run publish-package \
                 --set USE_CHECKPOINT=false \

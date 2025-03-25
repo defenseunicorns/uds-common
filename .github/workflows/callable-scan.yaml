@@ -273,7 +273,7 @@ jobs:
 
                 if [[ "$imageName" == "$sbomName" ]]; then
                 # Allow different images is necessary because of implied urls with docker hub images (i.e. docker.io/library isn't always present)
-                COMMENT_MARKDOWN+=$(uds-releaser compare-scans "sbom-scan-results/$sbomScan" "image-scan-results/$imageScan" --allow-different-images)
+                COMMENT_MARKDOWN+=$(uds-pk compare-scans "sbom-scan-results/$sbomScan" "image-scan-results/$imageScan" --allow-different-images)
                 COMMENT_MARKDOWN+=$'\n'
               fi
             done

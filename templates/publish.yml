@@ -57,13 +57,13 @@ publish:
 
     # Check if release is necessary for flavor and exit early if not
     - |
-      if ! uds-releaser check "$[[ inputs.flavor ]]"; then
+      if ! uds-pk check "$[[ inputs.flavor ]]"; then
         echo "No release necessary"
         [[ "$DRY_RUN" != "true" ]] && exit 0
       fi
 
     # Modify zarf package and uds bundle to have the correct version
-    - uds-releaser update-yaml $[[ inputs.flavor ]]
+    - uds-pk update-yaml $[[ inputs.flavor ]]
 
     # Publish Package
     - |
@@ -94,7 +94,7 @@ publish:
     # Mirror package to github
     - |
         if [[ "$[[ inputs.mirror ]]" == "true" ]]; then
-          export PKG_VERSION="$(uds-releaser release show $[[ inputs.flavor ]] --version-only)"
+          export PKG_VERSION="$(uds-pk release show $[[ inputs.flavor ]] --version-only)"
           export PKG_NAME="$(yq '.metadata.name' zarf.yaml)"
           curl -sS --request POST \
             --form "token=${CI_JOB_TOKEN}" \
