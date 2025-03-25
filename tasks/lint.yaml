@@ -38,7 +38,6 @@ tasks:
       - task: shell
       - task: license
       - task: tasks
-      - task: workflows
 
   - name: yaml
     description: Run YAML linting checks
@@ -239,7 +238,7 @@ tasks:
               -H 'Content-Type: text/plain;charset=UTF-8' \
               --data-binary "@$workflow")
 
-            EDITED=$(echo "$response" | jq -r .PinnedActions)
+            EDITED=$(echo "$response" | ./uds zarf tools yq -p=json '.PinnedActions')
             if [ "$EDITED" == "true" ]; then
               echo 'Unpinned action shas for $workflow, please run `uds run lint:fix-workflows`'
               exit 1
@@ -263,7 +262,7 @@ tasks:
               -H 'Content-Type: text/plain;charset=UTF-8' \
               --data-binary "@$workflow")
 
-            echo "$response" | jq -j .FinalOutput > "$workflow"
+            echo "$response" | ./uds zarf tools yq -p=json '.FinalOutput | trim' > "$workflow"
           done
 
   - name: fix-license
