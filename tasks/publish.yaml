@@ -9,7 +9,7 @@ variables:
     default: upstream
   - name: TEAM
     default: uds
-  - name: ENABLE_UDS_RELEASER
+  - name: ENABLE_UDS_PK
     default: "false"
   - name: BASE_REPO
 
@@ -33,7 +33,7 @@ tasks:
         description: The name of the package to publish
         default: ${PACKAGE_NAME}
     actions:
-      - if: ${{ eq .variables.ENABLE_UDS_RELEASER "false" }}
+      - if: ${{ eq .variables.ENABLE_UDS_PK "false" }}
         task: release-please-publish
         with:
           path: ${{ .inputs.path }}
@@ -41,7 +41,7 @@ tasks:
           architecture: ${{ .inputs.architecture }}
           team: ${{ .inputs.team }}
           name: ${{ .inputs.name }}
-      - if: ${{ eq .variables.ENABLE_UDS_RELEASER "true" }}
+      - if: ${{ eq .variables.ENABLE_UDS_PK "true" }}
         task: uds-pk-publish
         with:
           path: ${{ .inputs.path }}

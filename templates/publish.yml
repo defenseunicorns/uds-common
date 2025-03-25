@@ -75,7 +75,7 @@ publish:
 
         ARGS=(
           --set FLAVOR="$[[ inputs.flavor ]]"
-          --set ENABLE_UDS_RELEASER=true
+          --set ENABLE_UDS_PK=true
         )
 
         if [[ -n "$[[ inputs.base-repo ]]" ]]; then

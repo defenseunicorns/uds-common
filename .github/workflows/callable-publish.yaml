@@ -103,13 +103,13 @@ jobs:
               uds run publish-package \
                 --set USE_CHECKPOINT=false \
                 --set FLAVOR=${{ inputs.flavor }} \
-                --set ENABLE_UDS_RELEASER=true \
+                --set ENABLE_UDS_PK=true \
                 --no-progress ${{ inputs.options }}
             else
               uds run publish-release \
                 --set USE_CHECKPOINT=false \
                 --set FLAVOR=${{ inputs.flavor }} \
-                --set ENABLE_UDS_RELEASER=true \
+                --set ENABLE_UDS_PK=true \
                 --no-progress ${{ inputs.options }}
             fi
           fi
