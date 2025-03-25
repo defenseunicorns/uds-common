@@ -29,7 +29,7 @@ on:
       uds-pk:
         type: boolean
         default: true
-        description: "Whether to use the uds-pk for publishing"
+        description: Whether to use the uds-pk for publishing
       uds-releaser:
         type: boolean
         default: false
@@ -74,9 +74,9 @@ jobs:
         id: parse-inputs
         run: |
           if [ "${{ inputs.uds-releaser }}" = "true" ]; then
-            echo "::warning title=Deprecated-Input::The `uds-releaser` input is deprecated, please use `uds-pk` instead"
+            echo "::warning title=Deprecated-Input::The uds-releaser input is deprecated, please use uds-pk instead"
             echo "uds-pk=true" >> "$GITHUB_OUTPUT"
-          else if [ "${{ inputs.uds-pk }}" = "false" ]; then
+          elif [ "${{ inputs.uds-pk }}" = "false" ]; then
             echo "uds-pk=false" >> "$GITHUB_OUTPUT"
           else
             echo "uds-pk=true" >> "$GITHUB_OUTPUT"
