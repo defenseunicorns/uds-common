@@ -60,7 +60,7 @@ There are multiple task files available in this repository with different object
 |------|-------------|
 | **package** | Publish the UDS package for the supplied architecture |
 | **release-please-publish** | Publish the UDS package using release-please based workflows |
-| **uds-releaser-publish** | Publish the UDS package using uds-releaser based workflows |
+| **uds-pk-publish** | Publish the UDS package using uds-pk based workflows |
 | **test-bundle** | Publish the test bundle for the supplied architecture |
 
 ### [pull.yaml](./tasks/remove.yaml)
