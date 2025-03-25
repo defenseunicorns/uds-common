@@ -102,9 +102,9 @@ ignore: [] # an array of paths to ignore
 | **oscal** | Run linting checks on OSCAL |
 | **shell** | Run shellcheck on all Maru tasks, GitHub workflows, and local shell scripts |
 | **license** | Lint for the SPDX license identifier being in source files |
-| **workflows** | Lint for github workflows having their actions being pinned to a specific sha |
+| **workflows** | Lint GitHub workflows |
+| **fix-workflows** | Fix unpinned actions in GitHub workflows |
 | **fix-license** | Add the SPDX license identifier to source files |
-| **fix-workflows** | Set any unpinned actions to pinned shas |
 | **tasks** | Dry run all tasks in the base tasks file |
 
 ### [badge.yaml](./tasks/badge.yaml)
