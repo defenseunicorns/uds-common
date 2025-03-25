@@ -38,6 +38,7 @@ tasks:
       - task: shell
       - task: license
       - task: tasks
+      - task: workflows
 
   - name: yaml
     description: Run YAML linting checks
@@ -223,6 +224,47 @@ tasks:
           cmd="$ADDLICENSE_CMD -l \"$LICENSE\" $check_flag -s=only -v -c \"$COPYRIGHT\" ${ignore_flags[*]} . 2>/dev/null"
           echo "Running: $cmd"
           eval "$cmd"
+
+  - name: workflows
+    description: Lint GitHub workflows
+    actions:
+      - shell:
+          linux: bash
+          darwin: bash
+        cmd: |
+          for workflow in .github/workflows/*.yaml; do
+            # Call the StepSecurity API to process the workflow
+            response=$(curl -s 'https://prod.api.stepsecurity.io/v1/secure-workflow?addPermissions=false&addHardenRunner=false&' \
+              -X POST \
+              -H 'Content-Type: text/plain;charset=UTF-8' \
+              --data-binary "@$workflow")
+
+            EDITED=$(echo "$response" | jq -r .PinnedActions)
+            if [ "$EDITED" == "true" ]; then
+              echo 'Unpinned action shas for $workflow, please run `uds run lint:fix-workflows`'
+              exit 1
+            else
+              echo "No unpinned actions found in $workflow"
+            fi
+          done
+
+
+  - name: fix-workflows
+    description: Fix unpinned actions in GitHub workflows
+    actions:
+      - shell:
+          linux: bash
+          darwin: bash
+        cmd: |
+          for workflow in .github/workflows/*.yaml; do
+            # Call the StepSecurity API to process the workflow
+            response=$(curl -s 'https://prod.api.stepsecurity.io/v1/secure-workflow?addPermissions=false&addHardenRunner=false&' \
+              -X POST \
+              -H 'Content-Type: text/plain;charset=UTF-8' \
+              --data-binary "@$workflow")
+
+            echo "$response" | jq -j .FinalOutput > "$workflow"
+          done
 
   - name: fix-license
     description: Add the SPDX license identifier to source files
