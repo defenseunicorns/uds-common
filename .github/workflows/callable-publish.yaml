@@ -84,7 +84,7 @@ jobs:
 
 
       - name: Publish Packages/Bundles - release-please
-        if: ${{ steps.parse-inputs.outputs.uds-pk == false }}
+        if: ${{ steps.parse-inputs.outputs.uds-pk == 'false' }}
         run: |
           if uds run --list | grep -q 'publish-package'; then
             uds run publish-package --set USE_CHECKPOINT=false --set FLAVOR=${{ inputs.flavor }} --no-progress ${{ inputs.options }}
@@ -93,7 +93,7 @@ jobs:
           fi
 
       - name: Publish Packages/Bundles - uds-pk
-        if: ${{ steps.parse-inputs.outputs.uds-pk == true }}
+        if: ${{ steps.parse-inputs.outputs.uds-pk == 'true' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
