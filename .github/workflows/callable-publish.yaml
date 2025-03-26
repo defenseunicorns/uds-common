@@ -34,7 +34,7 @@ on:
         type: boolean
         default: false
         description: "DEPRECATED: Whether to use the UDS Releaser for publishing"
-      mutable-release:
+      force-release:
         type: boolean
         default: false
         description: Whether to force publish regardless of tag change (Mutable)
@@ -101,7 +101,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if uds-pk release check "${{ inputs.flavor }}" || [[ "${{ inputs.mutable-release }}" == "true" ]]; then
+          if uds-pk release check "${{ inputs.flavor }}" || [ "${{ inputs.force-release }}" == "true" ]; then
             uds-pk release update-yaml ${{ inputs.flavor }}
             if uds run --list | grep -q 'publish-package'; then
               uds run publish-package \
