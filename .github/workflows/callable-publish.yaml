@@ -101,7 +101,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if uds-pk release check "${{ inputs.flavor }}" || [ "${{ inputs.force-release }}" == "true" ]; then
+          if uds-pk release check "${{ inputs.flavor }}" || [ "${{ inputs.force-release }}" = "true" ]; then
             uds-pk release update-yaml ${{ inputs.flavor }}
             if uds run --list | grep -q 'publish-package'; then
               uds run publish-package \
