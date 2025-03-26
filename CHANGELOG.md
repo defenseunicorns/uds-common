@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.1](https://github.com/defenseunicorns/uds-common/compare/v1.11.0...v1.11.1) (2025-03-26)
+
+
+### Bug Fixes
+
+* conditionals in release broke ([#450](https://github.com/defenseunicorns/uds-common/issues/450)) ([5e5aa5e](https://github.com/defenseunicorns/uds-common/commit/5e5aa5e86a05dbb8f9e09095d5c7f59b1770fdee))
+
 ## [1.11.0](https://github.com/defenseunicorns/uds-common/compare/v1.10.3...v1.11.0) (2025-03-26)
 
 
