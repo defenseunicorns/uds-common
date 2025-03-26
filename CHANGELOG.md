@@ -1,5 +1,28 @@
 # Changelog
 
+## [1.11.0](https://github.com/defenseunicorns/uds-common/compare/v1.10.3...v1.11.0) (2025-03-26)
+
+
+### Features
+
+* add scan workflow ([#425](https://github.com/defenseunicorns/uds-common/issues/425)) ([cfe34c9](https://github.com/defenseunicorns/uds-common/commit/cfe34c98c975b9d3898d38bf441cf543a0c2c4dc))
+
+
+### Bug Fixes
+
+* forgot outputs in github ref ([#447](https://github.com/defenseunicorns/uds-common/issues/447)) ([d2d5c8b](https://github.com/defenseunicorns/uds-common/commit/d2d5c8bd0684ec3a9e1f80208612c1eddbf1a5c1))
+* **lint:license:** check addlicense binary in PATH with fallback of $HOME/go/bin ([#429](https://github.com/defenseunicorns/uds-common/issues/429)) ([cc8c83d](https://github.com/defenseunicorns/uds-common/commit/cc8c83d70f3b84b6a23587658524716b00e2743f))
+* only run scan on prs ([#448](https://github.com/defenseunicorns/uds-common/issues/448)) ([014afd0](https://github.com/defenseunicorns/uds-common/commit/014afd02bb6aa9459478fb60ebb4d7a102d3f36b))
+* update renovate config to support raw github references with/without 'refs/tags/' in the url ([#442](https://github.com/defenseunicorns/uds-common/issues/442)) ([0811039](https://github.com/defenseunicorns/uds-common/commit/0811039d20c11ac51a916c9961dfbd25b74b34f4))
+
+
+### Miscellaneous
+
+* **deps:** update support-deps to v0.0.8 ([#444](https://github.com/defenseunicorns/uds-common/issues/444)) ([c30544c](https://github.com/defenseunicorns/uds-common/commit/c30544cc3164d9c332cb1ea3bb839f93b8a9db9c))
+* **deps:** update uds common support dependencies ([#441](https://github.com/defenseunicorns/uds-common/issues/441)) ([ceb3e93](https://github.com/defenseunicorns/uds-common/commit/ceb3e93cb90a5a8e13d2b7066c577712b7c6b881))
+* **deps:** update uds-cli to 0.25.0, zarf to 0.50.0  ([#443](https://github.com/defenseunicorns/uds-common/issues/443)) ([cc59b8e](https://github.com/defenseunicorns/uds-common/commit/cc59b8e2f80b0603cca1436588753f016c134224))
+* switch all references from uds-releaser to uds-pk and use non deprecated cli commands ([#445](https://github.com/defenseunicorns/uds-common/issues/445)) ([03395c0](https://github.com/defenseunicorns/uds-common/commit/03395c02722f4a161c606da9dbe7c504ca329021))
+
 ## [1.10.3](https://github.com/defenseunicorns/uds-common/compare/v1.10.2...v1.10.3) (2025-03-10)
 
 
