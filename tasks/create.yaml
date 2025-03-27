@@ -61,10 +61,10 @@ tasks:
       - env:
           - ZARF_CONFIG=${{ .inputs.config }}
         cmd: |
-          git reset --hard HEAD
-
           echo "${MUTABLE_TAG}"
+
           exit 0
+
           # # Checkout the tag if it exists
           # if [[ -n "$MUTABLE_TAG" ]]; then
           #     git checkout "$MUTABLE_TAG"
@@ -73,11 +73,11 @@ tasks:
           #     exit 0
           # fi
 
-          if [ "${FLAVOR}" != "registry1" ] || [ "${{ .inputs.architecture }}" != "arm64" ]; then
-            ./uds zarf package create ${{ .inputs.path }} --confirm --no-progress --architecture="${{ .inputs.architecture }}" --flavor "${FLAVOR}" ${{ .inputs.options }}
-          else
-            echo "Registry1 packages cannot be made for 'arm64'"
-          fi
+          # if [ "${FLAVOR}" != "registry1" ] || [ "${{ .inputs.architecture }}" != "arm64" ]; then
+          #   ./uds zarf package create ${{ .inputs.path }} --confirm --no-progress --architecture="${{ .inputs.architecture }}" --flavor "${FLAVOR}" ${{ .inputs.options }}
+          # else
+          #   echo "Registry1 packages cannot be made for 'arm64'"
+          # fi
 
   - name: test-bundle
     description: Create the test bundle (bundling package + dependencies for testing)
