@@ -84,13 +84,14 @@ tasks:
               exit 1
           fi
 
+          uds-pk release update-yaml ${{ .inputs.flavor }}
+
           if [ "${FLAVOR}" != "registry1" ] || [ "${{ .inputs.architecture }}" != "arm64" ]; then
             ./uds zarf package create ${{ .inputs.path }} --confirm --no-progress --architecture="${{ .inputs.architecture }}" --flavor "${FLAVOR}" ${{ .inputs.options }}
           else
             echo "Registry1 packages cannot be made for 'arm64'"
           fi
 
-          ./uds-pk release update-yaml ${{ .inputs.flavor }}
           PACKAGE_NAME=$(cat ${{ .inputs.path }}/zarf.yaml | ./uds zarf tools yq .metadata.name)
           LOCAL_VERSION=$(cat ${{ .inputs.path }}/zarf.yaml | ./uds zarf tools yq .metadata.version)
 
