@@ -89,7 +89,7 @@ tasks:
           else
             echo "Registry1 packages cannot be made for 'arm64'"
           fi
-          
+
           uds-pk release update-yaml ${{ .inputs.flavor }}
           PACKAGE_NAME=$(cat ${{ .inputs.path }}/zarf.yaml | ./uds zarf tools yq .metadata.name)
           LOCAL_VERSION=$(cat ${{ .inputs.path }}/zarf.yaml | ./uds zarf tools yq .metadata.version)
