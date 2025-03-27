@@ -118,7 +118,7 @@ tasks:
             exit 11
           fi
 
-  - name: mutable-release
+  - name: mutable-publish
     description: Publish the UDS package as mutable
     inputs:
       path:

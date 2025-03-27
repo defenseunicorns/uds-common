@@ -63,7 +63,7 @@ There are multiple task files available in this repository with different object
 | **release-please-publish** | Publish the UDS package using release-please based workflows |
 | **uds-pk-publish** | Publish the UDS package using uds-pk based workflows |
 | **test-bundle** | Publish the test bundle for the supplied architecture |
-| **mutable-release** | Publish the UDS package as mutable |
+| **mutable-publish** | Publish the UDS package as mutable |
 
 ### [pull.yaml](./tasks/remove.yaml)
 

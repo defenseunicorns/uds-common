@@ -1,7 +1,7 @@
 # Copyright 2024 Defense Unicorns
 # SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
 
-name: Callable-Mutable-Release
+name: Callable-Mutable-Publish
 
 on:
   workflow_call:
@@ -62,11 +62,11 @@ jobs:
             --set CHAINGUARD_IDENTITY="${{ secrets.CHAINGUARD_IDENTITY }}"
         shell: bash
 
-      - name: Publish the mutable release
+      - name: Publish the mutable package
         run: |
           uds-pk release update-yaml ${{ inputs.flavor }}
 
-          uds run mutable-release --set USE_CHECKPOINT=false --set FLAVOR=${{ inputs.flavor }} --no-progress ${{ inputs.options }}
+          uds run mutable-publish --set USE_CHECKPOINT=false --set FLAVOR=${{ inputs.flavor }} --no-progress ${{ inputs.options }}
 
       - name: Debug Output
         if: ${{ always() }}
