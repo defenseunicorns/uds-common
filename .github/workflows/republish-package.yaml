@@ -6,6 +6,8 @@ name: Release
 on:
   # This workflow is triggered on pull requests to the main branch.
   pull_request:
+    # milestoned is added here as a workaround for release-please not triggering PR workflows (PRs should be added to a milestone to trigger the workflow).
+    types: [milestoned, opened, reopened, synchronize]
     # Will only rerun if files affecting this workflow are edited
     paths:
       - .github/workflows/callable-republish-package.yaml
