@@ -149,3 +149,22 @@ tasks:
 
       - description: Publish the packages
         task: publish:package
+
+  - name: republish-package
+    description: Build and publish the republish package
+    actions:
+      - description: Create the republish package
+        task: create:recreate-latest-tag-package
+
+      - description: Setup the cluster
+        task: setup:k3d-test-cluster
+
+      - description: Create deploy and test the bundle
+        task: create:test-bundle
+      - task: deploy:test-bundle
+
+      - description: Test the bundle
+        task: test
+
+      - description: Republish publish task
+        task: publish:republish-package
