@@ -100,6 +100,9 @@ tasks:
       - description: Remove the recreate-test folder
         cmd: rm -rf recreate-test
 
+      - description: Remove the recreate-test folder
+        cmd: uds-pk release update-yaml ${{ .inputs.flavor }}
+
   - name: test-bundle
     description: Create the test bundle (bundling package + dependencies for testing)
     inputs:
