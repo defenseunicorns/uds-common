@@ -1,9 +1,6 @@
 # Copyright 2024 Defense Unicorns
 # SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
 
-includes:
-  - utils: ./utils.yaml
-
 variables:
   - name: FLAVOR
     default: upstream
@@ -53,31 +50,50 @@ tasks:
         description: The flavor of the package to publish
         default: ${FLAVOR}
     actions:
-      - task: utils:determine-mutable-tag
-        with:
-          team: ${{ .variables.TEAM }}
-          base_repo: ${{ .variables.BASE_REPO }}
-          flavor: ${{ .variables.FLAVOR }}
+      - description: Remove copied repo
+        cmd: rm -rf mutable-test
+
+      - description: Copy repo into the mutable-test folder
+        shell:
+          linux: bash
+          darwin: bash
+        cmd: |
+          mkdir mutable-test
+
+          shopt -s extglob dotglob
+          cp -r !(mutable-test) mutable-test
+          shopt -u dotglob
+
       - env:
           - ZARF_CONFIG=${{ .inputs.config }}
+        shell:
+          linux: bash
+          darwin: bash
+        dir: mutable-test
         cmd: |
-          echo "${MUTABLE_TAG}"
+          git reset --hard HEAD
 
-          exit 0
+          # Get the latest tag matching the FLAVOR pattern
+          MUTABLE_TAG=$(git tag --list "*-${{ .inputs.flavor }}" --sort=-v:refname | head -n 1)
 
-          # # Checkout the tag if it exists
-          # if [[ -n "$MUTABLE_TAG" ]]; then
-          #     git checkout "$MUTABLE_TAG"
-          # else
-          #     echo "No tag found for flavor '${{ .variables.FLAVOR }}'. Skipping."
-          #     exit 0
-          # fi
+          # Checkout the tag if it exists
+          if [[ -n "$MUTABLE_TAG" ]]; then
+              git checkout "$MUTABLE_TAG"
+          else
+              echo "No tag found for flavor '${{ .variables.FLAVOR }}'. Skipping."
+              exit 1
+          fi
 
-          # if [ "${FLAVOR}" != "registry1" ] || [ "${{ .inputs.architecture }}" != "arm64" ]; then
-          #   ./uds zarf package create ${{ .inputs.path }} --confirm --no-progress --architecture="${{ .inputs.architecture }}" --flavor "${FLAVOR}" ${{ .inputs.options }}
-          # else
-          #   echo "Registry1 packages cannot be made for 'arm64'"
-          # fi
+          if [ "${FLAVOR}" != "registry1" ] || [ "${{ .inputs.architecture }}" != "arm64" ]; then
+            ./uds zarf package create ${{ .inputs.path }} --confirm --no-progress --architecture="${{ .inputs.architecture }}" --flavor "${FLAVOR}" ${{ .inputs.options }}
+          else
+            echo "Registry1 packages cannot be made for 'arm64'"
+          fi
+
+          PACKAGE_NAME=$(cat ${{ .inputs.path }}/zarf.yaml | ./uds zarf tools yq .metadata.name)
+          LOCAL_VERSION=$(cat ${{ .inputs.path }}/zarf.yaml | ./uds zarf tools yq .metadata.version)
+
+          mv "${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${{ .inputs.architecture }}-${LOCAL_VERSION}.tar.zst" "../${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${{ .inputs.architecture }}-${LOCAL_VERSION}.tar.zst"
 
   - name: test-bundle
     description: Create the test bundle (bundling package + dependencies for testing)

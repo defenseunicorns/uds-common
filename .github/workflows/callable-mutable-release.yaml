@@ -64,4 +64,36 @@ jobs:
 
       - name: Publish the mutable release
         run: |
-            uds run mutable-release --set USE_CHECKPOINT=false --set FLAVOR=${{ inputs.flavor }} --no-progress ${{ inputs.options }}
+          uds-pk release update-yaml ${{ inputs.flavor }}
+          
+          uds run mutable-release --set USE_CHECKPOINT=false --set FLAVOR=${{ inputs.flavor }} --no-progress ${{ inputs.options }}
+
+      - name: Debug Output
+        if: ${{ always() }}
+        run: uds run actions:debug-output
+        shell: bash
+
+      - name: Save logs
+        if: ${{ always() }}
+        run: uds run actions:save-logs
+        shell: bash
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: ${{ always() }}
+        with:
+          name: debug-log-${{ inputs.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ runner.arch }}
+          path: |
+            /tmp/zarf-*.log
+            /tmp/uds-*.log
+            /tmp/maru-*.log
+            /tmp/debug-*.log
+            /tmp/uds-containerd-logs
+            /tmp/k3d-uds-*.log
+            oscal-assessment-results.yaml
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: ${{ always() && inputs.reports-path != '' }}
+        with:
+          name: ${{ inputs.reports-name }}-${{ inputs.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ runner.arch }}
+          path: ${{ inputs.reports-path }}
+          retention-days: 30
