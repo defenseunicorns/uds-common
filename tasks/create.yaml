@@ -80,7 +80,7 @@ tasks:
           if [[ -n "$MUTABLE_TAG" ]]; then
               git checkout "$MUTABLE_TAG"
           else
-              echo "No tag found for flavor '${{ .variables.FLAVOR }}'. Skipping."
+              echo "No tag found for flavor '${{ .inputs.flavor }}'. Skipping."
               exit 1
           fi
 
@@ -89,7 +89,8 @@ tasks:
           else
             echo "Registry1 packages cannot be made for 'arm64'"
           fi
-
+          
+          uds-pk release update-yaml ${{ .inputs.flavor }}
           PACKAGE_NAME=$(cat ${{ .inputs.path }}/zarf.yaml | ./uds zarf tools yq .metadata.name)
           LOCAL_VERSION=$(cat ${{ .inputs.path }}/zarf.yaml | ./uds zarf tools yq .metadata.version)
 

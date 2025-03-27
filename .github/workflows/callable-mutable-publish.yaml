@@ -64,8 +64,6 @@ jobs:
 
       - name: Publish the mutable package
         run: |
-          uds-pk release update-yaml ${{ inputs.flavor }}
-
           uds run mutable-publish --set USE_CHECKPOINT=false --set FLAVOR=${{ inputs.flavor }} --no-progress ${{ inputs.options }}
 
       - name: Debug Output
