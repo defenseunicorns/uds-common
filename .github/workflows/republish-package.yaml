@@ -8,11 +8,11 @@ on:
   pull_request:
     # Will only rerun if files affecting this workflow are edited
     paths:
-      - ".github/workflows/callable-republish-package.yaml"
-      - ".github/workflows/republish-package.yaml"
-      - "tasks/actions.yaml"
-      - "tasks/create.yaml"
-      - "tasks/publish.yaml"
+      - .github/workflows/callable-republish-package.yaml
+      - .github/workflows/republish-package.yaml
+      - tasks/actions.yaml
+      - tasks/create.yaml
+      - tasks/publish.yaml
 
 # Permissions for the GITHUB_TOKEN used by the workflow.
 permissions:
