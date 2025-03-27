@@ -63,8 +63,8 @@ tasks:
         cmd: |
           git reset --hard HEAD
 
-          echo ${MUTABLE_TAG}
-          exit 1
+          echo "${MUTABLE_TAG}"
+          exit 0
           # # Checkout the tag if it exists
           # if [[ -n "$MUTABLE_TAG" ]]; then
           #     git checkout "$MUTABLE_TAG"
