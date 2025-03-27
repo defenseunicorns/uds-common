@@ -118,8 +118,8 @@ tasks:
             exit 11
           fi
 
-  - name: mutable-publish
-    description: Publish the UDS package as mutable
+  - name: republish-package
+    description: Republish the UDS package
     inputs:
       path:
         description: Path to the zarf package being published

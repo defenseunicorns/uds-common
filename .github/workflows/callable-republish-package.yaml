@@ -1,7 +1,7 @@
 # Copyright 2024 Defense Unicorns
 # SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
 
-name: Callable-Mutable-Publish
+name: Callable-Republish-Package
 
 on:
   workflow_call:
@@ -62,9 +62,9 @@ jobs:
             --set CHAINGUARD_IDENTITY="${{ secrets.CHAINGUARD_IDENTITY }}"
         shell: bash
 
-      - name: Publish the mutable package
+      - name: Republish the package
         run: |
-          uds run mutable-publish --set USE_CHECKPOINT=false --set FLAVOR=${{ inputs.flavor }} --no-progress ${{ inputs.options }}
+          uds run republish-package --set USE_CHECKPOINT=false --set FLAVOR=${{ inputs.flavor }} --no-progress ${{ inputs.options }}
 
       - name: Debug Output
         if: ${{ always() }}

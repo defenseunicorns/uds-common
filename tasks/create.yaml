@@ -31,8 +31,8 @@ tasks:
             echo "Registry1 packages cannot be made for 'arm64'"
           fi
 
-  - name: mutable-package
-    description: Create the mutable UDS Zarf Package in the repository
+  - name: recreate-latest-tag-package
+    description: Recreate the UDS Zarf Package in the repository
     inputs:
       options:
         description: For setting create time variables and flags
@@ -51,17 +51,17 @@ tasks:
         default: ${FLAVOR}
     actions:
       - description: Remove copied repo
-        cmd: rm -rf mutable-test
+        cmd: rm -rf recreate-test
 
-      - description: Copy repo into the mutable-test folder
+      - description: Copy repo into the recreate-test folder
         shell:
           linux: bash
           darwin: bash
         cmd: |
-          mkdir mutable-test
+          mkdir recreate-test
 
           shopt -s extglob dotglob
-          cp -r !(mutable-test) mutable-test
+          cp -r !(recreate-test) recreate-test
           shopt -u dotglob
 
       - env:
@@ -69,16 +69,16 @@ tasks:
         shell:
           linux: bash
           darwin: bash
-        dir: mutable-test
+        dir: recreate-test
         cmd: |
           git reset --hard HEAD
 
           # Get the latest tag matching the FLAVOR pattern
-          MUTABLE_TAG=$(git tag --list "*-${{ .inputs.flavor }}" --sort=-v:refname | head -n 1)
+          REPUBLISH_TAG=$(git tag --list "*-${{ .inputs.flavor }}" --sort=-v:refname | head -n 1)
 
           # Checkout the tag if it exists
-          if [[ -n "$MUTABLE_TAG" ]]; then
-              git checkout "$MUTABLE_TAG"
+          if [[ -n "$REPUBLISH_TAG" ]]; then
+              git checkout "$REPUBLISH_TAG"
           else
               echo "No tag found for flavor '${{ .inputs.flavor }}'. Skipping."
               exit 1
@@ -97,8 +97,8 @@ tasks:
 
           mv "${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${{ .inputs.architecture }}-${LOCAL_VERSION}.tar.zst" "../${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${{ .inputs.architecture }}-${LOCAL_VERSION}.tar.zst"
 
-      - description: Remove the mutable-test folder
-        cmd: rm -rf mutable-test
+      - description: Remove the recreate-test folder
+        cmd: rm -rf recreate-test
 
   - name: test-bundle
     description: Create the test bundle (bundling package + dependencies for testing)
