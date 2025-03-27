@@ -160,11 +160,7 @@ tasks:
         task: setup:k3d-test-cluster
 
       - description: Create deploy and test the bundle
-        task: create:test-bundle
-      - task: deploy:test-bundle
-
-      - description: Test the bundle
-        task: test
+        task: create-deploy-test-bundle
 
       - description: Republish publish task
         task: publish:republish-package
