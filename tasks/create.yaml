@@ -95,6 +95,9 @@ tasks:
 
           mv "${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${{ .inputs.architecture }}-${LOCAL_VERSION}.tar.zst" "../${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${{ .inputs.architecture }}-${LOCAL_VERSION}.tar.zst"
 
+      - description: Remove the mutable-test folder
+        cmd: rm -rf mutable-test
+
   - name: test-bundle
     description: Create the test bundle (bundling package + dependencies for testing)
     inputs:
