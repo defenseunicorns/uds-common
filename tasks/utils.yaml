@@ -73,7 +73,7 @@ tasks:
           # Get the latest tag matching the FLAVOR pattern
           MUTABLE_TAG=$(git tag --list "*-${{ .variables.FLAVOR }}" --sort=-v:refname | head -n 1)
 
-          echo "$MUTABLE_TAG"
+          echo "${MUTABLE_TAG}"
         # mute: true
         shell:
           darwin: bash
