@@ -5,7 +5,6 @@ variables:
   - name: FLAVOR
     default: upstream
   - name: TARGET_REPO
-  - name: MUTABLE_TAG
 
 tasks:
   - name: determine-repo
