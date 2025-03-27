@@ -34,10 +34,6 @@ on:
         type: boolean
         default: false
         description: "DEPRECATED: Whether to use the UDS Releaser for publishing"
-      force-release:
-        type: boolean
-        default: false
-        description: Whether to force publish regardless of tag change (Mutable)
 
 # Permissions for the GITHUB_TOKEN used by the workflow.
 permissions:
@@ -100,9 +96,8 @@ jobs:
         if: ${{ steps.parse-inputs.outputs.uds-pk == 'true' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        shell: bash
         run: |
-          if uds-pk release check "${{ inputs.flavor }}" || [[ "${{ inputs.force-release }}" == "true" ]]; then
+          if uds-pk release check "${{ inputs.flavor }}"; then
             uds-pk release update-yaml ${{ inputs.flavor }}
             if uds run --list | grep -q 'publish-package'; then
               uds run publish-package \

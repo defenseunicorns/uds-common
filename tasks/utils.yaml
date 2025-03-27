@@ -52,3 +52,31 @@ tasks:
           linux: bash
         setVariables:
           - name: TARGET_REPO
+
+  - name: determine-mutable-tag
+    description: Determines which tag to use for a mutable publish
+    inputs:
+      base_repo:
+        description: The base repository to publish into
+        default: ghcr.io/defenseunicorns/packages
+      team:
+        description: The team publishing the package
+        default: uds
+      flavor:
+        description: The flavor of the package to publish
+        default: ${FLAVOR}
+    actions:
+      - description: Determine repository for the given flavor/type of release
+        cmd: |
+          git reset --hard HEAD
+
+          # Get the latest tag matching the FLAVOR pattern
+          LATEST_TAG=$(git tag --list "*-${{ .variables.FLAVOR }}" --sort=-v:refname | head -n 1)
+
+          echo "$LATEST_TAG"
+        mute: true
+        shell:
+          darwin: bash
+          linux: bash
+        setVariables:
+          - name: MUTABLE_TAG
