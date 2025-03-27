@@ -53,10 +53,6 @@ tasks:
         description: The flavor of the package to publish
         default: ${FLAVOR}
     actions:
-      - task: utils:determine-repo
-        with:
-          team: ${{ .variables.TEAM }}
-          base_repo: ${{ .variables.BASE_REPO }}
       - task: utils:determine-mutable-tag
         with:
           team: ${{ .variables.TEAM }}
