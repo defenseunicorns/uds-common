@@ -141,11 +141,6 @@ tasks:
         with:
           team: ${{ .variables.TEAM }}
           base_repo: ${{ .variables.BASE_REPO }}
-      - task: utils:determine-mutable-tag
-        with:
-          team: ${{ .variables.TEAM }}
-          base_repo: ${{ .variables.BASE_REPO }}
-          flavor: ${{ .variables.FLAVOR }}
       - description: Get the current Zarf package name
         cmd: cat ${{ .inputs.path }}/zarf.yaml | ./uds zarf tools yq .metadata.name
         setVariables:

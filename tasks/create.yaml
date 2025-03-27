@@ -65,8 +65,8 @@ tasks:
           git reset --hard HEAD
 
           # Checkout the tag if it exists
-          if [[ -n "$LATEST_TAG" ]]; then
-              git checkout "$LATEST_TAG"
+          if [[ -n "$MUTABLE_TAG" ]]; then
+              git checkout "$MUTABLE_TAG"
           else
               echo "No tag found for flavor '${{ .variables.FLAVOR }}'. Skipping."
               exit 0
