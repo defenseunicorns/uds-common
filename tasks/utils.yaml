@@ -74,7 +74,7 @@ tasks:
           MUTABLE_TAG=$(git tag --list "*-${{ .variables.FLAVOR }}" --sort=-v:refname | head -n 1)
 
           echo "$MUTABLE_TAG"
-        mute: true
+        # mute: true
         shell:
           darwin: bash
           linux: bash
