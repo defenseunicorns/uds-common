@@ -63,13 +63,15 @@ tasks:
         cmd: |
           git reset --hard HEAD
 
-          # Checkout the tag if it exists
-          if [[ -n "$MUTABLE_TAG" ]]; then
-              git checkout "$MUTABLE_TAG"
-          else
-              echo "No tag found for flavor '${{ .variables.FLAVOR }}'. Skipping."
-              exit 0
-          fi
+          echo ${MUTABLE_TAG}
+          exit 1
+          # # Checkout the tag if it exists
+          # if [[ -n "$MUTABLE_TAG" ]]; then
+          #     git checkout "$MUTABLE_TAG"
+          # else
+          #     echo "No tag found for flavor '${{ .variables.FLAVOR }}'. Skipping."
+          #     exit 0
+          # fi
 
           if [ "${FLAVOR}" != "registry1" ] || [ "${{ .inputs.architecture }}" != "arm64" ]; then
             ./uds zarf package create ${{ .inputs.path }} --confirm --no-progress --architecture="${{ .inputs.architecture }}" --flavor "${FLAVOR}" ${{ .inputs.options }}
