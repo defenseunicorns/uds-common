@@ -147,7 +147,7 @@ tasks:
           - name: PACKAGE_NAME
       - description: Checkout latest tag and re-publish
         cmd: |
-          ./uds zarf package publish "${{ .inputs.path }}/zarf-package-${{ .inputs.name }}-${{ .inputs.architecture }}-*-${{ .variables.FLAVOR }} --version-only).tar.zst" "oci://${TARGET_REPO}"
+          ./uds zarf package publish "${{ .inputs.path }}/zarf-package-${{ .inputs.name }}-${{ .inputs.architecture }}-$(uds-pk release show ${{ .variables.FLAVOR }} --version-only).tar.zst" "oci://${TARGET_REPO}"
 
   - name: test-bundle
     description: Publish the test bundle for the supplied architecture
