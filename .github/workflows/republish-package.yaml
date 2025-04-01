@@ -1,0 +1,42 @@
+# Copyright 2024 Defense Unicorns
+# SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
+
+name: Republish-Package
+
+on:
+  # This workflow is triggered on pull requests to the main branch.
+  pull_request:
+    # milestoned is added here as a workaround for release-please not triggering PR workflows (PRs should be added to a milestone to trigger the workflow).
+    types: [milestoned, opened, reopened, synchronize]
+    # Will only rerun if files affecting this workflow are edited
+    paths:
+      - .github/workflows/callable-republish-package.yaml
+      - .github/workflows/republish-package.yaml
+      - tasks/actions.yaml
+      - tasks/create.yaml
+      - tasks/publish.yaml
+
+# Permissions for the GITHUB_TOKEN used by the workflow.
+permissions:
+  contents: read # Allows reading the content of the repository.
+  packages: read # Allows reading the content of the repository's packages.
+  id-token: write
+
+jobs:
+  publish:
+    permissions:
+      contents: write # Allows reading the content of the repository.
+      packages: write # Allows reading the content of the repository's packages.
+      id-token: write
+    strategy:
+      matrix:
+        flavor: [upstream, registry1, unicorn]
+        architecture: [amd64, arm64]
+        exclude:
+          - flavor: registry1
+            architecture: arm64
+    uses: ./.github/workflows/callable-republish-package.yaml
+    with:
+      flavor: ${{ matrix.flavor }}
+      runsOn: ${{ matrix.architecture == 'arm64' && 'uds-swf-ubuntu-arm64-4-core' || 'ubuntu-latest' }}
+    secrets: inherit # Inherits all secrets from the parent workflow.

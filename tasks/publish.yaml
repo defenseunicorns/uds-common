@@ -118,6 +118,37 @@ tasks:
             exit 11
           fi
 
+  - name: republish-package
+    description: Republish the UDS package
+    inputs:
+      path:
+        description: Path to the zarf package being published
+        default: .
+      architecture:
+        description: The architecture of the package to publish
+        default: ${UDS_ARCH}
+      team:
+        description: The team publishing the package
+        default: uds
+      name:
+        description: The name of the package to publish
+        default: ${PACKAGE_NAME}
+      flavor:
+        description: The flavor of the package to publish
+        default: ${FLAVOR}
+    actions:
+      - task: utils:determine-repo
+        with:
+          team: ${{ .variables.TEAM }}
+          base_repo: ${{ .variables.BASE_REPO }}
+      - description: Get the current Zarf package name
+        cmd: cat ${{ .inputs.path }}/zarf.yaml | ./uds zarf tools yq .metadata.name
+        setVariables:
+          - name: PACKAGE_NAME
+      - description: Checkout latest tag and re-publish
+        cmd: |
+          ./uds zarf package publish "${{ .inputs.path }}/zarf-package-${{ .inputs.name }}-${{ .inputs.architecture }}-$(uds-pk release show ${{ .variables.FLAVOR }} --version-only).tar.zst" "oci://${TARGET_REPO}"
+
   - name: test-bundle
     description: Publish the test bundle for the supplied architecture
     inputs:
