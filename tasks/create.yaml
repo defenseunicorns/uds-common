@@ -29,6 +29,7 @@ tasks:
             ./uds zarf package create ${{ .inputs.path }} --confirm --no-progress --architecture="${{ .inputs.architecture }}" --flavor "${FLAVOR}" ${{ .inputs.options }}
           else
             echo "Registry1 packages cannot be made for 'arm64'"
+            exit 1
           fi
 
   - name: recreate-latest-tag-package
@@ -90,6 +91,7 @@ tasks:
             ./uds zarf package create ${{ .inputs.path }} --confirm --no-progress --architecture="${{ .inputs.architecture }}" --flavor "${FLAVOR}" ${{ .inputs.options }}
           else
             echo "Registry1 packages cannot be made for 'arm64'"
+            exit 1
           fi
 
           PACKAGE_NAME=$(cat ${{ .inputs.path }}/zarf.yaml | ./uds zarf tools yq .metadata.name)
