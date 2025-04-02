@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.12.0](https://github.com/defenseunicorns/uds-common/compare/v1.11.2...v1.12.0) (2025-04-01)
+
+
+### Features
+
+* adds a callable workflow for republishing a package ([#449](https://github.com/defenseunicorns/uds-common/issues/449)) ([345f526](https://github.com/defenseunicorns/uds-common/commit/345f526a04c56b6f4786b7c1af0317eb82b93c54))
+
+
+### Miscellaneous
+
+* **deps:** update uds core to v0.39.0 ([#456](https://github.com/defenseunicorns/uds-common/issues/456)) ([ceb8b15](https://github.com/defenseunicorns/uds-common/commit/ceb8b15db4c1acc4c0b8542e6d7e4fc13e58afad))
+
 ## [1.11.2](https://github.com/defenseunicorns/uds-common/compare/v1.11.1...v1.11.2) (2025-03-28)
 
 
