@@ -50,6 +50,9 @@ tasks:
       flavor:
         description: The flavor of the package to publish
         default: ${FLAVOR}
+      ignored_versions:
+        description: Regex for versions to ignore (used by filter logic), useful when version scheme has changed and automatic sorting is not pulling the latest version
+        default: ""
     actions:
       - description: Remove copied repo
         cmd: rm -rf recreate-test
@@ -75,7 +78,12 @@ tasks:
           git reset --hard HEAD
 
           # Get the latest tag matching the FLAVOR pattern
-          REPUBLISH_TAG=$(git tag --list "*-${{ .inputs.flavor }}" --sort=-v:refname | head -n 1)
+          # shellcheck disable=SC2157
+          if [[ -z "${{ .inputs.ignored_versions }}" ]]; then
+            REPUBLISH_TAG=$(git tag --list "*-${{ .inputs.flavor }}" --sort=-v:refname | head -n 1)
+          else
+            REPUBLISH_TAG=$(git tag --list "*-${{ .inputs.flavor }}" --sort=-v:refname | grep -v "${{ .inputs.ignored_versions }}" | head -n 1)
+          fi
 
           # Checkout the tag if it exists
           if [[ -n "$REPUBLISH_TAG" ]]; then
