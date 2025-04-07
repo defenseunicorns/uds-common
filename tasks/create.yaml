@@ -78,6 +78,7 @@ tasks:
           git reset --hard HEAD
 
           # Get the latest tag matching the FLAVOR pattern
+          # shellcheck disable=SC2157
           if [[ -z "${{ .inputs.ignored_versions }}" ]]; then
             REPUBLISH_TAG=$(git tag --list "*-${{ .inputs.flavor }}" --sort=-v:refname | head -n 1)
           else
