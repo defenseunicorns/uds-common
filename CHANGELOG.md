@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.13.0](https://github.com/defenseunicorns/uds-common/compare/v1.12.0...v1.13.0) (2025-04-08)
+
+
+### Features
+
+* add ignored_version input to republish task ([#458](https://github.com/defenseunicorns/uds-common/issues/458)) ([b84304b](https://github.com/defenseunicorns/uds-common/commit/b84304b0b10af4eed4b543f910067a51c543e588))
+
+
+### Miscellaneous
+
+* **deps:** update uds common support dependencies ([#457](https://github.com/defenseunicorns/uds-common/issues/457)) ([fccaae8](https://github.com/defenseunicorns/uds-common/commit/fccaae85e93148338290af72c9e87c9afdb73ea4))
+
 ## [1.12.0](https://github.com/defenseunicorns/uds-common/compare/v1.11.2...v1.12.0) (2025-04-01)
 
 
