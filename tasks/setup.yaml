@@ -95,7 +95,7 @@ tasks:
             # Kill the port-forward
             kill $PF_PID
 
-            ./zarf tools kubectl create secret generic keycloak-admin-password \
+            ./uds zarf tools kubectl create secret generic keycloak-admin-password \
               --from-literal=username=admin \
               --from-literal=password="${PASSWORD}" \
               -n keycloak
