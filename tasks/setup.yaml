@@ -75,7 +75,7 @@ tasks:
             echo "Admin user exists, skipping..."
           else
             # Start port-forward with zarf
-            ./zarf tools kubectl port-forward -n keycloak svc/keycloak-http 8080:8080 &
+            ./uds zarf tools kubectl port-forward -n keycloak svc/keycloak-http 8080:8080 &
             PF_PID=$!
 
             # Wait a bit to ensure port-forward is ready
