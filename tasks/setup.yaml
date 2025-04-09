@@ -61,9 +61,9 @@ tasks:
           USERNAME=$(uds zarf tools kubectl get secret keycloak-admin-password -n keycloak -o jsonpath='{.data.username}' | base64 --decode)
           PASSWORD=$(uds zarf tools kubectl get secret keycloak-admin-password -n keycloak -o jsonpath='{.data.password}' | base64 --decode)
 
-          printf "\033[31m!!! Please ensure you're not running this in CI !!!\033[0m"
-          printf "Keycloak Admin Username: \033[31m %s \033[0m" "$USERNAME"
-          printf "Keycloak Admin Password: \033[31m %s \033[0m" "$PASSWORD"
+          printf "\033[31m!!! Please ensure you're not running this in CI !!!\033[0m\n"
+          printf "Keycloak Admin Username: \033[31m %s \033[0m\n" "$USERNAME"
+          printf "Keycloak Admin Password: \033[31m %s \033[0m\n" "$PASSWORD"
 
   - name: keycloak-admin-user
     description: Sets up the Keycloak admin user for dev/testing if not already created
