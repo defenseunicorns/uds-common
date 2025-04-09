@@ -46,3 +46,4 @@ jobs:
       - name: Lint the repository
         run: |
           uds run lint:all --no-progress
+          uds run lint:workflows --no-progress
