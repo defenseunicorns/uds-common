@@ -71,7 +71,7 @@ tasks:
       - description: Create Keycloak Admin User
         cmd: |
           # Check if the secret exists
-          if ./zarf tools kubectl get secret keycloak-admin-password -n keycloak > /dev/null 2>&1; then
+          if ./uds zarf tools kubectl get secret keycloak-admin-password -n keycloak > /dev/null 2>&1; then
             echo "Admin user exists, skipping..."
           else
             # Start port-forward with zarf
