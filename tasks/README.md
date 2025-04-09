@@ -32,7 +32,10 @@ There are multiple task files available in this repository with different object
 | **k3d-test-cluster** | Creates a k3d cluster for testing based on the K3d + UDS Core Slim Dev bundle |
 | **k3d-full-cluster** | Creates a k3d cluster for testing based on the K3d + UDS Core Full bundle |
 | **print-keycloak-admin-password** | Print the default keycloak 'admin' password to standard out (if INSECURE_ADMIN_PASSWORD_GENERATION was used on uds-core) |
-| **create-doug-user** | Creates a user named 'doug' in the uds realm of keycloak (using the default admin account) |
+| **keycloak-admin-user** | Sets up the Keycloak admin user for dev/testing if not already created |
+| **print-keycloak-admin-password** | Prints out Keycloak Admin credentials |
+| **keycloak-user** | Creates a Keycloak user in the UDS Realm |
+| **create-doug-user** | DEPRECATED! Use keycloak-user instead |
 
 ### [create.yaml](./tasks/create.yaml)
 

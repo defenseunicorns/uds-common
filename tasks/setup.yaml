@@ -57,36 +57,100 @@ tasks:
     description: Print the default keycloak 'admin' password to standard out (if INSECURE_ADMIN_PASSWORD_GENERATION was used on uds-core)
     actions:
       - description: Print the default keycloak admin password to standard out (if available)
-        cmd: ./uds zarf tools kubectl get secret -n keycloak keycloak-admin-password -o jsonpath='{.data.password}' | base64 -d
+        cmd: |
+          USERNAME=$(uds zarf tools kubectl get secret keycloak-admin-password -n keycloak -o jsonpath='{.data.username}' | base64 --decode)
+          PASSWORD=$(uds zarf tools kubectl get secret keycloak-admin-password -n keycloak -o jsonpath='{.data.password}' | base64 --decode)
 
-  - name: create-doug-user
-    description: Creates a user named 'doug' in the uds realm of keycloak (using the default admin account)
+          printf "\033[31m!!! Please ensure you're not running this in CI !!!\033[0m"
+          printf "Keycloak Admin Username: \033[31m %s \033[0m" "$USERNAME"
+          printf "Keycloak Admin Password: \033[31m %s \033[0m" "$PASSWORD"
+
+  - name: keycloak-admin-user
+    description: Sets up the Keycloak admin user for dev/testing if not already created
+    actions:
+      - description: Create Keycloak Admin User
+        cmd: |
+          # Check if the secret exists
+          if ./zarf tools kubectl get secret keycloak-admin-password -n keycloak > /dev/null 2>&1; then
+            echo "Admin user exists, skipping..."
+          else
+            # Start port-forward with zarf
+            ./zarf tools kubectl port-forward -n keycloak svc/keycloak-http 8080:8080 &
+            PF_PID=$!
+
+            # Wait a bit to ensure port-forward is ready
+            sleep 2
+
+            # Create admin user with curl
+            PASSWORD=$(openssl rand -base64 12)
+            STATE_COOKIE=$(curl -s --output /dev/null --cookie-jar - http://localhost:8080/ | grep "WELCOME_STATE_CHECKER" | awk '{print $7}')
+            curl -s --show-error http://localhost:8080/ \
+              -H "Cookie: WELCOME_STATE_CHECKER=${STATE_COOKIE}" \
+              -H "Content-Type: application/x-www-form-urlencoded" \
+              --data-urlencode "username=admin" \
+              --data-urlencode "password=${PASSWORD}" \
+              --data-urlencode "passwordConfirmation=${PASSWORD}" \
+              --data-urlencode "stateChecker=${STATE_COOKIE}"
+
+            # Kill the port-forward
+            kill $PF_PID
+
+            ./zarf tools kubectl create secret generic keycloak-admin-password \
+              --from-literal=username=admin \
+              --from-literal=password="${PASSWORD}" \
+              -n keycloak
+          fi
+
+  - name: keycloak-user
+    description: Creates a Keycloak user in the UDS Realm
     inputs:
-      keycloak_group:
+      group:
         description: Group to add user to
-        default: $KEYCLOAK_GROUP
+        default: $KEYCLOAK_USER_GROUP
+        required: false
+      username:
+        description: The username of the user to create
+        default: doug
+        required: false
+      password:
+        description: The password of the user to create
+        default: unicorn123!@#UN
+        required: false
+      first_name:
+        description: First name of the user to create
+        default: Doug
+        required: false
+      last_name:
+        description: First name of the user to create
+        default: Doug
         required: false
     actions:
-      - description: Creating the 'doug' user in the 'uds' realm
+      - task: keycloak-admin-user
+      - description: Creating the ${{ .inputs.username }} user in Keycloak
         cmd: |
-          KEYCLOAK_GROUP="${{ .inputs.keycloak_group }}"
+          KEYCLOAK_USER_GROUP="${{ .inputs.group }}"
+          KEYCLOAK_USER_NAME="${{ .inputs.username }}"
+          KEYCLOAK_USER_FIRST_NAME="${{ .inputs.first_name }}"
+          KEYCLOAK_USER_LAST_NAME="${{ .inputs.last_name }}"
+          KEYCLOAK_USER_PASSWORD="${{ .inputs.password }}"
+
           KEYCLOAK_ADMIN_PASSWORD=$(./uds zarf tools kubectl get secret -n keycloak keycloak-admin-password -o jsonpath='{.data.password}' | base64 -d)
-          KEYCLOAK_ADMIN_TOKEN=$(curl -s --location "https://keycloak.admin.uds.dev/realms/master/protocol/openid-connect/token" \
+          KEYCLOAK_ADMIN_ACCESS_TOKEN=$(curl -s --location "https://keycloak.admin.uds.dev/realms/master/protocol/openid-connect/token" \
             --header "Content-Type: application/x-www-form-urlencoded" \
             --data-urlencode "username=admin" \
             --data-urlencode "password=${KEYCLOAK_ADMIN_PASSWORD}" \
             --data-urlencode "client_id=admin-cli" \
             --data-urlencode "grant_type=password" | ./uds zarf tools yq .access_token)
 
-          # Create the doug user in the UDS Realm
-          curl --location "https://keycloak.admin.uds.dev/admin/realms/uds/users" \
+          # Create a Keycloak User in the UDS Realm
+          curl -s --location "https://keycloak.admin.uds.dev/admin/realms/uds/users" \
           --header "Content-Type: application/json" \
-          --header "Authorization: Bearer ${KEYCLOAK_ADMIN_TOKEN}" \
-          --data-raw '{
-              "username": "doug",
-              "firstName": "Doug",
-              "lastName": "Unicorn",
-              "email": "doug@uds.dev",
+          --header "Authorization: Bearer ${KEYCLOAK_ADMIN_ACCESS_TOKEN}" \
+            --data-raw '{
+              "username": "'"${KEYCLOAK_USER_NAME}"'",
+              "firstName": "'"${KEYCLOAK_USER_FIRST_NAME}"'",
+              "lastName": "'"${KEYCLOAK_USER_LAST_NAME}"'",
+              "email": "'"${KEYCLOAK_USER_NAME}"'@uds.dev",
               "attributes": {
                 "mattermostid": "1"
               },
@@ -96,23 +160,35 @@ tasks:
               "credentials": [
                 {
                   "type": "password",
-                  "value": "unicorn123!@#UN",
+                  "value": "'"${KEYCLOAK_USER_PASSWORD}"'",
                   "temporary": false
                 }
-              ]'"${KEYCLOAK_GROUP:+,
-              \"groups\": [
-                \"${KEYCLOAK_GROUP}\"
-              ]}"'
-          }'
+              ]'"${KEYCLOAK_USER_GROUP:+,
+                  \"groups\": [
+                    \"${KEYCLOAK_USER_GROUP}\"
+                  ]}"'
+              }'
 
           # Disable 2FA
-          CONDITIONAL_OTP_ID=$(curl --location "https://keycloak.admin.uds.dev/admin/realms/uds/authentication/flows/Authentication/executions" \
-            --header "Authorization: Bearer ${KEYCLOAK_ADMIN_TOKEN}" | ./uds zarf tools yq '.[] | select(.displayName == "Conditional OTP") | .id')
+          CONDITIONAL_OTP_ID=$(curl -s --location "https://keycloak.admin.uds.dev/admin/realms/uds/authentication/flows/Authentication/executions" \
+            --header "Authorization: Bearer ${KEYCLOAK_ADMIN_ACCESS_TOKEN}" | ./uds zarf tools yq '.[] | select(.displayName == "Conditional OTP") | .id')
 
-          curl --location --request PUT "https://keycloak.admin.uds.dev/admin/realms/uds/authentication/flows/Authentication/executions" \
+          curl -s --location --request PUT "https://keycloak.admin.uds.dev/admin/realms/uds/authentication/flows/Authentication/executions" \
           --header "Content-Type: application/json" \
-          --header "Authorization: Bearer ${KEYCLOAK_ADMIN_TOKEN}" \
+          --header "Authorization: Bearer ${KEYCLOAK_ADMIN_ACCESS_TOKEN}" \
           --data "{
                   \"id\": \"${CONDITIONAL_OTP_ID}\",
                   \"requirement\": \"DISABLED\"
               }"
+
+  - name: create-doug-user
+    description: DEPRECATED! Use keycloak-user instead
+    inputs:
+      keycloak_group:
+        description: Group to add user to
+        default: $KEYCLOAK_GROUP
+        required: false
+    actions:
+      - task: keycloak-admin-user
+        with:
+          group: ${{ .inputs.keycloak_group }}
