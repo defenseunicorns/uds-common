@@ -58,7 +58,7 @@ tasks:
     actions:
       - description: Print the default keycloak admin password to standard out (if available)
         cmd: |
-          USERNAME=$(uds zarf tools kubectl get secret keycloak-admin-password -n keycloak -o jsonpath='{.data.username}' | base64 --decode)
+          USERNAME=$(./uds zarf tools kubectl get secret keycloak-admin-password -n keycloak -o jsonpath='{.data.username}' | base64 --decode)
           PASSWORD=$(./uds zarf tools kubectl get secret keycloak-admin-password -n keycloak -o jsonpath='{.data.password}' | base64 --decode)
 
           printf "\033[31m!!! Please ensure you're not running this in CI !!!\033[0m\n"
