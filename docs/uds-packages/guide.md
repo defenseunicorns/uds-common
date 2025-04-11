@@ -1,4 +1,4 @@
-# UDS Airgap App Store Package Integration Guide
+# UDS Airgap Store Package Integration Guide
 
 ## Introduction
 
