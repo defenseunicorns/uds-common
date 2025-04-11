@@ -13,7 +13,7 @@ This Quick Start is intended to provide the most concise and direct path to crea
     <img src=".images/wat-no-not-that-wat.png" alt="alt text" width="200">
 </p>
 
-1. `git clone https://github.com/defenseunicorns/uds-package-template.git uds-package-<name>` then find and replace template variables
+1. `git clone https://github.com/uds-packages/template.git uds-package-<name>` then find and replace template variables
     1. `rm -rf .git/ && git init`
 2. `zarf dev generate -h` to generate a `zarf.yaml` file from a helm chart
    1. Update the `common/zarf.yaml` with the generated component in zarf.yaml, be sure to retain the component-config reference.

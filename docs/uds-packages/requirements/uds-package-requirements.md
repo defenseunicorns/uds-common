@@ -63,7 +63,7 @@ _a Bronze UDS Package meets the minimum requirements and becomes compatible, but
 
 Bronze packages:
 
-- [ ] **Should** be created from the [UDS Package Template](https://github.com/defenseunicorns/uds-package-template)
+- [ ] **Should** be created from the [UDS Package Template](https://github.com/uds-packages/template)
 - [ ] **Must** be declaratively bundled in a [Zarf package](https://docs.zarf.dev/ref/create/)
 - [ ] **Must** define any external interfaces under the `expose` key in the [UDS Package Custom Resource](https://uds.defenseunicorns.com/reference/configuration/uds-operator/package/#example-uds-package-cr)
 - [ ] **Must** deploy and operate successfully with Istio injection enabled in the namespace.
