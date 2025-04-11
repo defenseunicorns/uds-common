@@ -64,7 +64,7 @@
         {
             "customType": "regex",
             "fileMatch": [
-                ".*(\\.ya?ml|\\.json)$"
+                ".*(\\.ya?ml|\\.json|\\.tf)$"
             ],
             "matchStrings": [
                 // Test: https://regex101.com/r/az0LMu/2
@@ -77,7 +77,7 @@
         {
             "customType": "regex",
             "fileMatch": [
-                ".*(\\.ya?ml|\\.json)$"
+                ".*(\\.ya?ml|\\.json|\\.tf)$"
             ],
             "matchStrings": [
                 // Test: https://regex101.com/r/huQrD4/1
@@ -90,7 +90,7 @@
         {
             "customType": "regex",
             "fileMatch": [
-                ".*(\\.ya?ml|\\.json)$"
+                ".*(\\.ya?ml|\\.json|\\.tf)$"
             ],
             "matchStrings": [
                 // Test: https://regex101.com/r/oGP4dI/1
@@ -103,7 +103,7 @@
         {
             "customType": "regex",
             "fileMatch": [
-                ".*(\\.ya?ml|\\.json)$"
+                ".*(\\.ya?ml|\\.json|\\.tf)$"
             ],
             "matchStrings": [
                 // Test: https://regex101.com/r/321nL5/1
