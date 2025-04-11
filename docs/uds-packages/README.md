@@ -37,6 +37,4 @@ This Quick Start is intended to provide the most concise and direct path to crea
 
 ## Experimental Resources
 
-- [Create UDS Package CLI](https://github.com/defenseunicorns/create-uds-package): A CLI to create a UDS package. _very much in alpha development, PRs and issues welcome_
-- [UDS Package Creation GPT Assistant](https://chatgpt.com/g/g-675141f7d7f481919152bec2a1177888-uds-package-creation-assistant): A GPT assitant that is built from UDS package documentaiton and examples. _very much in alpha development, feedback welcome in #airgap-appstore-apps slack channel_
 - [UDS Package Kit](https://github.com/defenseunicorns/uds-pk): UDS Package Kit is a tool designed to assist in developing, maintaining, and publishing UDS Packages.
