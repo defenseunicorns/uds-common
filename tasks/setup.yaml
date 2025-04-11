@@ -122,7 +122,7 @@ tasks:
         required: false
       last_name:
         description: First name of the user to create
-        default: Doug
+        default: Unicorn
         required: false
     actions:
       - task: keycloak-admin-user
