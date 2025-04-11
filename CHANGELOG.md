@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.13.1](https://github.com/defenseunicorns/uds-common/compare/v1.13.0...v1.13.1) (2025-04-11)
+
+
+### Miscellaneous
+
+* **deps:** update uds common support dependencies to v0.26.1 ([#460](https://github.com/defenseunicorns/uds-common/issues/460)) ([6928ffe](https://github.com/defenseunicorns/uds-common/commit/6928ffeb72353a49727d77712ea6993ed999bc51))
+* remove app store references ([#463](https://github.com/defenseunicorns/uds-common/issues/463)) ([f3332c4](https://github.com/defenseunicorns/uds-common/commit/f3332c475738e2fec4a962d1d728bdc215348203))
+* update renovate matched to catch TF files ([#464](https://github.com/defenseunicorns/uds-common/issues/464)) ([5ebaf51](https://github.com/defenseunicorns/uds-common/commit/5ebaf517a9823bb438bc348920f22dc4fe3217b8))
+
 ## [1.13.0](https://github.com/defenseunicorns/uds-common/compare/v1.12.0...v1.13.0) (2025-04-08)
 
 
