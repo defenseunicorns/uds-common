@@ -182,7 +182,7 @@ tasks:
               }"
 
   - name: create-doug-user
-    description: DEPRECATED! Use keycloak-user instead
+    description: DEPRECATED! Please consider using keycloak-user instead
     inputs:
       keycloak_group:
         description: Group to add user to
