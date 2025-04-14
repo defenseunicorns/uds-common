@@ -6,7 +6,7 @@ This ensures consistency and helps improve downstream repos over time as Renovat
 ## Usage
 
 To use these callable workflows you add a calling workflow to your repository for each `callable-*.yaml` workflow in this repository under `.github/workflows`.
-You can find examples of these in other UDS Packages or in the [`uds-package-template`](https://github.com/defenseunicorns/uds-package-template/tree/main/.github/workflows).
+You can find examples of these in other UDS Packages or in the [`uds-package-template`](https://github.com/uds-packages/template/tree/main/.github/workflows).
 
 > [!NOTE]
 > Workflows should have `validate` as the primary Job name that calls the callable workflow.  You can read more about why in the [Consistency in CI Workflow Job Naming ADR](../../adrs/0003-consistency-in-ci-workflow-job-naming.md).
@@ -14,7 +14,7 @@ You can find examples of these in other UDS Packages or in the [`uds-package-tem
 ### Task Entrypoints
 
 Once you have the right workflows in your `.github/workflows` folder you will need to `include` the tasks files that are also included in the root `tasks.yaml` of this project.
-You can see an example of this in other UDS Packages or in the [`uds-package-template`](https://github.com/defenseunicorns/uds-package-template/blob/main/tasks.yaml#L4)
+You can see an example of this in other UDS Packages or in the [`uds-package-template`](https://github.com/uds-packages/template/tree/main/tasks)
 
 You will also need to add the following tasks to your root `tasks.yaml`:
 

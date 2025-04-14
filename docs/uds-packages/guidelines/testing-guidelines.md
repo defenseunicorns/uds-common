@@ -1,8 +1,7 @@
-# Testing Guidelines for UDS Marketplace Apps
-
+# Testing Guidelines for Airgap Store Apps
 ## Table of Contents
 
-- [Testing Guidelines for UDS Marketplace Apps](#testing-guidelines-for-uds-marketplace-apps)
+- [Testing Guidelines for Airgap Store Apps](#testing-guidelines-for-airgap-store-apps)
   - [Table of Contents](#table-of-contents)
   - [Introduction](#introduction)
   - [Journey Testing](#journey-testing)
