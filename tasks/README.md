@@ -35,7 +35,7 @@ There are multiple task files available in this repository with different object
 | **keycloak-admin-user** | Sets up the Keycloak admin user for dev/testing if not already created |
 | **print-keycloak-admin-password** | Prints out Keycloak Admin credentials |
 | **keycloak-user** | Creates a Keycloak user in the UDS Realm |
-| **create-doug-user** | DEPRECATED! Use keycloak-user instead |
+| **create-doug-user** | DEPRECATED! Please consider using keycloak-user instead |
 
 ### [create.yaml](./tasks/create.yaml)
 
