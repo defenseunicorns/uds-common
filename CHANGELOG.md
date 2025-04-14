@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.14.0](https://github.com/defenseunicorns/uds-common/compare/v1.13.0...v1.14.0) (2025-04-14)
+
+
+### Features
+
+* keycloak helper tasks ([#462](https://github.com/defenseunicorns/uds-common/issues/462)) ([dee8b17](https://github.com/defenseunicorns/uds-common/commit/dee8b17c0c6c91d10350e1eb3a7ce80e1fc59150))
+
+
+### Miscellaneous
+
+* **deps:** update setup-node to v4.4.0 ([#465](https://github.com/defenseunicorns/uds-common/issues/465)) ([718b8a0](https://github.com/defenseunicorns/uds-common/commit/718b8a022d4f3f1fe9533f6151450d2e313c4910))
+* **deps:** update uds common support dependencies to v0.26.1 ([#460](https://github.com/defenseunicorns/uds-common/issues/460)) ([6928ffe](https://github.com/defenseunicorns/uds-common/commit/6928ffeb72353a49727d77712ea6993ed999bc51))
+* remove app store references ([#463](https://github.com/defenseunicorns/uds-common/issues/463)) ([f3332c4](https://github.com/defenseunicorns/uds-common/commit/f3332c475738e2fec4a962d1d728bdc215348203))
+* update renovate matched to catch TF files ([#464](https://github.com/defenseunicorns/uds-common/issues/464)) ([5ebaf51](https://github.com/defenseunicorns/uds-common/commit/5ebaf517a9823bb438bc348920f22dc4fe3217b8))
+
 ## [1.13.0](https://github.com/defenseunicorns/uds-common/compare/v1.12.0...v1.13.0) (2025-04-08)
 
 
