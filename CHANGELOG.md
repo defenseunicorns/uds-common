@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.14.1](https://github.com/defenseunicorns/uds-common/compare/v1.14.0...v1.14.1) (2025-04-15)
+
+
+### Bug Fixes
+
+* create-doug-user calls wrong task ([#468](https://github.com/defenseunicorns/uds-common/issues/468)) ([361e113](https://github.com/defenseunicorns/uds-common/commit/361e1138ac4fbf87a83cf92a27faa0cadea87ae5))
+
+
+### Miscellaneous
+
+* **deps:** update uds common support dependencies to v0.40.0 ([#466](https://github.com/defenseunicorns/uds-common/issues/466)) ([321b41a](https://github.com/defenseunicorns/uds-common/commit/321b41a18b588469817c805c2735338fcc880eaf))
+
 ## [1.14.0](https://github.com/defenseunicorns/uds-common/compare/v1.13.0...v1.14.0) (2025-04-14)
 
 
