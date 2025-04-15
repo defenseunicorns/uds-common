@@ -189,6 +189,6 @@ tasks:
         default: $KEYCLOAK_GROUP
         required: false
     actions:
-      - task: keycloak-admin-user
+      - task: keycloak-user
         with:
           group: ${{ .inputs.keycloak_group }}
