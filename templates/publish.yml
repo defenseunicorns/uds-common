@@ -23,6 +23,8 @@ spec:
       default: "true"
     mirror-project-id:
       default: ${MIRROR_PROJECT_ID}
+    publish-path:
+      default: ""
 ---
 publish:
   variables:
@@ -80,6 +82,10 @@ publish:
 
         if [[ -n "$[[ inputs.base-repo ]]" ]]; then
           ARGS+=(--set BASE_REPO="$[[ inputs.base-repo ]]")
+        fi
+
+        if [[ -n "$[[ inputs.publish-path ]]" ]]; then
+          ARGS+=(--set PUBLISH_PATH="$[[ inputs.publish-path ]]")
         fi
 
         if [[ -n "$[[ inputs.team ]]" ]]; then
