@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.14.2](https://github.com/defenseunicorns/uds-common/compare/v1.14.1...v1.14.2) (2025-04-24)
+
+
+### Bug Fixes
+
+* broken task reference in callable-publish workflow ([#475](https://github.com/defenseunicorns/uds-common/issues/475)) ([6723567](https://github.com/defenseunicorns/uds-common/commit/67235670d82fae7e243e7f5d4607eee39788eee3))
+
+
+### Miscellaneous
+
+* **deps:** update uds common package dependencies to v1.27.5 ([#470](https://github.com/defenseunicorns/uds-common/issues/470)) ([fde663a](https://github.com/defenseunicorns/uds-common/commit/fde663a928e9f3d7a36d04a48b15b1844319684f))
+* **deps:** update uds common support dependencies ([#471](https://github.com/defenseunicorns/uds-common/issues/471)) ([5cffc1d](https://github.com/defenseunicorns/uds-common/commit/5cffc1db4d0337a75994c07cf04aea22715df859))
+* **deps:** update uds common support dependencies ([#477](https://github.com/defenseunicorns/uds-common/issues/477)) ([af90c63](https://github.com/defenseunicorns/uds-common/commit/af90c63e3eef2a50adb11260a319163ee6bfab8c))
+
 ## [1.14.1](https://github.com/defenseunicorns/uds-common/compare/v1.14.0...v1.14.1) (2025-04-15)
 
 
