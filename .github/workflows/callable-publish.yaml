@@ -59,7 +59,7 @@ jobs:
         uses: defenseunicorns/setup-uds@ab842abcad1f7a3305c2538e3dd1950d0daacfa5 # v1.0.1
         with:
           # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
-          version: v0.26.1
+          version: v0.27.1
 
       - name: Environment setup
         run: |
@@ -86,7 +86,7 @@ jobs:
       - name: Publish Packages/Bundles - release-please
         if: ${{ steps.parse-inputs.outputs.uds-pk == 'false' }}
         run: |
-          if uds run --list | grep -q 'publish-package'; then
+          if uds run --list | grep -wq 'publish-package'; then
             uds run publish-package --set USE_CHECKPOINT=false --set FLAVOR=${{ inputs.flavor }} --no-progress ${{ inputs.options }}
           else
             uds run publish-release --set USE_CHECKPOINT=false --set FLAVOR=${{ inputs.flavor }} --no-progress ${{ inputs.options }}
@@ -99,7 +99,7 @@ jobs:
         run: |
           if uds-pk release check "${{ inputs.flavor }}"; then
             uds-pk release update-yaml ${{ inputs.flavor }}
-            if uds run --list | grep -q 'publish-package'; then
+            if uds run --list | grep -wq 'publish-package'; then
               uds run publish-package \
                 --set USE_CHECKPOINT=false \
                 --set FLAVOR=${{ inputs.flavor }} \
