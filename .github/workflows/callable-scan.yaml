@@ -128,7 +128,7 @@ jobs:
       - name: Get Images
         id: get-images
         run: |
-          IMAGES=$(uds zarf tools yq -r -o=json -I=0 '[.components.[].images] | flatten | unique | map(select((test(".sig") | not) and (test(".att") | not)))' ${{ inputs.zarfYamlPath }})
+          IMAGES=$(uds zarf tools yq -r -o=json -I=0 '[.components.[].images? // []] | flatten | unique | map(select((test(".sig") | not) and (test(".att") | not)))' ${{ inputs.zarfYamlPath }})
           echo "images=$IMAGES" >> "$GITHUB_OUTPUT"
 
   scan-sboms:
