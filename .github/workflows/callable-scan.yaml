@@ -67,9 +67,10 @@ jobs:
         run: |
           PACKAGES=""
           PACKAGE_NAME=$(echo "$BASE_REPO" | awk -F'/' 'BEGIN{OFS="/"} {if (NF > 2) {for (i=3; i<=NF; i++) printf (i==3 ? $i : "/"$i); print ""} else print ""}')/$(yq e '.metadata.name' zarf.yaml)
+          PACKAGE_NAME_ENCODED=$(echo "$PACKAGE_NAME" | sed 's/\//%2F/g')
 
           # Check for the public package
-          if gh api --silent /orgs/"$REPO_OWNER"/packages/container/"$PACKAGE_NAME" >/dev/null 2>&1; then
+          if gh api --silent /orgs/"$REPO_OWNER"/packages/container/"$PACKAGE_NAME_ENCODED" >/dev/null 2>&1; then
             PACKAGES="$PACKAGES $PACKAGE_NAME"
           fi
 
@@ -79,7 +80,8 @@ jobs:
           else
             PRIVATE_PACKAGE="private/$PACKAGE_NAME"
           fi
-          if gh api --silent /orgs/"$REPO_OWNER"/packages/container/"$PRIVATE_PACKAGE" >/dev/null 2>&1; then
+          PRIVATE_PACKAGE_ENCODED=$(echo "$PRIVATE_PACKAGE" | sed 's/\//%2F/g')
+          if gh api --silent /orgs/"$REPO_OWNER"/packages/container/"$PRIVATE_PACKAGE_ENCODED" >/dev/null 2>&1; then
             PACKAGES="$PACKAGES $PRIVATE_PACKAGE"
           fi
 
@@ -89,7 +91,8 @@ jobs:
 
           for PACKAGE in ${PACKAGES}; do
             for FLAVOR in ${FLAVORS}; do
-              TAG=$(gh api -H "Accept: application/vnd.github.v3+json" "/orgs/${REPO_OWNER}/packages/container/${PACKAGE}/versions" | jq -r "[.[] | select(.metadata.container.tags[] | contains(\"${FLAVOR}\"))] | .[0].metadata.container.tags[0]")
+              PACKAGE_ENCODED=$(echo "$PACKAGE" | sed 's/\//%2F/g')
+              TAG=$(gh api -H "Accept: application/vnd.github.v3+json" "/orgs/${REPO_OWNER}/packages/container/${PACKAGE_ENCODED}/versions" | jq -r "[.[] | select(.metadata.container.tags[] | contains(\"${FLAVOR}\"))] | .[0].metadata.container.tags[0]")
 
               if [[ "$TAG" == "null" ]]; then
                 echo "No tag found for package ${PACKAGE} with flavor ${FLAVOR}"
