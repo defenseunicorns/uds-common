@@ -132,7 +132,7 @@ tasks:
       - description: Install uds-pk
         env:
           # renovate: datasource=github-tags depName=defenseunicorns/uds-pk versioning=semver-coerced
-          - UDS_PK_VERSION=v0.0.9
+          - UDS_PK_VERSION=v0.0.10
         cmd: |
           curl -o /usr/local/bin/uds-pk -L \
           "https://github.com/defenseunicorns/uds-pk/releases/download/${UDS_PK_VERSION}/uds-pk_${UDS_PK_VERSION}_$(uname -s)_${{ .variables.ARCH }}" \

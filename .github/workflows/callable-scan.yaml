@@ -70,7 +70,7 @@ jobs:
           PACKAGE_NAME_ENCODED=$(echo "$PACKAGE_NAME" | sed 's/\//%2F/g')
 
           # Check for the public package
-          if gh api --silent /orgs/"$REPO_OWNER"/packages/container/"$PACKAGE_NAME_ENCODED" >/dev/null 2>&1; then
+          if gh api --silent /orgs/"${REPO_OWNER}"/packages/container/"${PACKAGE_NAME_ENCODED}" >/dev/null 2>&1; then
             PACKAGES="$PACKAGES $PACKAGE_NAME"
           fi
 
@@ -81,7 +81,7 @@ jobs:
             PRIVATE_PACKAGE="private/$PACKAGE_NAME"
           fi
           PRIVATE_PACKAGE_ENCODED=$(echo "$PRIVATE_PACKAGE" | sed 's/\//%2F/g')
-          if gh api --silent /orgs/"$REPO_OWNER"/packages/container/"$PRIVATE_PACKAGE_ENCODED" >/dev/null 2>&1; then
+          if gh api --silent /orgs/"${REPO_OWNER}"/packages/container/"${PRIVATE_PACKAGE_ENCODED}" >/dev/null 2>&1; then
             PACKAGES="$PACKAGES $PRIVATE_PACKAGE"
           fi
 
