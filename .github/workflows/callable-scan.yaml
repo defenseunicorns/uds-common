@@ -113,6 +113,8 @@ jobs:
             done
           done
 
+          echo '${COMBINED_JSON}' | zarf tools yq 'unique_by(.sbomName)'
+
           echo "sboms=${COMBINED_JSON}" >> "$GITHUB_OUTPUT"
 
   get-images:
