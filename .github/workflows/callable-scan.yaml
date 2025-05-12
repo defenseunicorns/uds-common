@@ -113,7 +113,7 @@ jobs:
             done
           done
 
-          COMBINED_JSON=$(echo "${COMBINED_JSON}" | jq -c 'unique_by(.sbomName))
+          COMBINED_JSON=$(echo "${COMBINED_JSON}" | jq -c 'unique_by(.sbomName)')
 
           echo "sboms=${COMBINED_JSON}" >> "$GITHUB_OUTPUT"
 
