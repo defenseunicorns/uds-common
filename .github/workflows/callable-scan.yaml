@@ -285,6 +285,9 @@ jobs:
           done
 
           echo "${COMMENT_MARKDOWN}" > comment.md
+          wc -m comment.md
+
+          cat comment.md
 
       - name: Post comment
         env:
