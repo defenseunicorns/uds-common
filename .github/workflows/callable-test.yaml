@@ -95,12 +95,13 @@ jobs:
         shell: bash
 
       - name: Generate unique suffix
-        run: echo "UNIQUE_ID=${RANDOM}" >> $GITHUB_ENV
+        id: uniq
+        run: echo "suffix=${RANDOM}" >> "$GITHUB_OUTPUT"
 
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: ${{ always() }}
         with:
-          name: debug-log-${{ inputs.type }}-${{ inputs.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ runner.arch }}-${{ env.UNIQUE_ID }}
+          name: debug-log-${{ inputs.type }}-${{ inputs.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ runner.arch }}-${{ steps.uniq.outputs.suffix }}
           path: |
             /tmp/zarf-*.log
             /tmp/uds-*.log
@@ -113,6 +114,6 @@ jobs:
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: ${{ always() && inputs.reports-path != '' }}
         with:
-          name: ${{ inputs.reports-name }}-${{ inputs.type }}-${{ inputs.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ runner.arch }}-${{ env.UNIQUE_ID }}
+          name: ${{ inputs.reports-name }}-${{ inputs.type }}-${{ inputs.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ runner.arch }}-${{ steps.uniq.outputs.suffix }}}
           path: ${{ inputs.reports-path }}
           retention-days: 30
