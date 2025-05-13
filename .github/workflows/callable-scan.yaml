@@ -327,6 +327,6 @@ jobs:
         run: |
           gh pr comment ${{ github.event.pull_request.number }} \
             --repo ${{ github.repository }} \
-            --body "Scan comparison results are too large to post as a comment. Link to results: (Comparison.md)[${{ steps.upload-comparison-results.outputs.artifact-url}}]" \
+            --body "Scan comparison results are too large to post as a comment. Link to results: [Comparison.md](${{ steps.upload-comparison-results.outputs.artifact-url}})" \
             --edit-last \
             --create-if-none
