@@ -260,6 +260,7 @@ jobs:
           merge-multiple: true
 
       - name: Compare scans
+        id: compare-scans
         shell: bash
         run: |
           sbomScans=$(ls sbom-scan-results)
@@ -285,22 +286,47 @@ jobs:
           done
 
           echo "${COMMENT_MARKDOWN}" > comment.md
-          wc -m comment.md
 
           pipx install mdformat
 
           mdformat comment.md
 
-          wc -m comment.md
+          CHAR_COUNT=$(wc -m comment.md | cut -d ' ' -f1)
 
-          cat comment.md
+          echo "Characters in comparison: ${CHAR_COUNT}"
 
-      - name: Post comment
+          if [[ $CHAR_COUNT -gt 65536 ]]; then
+            echo "artifact=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "artifact=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Post markdown as comment
+        if: ${{ steps.compare-scans.outputs.artifact == 'false' }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh pr comment ${{ github.event.pull_request.number }} \
             --repo ${{ github.repository }} \
             --body-file comment.md \
+            --edit-last \
+            --create-if-none
+
+      - name: Upload comparison results
+        id: upload-comparison-results
+        if: ${{ steps.compare-scans.outputs.artifact == 'true' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: scan-comparison
+          path: comment.md
+
+      - name: Post comment about artifact
+        if: ${{ steps.compare-scans.outputs.artifact == 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh pr comment ${{ github.event.pull_request.number }} \
+            --repo ${{ github.repository }} \
+            --body "Scan comparison results are too large to post as a comment. Link to results: (Comparison.md)[${{ steps.upload-comparison-results.outputs.artifact-url}}]" \
             --edit-last \
             --create-if-none
