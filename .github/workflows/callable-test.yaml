@@ -97,7 +97,7 @@ jobs:
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: ${{ always() }}
         with:
-          name: debug-log-${{ inputs.type }}-${{ inputs.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ runner.arch }}
+          name: debug-log-${{ inputs.type }}-${{ inputs.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ runner.arch }}-${{ github.job }}
           path: |
             /tmp/zarf-*.log
             /tmp/uds-*.log
@@ -110,6 +110,6 @@ jobs:
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: ${{ always() && inputs.reports-path != '' }}
         with:
-          name: ${{ inputs.reports-name }}-${{ inputs.type }}-${{ inputs.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ runner.arch }}
+          name: ${{ inputs.reports-name }}-${{ inputs.type }}-${{ inputs.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ runner.arch }}-${{ github.job }}
           path: ${{ inputs.reports-path }}
           retention-days: 30
