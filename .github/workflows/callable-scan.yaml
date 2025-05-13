@@ -287,6 +287,13 @@ jobs:
           echo "${COMMENT_MARKDOWN}" > comment.md
           wc -m comment.md
 
+          pipx install mdformat
+          pipx inject mdformat mdformat-gfm mdformat-frontmatter mdformat-footnote mdformat-gfm-alerts
+
+          mdformat comment.md
+
+          wc -m comment.md
+
           cat comment.md
 
       - name: Post comment
