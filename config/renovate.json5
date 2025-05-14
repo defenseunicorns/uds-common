@@ -138,9 +138,9 @@
             ],
             "matchStrings": [
                 // Test: https://regex101.com/r/d9t0lt/1
-                "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( extractVersion=(?<extractVersion>.*?))?( registryUrl=(?<registryUrl>.*?))?\\s.*:\\s*['\"]?(?<currentValue>[v0-9].*?)['\"]?(\\s|$)",
+                "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( extractVersion=(?<extractVersion>.*?))?( registryUrl=(?<registryUrl>.*?))?\\s.*:\\s*['\"]?(?<currentValue>.*?)['\"]?(\\s|$)",
                 // Test: https://regex101.com/r/7JwlnI/1
-                "<!-- renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( extractVersion=(?<extractVersion>.*?))?( registryUrl=(?<registryUrl>.*?))? -->\\s.*:\\s*['\"]?(?<currentValue>[v0-9].*?)['\"]?(\\s|$)"
+                "<!-- renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( extractVersion=(?<extractVersion>.*?))?( registryUrl=(?<registryUrl>.*?))? -->\\s.*:\\s*['\"]?(?<currentValue>.*?)['\"]?(\\s|$)"
             ],
             "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver-coerced{{/if}}",
             "extractVersionTemplate": "{{#if extractVersion}}{{{extractVersion}}}{{else}}^(?<version>.*)${{/if}}"
@@ -155,9 +155,9 @@
             ],
             "matchStrings": [
                 // Test: https://regex101.com/r/b53bEF/2
-                "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( extractVersion=(?<extractVersion>.*?))?( registryUrl=(?<registryUrl>.*?))?\\s.*[A-Z]+=['\"]?(?<currentValue>[v0-9].*?)['\"]?(\\s|$)",
-                // Test: https://regex101.com/r/I6FpuD/1
-                "<!-- renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( extractVersion=(?<extractVersion>.*?))?( registryUrl=(?<registryUrl>.*?))? -->\\s.*[A-Z]+=['\"]?(?<currentValue>[v0-9].*?)['\"]?(\\s|$)"
+                "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( extractVersion=(?<extractVersion>.*?))?( registryUrl=(?<registryUrl>.*?))?\\s.*[A-Z]+=['\"]?(?<currentValue>.*?)['\"]?(\\s|$)",
+                // Test: https://regex101.com/r/I6FpuD/2
+                "<!-- renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( extractVersion=(?<extractVersion>.*?))?( registryUrl=(?<registryUrl>.*?))? -->\\s.*[A-Z]+=['\"]?(?<currentValue>.*?)['\"]?(\\s|$)"
             ],
             "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver-coerced{{/if}}",
             "extractVersionTemplate": "{{#if extractVersion}}{{{extractVersion}}}{{else}}^(?<version>.*)${{/if}}"
@@ -169,10 +169,10 @@
                 ".*\\.ya?ml$"
             ],
             "matchStrings": [
-                // Test: https://regex101.com/r/p3Cpjx/1
-                "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s.*brew.*@\\s*['\"]?(?<currentValue>[v0-9].*?)['\"]?(\\s|$)",
-                // Test: https://regex101.com/r/R0q5QF/1
-                "<!-- renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))? -->\\s.*brew.*@\\s*['\"]?(?<currentValue>[v0-9].*?)['\"]?(\\s|$)"
+                // Test: https://regex101.com/r/p3Cpjx/2
+                "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s.*brew.*@\\s*['\"]?(?<currentValue>.*?)['\"]?(\\s|$)",
+                // Test: https://regex101.com/r/R0q5QF/2
+                "<!-- renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))? -->\\s.*brew.*@\\s*['\"]?(?<currentValue>.*?)['\"]?(\\s|$)"
             ],
             "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver-coerced{{/if}}",
             "extractVersionTemplate": "^v(?<version>.*)$"
