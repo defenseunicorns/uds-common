@@ -334,20 +334,24 @@ jobs:
         if: ${{ steps.compare-scans.outputs.artifact == 'true' }}
         env:
           GH_TOKEN: ${{ github.token }}
+        # If the comment is too long, means there's a lot of images so we want to have them collpased to minimize the comment size
         run: |
           {
             echo "Full scan comparison results are too large to post as a comment. Link to full results artifact: [Results](${{ steps.upload-comparison-results.outputs.artifact-url}})"
             echo "Summarized results are below:"
+            echo <details>
             echo
             sed '/<details>/,/<\/details>/d' comment.md | sed '/^______________________________________________________________________$/{
             i\
             </details>
             a\
             <details>
-            }' | sed -E 's/^(### )([^`]+)( `)/<summary>\2<\/summary>\n\0/'
+            d
+            }' | sed -E 's/^(### )([^`]+)( `)/<summary>\2<\/summary>\n\n\0/'
           } >> summary.md
+           tac summary.md | sed '0,/<details>/ s/<details>//' | tac > summary-done.md
           gh pr comment ${{ github.event.pull_request.number }} \
             --repo ${{ github.repository }} \
-            --body-file summary.md \
+            --body-file summary-done.md \
             --edit-last \
             --create-if-none
