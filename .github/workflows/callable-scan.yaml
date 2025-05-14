@@ -334,7 +334,7 @@ jobs:
         if: ${{ steps.compare-scans.outputs.artifact == 'true' }}
         env:
           GH_TOKEN: ${{ github.token }}
-        # If the comment is too long, means there's a lot of images so we want to have them collpased to minimize the comment size
+        # If the comment is too long, means there's a lot of images so we want to have them collapsed to minimize the comment size
         run: |
           {
             echo "Full scan comparison results are too large to post as a comment. Link to full results artifact: [Results](${{ steps.upload-comparison-results.outputs.artifact-url}})"
