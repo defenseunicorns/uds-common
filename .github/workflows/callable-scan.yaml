@@ -273,16 +273,25 @@ jobs:
 
           for imageScan in $imageScans; do
             imageName=$(echo "$imageScan" | cut -d "@" -f 1)
+            imageScanned="false"
 
             for sbomScan in $sbomScans; do
               sbomName=$(echo "$sbomScan" | cut -d "@" -f 1)
 
-                if [[ "$imageName" == "$sbomName" ]]; then
+              if [[ "$imageName" == "$sbomName" ]]; then
                 # Allow different images is necessary because of implied urls with docker hub images (i.e. docker.io/library isn't always present)
                 COMMENT_MARKDOWN+=$(uds-pk compare-scans "sbom-scan-results/$sbomScan" "image-scan-results/$imageScan" --allow-different-images)
                 COMMENT_MARKDOWN+=$'\n'
+                imageScanned="true"
+                break
               fi
             done
+
+            if [[ "$imageScanned" == "false" ]]; then
+              COMMENT_MARKDOWN+="### No comparable image found, assuming new image\n"
+              COMMENT_MARKDOWN+=$(uds-pk compare-scans "image-scan-results/$imageScan" "image-scan-results/$imageScan")
+              COMMENT_MARKDOWN+=$'\n'
+            fi
           done
 
           echo "${COMMENT_MARKDOWN}" > comment.md
