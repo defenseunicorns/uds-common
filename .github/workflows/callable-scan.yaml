@@ -339,7 +339,7 @@ jobs:
           {
             echo "Full scan comparison results are too large to post as a comment. Link to full results artifact: [Results](${{ steps.upload-comparison-results.outputs.artifact-url}})"
             echo "Summarized results are below:"
-            echo <details>
+            echo "<details>"
             echo
             sed '/<details>/,/<\/details>/d' comment.md | sed '/^______________________________________________________________________$/{
             i\
