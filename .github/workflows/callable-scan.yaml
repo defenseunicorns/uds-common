@@ -335,10 +335,17 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          echo "Full scan comparison results are too large to post as a comment. Link to full results artifact: [Results](${{ steps.upload-comparison-results.outputs.artifact-url}})" > summary.md
-          echo "Summarized results are below:" >> summary.md
-          echo >> summary.md
-          sed '/<details>/,/<\/details>/d' comment.md >> summary.md
+          {
+            echo "Full scan comparison results are too large to post as a comment. Link to full results artifact: [Results](${{ steps.upload-comparison-results.outputs.artifact-url}})"
+            echo "Summarized results are below:"
+            echo
+            sed '/<details>/,/<\/details>/d' comment.md | sed '/^______________________________________________________________________$/{
+            i\
+            </details>
+            a\
+            <details>
+            }' | sed -E 's/^(### )([^`]+)( `)/<summary>\2<\/summary>\n\0/'
+          } >> summary.md
           gh pr comment ${{ github.event.pull_request.number }} \
             --repo ${{ github.repository }} \
             --body-file summary.md \
