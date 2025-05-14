@@ -288,7 +288,8 @@ jobs:
             done
 
             if [[ "$imageScanned" == "false" ]]; then
-              COMMENT_MARKDOWN+="### No comparable image found, assuming new image\n"
+              COMMENT_MARKDOWN+="### No comparable image found, assuming new image"
+              COMMENT_MARKDOWN+=$'\n'
               COMMENT_MARKDOWN+=$(uds-pk compare-scans "image-scan-results/$imageScan" "image-scan-results/$imageScan")
               COMMENT_MARKDOWN+=$'\n'
             fi
