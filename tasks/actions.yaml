@@ -116,6 +116,7 @@ tasks:
           # renovate: datasource=github-tags depName=k3d-io/k3d versioning=semver-coerced
           - K3D_VERSION=v5.8.3
         cmd: |
+          echo "Installing k3d version $K3D_VERSION"
           curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | TAG="${K3D_VERSION}" bash
 
       - task: determine-arch
@@ -125,6 +126,7 @@ tasks:
           # renovate: datasource=github-tags depName=defenseunicorns/lula versioning=semver-coerced
           - LULA_VERSION=v0.16.0
         cmd: |
+          echo "Installing lula version $LULA_VERSION"
           curl -o /usr/local/bin/lula -L \
           "https://github.com/defenseunicorns/lula/releases/download/${LULA_VERSION}/lula_${LULA_VERSION}_$(uname -s)_${{ .variables.ARCH }}" \
           && chmod +x /usr/local/bin/lula
@@ -132,8 +134,9 @@ tasks:
       - description: Install uds-pk
         env:
           # renovate: datasource=github-tags depName=defenseunicorns/uds-pk versioning=semver-coerced
-          - UDS_PK_VERSION=v0.0.9
+          - UDS_PK_VERSION=v0.0.11
         cmd: |
+          echo "Installing uds-pk version $UDS_PK_VERSION"
           curl -o /usr/local/bin/uds-pk -L \
           "https://github.com/defenseunicorns/uds-pk/releases/download/${UDS_PK_VERSION}/uds-pk_${UDS_PK_VERSION}_$(uname -s)_${{ .variables.ARCH }}" \
           && chmod +x /usr/local/bin/uds-pk
