@@ -35,7 +35,7 @@ jobs:
 
       - name: Environment setup
         run: |
-          "MARU_AUTH=\"{\"raw.githubusercontent.com\": \"${{ secrets.GITHUB_TOKEN }}\"}\"" >> "GITHUB_ENV"
+          echo "MARU_AUTH=\"{\"raw.githubusercontent.com\": \"${{ secrets.GITHUB_TOKEN }}\"}\"" >> "GITHUB_ENV"
           uds run actions:setup-environment \
           --set GH_TOKEN="${{ secrets.GITHUB_TOKEN }}"
         shell: bash

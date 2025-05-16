@@ -65,7 +65,7 @@ jobs:
         # If we are on ubuntu-latest we should try to clean the disk since it is the thing that is most limiting
         if: ${{ inputs.runsOn == 'ubuntu-latest' }}
         run: |
-          "MARU_AUTH=\"{\"raw.githubusercontent.com\": \"${{ secrets.GITHUB_TOKEN }}\"}\"" >> "GITHUB_ENV"
+          echo "MARU_AUTH=\"{\"raw.githubusercontent.com\": \"${{ secrets.GITHUB_TOKEN }}\"}\"" >> "GITHUB_ENV"
           uds run actions:clean-gh-runner
         shell: bash
 
