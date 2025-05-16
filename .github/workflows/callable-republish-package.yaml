@@ -55,6 +55,7 @@ jobs:
 
       - name: Environment setup
         run: |
+            export MARU_AUTH="{\"raw.githubusercontent.com\": \"$(gh auth token)\"}"
             uds run actions:setup-environment \
             --set REGISTRY1_USERNAME="${{ secrets.IRON_BANK_ROBOT_USERNAME }}" \
             --set REGISTRY1_PASSWORD="${{ secrets.IRON_BANK_ROBOT_PASSWORD }}" \
@@ -64,16 +65,21 @@ jobs:
 
       - name: Republish the package
         run: |
+          export MARU_AUTH="{\"raw.githubusercontent.com\": \"$(gh auth token)\"}"
           uds run republish-package --set USE_CHECKPOINT=false --set FLAVOR=${{ inputs.flavor }} --no-progress ${{ inputs.options }}
 
       - name: Debug Output
         if: ${{ always() }}
-        run: uds run actions:debug-output
+        run: |
+          export MARU_AUTH="{\"raw.githubusercontent.com\": \"$(gh auth token)\"}"
+          uds run actions:debug-output
         shell: bash
 
       - name: Save logs
         if: ${{ always() }}
-        run: uds run actions:save-logs
+        run: |
+          export MARU_AUTH="{\"raw.githubusercontent.com\": \"$(gh auth token)\"}"
+          uds run actions:save-logs
         shell: bash
 
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2

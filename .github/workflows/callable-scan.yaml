@@ -198,6 +198,7 @@ jobs:
 
       - name: Environment setup
         run: |
+            export MARU_AUTH="{\"raw.githubusercontent.com\": \"$(gh auth token)\"}"
             uds run actions:setup-environment \
             --set REGISTRY1_USERNAME="${{ secrets.IRON_BANK_ROBOT_USERNAME }}" \
             --set REGISTRY1_PASSWORD="${{ secrets.IRON_BANK_ROBOT_PASSWORD }}" \
@@ -242,7 +243,9 @@ jobs:
           version: v${{ inputs.udsCliVersion }}
 
       - name: Environment setup
-        run: uds run actions:install-deps
+        run: |
+          export MARU_AUTH="{\"raw.githubusercontent.com\": \"$(gh auth token)\"}"
+          uds run actions:install-deps
         shell: bash
 
       - name: Download sbom scan results from GitHub Actions Artifacts

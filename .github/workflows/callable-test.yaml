@@ -64,34 +64,45 @@ jobs:
       - name: Clean Runner
         # If we are on ubuntu-latest we should try to clean the disk since it is the thing that is most limiting
         if: ${{ inputs.runsOn == 'ubuntu-latest' }}
-        run: uds run actions:clean-gh-runner
+        run: |
+          export MARU_AUTH="{\"raw.githubusercontent.com\": \"$(gh auth token)\"}"
+          uds run actions:clean-gh-runner
         shell: bash
 
       - name: Environment setup
         run: |
-            uds run actions:setup-environment \
-            --set REGISTRY1_USERNAME="${{ secrets.IRON_BANK_ROBOT_USERNAME }}" \
-            --set REGISTRY1_PASSWORD="${{ secrets.IRON_BANK_ROBOT_PASSWORD }}" \
-            --set GH_TOKEN="${{ secrets.GITHUB_TOKEN }}" \
-            --set CHAINGUARD_IDENTITY="${{ secrets.CHAINGUARD_IDENTITY }}"
+          export MARU_AUTH="{\"raw.githubusercontent.com\": \"$(gh auth token)\"}"
+          uds run actions:setup-environment \
+          --set REGISTRY1_USERNAME="${{ secrets.IRON_BANK_ROBOT_USERNAME }}" \
+          --set REGISTRY1_PASSWORD="${{ secrets.IRON_BANK_ROBOT_PASSWORD }}" \
+          --set GH_TOKEN="${{ secrets.GITHUB_TOKEN }}" \
+          --set CHAINGUARD_IDENTITY="${{ secrets.CHAINGUARD_IDENTITY }}"
         shell: bash
 
       - name: Test
-        run: uds run actions:test-deploy --set FLAVOR="${{ inputs.flavor }}" --set TYPE="${{ inputs.type }}" --set OPTIONS="${{ inputs.options }}"
+        run: |
+          export MARU_AUTH="{\"raw.githubusercontent.com\": \"$(gh auth token)\"}"
+          uds run actions:test-deploy --set FLAVOR="${{ inputs.flavor }}" --set TYPE="${{ inputs.type }}" --set OPTIONS="${{ inputs.options }}"
         shell: bash
 
       - name: UDS Badge Verification
-        run: uds run actions:verify-badge
+        run: |
+          export MARU_AUTH="{\"raw.githubusercontent.com\": \"$(gh auth token)\"}"
+          uds run actions:verify-badge
         shell: bash
 
       - name: Debug Output
         if: ${{ always() }}
-        run: uds run actions:debug-output
+        run: |
+          export MARU_AUTH="{\"raw.githubusercontent.com\": \"$(gh auth token)\"}"
+          uds run actions:debug-output
         shell: bash
 
       - name: Save logs
         if: ${{ always() }}
-        run: uds run actions:save-logs
+        run: |
+          export MARU_AUTH="{\"raw.githubusercontent.com\": \"$(gh auth token)\"}"
+          uds run actions:save-logs
         shell: bash
 
       - name: Generate unique suffix
