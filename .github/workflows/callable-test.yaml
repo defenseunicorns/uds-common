@@ -83,7 +83,7 @@ jobs:
         shell: bash
 
       - name: UDS Badge Verification
-        run:  uds run actions:verify-badge
+        run: uds run actions:verify-badge
         shell: bash
 
       - name: Debug Output
