@@ -35,17 +35,13 @@ jobs:
 
       - name: Environment setup
         run: |
-          export MARU_AUTH="{\"raw.githubusercontent.com\": \"${{ secrets.GITHUB_TOKEN }}\"}"
+          "MARU_AUTH=\"{\"raw.githubusercontent.com\": \"${{ secrets.GITHUB_TOKEN }}\"}\"" >> "GITHUB_ENV"
           uds run actions:setup-environment \
           --set GH_TOKEN="${{ secrets.GITHUB_TOKEN }}"
         shell: bash
 
       - name: Install lint deps
-        run: |
-          export MARU_AUTH="{\"raw.githubusercontent.com\": \"${{ secrets.GITHUB_TOKEN }}\"}"
-          uds run lint:deps --no-progress
+        run: uds run lint:deps --no-progress
 
       - name: Lint the repository
-        run: |
-          export MARU_AUTH="{\"raw.githubusercontent.com\": \"${{ secrets.GITHUB_TOKEN }}\"}"
-          uds run lint:all --no-progress
+        run: uds run lint:all --no-progress
