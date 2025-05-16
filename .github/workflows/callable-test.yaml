@@ -65,13 +65,13 @@ jobs:
         # If we are on ubuntu-latest we should try to clean the disk since it is the thing that is most limiting
         if: ${{ inputs.runsOn == 'ubuntu-latest' }}
         run: |
-          export MARU_AUTH="{\"raw.githubusercontent.com\": \"$(gh auth token)\"}"
+          export MARU_AUTH="{\"raw.githubusercontent.com\": \"${{ secrets.GITHUB_TOKEN }}\"}"
           uds run actions:clean-gh-runner
         shell: bash
 
       - name: Environment setup
         run: |
-          export MARU_AUTH="{\"raw.githubusercontent.com\": \"$(gh auth token)\"}"
+          export MARU_AUTH="{\"raw.githubusercontent.com\": \"${{ secrets.GITHUB_TOKEN }}\"}"
           uds run actions:setup-environment \
           --set REGISTRY1_USERNAME="${{ secrets.IRON_BANK_ROBOT_USERNAME }}" \
           --set REGISTRY1_PASSWORD="${{ secrets.IRON_BANK_ROBOT_PASSWORD }}" \
@@ -81,27 +81,27 @@ jobs:
 
       - name: Test
         run: |
-          export MARU_AUTH="{\"raw.githubusercontent.com\": \"$(gh auth token)\"}"
+          export MARU_AUTH="{\"raw.githubusercontent.com\": \"${{ secrets.GITHUB_TOKEN }}\"}"
           uds run actions:test-deploy --set FLAVOR="${{ inputs.flavor }}" --set TYPE="${{ inputs.type }}" --set OPTIONS="${{ inputs.options }}"
         shell: bash
 
       - name: UDS Badge Verification
         run: |
-          export MARU_AUTH="{\"raw.githubusercontent.com\": \"$(gh auth token)\"}"
+          export MARU_AUTH="{\"raw.githubusercontent.com\": \"${{ secrets.GITHUB_TOKEN }}\"}"
           uds run actions:verify-badge
         shell: bash
 
       - name: Debug Output
         if: ${{ always() }}
         run: |
-          export MARU_AUTH="{\"raw.githubusercontent.com\": \"$(gh auth token)\"}"
+          export MARU_AUTH="{\"raw.githubusercontent.com\": \"${{ secrets.GITHUB_TOKEN }}\"}"
           uds run actions:debug-output
         shell: bash
 
       - name: Save logs
         if: ${{ always() }}
         run: |
-          export MARU_AUTH="{\"raw.githubusercontent.com\": \"$(gh auth token)\"}"
+          export MARU_AUTH="{\"raw.githubusercontent.com\": \"${{ secrets.GITHUB_TOKEN }}\"}"
           uds run actions:save-logs
         shell: bash
 

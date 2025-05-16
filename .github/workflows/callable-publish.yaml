@@ -63,7 +63,7 @@ jobs:
 
       - name: Environment setup
         run: |
-            export MARU_AUTH="{\"raw.githubusercontent.com\": \"$(gh auth token)\"}"
+            export MARU_AUTH="{\"raw.githubusercontent.com\": \"${{ secrets.GITHUB_TOKEN }}\"}"
             uds run actions:setup-environment \
             --set REGISTRY1_USERNAME="${{ secrets.IRON_BANK_ROBOT_USERNAME }}" \
             --set REGISTRY1_PASSWORD="${{ secrets.IRON_BANK_ROBOT_PASSWORD }}" \
@@ -87,7 +87,7 @@ jobs:
       - name: Publish Packages/Bundles - release-please
         if: ${{ steps.parse-inputs.outputs.uds-pk == 'false' }}
         run: |
-          export MARU_AUTH="{\"raw.githubusercontent.com\": \"$(gh auth token)\"}"
+          export MARU_AUTH="{\"raw.githubusercontent.com\": \"${{ secrets.GITHUB_TOKEN }}\"}"
           if uds run --list | grep -wq 'publish-package'; then
             uds run publish-package --set USE_CHECKPOINT=false --set FLAVOR=${{ inputs.flavor }} --no-progress ${{ inputs.options }}
           else
@@ -99,7 +99,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          export MARU_AUTH="{\"raw.githubusercontent.com\": \"$(gh auth token)\"}"
+          export MARU_AUTH="{\"raw.githubusercontent.com\": \"${{ secrets.GITHUB_TOKEN }}\"}"
           if uds-pk release check "${{ inputs.flavor }}"; then
             uds-pk release update-yaml ${{ inputs.flavor }}
             if uds run --list | grep -wq 'publish-package'; then

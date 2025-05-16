@@ -55,7 +55,7 @@ jobs:
 
       - name: Environment setup
         run: |
-            export MARU_AUTH="{\"raw.githubusercontent.com\": \"$(gh auth token)\"}"
+            export MARU_AUTH="{\"raw.githubusercontent.com\": \"${{ secrets.GITHUB_TOKEN }}\"}"
             uds run actions:setup-environment \
             --set REGISTRY1_USERNAME="${{ secrets.IRON_BANK_ROBOT_USERNAME }}" \
             --set REGISTRY1_PASSWORD="${{ secrets.IRON_BANK_ROBOT_PASSWORD }}" \
@@ -65,20 +65,20 @@ jobs:
 
       - name: Republish the package
         run: |
-          export MARU_AUTH="{\"raw.githubusercontent.com\": \"$(gh auth token)\"}"
+          export MARU_AUTH="{\"raw.githubusercontent.com\": \"${{ secrets.GITHUB_TOKEN }}\"}"
           uds run republish-package --set USE_CHECKPOINT=false --set FLAVOR=${{ inputs.flavor }} --no-progress ${{ inputs.options }}
 
       - name: Debug Output
         if: ${{ always() }}
         run: |
-          export MARU_AUTH="{\"raw.githubusercontent.com\": \"$(gh auth token)\"}"
+          export MARU_AUTH="{\"raw.githubusercontent.com\": \"${{ secrets.GITHUB_TOKEN }}\"}"
           uds run actions:debug-output
         shell: bash
 
       - name: Save logs
         if: ${{ always() }}
         run: |
-          export MARU_AUTH="{\"raw.githubusercontent.com\": \"$(gh auth token)\"}"
+          export MARU_AUTH="{\"raw.githubusercontent.com\": \"${{ secrets.GITHUB_TOKEN }}\"}"
           uds run actions:save-logs
         shell: bash
 
