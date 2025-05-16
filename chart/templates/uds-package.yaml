@@ -28,6 +28,8 @@ spec:
       #   app.kubernetes.io/name: nginx
 
   network:
+    serviceMesh:
+      mode: ambient
     expose:
       - service: nginx
         selector:
