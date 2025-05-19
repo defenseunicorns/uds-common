@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.14.4](https://github.com/defenseunicorns/uds-common/compare/v1.14.3...v1.14.4) (2025-05-19)
+
+
+### Bug Fixes
+
+* export auth env var before all uds run steps ([#488](https://github.com/defenseunicorns/uds-common/issues/488)) ([e8e048c](https://github.com/defenseunicorns/uds-common/commit/e8e048c152a0feb049f13226f55a3b4204559821))
+* scan-images now works across all repos ([#481](https://github.com/defenseunicorns/uds-common/issues/481)) ([35187cc](https://github.com/defenseunicorns/uds-common/commit/35187ccb2812dbd27b6219d7eedde8be16d7a900))
+
 ## [1.14.3](https://github.com/defenseunicorns/uds-common/compare/v1.14.2...v1.14.3) (2025-05-13)
 
 
