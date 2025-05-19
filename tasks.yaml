@@ -116,8 +116,6 @@ tasks:
 
       - description: Setup the cluster
         task: setup:k3d-test-cluster
-        with:
-          use_checkpoint: "false"
 
       - description: Create deploy and test the bundle
         task: create-deploy-test-bundle
@@ -130,8 +128,6 @@ tasks:
     actions:
       - task: upgrade:create-latest-tag-bundle
       - task: setup:k3d-test-cluster
-        with:
-          use_checkpoint: "false" 
       - task: deploy:test-bundle
       - task: compliance:validate
       - task: create-dev-package
@@ -147,8 +143,6 @@ tasks:
 
       - description: Setup the cluster
         task: setup:k3d-test-cluster
-        with:
-          use_checkpoint: "false"
 
       - description: Create deploy and test the bundle
         task: create-deploy-test-bundle
@@ -164,8 +158,6 @@ tasks:
 
       - description: Setup the cluster
         task: setup:k3d-test-cluster
-        with:
-          use_checkpoint: "false"
 
       - description: Create deploy and test the bundle
         task: create-deploy-test-bundle
