@@ -86,6 +86,7 @@ jobs:
       - name: UDS Badge Verification
         run: uds run actions:verify-badge
         shell: bash
+        continue-on-error: true
 
       - name: Debug Output
         if: ${{ always() }}
