@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.14.6](https://github.com/defenseunicorns/uds-common/compare/v1.14.5...v1.14.6) (2025-05-20)
+
+
+### Bug Fixes
+
+* make verify badge in ci never cause a failure ([#491](https://github.com/defenseunicorns/uds-common/issues/491)) ([0a74245](https://github.com/defenseunicorns/uds-common/commit/0a742455276f63ef01a3db376e7f393c1aae6f61))
+
 ## [1.14.5](https://github.com/defenseunicorns/uds-common/compare/v1.14.4...v1.14.5) (2025-05-20)
 
 
