@@ -12,6 +12,7 @@ variables:
   - name: ENABLE_UDS_PK
     default: "false"
   - name: BASE_REPO
+  - name: PUBLISH_PATH
 
 tasks:
   - name: package
@@ -72,6 +73,7 @@ tasks:
         with:
           team: ${{ .variables.TEAM }}
           base_repo: ${{ .variables.BASE_REPO }}
+          publish_path: ${{ .variables.PUBLISH_PATH }}
       - description: Get the current Zarf package name
         cmd: cat ${{ .inputs.path }}/zarf.yaml | ./uds zarf tools yq .metadata.name
         setVariables:
@@ -101,6 +103,7 @@ tasks:
         with:
           team: ${{ .variables.TEAM }}
           base_repo: ${{ .variables.BASE_REPO }}
+          publish_path: ${{ .variables.PUBLISH_PATH }}
       - description: Get the current Zarf package name
         cmd: cat ${{ .inputs.path }}/zarf.yaml | ./uds zarf tools yq .metadata.name
         setVariables:
@@ -141,6 +144,7 @@ tasks:
         with:
           team: ${{ .variables.TEAM }}
           base_repo: ${{ .variables.BASE_REPO }}
+          publish_path: ${{ .variables.PUBLISH_PATH }}
       - description: Get the current Zarf package name
         cmd: cat ${{ .inputs.path }}/zarf.yaml | ./uds zarf tools yq .metadata.name
         setVariables:
@@ -168,6 +172,7 @@ tasks:
       - task: utils:determine-repo
         with:
           base_repo: ${{ .variables.BASE_REPO }}
+          publish_path: ${{ .variables.PUBLISH_PATH }}
       - description: Get the current UDS Bundle name
         cmd: cat ${{ .inputs.path }}/uds-bundle.yaml | ./uds zarf tools yq .metadata.name
         setVariables:

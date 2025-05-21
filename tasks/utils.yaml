@@ -22,6 +22,9 @@ tasks:
       snapshot:
         description: Whether this is a snapshot release
         default: "false"
+      publish_path:
+        description: Publish path override
+        default: ""
     actions:
       - description: Determine repository for the given flavor/type of release
         cmd: |
@@ -30,6 +33,14 @@ tasks:
             echo "$TARGET_REPO"
             exit 0
           fi
+
+          # shellcheck disable=SC2157
+          if [ -n "${{ .inputs.publish_path }}" ]; then
+            repo="${{ .inputs.base_repo }}/${{ .inputs.publish_path }}"
+            echo "${repo}"
+            exit 0
+          fi
+
           repo="${{ .inputs.base_repo }}"
           # unicorn flavor = private repository
           if [ "${{ .inputs.flavor }}" = "unicorn" ]; then
