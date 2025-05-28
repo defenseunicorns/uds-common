@@ -49,9 +49,9 @@ jobs:
       # Requires crane pending successful resolution of https://github.com/zarf-dev/zarf/issues/3572 at which point zarf can be used~
       - name: Setup crane
         run: |
-          # renovate: datasource=github-tags depName=google/go-containerregistry  versioning=semver
-          CRANE_VERSION="v0.20.3"
-          curl -sL "https://github.com/google/go-containerregistry/releases/download/${CRANE_VERSION}/go-containerregistry_linux_x86_64.tar.gz" > go-containerregistry.tar.gz
+          # renovate: datasource=github-tags depName=google/go-containerregistry versioning=semver extractVersion=^v(?<version>.*)$
+          CRANE_VERSION="0.20.3"
+          curl -sL "https://github.com/google/go-containerregistry/releases/download/v${CRANE_VERSION}/go-containerregistry_linux_x86_64.tar.gz" > go-containerregistry.tar.gz
           sudo tar -zxvf go-containerregistry.tar.gz -C /usr/local/bin/ crane
           sudo chmod 755 /usr/local/bin/crane
           echo "${{ github.token }}" | crane auth login ghcr.io --username "dummy" --password-stdin
