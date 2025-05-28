@@ -1,5 +1,28 @@
 # Changelog
 
+## [1.14.5](https://github.com/defenseunicorns/uds-common/compare/v1.14.4...v1.14.5) (2025-05-20)
+
+
+### Bug Fixes
+
+* add additional auth setup in callable test workflow ([#489](https://github.com/defenseunicorns/uds-common/issues/489)) ([e4db6a4](https://github.com/defenseunicorns/uds-common/commit/e4db6a4a0e0fb709173cbe7d6e07838c8b456418))
+
+## [1.14.4](https://github.com/defenseunicorns/uds-common/compare/v1.14.3...v1.14.4) (2025-05-19)
+
+
+### Bug Fixes
+
+* export auth env var before all uds run steps ([#488](https://github.com/defenseunicorns/uds-common/issues/488)) ([e8e048c](https://github.com/defenseunicorns/uds-common/commit/e8e048c152a0feb049f13226f55a3b4204559821))
+* scan-images now works across all repos ([#481](https://github.com/defenseunicorns/uds-common/issues/481)) ([35187cc](https://github.com/defenseunicorns/uds-common/commit/35187ccb2812dbd27b6219d7eedde8be16d7a900))
+
+## [1.14.3](https://github.com/defenseunicorns/uds-common/compare/v1.14.2...v1.14.3) (2025-05-13)
+
+
+### Bug Fixes
+
+* make test artifact names more unique ([#484](https://github.com/defenseunicorns/uds-common/issues/484)) ([cca6400](https://github.com/defenseunicorns/uds-common/commit/cca64004ac0115c23e8e0b35748337601e1527a2))
+* remove v0-9 restrictions on renovate matches ([#482](https://github.com/defenseunicorns/uds-common/issues/482)) ([148b78a](https://github.com/defenseunicorns/uds-common/commit/148b78a810df6c7b52069b66a01806d9b128b625))
+
 ## [1.14.2](https://github.com/defenseunicorns/uds-common/compare/v1.14.1...v1.14.2) (2025-04-24)
 
 

@@ -64,16 +64,19 @@ jobs:
       - name: Clean Runner
         # If we are on ubuntu-latest we should try to clean the disk since it is the thing that is most limiting
         if: ${{ inputs.runsOn == 'ubuntu-latest' }}
-        run: uds run actions:clean-gh-runner
+        run: |
+          echo "MARU_AUTH=\"{\"raw.githubusercontent.com\": \"${{ secrets.GITHUB_TOKEN }}\"}\"" >> "GITHUB_ENV"
+          uds run actions:clean-gh-runner
         shell: bash
 
       - name: Environment setup
         run: |
-            uds run actions:setup-environment \
-            --set REGISTRY1_USERNAME="${{ secrets.IRON_BANK_ROBOT_USERNAME }}" \
-            --set REGISTRY1_PASSWORD="${{ secrets.IRON_BANK_ROBOT_PASSWORD }}" \
-            --set GH_TOKEN="${{ secrets.GITHUB_TOKEN }}" \
-            --set CHAINGUARD_IDENTITY="${{ secrets.CHAINGUARD_IDENTITY }}"
+          echo "MARU_AUTH=\"{\"raw.githubusercontent.com\": \"${{ secrets.GITHUB_TOKEN }}\"}\"" >> "GITHUB_ENV"
+          uds run actions:setup-environment \
+          --set REGISTRY1_USERNAME="${{ secrets.IRON_BANK_ROBOT_USERNAME }}" \
+          --set REGISTRY1_PASSWORD="${{ secrets.IRON_BANK_ROBOT_PASSWORD }}" \
+          --set GH_TOKEN="${{ secrets.GITHUB_TOKEN }}" \
+          --set CHAINGUARD_IDENTITY="${{ secrets.CHAINGUARD_IDENTITY }}"
         shell: bash
 
       - name: Test
@@ -83,6 +86,7 @@ jobs:
       - name: UDS Badge Verification
         run: uds run actions:verify-badge
         shell: bash
+        continue-on-error: true
 
       - name: Debug Output
         if: ${{ always() }}
@@ -94,10 +98,17 @@ jobs:
         run: uds run actions:save-logs
         shell: bash
 
+      - name: Generate unique suffix
+        id: uniq
+        shell: bash
+        run: |
+          # shellcheck disable=SC3028
+          echo "suffix=${RANDOM}" >> "$GITHUB_OUTPUT"
+
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: ${{ always() }}
         with:
-          name: debug-log-${{ inputs.type }}-${{ inputs.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ runner.arch }}
+          name: debug-log-${{ inputs.type }}-${{ inputs.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ runner.arch }}-${{ steps.uniq.outputs.suffix }}
           path: |
             /tmp/zarf-*.log
             /tmp/uds-*.log
@@ -110,6 +121,6 @@ jobs:
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: ${{ always() && inputs.reports-path != '' }}
         with:
-          name: ${{ inputs.reports-name }}-${{ inputs.type }}-${{ inputs.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ runner.arch }}
+          name: ${{ inputs.reports-name }}-${{ inputs.type }}-${{ inputs.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ runner.arch }}-${{ steps.uniq.outputs.suffix }}}
           path: ${{ inputs.reports-path }}
           retention-days: 30

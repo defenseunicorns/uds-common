@@ -67,9 +67,10 @@ jobs:
         run: |
           PACKAGES=""
           PACKAGE_NAME=$(echo "$BASE_REPO" | awk -F'/' 'BEGIN{OFS="/"} {if (NF > 2) {for (i=3; i<=NF; i++) printf (i==3 ? $i : "/"$i); print ""} else print ""}')/$(yq e '.metadata.name' zarf.yaml)
+          PACKAGE_NAME_ENCODED=$(echo "$PACKAGE_NAME" | sed 's/\//%2F/g')
 
           # Check for the public package
-          if gh api --silent /orgs/"$REPO_OWNER"/packages/container/"$PACKAGE_NAME" >/dev/null 2>&1; then
+          if gh api --silent /orgs/"${REPO_OWNER}"/packages/container/"${PACKAGE_NAME_ENCODED}" >/dev/null 2>&1; then
             PACKAGES="$PACKAGES $PACKAGE_NAME"
           fi
 
@@ -79,7 +80,8 @@ jobs:
           else
             PRIVATE_PACKAGE="private/$PACKAGE_NAME"
           fi
-          if gh api --silent /orgs/"$REPO_OWNER"/packages/container/"$PRIVATE_PACKAGE" >/dev/null 2>&1; then
+          PRIVATE_PACKAGE_ENCODED=$(echo "$PRIVATE_PACKAGE" | sed 's/\//%2F/g')
+          if gh api --silent /orgs/"${REPO_OWNER}"/packages/container/"${PRIVATE_PACKAGE_ENCODED}" >/dev/null 2>&1; then
             PACKAGES="$PACKAGES $PRIVATE_PACKAGE"
           fi
 
@@ -89,7 +91,8 @@ jobs:
 
           for PACKAGE in ${PACKAGES}; do
             for FLAVOR in ${FLAVORS}; do
-              TAG=$(gh api -H "Accept: application/vnd.github.v3+json" "/orgs/${REPO_OWNER}/packages/container/${PACKAGE}/versions" | jq -r "[.[] | select(.metadata.container.tags[] | contains(\"${FLAVOR}\"))] | .[0].metadata.container.tags[0]")
+              PACKAGE_ENCODED=$(echo "$PACKAGE" | sed 's/\//%2F/g')
+              TAG=$(gh api -H "Accept: application/vnd.github.v3+json" "/orgs/${REPO_OWNER}/packages/container/${PACKAGE_ENCODED}/versions" | jq -r "[.[] | select(.metadata.container.tags[] | contains(\"${FLAVOR}\"))] | .[0].metadata.container.tags[0]")
 
               if [[ "$TAG" == "null" ]]; then
                 echo "No tag found for package ${PACKAGE} with flavor ${FLAVOR}"
@@ -110,6 +113,8 @@ jobs:
             done
           done
 
+          COMBINED_JSON=$(echo "${COMBINED_JSON}" | jq -c 'unique_by(.sbomName)')
+
           echo "sboms=${COMBINED_JSON}" >> "$GITHUB_OUTPUT"
 
   get-images:
@@ -128,7 +133,7 @@ jobs:
       - name: Get Images
         id: get-images
         run: |
-          IMAGES=$(uds zarf tools yq -r -o=json -I=0 '[.components.[].images] | flatten | unique | map(select((test(".sig") | not) and (test(".att") | not)))' ${{ inputs.zarfYamlPath }})
+          IMAGES=$(uds zarf tools yq -r -o=json -I=0 '[.components.[].images? // []] | flatten | unique | map(select((test(".sig") | not) and (test(".att") | not)))' ${{ inputs.zarfYamlPath }})
           echo "images=$IMAGES" >> "$GITHUB_OUTPUT"
 
   scan-sboms:
@@ -193,6 +198,7 @@ jobs:
 
       - name: Environment setup
         run: |
+            echo "MARU_AUTH=\"{\"raw.githubusercontent.com\": \"${{ secrets.GITHUB_TOKEN }}\"}\"" >> "GITHUB_ENV"
             uds run actions:setup-environment \
             --set REGISTRY1_USERNAME="${{ secrets.IRON_BANK_ROBOT_USERNAME }}" \
             --set REGISTRY1_PASSWORD="${{ secrets.IRON_BANK_ROBOT_PASSWORD }}" \
@@ -237,7 +243,8 @@ jobs:
           version: v${{ inputs.udsCliVersion }}
 
       - name: Environment setup
-        run: uds run actions:install-deps
+        run: |
+          uds run actions:install-deps
         shell: bash
 
       - name: Download sbom scan results from GitHub Actions Artifacts
@@ -255,6 +262,7 @@ jobs:
           merge-multiple: true
 
       - name: Compare scans
+        id: compare-scans
         shell: bash
         run: |
           sbomScans=$(ls sbom-scan-results)
@@ -267,26 +275,85 @@ jobs:
 
           for imageScan in $imageScans; do
             imageName=$(echo "$imageScan" | cut -d "@" -f 1)
+            imageScanned="false"
 
             for sbomScan in $sbomScans; do
               sbomName=$(echo "$sbomScan" | cut -d "@" -f 1)
 
-                if [[ "$imageName" == "$sbomName" ]]; then
+              if [[ "$imageName" == "$sbomName" ]]; then
                 # Allow different images is necessary because of implied urls with docker hub images (i.e. docker.io/library isn't always present)
                 COMMENT_MARKDOWN+=$(uds-pk compare-scans "sbom-scan-results/$sbomScan" "image-scan-results/$imageScan" --allow-different-images)
                 COMMENT_MARKDOWN+=$'\n'
+                imageScanned="true"
+                break
               fi
             done
+
+            if [[ "$imageScanned" == "false" ]]; then
+              COMMENT_MARKDOWN+="### No comparable image found, assuming new image"
+              COMMENT_MARKDOWN+=$'\n'
+              COMMENT_MARKDOWN+=$(uds-pk compare-scans "image-scan-results/$imageScan" "image-scan-results/$imageScan")
+              COMMENT_MARKDOWN+=$'\n'
+            fi
           done
 
           echo "${COMMENT_MARKDOWN}" > comment.md
 
-      - name: Post comment
+          pipx install mdformat
+
+          mdformat comment.md
+
+          CHAR_COUNT=$(wc -m comment.md | cut -d ' ' -f1)
+
+          echo "Characters in comparison: ${CHAR_COUNT}"
+
+          if [[ $CHAR_COUNT -gt 65536 ]]; then
+            echo "artifact=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "artifact=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Post markdown as comment
+        if: ${{ steps.compare-scans.outputs.artifact == 'false' }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh pr comment ${{ github.event.pull_request.number }} \
             --repo ${{ github.repository }} \
             --body-file comment.md \
+            --edit-last \
+            --create-if-none
+
+      - name: Upload comparison results
+        id: upload-comparison-results
+        if: ${{ steps.compare-scans.outputs.artifact == 'true' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: scan-comparison
+          path: comment.md
+
+      - name: Post comment about artifact
+        if: ${{ steps.compare-scans.outputs.artifact == 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        # If the comment is too long, means there's a lot of images so we want to have them collapsed to minimize the comment size
+        run: |
+          {
+            echo "Full scan comparison results are too large to post as a comment. Link to full results artifact: [Results](${{ steps.upload-comparison-results.outputs.artifact-url}})"
+            echo "Summarized results are below:"
+            echo "<details>"
+            echo
+            sed '/<details>/,/<\/details>/d' comment.md | sed '/^______________________________________________________________________$/{
+            i\
+            </details>
+            a\
+            <details>
+            d
+            }' | sed -E 's/^(### )([^`]+)( `)/<summary>\2<\/summary>\n\n\0/'
+          } >> summary.md
+           tac summary.md | sed '0,/<details>/ s/<details>//' | tac > summary-done.md
+          gh pr comment ${{ github.event.pull_request.number }} \
+            --repo ${{ github.repository }} \
+            --body-file summary-done.md \
             --edit-last \
             --create-if-none
