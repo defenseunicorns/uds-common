@@ -7,6 +7,10 @@ spec:
     environment:
     runs-on:
       default: gitlab-runner-4c-amd64
+    ci-registry-user:
+      default: ${CI_REGISTRY_USER}
+    ci-registry-password:
+      default: ${CI_REGISTRY_PASSWORD}
     registry1-username:
       default: ${IRON_BANK_ROBOT_USERNAME}
     registry1-password:
@@ -23,8 +27,8 @@ deploy:$[[ inputs.environment ]]:
                                               --set CHAINGUARD_IDENTITY="$[[ inputs.chainguard-identity ]]" \
                                               --set CHAINGUARD_TOKEN="$CHAINGUARD_TOKEN" \
                                               --set GITLAB_REGISTRY_URL="$CI_REGISTRY" \
-                                              --set GITLAB_REGISTRY_USER="$CI_REGISTRY_USER" \
-                                              --set GITLAB_REGISTRY_TOKEN="$CI_REGISTRY_PASSWORD" \
+                                              --set GITLAB_REGISTRY_USER="$[[ inputs.ci-registry-user ]]" \
+                                              --set GITLAB_REGISTRY_TOKEN="$[[ inputs.ci-registry-password ]]" \
                                               --set GHCR_REGISTRY_USER="$GH_USER_READ_ONLY" \
                                               --set GHCR_REGISTRY_TOKEN="$GH_PAT_READ_ONLY"
     # Create package
