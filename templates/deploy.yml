@@ -15,8 +15,10 @@ spec:
       default: ${IRON_BANK_ROBOT_USERNAME}
     registry1-password:
       default: ${IRON_BANK_ROBOT_PASSWORD}
-    chainguard-identity:
-      default: ${CHAINGUARD_IDENTITY}
+    rapidfort-username:
+      default: ${RAPIDFORT_USERNAME}
+    rapidfort-password:
+      default: ${RAPIDFORT_PASSWORD}
 ---
 deploy:$[[ inputs.environment ]]:
   script:
@@ -24,8 +26,8 @@ deploy:$[[ inputs.environment ]]:
     - |
       uds run actions:authenticate-registries --set REGISTRY1_USERNAME="$[[ inputs.registry1-username ]]" \
                                               --set REGISTRY1_PASSWORD="$[[ inputs.registry1-password ]]" \
-                                              --set CHAINGUARD_IDENTITY="$[[ inputs.chainguard-identity ]]" \
-                                              --set CHAINGUARD_TOKEN="$CHAINGUARD_TOKEN" \
+                                              --set RAPIDFORT_USERNAME="$[[ inputs.rapidfort-username ]]" \
+                                              --set RAPIDFORT_PASSWORD="$[[ inputs.rapidfort-password ]]" \
                                               --set GITLAB_REGISTRY_URL="$CI_REGISTRY" \
                                               --set GITLAB_REGISTRY_USER="$[[ inputs.ci-registry-user ]]" \
                                               --set GITLAB_REGISTRY_TOKEN="$[[ inputs.ci-registry-password ]]" \
