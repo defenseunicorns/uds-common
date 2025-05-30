@@ -28,7 +28,7 @@ tasks:
         cmd: pipx install "yamllint>=1.30.0"
       - description: Install addlicense via go
         # renovate: datasource=github-tags depName=google/addlicense versioning=semver
-        cmd: GOPATH="$HOME/go" go install github.com/google/addlicense@v1.1.1
+        cmd: go install github.com/google/addlicense@v1.1.1
 
   - name: all
     description: Run all linting commands
@@ -191,10 +191,10 @@ tasks:
           # Check for addlicense binary. Look in $PATH first with fallback to $HOME/go/bin
           if command -v addlicense >/dev/null 2>&1; then
             ADDLICENSE_CMD="addlicense"
-          elif [ -x "$HOME/go/bin/addlicense" ]; then
-            ADDLICENSE_CMD="$HOME/go/bin/addlicense"
+          elif [ -x "$(go env GOPATH)/bin/addlicense" ]; then
+            ADDLICENSE_CMD="$(go env GOPATH)/bin/addlicense"
           else
-            echo "Error: addlicense is not found in PATH or in $HOME/go/bin" >&2
+            echo "Error: addlicense is not found in PATH or in GOPATH/bin" >&2
             exit 1
           fi
 
