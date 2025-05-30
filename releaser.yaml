@@ -9,5 +9,5 @@ flavors:
     # renovate-uds: datasource=docker depName=registry1.dso.mil/ironbank/opensource/nginx/nginx
     version: 1.27.5-uds.0
   - name: unicorn
-    # renovate-uds: datasource=docker depName=cgr.dev/du-uds-defenseunicorns/nginx
+    # renovate-uds: datasource=docker depName=quay.io/rfcurated/nginx
     version: 1.27.5-uds.0
