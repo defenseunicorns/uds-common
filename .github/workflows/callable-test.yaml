@@ -77,8 +77,7 @@ jobs:
           --set REGISTRY1_PASSWORD="${{ secrets.IRON_BANK_ROBOT_PASSWORD }}" \
           --set GH_TOKEN="${{ secrets.GITHUB_TOKEN }}" \
           --set RAPIDFORT_USERNAME="${{ secrets.RAPIDFORT_USERNAME }}" \
-          --set RAPIDFORT_PASSWORD="${{ secrets.RAPIDFORT_PASSWORD }}" \
-          --set RF_ROOT_URL="${{ secrets.RF_ROOT_URL }}"
+          --set RAPIDFORT_PASSWORD="${{ secrets.RAPIDFORT_PASSWORD }}"
         shell: bash
 
       - name: Test
