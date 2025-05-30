@@ -46,10 +46,11 @@
             "password": "{{ secrets.IRONBANK_PASSWORD }}"
         },
         {
-            "matchHost": "cgr.dev",
-            "description": "Encrypted creds for cgr.dev, scoped to this Github org using: https://docs.renovatebot.com/getting-started/migrating-secrets/#migrate-your-secrets-in-encrypted-form",
-            "username": "{{ secrets.CHAINGUARD_USERNAME }}",
-            "password": "{{ secrets.CHAINGUARD_PASSWORD }}"
+            "matchHost": "quay.io",
+            "hostType": "docker",
+            "description": "Encrypted creds for quay.io, stored in Mend organization credentials, see https://docs.renovatebot.com/mend-hosted/credentials/#managing-secrets-via-the-web-ui",
+            "username": "{{ secrets.RAPIDFORT_USERNAME }}",
+            "password": "{{ secrets.RAPIDFORT_PASSWORD }}"
         },
         {
             "matchHost": "ghcr.io",
