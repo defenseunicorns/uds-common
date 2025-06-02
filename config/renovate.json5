@@ -46,15 +46,8 @@
             "password": "{{ secrets.IRONBANK_PASSWORD }}"
         },
         {
+            "matchHost": "quay.io",
             "hostType": "docker",
-            "matchHost": "https://quay.io/v2/",
-            "description": "Encrypted creds for quay.io (Rapidfort), stored in Mend organization credentials, see https://docs.renovatebot.com/mend-hosted/credentials/#managing-secrets-via-the-web-ui",
-            "username": "{{ secrets.RAPIDFORT_USERNAME }}",
-            "password": "{{ secrets.RAPIDFORT_PASSWORD }}"
-        },
-        {
-            "hostType": "docker",
-            "matchHost": "https://quay.io/api/v1/",
             "description": "Encrypted creds for quay.io (Rapidfort), stored in Mend organization credentials, see https://docs.renovatebot.com/mend-hosted/credentials/#managing-secrets-via-the-web-ui",
             "token": "{{ secrets.RAPIDFORT_PASSWORD }}"
         },
