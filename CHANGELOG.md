@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.15.0](https://github.com/defenseunicorns/uds-common/compare/v1.14.5...v1.15.0) (2025-05-30)
+
+
+### Features
+
+* add gitlab registry auth config to gitlab templates ([#493](https://github.com/defenseunicorns/uds-common/issues/493)) ([0ff1dd9](https://github.com/defenseunicorns/uds-common/commit/0ff1dd9a22d79ec6eedd496523785ad54096656d))
+
+
+### Bug Fixes
+
+* make verify badge in ci never cause a failure ([#491](https://github.com/defenseunicorns/uds-common/issues/491)) ([0a74245](https://github.com/defenseunicorns/uds-common/commit/0a742455276f63ef01a3db376e7f393c1aae6f61))
+* migrate to rapidfort creds and images ([#499](https://github.com/defenseunicorns/uds-common/issues/499)) ([4f2cba8](https://github.com/defenseunicorns/uds-common/commit/4f2cba8e2d3cafc159656bc037ad0d044dd7f263))
+* renovate creds to use rapidfort ([#498](https://github.com/defenseunicorns/uds-common/issues/498)) ([10cc0db](https://github.com/defenseunicorns/uds-common/commit/10cc0dbef979b41a00661a9d083d4c363b8ca484))
+
+
+### Miscellaneous
+
+* fix crane renovate config in scan workflow ([#495](https://github.com/defenseunicorns/uds-common/issues/495)) ([dc5abc8](https://github.com/defenseunicorns/uds-common/commit/dc5abc8332a33b24a5280ce3ef831929f921a8d8))
+* fix other crane renovate comment in scan workflow ([#496](https://github.com/defenseunicorns/uds-common/issues/496)) ([2cc70be](https://github.com/defenseunicorns/uds-common/commit/2cc70be3ef4c70c03859c2e81e9b81c2e84cc1ed))
+* install addlicense to /home/maciej/workspace/unicorns/bin just like all the other go tools ([#497](https://github.com/defenseunicorns/uds-common/issues/497)) ([6704f07](https://github.com/defenseunicorns/uds-common/commit/6704f073960a745971c695c3e1ec3e546fd12351))
+
 ## [1.14.5](https://github.com/defenseunicorns/uds-common/compare/v1.14.4...v1.14.5) (2025-05-20)
 
 

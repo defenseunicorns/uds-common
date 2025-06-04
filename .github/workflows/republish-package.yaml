@@ -35,6 +35,7 @@ jobs:
         exclude:
           - flavor: registry1
             architecture: arm64
+          - flavor: unicorn
     uses: ./.github/workflows/callable-republish-package.yaml
     with:
       flavor: ${{ matrix.flavor }}
