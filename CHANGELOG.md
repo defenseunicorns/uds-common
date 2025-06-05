@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.15.1](https://github.com/defenseunicorns/uds-common/compare/v1.15.0...v1.15.1) (2025-06-04)
+
+
+### Bug Fixes
+
+* remove arm restriction on registry1 tasks ([#502](https://github.com/defenseunicorns/uds-common/issues/502)) ([0f11c4c](https://github.com/defenseunicorns/uds-common/commit/0f11c4cbc099e17b9070afd1dda566c9b392fd82))
+* renovate config ([#500](https://github.com/defenseunicorns/uds-common/issues/500)) ([59a8567](https://github.com/defenseunicorns/uds-common/commit/59a8567143931f3acdb85c36000a767163f7ce54))
+
 ## [1.15.0](https://github.com/defenseunicorns/uds-common/compare/v1.14.5...v1.15.0) (2025-05-30)
 
 
