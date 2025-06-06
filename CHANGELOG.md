@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.15.2](https://github.com/defenseunicorns/uds-common/compare/v1.15.1...v1.15.2) (2025-06-06)
+
+
+### Miscellaneous
+
+* update uds-cli ([#503](https://github.com/defenseunicorns/uds-common/issues/503)) ([85bf710](https://github.com/defenseunicorns/uds-common/commit/85bf710cae4fb34a256c6feff56a5cf219284a2a))
+
 ## [1.15.1](https://github.com/defenseunicorns/uds-common/compare/v1.15.0...v1.15.1) (2025-06-04)
 
 
