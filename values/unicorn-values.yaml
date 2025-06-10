@@ -2,5 +2,5 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
 
 image:
-  repository: cgr.dev/du-uds-defenseunicorns/nginx
-  tag: 1.27.5
+  repository: quay.io/rfcurated/nginx
+  tag: 1.27.5-slim-jammy-rfcurated-rfhardened
