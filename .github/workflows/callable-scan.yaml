@@ -49,7 +49,7 @@ jobs:
       - name: Setup crane
         run: |
           # renovate: datasource=github-tags depName=google/go-containerregistry versioning=semver extractVersion=^v(?<version>.*)$
-          CRANE_VERSION="0.20.3"
+          CRANE_VERSION="0.20.5"
           curl -sL "https://github.com/google/go-containerregistry/releases/download/v${CRANE_VERSION}/go-containerregistry_linux_x86_64.tar.gz" > go-containerregistry.tar.gz
           sudo tar -zxvf go-containerregistry.tar.gz -C /usr/local/bin/ crane
           sudo chmod 755 /usr/local/bin/crane
@@ -146,7 +146,7 @@ jobs:
       - name: Setup crane
         run: |
           # renovate: datasource=github-tags depName=google/go-containerregistry versioning=semver extractVersion=^v(?<version>.*)$
-          CRANE_VERSION="0.20.3"
+          CRANE_VERSION="0.20.5"
           curl -sL "https://github.com/google/go-containerregistry/releases/download/v${CRANE_VERSION}/go-containerregistry_linux_x86_64.tar.gz" > go-containerregistry.tar.gz
           sudo tar -zxvf go-containerregistry.tar.gz -C /usr/local/bin/ crane
           sudo chmod 755 /usr/local/bin/crane
@@ -157,7 +157,7 @@ jobs:
           crane blob "${{ matrix.imageDigest }}" | tar -xvf - "${{ matrix.sbomName }}"
 
       - name: Scan SBOM
-        uses: anchore/scan-action@7c05671ae9be166aeb155bad2d7df9121823df32 # v6.1.0
+        uses: anchore/scan-action@2c901ab7378897c01b8efaa2d0c9bf519cc64b9e # v6.2.0
         id: scan
         with:
           sbom: ${{ matrix.sbomName }}
@@ -208,7 +208,7 @@ jobs:
 
       - name: Scan image
         id: scan
-        uses: anchore/scan-action@7c05671ae9be166aeb155bad2d7df9121823df32 # v6.1.0
+        uses: anchore/scan-action@2c901ab7378897c01b8efaa2d0c9bf519cc64b9e # v6.2.0
         with:
           image: ${{ matrix.image }}
           fail-build: false
@@ -248,14 +248,14 @@ jobs:
         shell: bash
 
       - name: Download sbom scan results from GitHub Actions Artifacts
-        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4.2.1
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           path: sbom-scan-results
           pattern: scan-sbom-*
           merge-multiple: true
 
       - name: Download image scan results from GitHub Actions Artifacts
-        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4.2.1
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           path: image-scan-results
           pattern: scan-image-*
