@@ -141,10 +141,10 @@ tasks:
           for yaml_file in .github/workflows/*.yaml; do
 
             # Look through all of the job steps and format .run entries with a dynamic shebang based on .shell
-            yaml_query='.jobs[].steps[] | "---\n#!/bin/"+(.shell // "sh")+"\n"+.run'
+            yaml_query='"---\n#!/bin/"+(.shell // "sh")+"\n"+.run'
 
             # Query the actual YAML file for the commands
-            raw_runs=$(uds zarf tools yq -r "$yaml_query" "$yaml_file")
+            raw_runs=$(uds zarf tools yq -r '.jobs[].steps[]' "$yaml_file" | uds zarf tools yq -r "$yaml_query")
 
             # Strip any ${{ }} templates with the word "github-expression" for compatibility
             raw_scripts=$(echo "$raw_runs" | sed 's/\${{[^}]*}}/github-expression/g')

@@ -97,21 +97,14 @@ tasks:
           # Run any dependency commands (i.e. uds run dependencies:create)
           sh -c "${{ .inputs.dep_commands }}"
 
-          # Checks if the zarf package is registry1 and ARM
-          if [ "${FLAVOR}" != "registry1" ] || [ "${{ .inputs.architecture }}" != "arm64" ]; then
+          # Creates and moves the bundle into the correct spot
+          ./uds create ${{ .inputs.bundle_path }} \
+            --architecture=${{ .inputs.architecture }} \
+            --confirm \
+            --no-progress \
+            ${{ .inputs.options }}
 
-            # Creates and moves the bundle into the correct spot
-            ./uds create ${{ .inputs.bundle_path }} \
-              --architecture=${{ .inputs.architecture }} \
-              --confirm \
-              --no-progress \
-              ${{ .inputs.options }}
-
-            mv "${{ .inputs.bundle_path }}/uds-bundle-${BUNDLE_NAME}-${{ .inputs.architecture }}-${PREVIOUS_BUNDLE_VERSION}.tar.zst" "../${{ .inputs.bundle_path }}/uds-bundle-${BUNDLE_NAME}-${{ .inputs.architecture }}-${BUNDLE_VERSION}.tar.zst"
-          else
-            echo "::warning::⚠️ Registry1 bundles cannot be made for 'arm64'"
-            exit 1
-          fi
+          mv "${{ .inputs.bundle_path }}/uds-bundle-${BUNDLE_NAME}-${{ .inputs.architecture }}-${PREVIOUS_BUNDLE_VERSION}.tar.zst" "../${{ .inputs.bundle_path }}/uds-bundle-${BUNDLE_NAME}-${{ .inputs.architecture }}-${BUNDLE_VERSION}.tar.zst"
 
       - description: Remove the upgrade-test folder
         cmd: rm -rf upgrade-test
