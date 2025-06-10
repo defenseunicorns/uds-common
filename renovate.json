@@ -15,8 +15,8 @@
     {
       "customType": "regex",
       "depNameTemplate": "defenseunicorns/uds-core",
-      "fileMatch": [
-        "tasks/README\\.md"
+      "managerFilePatterns": [
+        "/tasks/README\\.md/"
       ],
       "matchStrings": [
         "- UDS Core: (?<currentValue>.*)"
@@ -27,8 +27,8 @@
     {
       "customType": "regex",
       "depNameTemplate": "defenseunicorns/uds-cli",
-      "fileMatch": [
-        "tasks/README\\.md"
+      "managerFilePatterns": [
+        "/tasks/README\\.md/"
       ],
       "matchStrings": [
         "- UDS CLI: (?<currentValue>.*)"
@@ -39,8 +39,8 @@
     {
       "customType": "regex",
       "depNameTemplate": "k3d-io/k3d",
-      "fileMatch": [
-        "tasks/README\\.md"
+      "managerFilePatterns": [
+        "/tasks/README\\.md/"
       ],
       "matchStrings": [
         "- K3D: (?<currentValue>.*)"
@@ -51,8 +51,8 @@
     {
       "customType": "regex",
       "depNameTemplate": "defenseunicorns/lula",
-      "fileMatch": [
-        "tasks/README\\.md"
+      "managerFilePatterns": [
+        "/tasks/README\\.md/"
       ],
       "matchStrings": [
         "- Lula: (?<currentValue>.*)"
