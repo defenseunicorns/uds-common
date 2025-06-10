@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.16.0](https://github.com/defenseunicorns/uds-common/compare/v1.15.2...v1.16.0) (2025-06-10)
+
+
+### Features
+
+* allow publish path to be set by the user ([#469](https://github.com/defenseunicorns/uds-common/issues/469)) ([ca8f25f](https://github.com/defenseunicorns/uds-common/commit/ca8f25f6ae7a255694949da525a0c5b393b3e277))
+
+
+### Miscellaneous
+
+* **deps:** update uds common support dependencies ([#478](https://github.com/defenseunicorns/uds-common/issues/478)) ([5f1a629](https://github.com/defenseunicorns/uds-common/commit/5f1a629fba7a10e561efc7037b091852743077d5))
+* update uds-cli everywhere this time ([#505](https://github.com/defenseunicorns/uds-common/issues/505)) ([b1c94ef](https://github.com/defenseunicorns/uds-common/commit/b1c94ef8b76e40fe935abd5397f120d1a87e75f7))
+
 ## [1.15.2](https://github.com/defenseunicorns/uds-common/compare/v1.15.1...v1.15.2) (2025-06-06)
 
 
