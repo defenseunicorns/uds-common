@@ -1,0 +1,19 @@
+{
+  "name": "convert-image",
+  "version": "1.0.0",
+  "description": "Convert images to minified data URIs for web use",
+  "main": "convert-image.js",
+  "bin": {
+    "convert-image": "./convert-image.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["image", "data-uri", "svg", "png", "minify"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^11.1.0",
+    "sharp": "^0.32.6"
+  }
+}
