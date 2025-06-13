@@ -49,7 +49,7 @@ jobs:
       - name: Setup crane
         run: |
           # renovate: datasource=github-tags depName=google/go-containerregistry versioning=semver extractVersion=^v(?<version>.*)$
-          CRANE_VERSION="0.20.5"
+          CRANE_VERSION="0.20.6"
           curl -sL "https://github.com/google/go-containerregistry/releases/download/v${CRANE_VERSION}/go-containerregistry_linux_x86_64.tar.gz" > go-containerregistry.tar.gz
           sudo tar -zxvf go-containerregistry.tar.gz -C /usr/local/bin/ crane
           sudo chmod 755 /usr/local/bin/crane
@@ -146,7 +146,7 @@ jobs:
       - name: Setup crane
         run: |
           # renovate: datasource=github-tags depName=google/go-containerregistry versioning=semver extractVersion=^v(?<version>.*)$
-          CRANE_VERSION="0.20.5"
+          CRANE_VERSION="0.20.6"
           curl -sL "https://github.com/google/go-containerregistry/releases/download/v${CRANE_VERSION}/go-containerregistry_linux_x86_64.tar.gz" > go-containerregistry.tar.gz
           sudo tar -zxvf go-containerregistry.tar.gz -C /usr/local/bin/ crane
           sudo chmod 755 /usr/local/bin/crane
@@ -157,7 +157,7 @@ jobs:
           crane blob "${{ matrix.imageDigest }}" | tar -xvf - "${{ matrix.sbomName }}"
 
       - name: Scan SBOM
-        uses: anchore/scan-action@7c05671ae9be166aeb155bad2d7df9121823df32 # v6.1.0
+        uses: anchore/scan-action@be7a22da4f22dde446c4c4c099887ff5b256526c # v6.3.0
         id: scan
         with:
           sbom: ${{ matrix.sbomName }}
@@ -208,7 +208,7 @@ jobs:
 
       - name: Scan image
         id: scan
-        uses: anchore/scan-action@7c05671ae9be166aeb155bad2d7df9121823df32 # v6.1.0
+        uses: anchore/scan-action@be7a22da4f22dde446c4c4c099887ff5b256526c # v6.3.0
         with:
           image: ${{ matrix.image }}
           fail-build: false
