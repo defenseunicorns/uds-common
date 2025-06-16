@@ -283,6 +283,7 @@ jobs:
                 imageScanned="true"
                 break
               fi
+              echo "No match found for image: $imageName with sbom: $sbomName"
             done
 
             if [[ "$imageScanned" == "false" ]]; then\
