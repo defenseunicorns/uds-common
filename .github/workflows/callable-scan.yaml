@@ -276,6 +276,7 @@ jobs:
               sbomName=$(echo "$sbomScan" | cut -d "@" -f 1)
 
               if [[ "$imageName" == "$sbomName" ]]; then
+                echo "Match found: $imageName with $sbomName"
                 # Allow different images is necessary because of implied urls with docker hub images (i.e. docker.io/library isn't always present)
                 COMMENT_MARKDOWN+=$(uds-pk compare-scans "sbom-scan-results/$sbomScan" "image-scan-results/$imageScan" --allow-different-images)
                 COMMENT_MARKDOWN+=$'\n'
@@ -284,7 +285,8 @@ jobs:
               fi
             done
 
-            if [[ "$imageScanned" == "false" ]]; then
+            if [[ "$imageScanned" == "false" ]]; then\
+              echo "No match found for image: $imageName"
               COMMENT_MARKDOWN+="### No comparable image found, assuming new image"
               COMMENT_MARKDOWN+=$'\n'
               COMMENT_MARKDOWN+=$(uds-pk compare-scans "image-scan-results/$imageScan" "image-scan-results/$imageScan")
