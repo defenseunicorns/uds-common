@@ -85,8 +85,6 @@ jobs:
             PACKAGES="$PACKAGES $PRIVATE_PACKAGE"
           fi
 
-          SBOM_JSON="[]"
-
           FLAVORS=$(uds zarf tools yq -r '.components[].only.flavor' ${{ inputs.zarfYamlPath }})
 
           for PACKAGE in ${PACKAGES}; do
@@ -106,6 +104,8 @@ jobs:
 
           mkdir -p sboms
           mv $(yq e '.metadata.name' zarf.yaml)/*.json sboms/
+
+          SBOM_JSON="[]"
 
           for sbom in sboms/*; do
             SBOM_NAME=$(basename "$sbom")
@@ -263,9 +263,6 @@ jobs:
           sbomScans=$(ls sbom-scan-results)
           imageScans=$(ls image-scan-results)
 
-          # the repo we cloned has uds-pk that has the command compare-scans. We need to find scans with the same image name and compare them using the uncompiled go
-          # binary. The output is bunch of markdown.
-
           COMMENT_MARKDOWN=""
 
           for imageScan in $imageScans; do
@@ -283,11 +280,11 @@ jobs:
                 imageScanned="true"
                 break
               fi
-              echo "No match found for image: $imageName with sbom: $sbomName"
+              echo "No match found: $imageName with sbom: $sbomName"
             done
 
             if [[ "$imageScanned" == "false" ]]; then\
-              echo "No match found for image: $imageName"
+              echo "No match found for new image: $imageName"
               COMMENT_MARKDOWN+="### No comparable image found, assuming new image"
               COMMENT_MARKDOWN+=$'\n'
               COMMENT_MARKDOWN+=$(uds-pk compare-scans "image-scan-results/$imageScan" "image-scan-results/$imageScan")
