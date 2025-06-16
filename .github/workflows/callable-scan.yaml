@@ -105,7 +105,7 @@ jobs:
           done
 
           mkdir -p sboms
-          mv "$(yq e '.metadata.name' zarf.yaml)/*.json" sboms/
+          mv $(yq e '.metadata.name' zarf.yaml)/*.json sboms/
 
           for sbom in sboms/*; do
             SBOM_NAME=$(basename "$sbom")
