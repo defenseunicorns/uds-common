@@ -283,7 +283,7 @@ jobs:
               echo "No match found: $imageName with sbom: $sbomName"
             done
 
-            if [[ "$imageScanned" == "false" ]]; then\
+            if [[ "$imageScanned" == "false" ]]; then
               echo "No match found for new image: $imageName"
               COMMENT_MARKDOWN+="### No comparable image found, assuming new image"
               COMMENT_MARKDOWN+=$'\n'
