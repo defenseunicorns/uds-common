@@ -45,15 +45,16 @@ jobs:
         with:
           version: v${{ inputs.udsCliVersion }}
 
-      # Requires crane pending successful resolution of https://github.com/zarf-dev/zarf/issues/3572 at which point zarf can be used~
-      - name: Setup crane
+      - name: Environment setup
         run: |
-          # renovate: datasource=github-tags depName=google/go-containerregistry versioning=semver extractVersion=^v(?<version>.*)$
-          CRANE_VERSION="0.20.5"
-          curl -sL "https://github.com/google/go-containerregistry/releases/download/v${CRANE_VERSION}/go-containerregistry_linux_x86_64.tar.gz" > go-containerregistry.tar.gz
-          sudo tar -zxvf go-containerregistry.tar.gz -C /usr/local/bin/ crane
-          sudo chmod 755 /usr/local/bin/crane
-          echo "${{ github.token }}" | crane auth login ghcr.io --username "dummy" --password-stdin
+          echo "MARU_AUTH=\"{\"raw.githubusercontent.com\": \"${{ secrets.GITHUB_TOKEN }}\"}\"" >> "GITHUB_ENV"
+          uds run actions:setup-environment \
+          --set REGISTRY1_USERNAME="${{ secrets.IRON_BANK_ROBOT_USERNAME }}" \
+          --set REGISTRY1_PASSWORD="${{ secrets.IRON_BANK_ROBOT_PASSWORD }}" \
+          --set GH_TOKEN="${{ secrets.GITHUB_TOKEN }}" \
+          --set RAPIDFORT_USERNAME="${{ secrets.RAPIDFORT_USERNAME }}" \
+          --set RAPIDFORT_PASSWORD="${{ secrets.RAPIDFORT_PASSWORD }}"
+        shell: bash
 
       - name: Get SBOMs
         id: get-sboms
@@ -84,8 +85,6 @@ jobs:
             PACKAGES="$PACKAGES $PRIVATE_PACKAGE"
           fi
 
-          COMBINED_JSON="[]"
-
           FLAVORS=$(uds zarf tools yq -r '.components[].only.flavor' ${{ inputs.zarfYamlPath }})
 
           for PACKAGE in ${PACKAGES}; do
@@ -97,24 +96,29 @@ jobs:
                 echo "No tag found for package ${PACKAGE} with flavor ${FLAVOR}"
                 continue
               else
-                IMAGE="ghcr.io/${REPO_OWNER}/${PACKAGE}"
-
-                manifestDigest=$(crane manifest "${IMAGE}:${TAG}" | jq -r '.manifests[0].digest')
-
-                tarDigest=$(crane manifest "${IMAGE}@${manifestDigest}" | jq -r '.layers[] | select(.annotations["org.opencontainers.image.title"] == "sboms.tar") | .digest')
-
-                sbomList=$(crane blob "${IMAGE}@${tarDigest}" | tar -tv | grep json | awk '{print $6}')
-
-                for sbom in $sbomList; do
-                  COMBINED_JSON=$(echo "${COMBINED_JSON}" | jq -c --arg imageDigest "${IMAGE}@${tarDigest}" --arg sbomName "${sbom}" '. + [{imageDigest: $imageDigest, sbomName: $sbomName}]')
-                done
+                OCI_REF="ghcr.io/${REPO_OWNER}/${PACKAGE}"
+                uds zarf package inspect sbom "oci://${OCI_REF}:${TAG}"
               fi
             done
           done
 
-          COMBINED_JSON=$(echo "${COMBINED_JSON}" | jq -c 'unique_by(.sbomName)')
+          mkdir -p sboms
+          mv $(yq e '.metadata.name' zarf.yaml)/*.json sboms/
 
-          echo "sboms=${COMBINED_JSON}" >> "$GITHUB_OUTPUT"
+          SBOM_JSON="[]"
+
+          for sbom in sboms/*; do
+            SBOM_NAME=$(basename "$sbom")
+            SBOM_JSON=$(echo "${SBOM_JSON}" | jq -c --arg sbomName "${SBOM_NAME}" '. + [{sbomName: $sbomName}]')
+          done
+
+          echo "sboms=${SBOM_JSON}" >> "$GITHUB_OUTPUT"
+
+      - name: Upload SBOMs
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: all-sboms
+          path: sboms/
 
   get-images:
     runs-on: ubuntu-latest
@@ -142,19 +146,10 @@ jobs:
         include: ${{ fromJson(needs.get-sboms.outputs.sboms) }}
     needs: get-sboms
     steps:
-      # Requires crane pending successful resolution of https://github.com/zarf-dev/zarf/issues/3572 at which point zarf can be used
-      - name: Setup crane
-        run: |
-          # renovate: datasource=github-tags depName=google/go-containerregistry versioning=semver extractVersion=^v(?<version>.*)$
-          CRANE_VERSION="0.20.5"
-          curl -sL "https://github.com/google/go-containerregistry/releases/download/v${CRANE_VERSION}/go-containerregistry_linux_x86_64.tar.gz" > go-containerregistry.tar.gz
-          sudo tar -zxvf go-containerregistry.tar.gz -C /usr/local/bin/ crane
-          sudo chmod 755 /usr/local/bin/crane
-          echo "${{ github.token }}" | crane auth login ghcr.io --username "dummy" --password-stdin
-
-      - name: Download SBOM
-        run: |
-          crane blob "${{ matrix.imageDigest }}" | tar -xvf - "${{ matrix.sbomName }}"
+      - name: Download SBOMs from GitHub Actions Artifacts
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: all-sboms
 
       - name: Scan SBOM
         uses: anchore/scan-action@7c05671ae9be166aeb155bad2d7df9121823df32 # v6.1.0
@@ -268,9 +263,6 @@ jobs:
           sbomScans=$(ls sbom-scan-results)
           imageScans=$(ls image-scan-results)
 
-          # the repo we cloned has uds-pk that has the command compare-scans. We need to find scans with the same image name and compare them using the uncompiled go
-          # binary. The output is bunch of markdown.
-
           COMMENT_MARKDOWN=""
 
           for imageScan in $imageScans; do
@@ -281,15 +273,18 @@ jobs:
               sbomName=$(echo "$sbomScan" | cut -d "@" -f 1)
 
               if [[ "$imageName" == "$sbomName" ]]; then
+                echo "Match found: $imageName with $sbomName"
                 # Allow different images is necessary because of implied urls with docker hub images (i.e. docker.io/library isn't always present)
                 COMMENT_MARKDOWN+=$(uds-pk compare-scans "sbom-scan-results/$sbomScan" "image-scan-results/$imageScan" --allow-different-images)
                 COMMENT_MARKDOWN+=$'\n'
                 imageScanned="true"
                 break
               fi
+              echo "No match found: $imageName with sbom: $sbomName"
             done
 
             if [[ "$imageScanned" == "false" ]]; then
+              echo "No match found for new image: $imageName"
               COMMENT_MARKDOWN+="### No comparable image found, assuming new image"
               COMMENT_MARKDOWN+=$'\n'
               COMMENT_MARKDOWN+=$(uds-pk compare-scans "image-scan-results/$imageScan" "image-scan-results/$imageScan")
