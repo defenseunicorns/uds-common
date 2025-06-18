@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.16.1](https://github.com/defenseunicorns/uds-common/compare/v1.16.0...v1.16.1) (2025-06-17)
+
+
+### Miscellaneous
+
+* **config:** migrate renovate config ([#494](https://github.com/defenseunicorns/uds-common/issues/494)) ([914e0b2](https://github.com/defenseunicorns/uds-common/commit/914e0b2987c546ab4192f5a027bdb5ccbaf05679))
+* refactor scan ci to use zarf inspect instead of crane ([#509](https://github.com/defenseunicorns/uds-common/issues/509)) ([49e1c96](https://github.com/defenseunicorns/uds-common/commit/49e1c964df2e9aa480e416f86636c83bf350980f))
+
 ## [1.16.0](https://github.com/defenseunicorns/uds-common/compare/v1.15.2...v1.16.0) (2025-06-10)
 
 
