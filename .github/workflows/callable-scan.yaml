@@ -15,6 +15,14 @@ on:
         description: The path to the zarf.yaml file
         default: zarf.yaml
         type: string
+      packagePrefix:
+        description: The prefix for public packages
+        default: ""
+        type: string
+      privatePackagePrefix:
+        description: The prefix for private packages
+        default: "private"
+        type: string
 
 # Permissions for the GITHUB_TOKEN used by the workflow.
 permissions:
@@ -59,38 +67,49 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           REPO_OWNER: ${{ github.repository_owner }}
           REPO_NAME: ${{ github.event.repository.name }}
+          PACKAGE_PREFIX: ${{ inputs.packagePrefix }}
+          PRIVATE_PACKAGE_PREFIX: ${{ inputs.privatePackagePrefix }}
         run: |
           PACKAGES=""
           PACKAGE_NAME=$(yq e '.metadata.name' ${{ inputs.zarfYamlPath }})
           echo "Package name: ${PACKAGE_NAME}"
-          PACKAGE_NAME_ENCODED=$(echo "$PACKAGE_NAME" | sed 's/\//%2F/g')
+          # Set public prefix based on org and if package prefix is empty
+          if [[ $REPO_OWNER == "defenseunicorns" ]]; then
+            PUBLIC_URL="packages/uds/${PACKAGE_NAME}"
+          elif [[ -z "$PACKAGE_PREFIX" ]]; then
+            PUBLIC_URL="${PACKAGE_NAME}"
+          else
+            PUBLIC_URL="${PACKAGE_PREFIX}/${PACKAGE_NAME}"
+          fi
+
+          PUBLIC_PACKAGE_ENCODED=$(echo "$PUBLIC_URL" | sed 's/\//%2F/g')
+
+          echo "Public package URL: ${PUBLIC_URL}"
+
+          # Set private prefix based on org and if private package prefix is empty
+          if [[ $REPO_OWNER == "defenseunicorns" ]]; then
+            PRIVATE_URL="packages/private/uds/${PACKAGE_NAME}"
+          elif [[ -z "$PRIVATE_PACKAGE_PREFIX" ]]; then
+            PRIVATE_URL="${PACKAGE_NAME}"
+          else
+            PRIVATE_URL="${PRIVATE_PACKAGE_PREFIX}/${PACKAGE_NAME}"
+          fi
+
+          PRIVATE_PACKAGE_ENCODED=$(echo "$PRIVATE_URL" | sed 's/\//%2F/g')
+
+          echo "Private package URL: ${PRIVATE_URL}"
 
           # Check for the public package
-          if gh api --silent /orgs/"${REPO_OWNER}"/packages/container/"${PACKAGE_NAME_ENCODED}" >/dev/null 2>&1; then
-            PACKAGES="$PACKAGES $PACKAGE_NAME"
+          if gh api --silent /orgs/"${REPO_OWNER}"/packages/container/"${PUBLIC_PACKAGE_ENCODED}" >/dev/null 2>&1; then
+            PACKAGES="$PACKAGES $PUBLIC_URL"
           fi
 
-          echo "Packages found 1: ${PACKAGES}"
-
-          # Check for the private package variant
-          if [[ $REPO_OWNER == "defenseunicorns" ]]; then
-            PRIVATE_PACKAGE=$(echo "$PACKAGE_NAME" | sed 's/packages/&\/private/')
-          else
-            PRIVATE_PACKAGE="private/$PACKAGE_NAME"
-          fi
-
-          echo "Private package: ${PRIVATE_PACKAGE}"
-
-          PRIVATE_PACKAGE_ENCODED=$(echo "$PRIVATE_PACKAGE" | sed 's/\//%2F/g')
+          # Check for the private package
           if gh api --silent /orgs/"${REPO_OWNER}"/packages/container/"${PRIVATE_PACKAGE_ENCODED}" >/dev/null 2>&1; then
-            PACKAGES="$PACKAGES $PRIVATE_PACKAGE"
+            PACKAGES="$PACKAGES $PRIVATE_URL"
           fi
 
-          echo "Packages found 2: ${PACKAGES}"
-
-          FLAVORS=$(uds zarf tools yq -r '.components[].only.flavor' ${{ inputs.zarfYamlPath }})
-
-          echo "Flavors found: ${FLAVORS}"
+          FLAVORS=$(uds zarf tools yq -r '.components[].only.flavor' zarf.yaml)
 
           for PACKAGE in ${PACKAGES}; do
             for FLAVOR in ${FLAVORS}; do
@@ -101,7 +120,6 @@ jobs:
                 echo "No tag found for package ${PACKAGE} with flavor ${FLAVOR}"
                 continue
               else
-                echo "Tag found for package ${PACKAGE} with flavor ${FLAVOR}"
                 OCI_REF="ghcr.io/${REPO_OWNER}/${PACKAGE}"
                 uds zarf package inspect sbom "oci://${OCI_REF}:${TAG}"
               fi
