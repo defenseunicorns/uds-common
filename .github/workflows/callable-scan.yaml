@@ -21,7 +21,7 @@ on:
         type: string
       privatePackagePrefix:
         description: The prefix for private packages
-        default: "private"
+        default: private
         type: string
 
 # Permissions for the GITHUB_TOKEN used by the workflow.
