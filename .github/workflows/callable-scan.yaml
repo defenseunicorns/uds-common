@@ -67,6 +67,7 @@ jobs:
         run: |
           PACKAGES=""
           PACKAGE_NAME=$(echo "$BASE_REPO" | awk -F'/' 'BEGIN{OFS="/"} {if (NF > 2) {for (i=3; i<=NF; i++) printf (i==3 ? $i : "/"$i); print ""} else print ""}')/$(yq e '.metadata.name' zarf.yaml)
+          echo "Package name: ${PACKAGE_NAME}"
           PACKAGE_NAME_ENCODED=$(echo "$PACKAGE_NAME" | sed 's/\//%2F/g')
 
           # Check for the public package
@@ -74,18 +75,27 @@ jobs:
             PACKAGES="$PACKAGES $PACKAGE_NAME"
           fi
 
+          echo "Packages found 1: ${PACKAGES}"
+
           # Check for the private package variant
           if [[ $REPO_OWNER == "defenseunicorns" ]]; then
             PRIVATE_PACKAGE=$(echo "$PACKAGE_NAME" | sed 's/packages/&\/private/')
           else
             PRIVATE_PACKAGE="private/$PACKAGE_NAME"
           fi
+
+          echo "Private package: ${PRIVATE_PACKAGE}"
+
           PRIVATE_PACKAGE_ENCODED=$(echo "$PRIVATE_PACKAGE" | sed 's/\//%2F/g')
           if gh api --silent /orgs/"${REPO_OWNER}"/packages/container/"${PRIVATE_PACKAGE_ENCODED}" >/dev/null 2>&1; then
             PACKAGES="$PACKAGES $PRIVATE_PACKAGE"
           fi
 
+          echo "Packages found 2: ${PACKAGES}"
+
           FLAVORS=$(uds zarf tools yq -r '.components[].only.flavor' ${{ inputs.zarfYamlPath }})
+
+          echo "Flavors found: ${FLAVORS}"
 
           for PACKAGE in ${PACKAGES}; do
             for FLAVOR in ${FLAVORS}; do
@@ -96,6 +106,7 @@ jobs:
                 echo "No tag found for package ${PACKAGE} with flavor ${FLAVOR}"
                 continue
               else
+                echo "Tag found for package ${PACKAGE} with flavor ${FLAVOR}"
                 OCI_REF="ghcr.io/${REPO_OWNER}/${PACKAGE}"
                 uds zarf package inspect sbom "oci://${OCI_REF}:${TAG}"
               fi
