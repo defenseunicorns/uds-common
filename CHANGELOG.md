@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.16.2](https://github.com/defenseunicorns/uds-common/compare/v1.16.1...v1.16.2) (2025-06-23)
+
+
+### Bug Fixes
+
+* scan ci broken ([#510](https://github.com/defenseunicorns/uds-common/issues/510)) ([4897b9b](https://github.com/defenseunicorns/uds-common/commit/4897b9b157e3f4d520eef58c30cc312b32c34529))
+
 ## [1.16.1](https://github.com/defenseunicorns/uds-common/compare/v1.16.0...v1.16.1) (2025-06-17)
 
 
