@@ -45,7 +45,7 @@ test:
         git checkout "$TAG"
 
         # Extract upgrade flavors and set UPGRADE_FLAVORS
-        UPGRADE_FLAVORS=$(cat $[[ inputs.check-flavor-zarf-yaml ]] | yq '.components[] | select(.only | has("flavor")) | .only.flavor' | paste -s -d, - || echo "")
+        UPGRADE_FLAVORS=$(cat $[[ inputs.check-flavor-zarf-yaml ]] | uds zarf tools yq '.components[] | select(.only | has("flavor")) | .only.flavor' | paste -s -d, - || echo "")
 
         # change back to the commit branch for the rest of the job
         git checkout -
@@ -71,6 +71,10 @@ test:
                                               --set GITLAB_REGISTRY_TOKEN="$[[ inputs.ci-registry-password ]]" \
                                               --set GHCR_REGISTRY_USER="$GH_USER_READ_ONLY" \
                                               --set GHCR_REGISTRY_TOKEN="$GH_PAT_READ_ONLY"
+
+    - sudo uds run actions:install-deps
+    # Modify zarf package and uds bundle to have the correct version
+    - uds-pk update-yaml $[[ inputs.flavor ]]
     - uds run actions:test-deploy --set FLAVOR="$[[ inputs.flavor ]]" --set TYPE="$[[ inputs.type ]]" --set OPTIONS="$[[ inputs.options ]]"
     - uds run actions:verify-badge
 
