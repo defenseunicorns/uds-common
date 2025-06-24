@@ -74,7 +74,7 @@ test:
 
     - sudo uds run actions:install-deps
     # Modify zarf package and uds bundle to have the correct version
-    - uds-pk update-yaml $[[ inputs.flavor ]]
+    - uds-pk release update-yaml $[[ inputs.flavor ]]
     - uds run actions:test-deploy --set FLAVOR="$[[ inputs.flavor ]]" --set TYPE="$[[ inputs.type ]]" --set OPTIONS="$[[ inputs.options ]]"
     - uds run actions:verify-badge
 

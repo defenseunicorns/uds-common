@@ -68,7 +68,7 @@ publish:
       fi
 
     # Modify zarf package and uds bundle to have the correct version
-    - uds-pk update-yaml $[[ inputs.flavor ]]
+    - uds-pk release update-yaml $[[ inputs.flavor ]]
 
     # Publish Package
     - |
