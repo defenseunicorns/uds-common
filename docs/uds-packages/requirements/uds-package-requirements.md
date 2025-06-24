@@ -77,7 +77,8 @@ Bronze packages:
 - [ ] **Must** have a dependency management bot (such as renovate) configured to open PRs to update the core package and support dependencies.
 - [ ] **Must** release its package to the `ghcr.io/defenseunicorns/packages/<group>` namespace as the application's name (i.e. `ghcr.io/defenseunicorns/packages/uds/mattermost`).
 - [ ] **Must** not make the assumption that the `expose` interfaces are accessible to the bastion or pipeline deploying the package (i.e. `*.uds.dev`).
-  > If web requests need to be made they should be done through a `Job` or `./uds zarf tools kubectl exec` as appropriate.
+  > If web requests need to be made they should be done through a `Job` or `./zarf tools kubectl exec` as appropriate.
+- [ ] **Must** not use local commands outside of `coreutils` or `./zarf` self references within `actions`.
 - [ ] **Must** include application [metadata for Airgap Store](https://github.com/defenseunicorns/uds-common/blob/main/docs/uds-packages/guidelines/metadata-guidelines.md) publishing
 - [ ] **Should** lint their configurations with appropriate tooling, such as [`yamllint`](https://github.com/adrienverge/yamllint) and [`zarf dev lint`](https://docs.zarf.dev/commands/zarf_dev_lint/).
 - [ ] **Should** release a unicorn flavor package, providing a minimal CVE baseline
