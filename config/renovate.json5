@@ -162,7 +162,7 @@
             "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver-coerced{{/if}}",
             "extractVersionTemplate": "{{#if extractVersion}}{{{extractVersion}}}{{else}}^(?<version>.*)${{/if}}"
         },
-        // Matches specified datasources for brew where an @ separates the version on the following line (i.e. https://github.com/defenseunicorns/uds-core/blob/5a2666f6a5ba89686c6dc1fecb0db98512b1b9f8/.github/actions/setup/action.yaml#L32)
+        // Matches specified datasources for brew or npx where an @ separates the version on the following line (i.e. https://github.com/defenseunicorns/uds-core/blob/5a2666f6a5ba89686c6dc1fecb0db98512b1b9f8/.github/actions/setup/action.yaml#L32)
         {
             "customType": "regex",
             "fileMatch": [
@@ -172,7 +172,11 @@
                 // Test: https://regex101.com/r/p3Cpjx/2
                 "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s.*brew.*@\\s*['\"]?(?<currentValue>.*?)['\"]?(\\s|$)",
                 // Test: https://regex101.com/r/R0q5QF/2
-                "<!-- renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))? -->\\s.*brew.*@\\s*['\"]?(?<currentValue>.*?)['\"]?(\\s|$)"
+                "<!-- renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))? -->\\s.*brew.*@\\s*['\"]?(?<currentValue>.*?)['\"]?(\\s|$)",
+                // Test: https://regex101.com/r/4GptyQ/1
+                "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s.*npx.*@\\s*['\"]?(?<currentValue>.*?)['\"]?(\\s|$)",
+                // Test: https://regex101.com/r/uPINA9/1
+                "<!-- renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))? -->\\s.*npx.*@\\s*['\"]?(?<currentValue>.*?)['\"]?(\\s|$)"
             ],
             "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver-coerced{{/if}}",
             "extractVersionTemplate": "^v(?<version>.*)$"
