@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.16.4](https://github.com/defenseunicorns/uds-common/compare/v1.16.3...v1.16.4) (2025-06-26)
+
+
+### Miscellaneous
+
+* add renovate support for npx @ versions ([#517](https://github.com/defenseunicorns/uds-common/issues/517)) ([c3f1c48](https://github.com/defenseunicorns/uds-common/commit/c3f1c48424c57dce7751d89708b7122832d1f0d9))
+* clarify actions requirements for UDS packages ([#515](https://github.com/defenseunicorns/uds-common/issues/515)) ([6071476](https://github.com/defenseunicorns/uds-common/commit/60714762b62cdb22bef56a2a0ca3098aa89c0f24))
+
 ## [1.16.3](https://github.com/defenseunicorns/uds-common/compare/v1.16.2...v1.16.3) (2025-06-24)
 
 
