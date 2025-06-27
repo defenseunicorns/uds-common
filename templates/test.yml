@@ -72,7 +72,7 @@ test:
                                               --set GHCR_REGISTRY_USER="$GH_USER_READ_ONLY" \
                                               --set GHCR_REGISTRY_TOKEN="$GH_PAT_READ_ONLY"
 
-    - sudo uds run actions:install-deps
+    - sudo --preserve-env=MARU_AUTH uds run actions:install-deps
     # Modify zarf package and uds bundle to have the correct version
     - uds-pk release update-yaml $[[ inputs.flavor ]]
     - uds run actions:test-deploy --set FLAVOR="$[[ inputs.flavor ]]" --set TYPE="$[[ inputs.type ]]" --set OPTIONS="$[[ inputs.options ]]"

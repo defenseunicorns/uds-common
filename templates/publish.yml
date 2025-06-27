@@ -58,7 +58,7 @@ publish:
                                               --set GHCR_REGISTRY_USER="$GH_USER_READ_ONLY" \
                                               --set GHCR_REGISTRY_TOKEN="$GH_PAT_READ_ONLY"
 
-    - sudo uds run actions:install-deps
+    - sudo --preserve-env=MARU_AUTH uds run actions:install-deps
 
     # Check if release is necessary for flavor and exit early if not
     - |
