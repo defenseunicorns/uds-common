@@ -216,13 +216,13 @@ jobs:
 
       - name: Environment setup
         run: |
-            echo "MARU_AUTH=\"{\"raw.githubusercontent.com\": \"${{ secrets.GITHUB_TOKEN }}\"}\"" >> "GITHUB_ENV"
-            uds run actions:setup-environment \
-            --set REGISTRY1_USERNAME="${{ secrets.IRON_BANK_ROBOT_USERNAME }}" \
-            --set REGISTRY1_PASSWORD="${{ secrets.IRON_BANK_ROBOT_PASSWORD }}" \
-            --set GH_TOKEN="${{ secrets.GITHUB_TOKEN }}" \
-            --set RAPIDFORT_USERNAME="${{ secrets.RAPIDFORT_USERNAME }}" \
-            --set RAPIDFORT_PASSWORD="${{ secrets.RAPIDFORT_PASSWORD }}"
+          echo "MARU_AUTH=\"{\"raw.githubusercontent.com\": \"${{ secrets.GITHUB_TOKEN }}\"}\"" >> "GITHUB_ENV"
+          uds run actions:setup-environment \
+          --set REGISTRY1_USERNAME="${{ secrets.IRON_BANK_ROBOT_USERNAME }}" \
+          --set REGISTRY1_PASSWORD="${{ secrets.IRON_BANK_ROBOT_PASSWORD }}" \
+          --set GH_TOKEN="${{ secrets.GITHUB_TOKEN }}" \
+          --set RAPIDFORT_USERNAME="${{ secrets.RAPIDFORT_USERNAME }}" \
+          --set RAPIDFORT_PASSWORD="${{ secrets.RAPIDFORT_PASSWORD }}"
         shell: bash
 
       - name: Scan image
@@ -284,6 +284,7 @@ jobs:
         id: compare-scans
         shell: bash
         run: |
+          set -x
           sbomScans=$(ls sbom-scan-results)
           imageScans=$(ls image-scan-results)
 
