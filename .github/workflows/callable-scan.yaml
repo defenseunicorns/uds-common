@@ -9,7 +9,7 @@ on:
       udsCliVersion:
         description: The uds-cli version to install
         # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
-        default: 0.27.7
+        default: 0.27.8
         type: string
       zarfYamlPath:
         description: The path to the zarf.yaml file
@@ -216,13 +216,13 @@ jobs:
 
       - name: Environment setup
         run: |
-            echo "MARU_AUTH=\"{\"raw.githubusercontent.com\": \"${{ secrets.GITHUB_TOKEN }}\"}\"" >> "GITHUB_ENV"
-            uds run actions:setup-environment \
-            --set REGISTRY1_USERNAME="${{ secrets.IRON_BANK_ROBOT_USERNAME }}" \
-            --set REGISTRY1_PASSWORD="${{ secrets.IRON_BANK_ROBOT_PASSWORD }}" \
-            --set GH_TOKEN="${{ secrets.GITHUB_TOKEN }}" \
-            --set RAPIDFORT_USERNAME="${{ secrets.RAPIDFORT_USERNAME }}" \
-            --set RAPIDFORT_PASSWORD="${{ secrets.RAPIDFORT_PASSWORD }}"
+          echo "MARU_AUTH=\"{\"raw.githubusercontent.com\": \"${{ secrets.GITHUB_TOKEN }}\"}\"" >> "GITHUB_ENV"
+          uds run actions:setup-environment \
+          --set REGISTRY1_USERNAME="${{ secrets.IRON_BANK_ROBOT_USERNAME }}" \
+          --set REGISTRY1_PASSWORD="${{ secrets.IRON_BANK_ROBOT_PASSWORD }}" \
+          --set GH_TOKEN="${{ secrets.GITHUB_TOKEN }}" \
+          --set RAPIDFORT_USERNAME="${{ secrets.RAPIDFORT_USERNAME }}" \
+          --set RAPIDFORT_PASSWORD="${{ secrets.RAPIDFORT_PASSWORD }}"
         shell: bash
 
       - name: Scan image
