@@ -176,7 +176,7 @@ jobs:
           name: all-sboms
 
       - name: Scan SBOM
-        uses: anchore/scan-action@be7a22da4f22dde446c4c4c099887ff5b256526c # v6.3.0
+        uses: anchore/scan-action@7c05671ae9be166aeb155bad2d7df9121823df32 # v6.1.0
         id: scan
         with:
           sbom: ${{ matrix.sbomName }}
@@ -227,7 +227,7 @@ jobs:
 
       - name: Scan image
         id: scan
-        uses: anchore/scan-action@be7a22da4f22dde446c4c4c099887ff5b256526c # v6.3.0
+        uses: anchore/scan-action@7c05671ae9be166aeb155bad2d7df9121823df32 # v6.1.0
         with:
           image: ${{ matrix.image }}
           fail-build: false
@@ -284,7 +284,6 @@ jobs:
         id: compare-scans
         shell: bash
         run: |
-          set -x
           sbomScans=$(ls sbom-scan-results)
           imageScans=$(ls image-scan-results)
 
