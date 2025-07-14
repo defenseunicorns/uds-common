@@ -10,4 +10,4 @@ flavors:
     version: 1.29.0-uds.0
   - name: unicorn
     # renovate-uds: datasource=docker depName=quay.io/rfcurated/nginx
-    version: 1.27.5-uds.0
+    version: 1.27.5-uds.1
