@@ -30,10 +30,10 @@ permissions:
   packages: read # Allows reading the content of the repository's packages.
   pull-requests: write # Allows writing the scan results comment to the pull request.
 
-# Abort prior jobs in the same workflow / PR
-concurrency:
-  group: scan-${{ github.ref }}
-  cancel-in-progress: true
+# # Abort prior jobs in the same workflow / PR
+# concurrency:
+#   group: scan-${{ github.ref }}
+#   cancel-in-progress: true
 
 jobs:
   get-sboms:
