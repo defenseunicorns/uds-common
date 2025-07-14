@@ -175,6 +175,10 @@ jobs:
         shell: bash
         run: |
           set -eux
+          ls -lah ${{ steps.scan-sbom.outputs.cyclonedx-json }}
+          ls -lah ${{ steps.scan-image.outputs.cyclonedx-json }}
+          cat ${{ steps.scan-sbom.outputs.cyclonedx-json }} | jq .
+          cat ${{ steps.scan-image.outputs.cyclonedx-json }} | jq .
           go mod download
           COMPARISON="$(go run main.go compare-scans ${{ steps.scan-sbom.outputs.cyclonedx-json }} ${{ steps.scan-image.outputs.cyclonedx-json }} --output=simple)"
 
