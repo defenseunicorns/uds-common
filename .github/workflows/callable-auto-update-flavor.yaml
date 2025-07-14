@@ -142,12 +142,32 @@ jobs:
         include: ${{ fromJson(needs.get-sboms.outputs.sboms) }}
     needs: get-sboms
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Install UDS CLI
+        uses: defenseunicorns/setup-uds@ab842abcad1f7a3305c2538e3dd1950d0daacfa5 # v1.0.1
+        with:
+          version: v${{ inputs.udsCliVersion }}
+
+      - name: Environment setup
+        run: |
+          echo "MARU_AUTH=\"{\"raw.githubusercontent.com\": \"${{ secrets.GITHUB_TOKEN }}\"}\"" >> "GITHUB_ENV"
+          uds run actions:setup-environment \
+          --set REGISTRY1_USERNAME="${{ secrets.IRON_BANK_ROBOT_USERNAME }}" \
+          --set REGISTRY1_PASSWORD="${{ secrets.IRON_BANK_ROBOT_PASSWORD }}" \
+          --set GH_TOKEN="${{ secrets.GITHUB_TOKEN }}" \
+          --set RAPIDFORT_USERNAME="${{ secrets.RAPIDFORT_USERNAME }}" \
+          --set RAPIDFORT_PASSWORD="${{ secrets.RAPIDFORT_PASSWORD }}"
+        shell: bash
+
       # Temporary until branch is merged, released, and new version in uds-common
       - name: Clone uds-pk
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: defenseunicorns/uds-pk
           ref: simple-compare-output
+          path: uds-pk
 
       - name: Download SBOMs from GitHub Actions Artifacts
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
@@ -177,10 +197,10 @@ jobs:
           set -eux
           ls -lah ${{ steps.scan-sbom.outputs.cyclonedx-json }}
           ls -lah ${{ steps.scan-image.outputs.cyclonedx-json }}
-          cat ${{ steps.scan-sbom.outputs.cyclonedx-json }} | jq .
-          cat ${{ steps.scan-image.outputs.cyclonedx-json }} | jq .
+          pushd uds-pk
           go mod download
           COMPARISON="$(go run main.go compare-scans ${{ steps.scan-sbom.outputs.cyclonedx-json }} ${{ steps.scan-image.outputs.cyclonedx-json }} --output=simple)"
+          popd
 
           echo "${COMPARISON}"
 
