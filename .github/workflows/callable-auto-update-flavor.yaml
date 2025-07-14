@@ -132,7 +132,7 @@ jobs:
       - name: Upload SBOMs
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: all-sboms
+          name: ${{ inputs.flavor }}-all-sboms
           path: sboms/
 
   scan-and-compare:
@@ -152,7 +152,7 @@ jobs:
       - name: Download SBOMs from GitHub Actions Artifacts
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
-          name: all-sboms
+          name: ${{ inputs.flavor }}-all-sboms
 
       - name: Scan SBOM
         uses: anchore/scan-action@7c05671ae9be166aeb155bad2d7df9121823df32 # v6.1.0
