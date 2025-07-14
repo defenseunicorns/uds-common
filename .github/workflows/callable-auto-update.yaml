@@ -57,6 +57,7 @@ jobs:
       matrix:
         flavor: ${{ fromJson(needs.get-flavors.outputs.flavors) }}
     uses: ./.github/workflows/callable-auto-update-flavor.yaml
+    secrets: inherit
     with:
       udsCliVersion: ${{ inputs.udsCliVersion }}
       zarfYamlPath: ${{ inputs.zarfYamlPath }}
