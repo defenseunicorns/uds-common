@@ -78,6 +78,7 @@ jobs:
       - name: Check if any flavors need to be bumped
         id: decide-bump
         run: |
+          mkdir -p scan-results
           UPDATES=$(ls -1 scan-results/)
           if [ -z "$UPDATES" ]; then
             echo "No updates found."
