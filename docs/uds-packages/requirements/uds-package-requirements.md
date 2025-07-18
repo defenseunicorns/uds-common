@@ -41,7 +41,7 @@ UDS Packages may make use of the [UDS Exemption custom resource](https://github.
 - [ ] **Must** be declaratively bundled in a [Zarf package](https://docs.zarf.dev/ref/create/)
 - [ ] **Must** define any external interfaces under the `expose` key in the [UDS Package Custom Resource](https://uds.defenseunicorns.com/reference/configuration/uds-operator/package/#example-uds-package-cr)
 - [ ] **Must** deploy and operate successfully with Istio injection enabled in the namespace.
-- [ ] **Must** implement Journey testing, covering the gstsic user flows and features of the application (see [Testing Guidelines](https://github.com/defenseunicorns/uds-common/blob/main/docs/uds-packages/guidelines/testing-guidelines.md))
+- [ ] **Must** implement Journey testing, covering the basic user flows and features of the application (see [Testing Guidelines](https://github.com/defenseunicorns/uds-common/blob/main/docs/uds-packages/guidelines/testing-guidelines.md))
 - [ ] **Must** implement Upgrade Testing to ensure that the current development package works when deployed over the previously released one. (see [Testing Guidelines](https://github.com/defenseunicorns/uds-common/blob/main/docs/uds-packages/guidelines/testing-guidelines.md))
 - [ ] **Must** be capable of operating within an airgap (internet-disconnected) environment
 - [ ] **Must** be actively maintained by the package maintainers identified in CODEOWNERS [see #CODEOWNERS section for more information](https://github.com/defenseunicorns/uds-common/blob/main/docs/uds-packages/requirements/uds-package-requirements.md#codeowners)
