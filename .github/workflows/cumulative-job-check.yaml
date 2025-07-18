@@ -30,6 +30,9 @@ jobs:
           # Remove this check from the list
           checks="$(echo "$checks" | jq 'del(select(.name == "cumulative-check"))')"
 
+          # Cleanup nulls
+          checks="$(echo "$checks" | jq 'del(select(.name == "cumulative-check"))' | jq -s 'del(..|nulls) | .[]')"
+
           # Loop that every 5 seconds parses the checks until all checks are completed
           while true; do
             # Check if all checks are completed
@@ -45,6 +48,8 @@ jobs:
               -q '.check_runs[] | {name: .name, status: .status, conclusion: .conclusion}')"
             # Remove this check from the list again
             checks="$(echo "$checks" | jq 'del(select(.name == "cumulative-check"))')"
+            # Cleanup nulls
+            checks="$(echo "$checks" | jq 'del(select(.name == "cumulative-check"))' | jq -s 'del(..|nulls) | .[]')"
           done
 
           # If any check has failed, exit with an error
