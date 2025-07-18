@@ -10,7 +10,7 @@ permissions:
   statuses: read
 
 jobs:
-  echo_job:
+  cumulative-check:
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ github.token }}
@@ -28,7 +28,7 @@ jobs:
             -q '.check_runs[] | {name: .name, status: .status, conclusion: .conclusion}')"
 
           # Remove this check from the list
-          checks="$(echo "$checks" | jq 'del(select(.name == "Cumulative Job Check"))')"
+          checks="$(echo "$checks" | jq 'del(select(.name == "cumulative-check"))')"
 
           # Loop that every 5 seconds parses the checks until all checks are completed
           while true; do
@@ -44,7 +44,7 @@ jobs:
             checks="$(gh api repos/${{ github.repository }}/commits/$HEAD_SHA/check-runs \
               -q '.check_runs[] | {name: .name, status: .status, conclusion: .conclusion}')"
             # Remove this check from the list again
-            checks="$(echo "$checks" | jq 'del(select(.name == "Cumulative Job Check"))')"
+            checks="$(echo "$checks" | jq 'del(select(.name == "cumulative-check"))')"
           done
 
           # If any check has failed, exit with an error
