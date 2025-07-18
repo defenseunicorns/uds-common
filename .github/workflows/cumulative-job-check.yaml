@@ -59,7 +59,7 @@ jobs:
           failure=$(echo "$checks" | jq -s 'any(.conclusion == "failure")')
 
           # If any check has failed, exit with an error
-          if [ "$failure" == "false" ]; then
+          if [ "$failure" == "true" ]; then
             echo "One or more checks have failed:"
             echo "$checks" | jq -e 'select(.conclusion != "success")'
             exit 1
