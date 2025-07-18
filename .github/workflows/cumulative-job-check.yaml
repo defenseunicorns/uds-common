@@ -12,6 +12,8 @@ permissions:
 jobs:
   echo_job:
     runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
     steps:
       - name: Echo Message
         run: |
