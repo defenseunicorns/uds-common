@@ -4,9 +4,12 @@ on:
   pull_request:
     types: [milestoned, opened, reopened, synchronize]
 
+permissions:
+  contents: read
+
 jobs:
   echo_job:
     runs-on: ubuntu-latest
     steps:
       - name: Echo Message
-        run: echo "Hello, World!"
+        run: env
