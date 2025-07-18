@@ -5,11 +5,48 @@ on:
     types: [milestoned, opened, reopened, synchronize]
 
 permissions:
-  contents: read
+  pull-requests: read
+  actions: read
+  statuses: read
 
 jobs:
   echo_job:
     runs-on: ubuntu-latest
     steps:
       - name: Echo Message
-        run: env
+        run: |
+          # Get the PR number
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+
+          # Get the head SHA of the PR
+          HEAD_SHA=$(gh api repos/${{ github.repository }}/pulls/$PR_NUMBER -q .head.sha)
+
+          # List check runs for the head SHA
+          checks="$(gh api repos/${{ github.repository }}/commits/$HEAD_SHA/check-runs \
+            -q '.check_runs[] | {name: .name, status: .status, conclusion: .conclusion}')"
+
+          # Remove this check from the list
+          checks="$(echo "$checks" | jq 'del(.[] | select(.name == "Cumulative Job Check"))')"
+
+          # Loop that every 5 seconds parses the checks until all checks are completed
+          while true; do
+            # Check if all checks are completed
+            if echo "$checks" | jq -e 'all(.status == "completed")' >/dev/null; then
+              echo "All checks are completed."
+              break
+            fi
+            echo "Waiting for all checks to complete..."
+            sleep 5
+            # Re-fetch the checks
+            checks="$(gh api repos/${{ github.repository }}/commits/$HEAD_SHA/check-runs
+              -q '.check_runs[] | {name: .name, status: .status, conclusion: .conclusion}')"
+            # Remove this check from the list again
+            checks="$(echo "$checks" | jq 'del(.[] | select(.name == "Cumulative Job Check"))')"
+          done
+
+          # If any check has failed, exit with an error
+          if echo "$checks" | jq -e 'any(.conclusion == "failure")' >/dev/null; then
+            echo "One or more checks have failed."
+            echo "$checks"
+            exit 1
+          fi
