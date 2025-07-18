@@ -27,40 +27,33 @@ jobs:
           # Get the head SHA of the PR
           HEAD_SHA="$(gh api "repos/${{ github.repository }}/pulls/$PR_NUMBER" -q .head.sha)"
 
-          # List check runs for the head SHA
-          checks="$(gh api "repos/${{ github.repository }}/commits/${HEAD_SHA}/check-runs" \
-            -q '.check_runs[] | {name: .name, status: .status, conclusion: .conclusion}')"
-
-          # Remove this check from the list
-          checks="$(echo "$checks" | jq 'del(select(.name == "cumulative-check"))')"
-
-          # Cleanup nulls
-          checks="$(echo "$checks" | jq 'del(select(.name == "cumulative-check"))' | jq -s 'del(..|nulls) | .[]')"
-
           # Loop that every 5 seconds parses the checks until all checks are completed
           while true; do
+            # List check runs for the head SHA
+            checks="$(gh api "repos/${{ github.repository }}/commits/${HEAD_SHA}/check-runs" \
+              -q '.check_runs[] | {name: .name, status: .status, conclusion: .conclusion}')"
+
+            # Remove this check from the list
+            checks="$(echo "$checks" | jq -s 'del(.[] | select(.name == "cumulative-check"))')"
+
             # Check if all checks are completed
-            completed=$(echo "$checks" | jq -s 'all(.status == "completed")')
+            completed=$(echo "$checks" | jq 'all(.status == "completed")')
+
+            # If all checks are completed, break the loop
             if [ "$completed" == "true" ]; then
               echo "All checks are completed."
               break
             fi
             echo "Waiting for all checks to complete..."
             sleep 5
-            # Re-fetch the checks
-            checks="$(gh api "repos/${{ github.repository }}/commits/$HEAD_SHA/check-runs" \
-              -q '.check_runs[] | {name: .name, status: .status, conclusion: .conclusion}')"
-            # Remove this check from the list again
-            checks="$(echo "$checks" | jq 'del(select(.name == "cumulative-check"))')"
-            # Cleanup nulls
-            checks="$(echo "$checks" | jq 'del(select(.name == "cumulative-check"))' | jq -s 'del(..|nulls) | .[]')"
           done
 
-          failure=$(echo "$checks" | jq -s 'any(.conclusion == "failure")')
+          # Check if any check has not succeeded
+          failure=$(echo "$checks" | jq 'any(.conclusion == "failure")')
 
           # If any check has failed, exit with an error
           if [ "$failure" == "true" ]; then
             echo "One or more checks have failed:"
-            echo "$checks" | jq -e 'select(.conclusion != "success")'
+            echo "$checks" | jq 'select(.[].conclusion == "failure")'
             exit 1
           fi
