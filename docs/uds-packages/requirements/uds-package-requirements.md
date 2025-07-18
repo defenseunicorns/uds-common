@@ -49,7 +49,7 @@ UDS Packages may make use of the [UDS Exemption custom resource](https://github.
 - [ ] **Must** contain documentation under a `docs` folder at the root that describes how to configure the package and outlines package dependencies.
   > This allows users of the package to learn more about exposed configuration - it is recommended to make the entrypoint for configuration configuration.md.
 - [ ] **Must** have a dependency management bot (such as renovate) configured to open PRs to update the core package and support dependencies.
-- [ ] **Must** release its package to the `ghcr.io/defenseunicorns/packages/<group>` namespace as the application's name (i.e. `ghcr.io/defenseunicorns/packages/uds/mattermost`).
+- [ ] **Must** release its package to the `ghcr.io/uds-packages/<group>` namespace as the application's name (i.e. `ghcr.io/uds-packages/nexus`).
 - [ ] **Must** not make the assumption that the `expose` interfaces are accessible to the bastion or pipeline deploying the package (i.e. `*.uds.dev`).
   > If web requests need to be made they should be done through a `Job` or `./zarf tools kubectl exec` as appropriate.
 - [ ] **Must** not use local commands outside of `coreutils` or `./zarf` self references within `actions`.
