@@ -53,7 +53,7 @@ jobs:
           done
 
           # If any check has failed, exit with an error
-          if echo "$checks" | jq -e 'any(.conclusion == "failure")' >/dev/null; then
+          if echo "$checks" | jq -s 'any(.conclusion == "failure")' >/dev/null; then
             echo "One or more checks have failed."
             echo "$checks"
             exit 1
