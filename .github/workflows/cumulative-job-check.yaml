@@ -28,12 +28,13 @@ jobs:
             -q '.check_runs[] | {name: .name, status: .status, conclusion: .conclusion}')"
 
           # Remove this check from the list
-          checks="$(echo "$checks" | jq 'del(.[] | select(.name == "Cumulative Job Check"))')"
+          checks="$(echo "$checks" | jq 'del(select(.name == "Cumulative Job Check"))')"
 
           # Loop that every 5 seconds parses the checks until all checks are completed
           while true; do
             # Check if all checks are completed
-            if echo "$checks" | jq -e 'all(.status == "completed")' >/dev/null; then
+            completed=$(echo "$checks" | jq -s 'all(.status == "completed")')
+            if [ "$completed" == "true" ]; then
               echo "All checks are completed."
               break
             fi
