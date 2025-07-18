@@ -19,7 +19,6 @@ UDS Package integrates with the main features of the UDS Operator, is documented
 - [ ] **Must** minimize the scope and number of the exemptions to only what is absolutely required by the application
 UDS Packages may make use of the [UDS Exemption custom resource](https://github.com/defenseunicorns/uds-core/blob/main/src/pepr/operator/README.md#example-uds-exemption-cr) for exempting any Pepr policies, but in doing so they Must document rationale for the exemptions
 - [ ] **Must** declaratively implement any available application hardening guidelines by default (Example: [GitLab Hardening guidelines](https://docs.gitlab.com/ee/security/hardening.html))
-- [ ] **Must** satisfy all the requirements of [Bronze](https://github.com/defenseunicorns/uds-common/blob/main/docs/uds-packages/requirements/uds-package-requirements.md#bronze) Packages
 - [ ] **Must** define network policies under the `allow` key as required in the [UDS Package Custom Resource](https://uds.defenseunicorns.com/reference/configuration/uds-operator/package/#example-uds-package-cr)
 - [ ] **Must** (except if the application provides no end user login) use and create a Keycloak client through the `sso` key. [UDS Package Custom Resource](https://uds.defenseunicorns.com/reference/configuration/uds-operator/package/#example-uds-package-cr)
 - [ ] **Must** (except if the application provides no application metrics) implement monitors for each application metrics endpoint using it's built-in chart monitors, `monitor` key, or manual monitors in the config chart.
@@ -42,7 +41,7 @@ UDS Packages may make use of the [UDS Exemption custom resource](https://github.
 - [ ] **Must** be declaratively bundled in a [Zarf package](https://docs.zarf.dev/ref/create/)
 - [ ] **Must** define any external interfaces under the `expose` key in the [UDS Package Custom Resource](https://uds.defenseunicorns.com/reference/configuration/uds-operator/package/#example-uds-package-cr)
 - [ ] **Must** deploy and operate successfully with Istio injection enabled in the namespace.
-- [ ] **Must** implement Journey testing, covering the basic user flows and features of the application (see [Testing Guidelines](https://github.com/defenseunicorns/uds-common/blob/main/docs/uds-packages/guidelines/testing-guidelines.md))
+- [ ] **Must** implement Journey testing, covering the gstsic user flows and features of the application (see [Testing Guidelines](https://github.com/defenseunicorns/uds-common/blob/main/docs/uds-packages/guidelines/testing-guidelines.md))
 - [ ] **Must** implement Upgrade Testing to ensure that the current development package works when deployed over the previously released one. (see [Testing Guidelines](https://github.com/defenseunicorns/uds-common/blob/main/docs/uds-packages/guidelines/testing-guidelines.md))
 - [ ] **Must** be capable of operating within an airgap (internet-disconnected) environment
 - [ ] **Must** be actively maintained by the package maintainers identified in CODEOWNERS [see #CODEOWNERS section for more information](https://github.com/defenseunicorns/uds-common/blob/main/docs/uds-packages/requirements/uds-package-requirements.md#codeowners)
