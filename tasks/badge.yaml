@@ -252,9 +252,9 @@ tasks:
 
               gh_group "🔍 Istio Validation"
 
-                # Must define any external interfaces under the expose key.
-                ENDPOINTS="$(echo "$UDS_PACKAGE_JSON" | jq -r '.status.endpoints[]')"
-                gh_notice "  ℹ️  Endpoints: $ENDPOINTS"
+            # Must define any external interfaces under the expose key.
+            ENDPOINTS="$(echo "$UDS_PACKAGE_JSON" | jq -r '.status.endpoints[]')"
+            gh_notice "  ℹ️  Endpoints: $ENDPOINTS"
 
                 for ENDPOINT in $ENDPOINTS; do
                     # Skip endpoints starting with a '*'
