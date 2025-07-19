@@ -1,18 +1,17 @@
-# UDS Airgap Store Package Integration Guide
+# UDS Registry Package Integration Guide
 
 ## Introduction
 
-This guide is intended for developers integrating applications with UDS (Unicorn Delivery Service). It provides an overview of the integration process, key considerations, and resources to ensure a smooth integration. If you are familiar with UDS Package creation, [Badging Requirements](./requirements/uds-package-requirements.md) may be more relevant.
+This guide is intended for developers integrating applications with UDS. It provides an overview of the integration process, key considerations, and resources to ensure a smooth integration. If you are familiar with UDS Package creation, [UDS Registry Package Requirements](./requirements/uds-package-requirements.md) may be more relevant.
 
 Integrating a Package fundamentally means:
-1. Creating a repository `uds-package-<name>` from [uds-package-template](https://github.com/uds-packages/template)
+1. Creating a repository `<app-name>` from [uds-package-template](https://github.com/uds-packages/template)
 2. Integrating the upstream helm chart as a zarf package `zarf.yaml` to build a declarative OCI artifact
 3. Adding a UDS package Custom Resource `uds-package.yaml` to integrate with UDS Core via Pepr
-4. Build a 'zero CVE' package by replacing images with a `*-unicorn` flavored image
 
 ## Prerequisites
 
-- UDS generally assumes applications are containerized and can be deployed via Kubernetes. (exceptions are possible, but rare, and require additional work e.g. KubeVirt)
+- UDS generally assumes applications are containerized and can be deployed via Kubernetes. (exceptions are possible and require additional work e.g. KubeVirt)
 - The integrator (you) should have access to the application image and deployment code.
 - The "App" should have a compatible license for UDS integration (Apache 2.0 or similar) [see Licensing Considerations](#licensing-considerations).
 

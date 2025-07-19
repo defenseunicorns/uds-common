@@ -1,7 +1,7 @@
-# Testing Guidelines for Airgap Store Apps
+# Testing Guidelines for Registry UDS Packages
 ## Table of Contents
 
-- [Testing Guidelines for Airgap Store Apps](#testing-guidelines-for-airgap-store-apps)
+- Testing Guidelines for Registry UDS Packages
   - [Table of Contents](#table-of-contents)
   - [Introduction](#introduction)
   - [Journey Testing](#journey-testing)
