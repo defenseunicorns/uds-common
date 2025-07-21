@@ -270,22 +270,55 @@ tasks:
                   else
                       gh_notice "  ✅ Endpoint $ENDPOINT was successfully curl'd"
                   fi
-              done
-
-              echo
-
-              # Must deploy and operate successfully with Istio injection enabled in the namespace.
-              POD_COUNT=$(uds zarf tools kubectl get pods -n "${NAMESPACE}" --no-headers | wc -l)
-              POD_SIDECAR_COUNT=$(uds zarf tools kubectl get pods -n "${NAMESPACE}" -o yaml | uds zarf tools yq eval '[.items[] | select(.spec.containers[].name == "istio-proxy")] | length' -)
-
-              if [ "$POD_COUNT" -ne "$POD_SIDECAR_COUNT" ]; then
-                  gh_error "  ❌ Not all pods have the istio sidecar"
+              done  
+              echo  
+              # Must deploy and operate successfully with Istio injection enabled in the namespace (sidecar or ambient mode).
+              POD_COUNT=$(uds zarf tools kubectl get pods -n "${NAMESPACE}" --no-headers | wc -l)  
+              # Check service mesh mode from UDS Package CR
+              SERVICE_MESH_MODE=$(echo "$UDS_PACKAGE_JSON" | jq -r '.spec.network.serviceMesh.mode // "sidecar"')
+              gh_notice "  ℹ️  Service Mesh Mode: $SERVICE_MESH_MODE"  
+              if [ "$SERVICE_MESH_MODE" == "ambient" ]; then
+                  # For ambient mode, check if namespace has ambient label
+                  AMBIENT_ENABLED=$(uds zarf tools kubectl get namespace "${NAMESPACE}" -o json | jq -r '.metadata.labels["istio.io/dataplane-mode"] // "none"')  
+                  if [ "$AMBIENT_ENABLED" == "ambient" ]; then
+                      gh_notice "  ✅ Namespace is configured for Istio ambient mode"  
+                      # In ambient mode, pods should NOT have istio-proxy sidecars
+                      POD_SIDECAR_COUNT=$(uds zarf tools kubectl get pods -n "${NAMESPACE}" -o yaml | uds zarf tools yq eval '[.items[] | select(.spec.containers[].name == "istio-proxy")] | length' -)  
+                      if [ "$POD_SIDECAR_COUNT" -gt 0 ]; then
+                          gh_warning "  ⚠️  Found istio-proxy sidecars in ambient mode - this may indicate misconfiguration"
+                      else
+                          gh_notice "  ✅ No sidecar containers found (expected for ambient mode)"
+                      fi  
+                      # Check if pods are properly enrolled in ambient mesh (they should have ztunnel connectivity)
+                      # This is a more complex check - we'll verify by checking if the namespace has the right labels
+                      ZTUNNEL_PODS=$(uds zarf tools kubectl get pods -n istio-system -l app=ztunnel --no-headers | wc -l)
+                      if [ "$ZTUNNEL_PODS" -gt 0 ]; then
+                          gh_notice "  ✅ Ztunnel pods found - ambient mode infrastructure is present"
+                      else
+                          gh_warning "  ⚠️  No ztunnel pods found - ambient mode may not be properly configured"
+                      fi  
+                  else
+                      gh_error "  ❌ Service mesh mode is set to ambient but namespace is not labeled for ambient mode"
+                  fi  
+              elif [ "$SERVICE_MESH_MODE" == "sidecar" ]; then
+                  # Original sidecar validation logic
+                  POD_SIDECAR_COUNT=$(uds zarf tools kubectl get pods -n "${NAMESPACE}" -o yaml | uds zarf tools yq eval '[.items[] | select(.spec.containers[].name == "istio-proxy")] | length' -)  
+                  if [ "$POD_COUNT" -ne "$POD_SIDECAR_COUNT" ]; then
+                      gh_error "  ❌ Not all pods have the istio sidecar"
+                  else
+                      gh_notice "  ✅ All pods have the istio sidecar"
+                  fi  
               else
-                  gh_notice "  ✅ All pods have the istio sidecar"
-              fi
-
-              echo
-
+                  # Handle unknown or unspecified modes - default to sidecar check with warning
+                  gh_warning "  ⚠️  Unknown service mesh mode '$SERVICE_MESH_MODE', defaulting to sidecar validation"  
+                  POD_SIDECAR_COUNT=$(uds zarf tools kubectl get pods -n "${NAMESPACE}" -o yaml | uds zarf tools yq eval '[.items[] | select(.spec.containers[].name == "istio-proxy")] | length' -)  
+                  if [ "$POD_COUNT" -ne "$POD_SIDECAR_COUNT" ]; then
+                      gh_error "  ❌ Not all pods have the istio sidecar"
+                  else
+                      gh_notice "  ✅ All pods have the istio sidecar"
+                  fi
+              fi  
+              echo  
               # Should avoid workarounds such as disabling strict mTLS peer authentication.
               PEERAUTH=$(uds zarf tools kubectl get Peerauthentication -n "${NAMESPACE}" -o=json | jq -r '.items[].spec.mtls.mode')
 
