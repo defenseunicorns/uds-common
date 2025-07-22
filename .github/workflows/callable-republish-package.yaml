@@ -34,7 +34,7 @@ permissions:
   id-token: write
 
 jobs:
-  run:
+  republish:
     runs-on: ${{ inputs.runsOn }}
     timeout-minutes: ${{ inputs.timeout }}
     permissions:

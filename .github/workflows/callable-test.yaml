@@ -45,7 +45,7 @@ permissions:
   id-token: write
 
 jobs:
-  run:
+  test:
     runs-on: ${{ inputs.runsOn }}
     timeout-minutes: ${{ inputs.timeout }}
     if: contains(inputs.upgrade-flavors, inputs.flavor) || inputs.type == 'install'
