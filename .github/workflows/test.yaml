@@ -50,7 +50,7 @@ jobs:
     outputs:
       upgrade-flavors: ${{ steps.test-flavor.outputs.upgrade-flavors }}
 
-  validate:
+  test:
     needs: check-flavor
     strategy:
       fail-fast: true
@@ -64,3 +64,10 @@ jobs:
       type: ${{ matrix.type }}
       runsOn: uds-swf-ubuntu-big-boy-4-core
     secrets: inherit # Inherits all secrets from the parent workflow.
+
+  verify:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Success
+        run: echo "All tests passed successfully!"
