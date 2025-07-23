@@ -42,14 +42,32 @@ jobs:
 
       - name: Check for non-documentation changes
         id: check-files
+        shell: bash
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          MODIFIED_FILES=$(gh pr view ${{ github.event.pull_request.number }} --repo ${{ github.repository }} --json files --jq '.files[].path')
-          FILE_FILTERS=$(yq '.on.pull_request.paths[]' .github/workflows/ci-docs-shim.yaml)
+          # allow ** for recursive globs
+          shopt -s globstar
 
-            for FILE in $MODIFIED_FILES; do
-            if ! echo "$FILE" | grep -qE "$FILE_FILTERS"; then
+          MODIFIED_FILES=$(gh pr view ${{ github.event.pull_request.number }} \
+            --repo ${{ github.repository }} --json files \
+            --jq '.files[].path')
+
+          # load glob patterns as an array
+          readarray -t FILE_FILTERS < <(
+            yq -r '.on.pull_request.paths[]' .github/workflows/ci-docs-shim.yaml
+          )
+
+          for FILE in $MODIFIED_FILES; do
+            matched=false
+            for pattern in "${FILE_FILTERS[@]}"; do
+              # use bash glob matching, not regex
+              if [[ "$FILE" == $pattern ]]; then
+                matched=true
+                break
+              fi
+            done
+            if [ "$matched" = false ]; then
               echo "Non-documentation file changed: $FILE"
               echo "shim=false" >> $GITHUB_OUTPUT
               exit 0
