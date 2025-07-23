@@ -60,7 +60,7 @@ jobs:
 
   validate:
     needs: path-check
-    if: ${{ needs.path-check.outputs.shim == 'false' }}
+    if: ${{ needs.path-check.outputs.shim == 'true' }}
     strategy:
       matrix:
         type: [install, upgrade]
