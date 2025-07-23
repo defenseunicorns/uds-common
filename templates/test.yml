@@ -26,6 +26,8 @@ spec:
       default: zarf.yaml
     options:
       default: ""
+    verify-package:
+      default: "true"
 ---
 test:
   rules:
@@ -72,7 +74,10 @@ test:
                                               --set GHCR_REGISTRY_USER="$GH_USER_READ_ONLY" \
                                               --set GHCR_REGISTRY_TOKEN="$GH_PAT_READ_ONLY"
     - uds run actions:test-deploy --set FLAVOR="$[[ inputs.flavor ]]" --set TYPE="$[[ inputs.type ]]" --set OPTIONS="$[[ inputs.options ]]"
-    - uds run actions:verify-badge
+    - |
+      if [[ "$[[ inputs.verify-package ]]" == "true" ]]; then 
+        uds run actions:verify-badge
+      fi
 
   after_script:
     - |
