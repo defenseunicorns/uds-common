@@ -29,6 +29,7 @@ on:
 # Permissions for the GITHUB_TOKEN used by the workflow.
 permissions:
   contents: read # Allows reading the content of the repository.
+  pull-requests: read # Allows reading pull requests.
 
 jobs:
   path-check:
@@ -41,6 +42,8 @@ jobs:
 
       - name: Check for non-documentation changes
         id: check-files
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           MODIFIED_FILES=$(gh pr view ${{ github.event.pull_request.number }} --repo ${{ github.repository }} --json files --jq '.files[].path')
           FILE_FILTERS=$(yq '.on.pull_request.paths[]' .github/workflows/ci-docs-shim.yaml)
