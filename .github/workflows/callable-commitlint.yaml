@@ -19,7 +19,7 @@ permissions:
   pull-requests: read # Allows reading pull requests
 
 jobs:
-  commitlint:
+  run:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: read # Allows reading pull request metadata.

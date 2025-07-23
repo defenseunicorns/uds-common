@@ -16,7 +16,7 @@ permissions:
   contents: read # Allows reading the content of the repository.
 
 jobs:
-  lint:
+  run:
     runs-on: ubuntu-latest
     permissions:
       contents: read # Allows reading the repo contents

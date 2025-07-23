@@ -18,7 +18,7 @@ permissions:
   contents: read # Allows reading the content of the repository.
 
 jobs:
-  shim:
+  run:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
