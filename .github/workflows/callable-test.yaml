@@ -37,18 +37,87 @@ on:
         # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
         default: 0.27.8
         type: string
+      file-filter:
+        type: string
+        description: |
+          A list of patterns to filter files that should not trigger package testing.
+          Entries use bash glob matching, patterns are separated by newlines.
+        default: |
+          **.md
+          **.jpg
+          **.png
+          **.gif
+          **.svg
+          adr/**
+          docs/**
+          .gitignore
+          renovate.json
+          .release-please-manifest.json
+          release-please-config.json
+          oscal-component.yaml
+          CODEOWNERS
+          LICENSE
+          CONTRIBUTING.md
+          SECURITY.md
+          config/renovate.json5
 
 # Permissions for the GITHUB_TOKEN used by the workflow.
 permissions:
   contents: read # Allows reading the content of the repository.
   packages: read # Allows reading the content of the repository's packages.
   id-token: write
+  pull-requests: read
 
 jobs:
+  doc-shim-check:
+    runs-on: ubuntu-latest
+    outputs:
+      test: ${{ steps.check-files.outputs.test }}
+    steps:
+      - name: Check for non-documentation changes
+        id: check-files
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FILE_FILTER_INPUT: ${{ inputs.file-filter }}
+        run: |
+          # allow ** for recursive globs
+          shopt -s globstar
+
+          MODIFIED_FILES=$(gh pr view ${{ github.event.pull_request.number }} \
+            --repo ${{ github.repository }} --json files \
+            --jq '.files[].path')
+
+          # load glob patterns as an array from FILE_FILTER_INPUT
+          readarray -t FILE_FILTERS <<<"${FILE_FILTER_INPUT}"
+
+          # Print the patterns for debugging
+          echo "File filters: ${FILE_FILTERS[*]}"
+
+          for FILE in $MODIFIED_FILES; do
+            matched=false
+            for pattern in "${FILE_FILTERS[@]}"; do
+              # use bash glob matching, not regex
+              if [[ "$FILE" == $pattern ]]; then
+                matched=true
+                break
+              fi
+            done
+            if [ "$matched" = false ]; then
+              echo "Non-documentation file changed: $FILE"
+              echo "test=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            echo "File $FILE matches pattern $pattern"
+          done
+
+          echo "test=false" >> "$GITHUB_OUTPUT"
+
   run:
+    needs: doc-shim-check
     runs-on: ${{ inputs.runsOn }}
     timeout-minutes: ${{ inputs.timeout }}
-    if: contains(inputs.upgrade-flavors, inputs.flavor) || inputs.type == 'install'
+    if: ${{ (contains(inputs.upgrade-flavors, inputs.flavor) || inputs.type == 'install') && (needs.doc-shim-check.outputs.test == 'true') }}
 
     steps:
       - name: Checkout repository
