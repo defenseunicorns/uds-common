@@ -37,6 +37,30 @@ on:
         # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
         default: 0.27.8
         type: string
+      file-filter:
+        type: string
+        description: |
+          A string to filter files that should be tested. This is used to skip testing documentation changes.
+          The default is to skip all default documentation files.
+        default: |
+          doc-shim:
+            - '!**.md'
+            - '!**.jpg'
+            - '!**.png'
+            - '!**.gif'
+            - '!**.svg'
+            - '!adr/**'
+            - '!docs/**'
+            - '!.gitignore'
+            - '!renovate.json'
+            - '!.release-please-manifest.json'
+            - '!release-please-config.json'
+            - '!oscal-component.yaml'
+            - '!CODEOWNERS'
+            - '!LICENSE'
+            - '!CONTRIBUTING.md'
+            - '!SECURITY.md'
+            - '!config/renovate.json5'
 
 # Permissions for the GITHUB_TOKEN used by the workflow.
 permissions:
@@ -45,10 +69,21 @@ permissions:
   id-token: write
 
 jobs:
+  doc-shim-check:
+    runs-on: ubuntu-latest
+    outputs:
+      do-test: ${{ steps.filter.outputs.doc-shim }}
+    steps:
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: ${{ inputs.file-filter}}
+
   run:
+    needs: doc-shim-check
     runs-on: ${{ inputs.runsOn }}
     timeout-minutes: ${{ inputs.timeout }}
-    if: contains(inputs.upgrade-flavors, inputs.flavor) || inputs.type == 'install'
+    if: (contains(inputs.upgrade-flavors, inputs.flavor) || inputs.type == 'install') && needs.doc-shim-check.outputs.do-test == 'true'
 
     steps:
       - name: Checkout repository
