@@ -40,8 +40,7 @@ on:
       file-filter:
         type: string
         description: |
-          A string to filter files that should be tested.
-          This is used to skip testing documentation changes.
+          A list of patterns to filter files that should not trigger package testing.
           Entries use bash glob matching, patterns are separated by newlines.
         default: |
           **.md
