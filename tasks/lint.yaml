@@ -224,6 +224,27 @@ tasks:
           echo "Running: $cmd"
           eval "$cmd"
 
+          LICENSE_PREFIX="SPDX-License-Identifier:"
+          LICENSE_FILES=$(git grep -l "$LICENSE_PREFIX" -- . 2>/dev/null)
+          EXISTING_LICENSE_DIFFERENCE=false
+          if [ "${{ .inputs.fix }}" == "true" ]; then
+            # Find all files committed to git with the specified license and fix them if needed
+            echo "$LICENSE_FILES" | xargs perl -i -pe "s|^// $LICENSE_PREFIX.*|// $LICENSE_PREFIX $LICENSE|"
+          else
+            # Check if the license files match the expected license
+            for file in $LICENSE_FILES; do
+              if ! grep -q " ${LICENSE_PREFIX} ${LICENSE}\$" "$file"; then
+                echo "Error: License mismatch in $file"
+                EXISTING_LICENSE_DIFFERENCE=true
+              fi
+            done
+          fi
+          if [ "$EXISTING_LICENSE_DIFFERENCE" == "true" ]; then
+            echo "Error: License mismatch found in files. Please fix the errors and try again."
+            exit 1
+          fi
+
+
   - name: fix-license
     description: Add the SPDX license identifier to source files
     actions:
