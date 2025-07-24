@@ -65,6 +65,7 @@ on:
             - '!LICENSE'
             - '!CONTRIBUTING.md'
             - '!SECURITY.md'
+            - '!README.md'
             - '!config/renovate.json5'
 
 # Permissions for the GITHUB_TOKEN used by the workflow.
