@@ -73,8 +73,8 @@ jobs:
   doc-shim-check:
     runs-on: ubuntu-latest
     outputs:
-      do-test: |
-        ${{ steps.check-files.outputs.do-test }}
+      test: |
+        ${{ steps.check-files.outputs.test }}
     steps:
       - name: Check for non-documentation changes
         id: check-files
@@ -107,13 +107,13 @@ jobs:
             done
             if [ "$matched" = false ]; then
               echo "Non-documentation file changed: $FILE"
-              echo "do-test=true" >> $GITHUB_OUTPUT
+              echo "test=true" >> "$GITHUB_OUTPUT"
               exit 0
             fi
             echo "File $FILE matches pattern $pattern"
           done
 
-          echo "do-test=false" >> $GITHUB_OUTPUT
+          echo "test=false" >> "$GITHUB_OUTPUT"
 
   debug:
     needs: doc-shim-check
@@ -121,21 +121,14 @@ jobs:
     steps:
       - name: Debug Output
         run: |
-          echo "Upgrade Flavors: ${{ inputs.upgrade-flavors }}"
-          echo "Flavor: ${{ inputs.flavor }}"
-          echo "Type: ${{ inputs.type }}"
-          echo "Do Test: ${{ needs.doc-shim-check.outputs.do-test }}"
-          echo "${{ contains(inputs.upgrade-flavors, inputs.flavor) }}"
-          echo "${{ (contains(inputs.upgrade-flavors, inputs.flavor) || inputs.type == 'install') }}"
-          echo "${{ contains(inputs.upgrade-flavors, inputs.flavor) || inputs.type == 'install' }}"
-          echo "${{ needs.doc-shim-check.outputs.do-test == 'true' }}"
-          echo "${{ (contains(inputs.upgrade-flavors, inputs.flavor) || inputs.type == 'install') && (needs.doc-shim-check.outputs.do-test == 'true') }}"
+          echo "Test: ${{ needs.doc-shim-check.outputs.test }}"
+          echo "${{ needs.doc-shim-check.outputs.test == 'true' }}"
 
   run:
     needs: doc-shim-check
     runs-on: ${{ inputs.runsOn }}
     timeout-minutes: ${{ inputs.timeout }}
-    if: ${{ (contains(inputs.upgrade-flavors, inputs.flavor) || inputs.type == 'install') && (needs.doc-shim-check.outputs.do-test == 'true') }}
+    if: ${{ (contains(inputs.upgrade-flavors, inputs.flavor) || inputs.type == 'install') && (needs.doc-shim-check.outputs.test == 'true') }}
 
     steps:
       - name: Checkout repository
