@@ -73,7 +73,8 @@ jobs:
   doc-shim-check:
     runs-on: ubuntu-latest
     outputs:
-      do-test: ${{ steps.check-files.outputs.do-test }}
+      do-test: |
+        ${{ steps.check-files.outputs.do-test }}
     steps:
       - name: Check for non-documentation changes
         id: check-files
