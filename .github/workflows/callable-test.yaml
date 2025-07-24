@@ -119,7 +119,7 @@ jobs:
     needs: doc-shim-check
     runs-on: ${{ inputs.runsOn }}
     timeout-minutes: ${{ inputs.timeout }}
-    if: (contains(inputs.upgrade-flavors, inputs.flavor) || inputs.type == 'install') && needs.doc-shim-check.outputs.do-test == 'true'
+    if: ${{ (contains(inputs.upgrade-flavors, inputs.flavor) || inputs.type == 'install') && (needs.doc-shim-check.outputs.do-test == 'true') }}
 
     steps:
       - name: Checkout repository
