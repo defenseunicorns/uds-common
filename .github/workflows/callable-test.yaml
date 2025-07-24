@@ -73,8 +73,7 @@ jobs:
   doc-shim-check:
     runs-on: ubuntu-latest
     outputs:
-      test: |
-        ${{ steps.check-files.outputs.test }}
+      test: ${{ steps.check-files.outputs.test }}
     steps:
       - name: Check for non-documentation changes
         id: check-files
@@ -107,13 +106,13 @@ jobs:
             done
             if [ "$matched" = false ]; then
               echo "Non-documentation file changed: $FILE"
-              printf "test=true" >> "$GITHUB_OUTPUT"
+              echo "test=true" >> "$GITHUB_OUTPUT"
               exit 0
             fi
             echo "File $FILE matches pattern $pattern"
           done
 
-          printf "test=false" >> "$GITHUB_OUTPUT"
+          echo "test=false" >> "$GITHUB_OUTPUT"
 
   debug:
     needs: doc-shim-check
