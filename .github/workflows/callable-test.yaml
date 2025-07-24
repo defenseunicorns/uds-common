@@ -126,6 +126,8 @@ jobs:
           echo "Type: ${{ inputs.type }}"
           echo "Do Test: ${{ needs.doc-shim-check.outputs.do-test }}"
           echo "${{ contains(inputs.upgrade-flavors, inputs.flavor) }}"
+          echo "${{ (contains(inputs.upgrade-flavors, inputs.flavor) || inputs.type == 'install') }}"
+          echo "${{ contains(inputs.upgrade-flavors, inputs.flavor) || inputs.type == 'install' }}"
           echo "${{ needs.doc-shim-check.outputs.do-test == 'true' }}"
           echo "${{ (contains(inputs.upgrade-flavors, inputs.flavor) || inputs.type == 'install') && (needs.doc-shim-check.outputs.do-test == 'true') }}"
 
