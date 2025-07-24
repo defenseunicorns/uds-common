@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.17.0](https://github.com/defenseunicorns/uds-common/compare/v1.16.4...v1.17.0) (2025-07-24)
+
+
+### Features
+
+* add verify job to simplify required CI checks ([#523](https://github.com/defenseunicorns/uds-common/issues/523)) ([2bd36b1](https://github.com/defenseunicorns/uds-common/commit/2bd36b1fe45050c507fedf430206f69688e9bbec))
+* uds registry badging requirements ([#524](https://github.com/defenseunicorns/uds-common/issues/524)) ([1e2be6a](https://github.com/defenseunicorns/uds-common/commit/1e2be6a68e9979728932b3792f800d7c4f6fe6a4))
+
+
+### Miscellaneous
+
+* **deps:** update uds common package dependencies to v1.29.0 ([#476](https://github.com/defenseunicorns/uds-common/issues/476)) ([740696a](https://github.com/defenseunicorns/uds-common/commit/740696a7738aa378af7516c5f6fe27a5625f48ed))
+
 ## [1.16.4](https://github.com/defenseunicorns/uds-common/compare/v1.16.3...v1.16.4) (2025-07-08)
 
 
