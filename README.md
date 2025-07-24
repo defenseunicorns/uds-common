@@ -32,4 +32,3 @@ The example in this repository is based around Nginx and can be interacted with 
 ## Contributing
 
 Please see the [CONTRIBUTING.md](./CONTRIBUTING.md)
-
