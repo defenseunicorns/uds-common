@@ -44,23 +44,23 @@ on:
           This is used to skip testing documentation changes.
           Entries use bash glob matching, patterns are separated by newlines.
         default: |
-          "**.md"
-          "**.jpg"
-          "**.png"
-          "**.gif"
-          "**.svg"
-          "adr/**"
-          "docs/**"
-          ".gitignore"
-          "renovate.json"
-          ".release-please-manifest.json"
-          "release-please-config.json"
-          "oscal-component.yaml"
-          "CODEOWNERS"
-          "LICENSE"
-          "CONTRIBUTING.md"
-          "SECURITY.md"
-          "config/renovate.json5"
+          **.md
+          **.jpg
+          **.png
+          **.gif
+          **.svg
+          adr/**
+          docs/**
+          .gitignore
+          renovate.json
+          .release-please-manifest.json
+          release-please-config.json
+          oscal-component.yaml
+          CODEOWNERS
+          LICENSE
+          CONTRIBUTING.md
+          SECURITY.md
+          config/renovate.json5
 
 # Permissions for the GITHUB_TOKEN used by the workflow.
 permissions:
@@ -83,7 +83,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           FILE_FILTER_INPUT: ${{ inputs.file-filter }}
         run: |
-          env
           # allow ** for recursive globs
           shopt -s globstar
 
@@ -91,10 +90,11 @@ jobs:
             --repo ${{ github.repository }} --json files \
             --jq '.files[].path')
 
-          # load glob patterns as an array
-          readarray -t FILE_FILTERS < <(
-            echo "$FILE_FILTER_INPUT"
-          )
+          # load glob patterns as an array from FILE_FILTER_INPUT
+          readarray -t FILE_FILTERS <<<"${FILE_FILTER_INPUT}"
+
+          # Print the patterns for debugging
+          echo "File filters: ${FILE_FILTERS[*]}"
 
           for FILE in $MODIFIED_FILES; do
             matched=false
@@ -110,6 +110,7 @@ jobs:
               echo "do-test=true" >> $GITHUB_OUTPUT
               exit 0
             fi
+            echo "File $FILE matches pattern $pattern"
           done
 
           echo "do-test=false" >> $GITHUB_OUTPUT
