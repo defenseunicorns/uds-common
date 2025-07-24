@@ -60,6 +60,7 @@ on:
           CONTRIBUTING.md
           SECURITY.md
           config/renovate.json5
+          .github/workflows/*.yaml
 
 # Permissions for the GITHUB_TOKEN used by the workflow.
 permissions:
