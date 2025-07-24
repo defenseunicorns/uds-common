@@ -107,13 +107,13 @@ jobs:
             done
             if [ "$matched" = false ]; then
               echo "Non-documentation file changed: $FILE"
-              echo "test=true" >> "$GITHUB_OUTPUT"
+              printf "test=true" >> "$GITHUB_OUTPUT"
               exit 0
             fi
             echo "File $FILE matches pattern $pattern"
           done
 
-          echo "test=false" >> "$GITHUB_OUTPUT"
+          printf "test=false" >> "$GITHUB_OUTPUT"
 
   debug:
     needs: doc-shim-check
