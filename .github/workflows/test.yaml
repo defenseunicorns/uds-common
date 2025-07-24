@@ -8,23 +8,6 @@ on:
   pull_request:
     # milestoned is added here as a workaround for release-please not triggering PR workflows (PRs should be added to a milestone to trigger the workflow).
     types: [milestoned, opened, reopened, synchronize]
-    paths-ignore:
-      - "**.md"
-      - "**.jpg"
-      - "**.png"
-      - "**.gif"
-      - "**.svg"
-      - adr/**
-      - docs/**
-      - .gitignore
-      - renovate.json
-      - .release-please-manifest.json
-      - release-please-config.json
-      - CODEOWNERS
-      - LICENSE
-      - CONTRIBUTING.md
-      - SECURITY.md
-      - config/renovate.json5
 
 # Permissions for the GITHUB_TOKEN used by the workflow.
 permissions:

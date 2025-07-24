@@ -114,15 +114,6 @@ jobs:
 
           echo "test=false" >> "$GITHUB_OUTPUT"
 
-  debug:
-    needs: doc-shim-check
-    runs-on: ubuntu-latest
-    steps:
-      - name: Debug Output
-        run: |
-          echo "Test: ${{ needs.doc-shim-check.outputs.test }}"
-          echo "${{ needs.doc-shim-check.outputs.test == 'true' }}"
-
   run:
     needs: doc-shim-check
     runs-on: ${{ inputs.runsOn }}
