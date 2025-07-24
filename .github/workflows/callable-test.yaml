@@ -44,11 +44,16 @@ on:
           The default is to skip all default documentation files.
         default: |
           doc-shim:
-            - '!**.md'
-            - '!**.jpg'
-            - '!**.png'
-            - '!**.gif'
-            - '!**.svg'
+            - '!*.md'
+            - '!*.jpg'
+            - '!*.png'
+            - '!*.gif'
+            - '!*.svg'
+            - '!*/**.md'
+            - '!*/**.jpg'
+            - '!*/**.png'
+            - '!*/**.gif'
+            - '!*/**.svg'
             - '!adr/**'
             - '!docs/**'
             - '!.gitignore'
