@@ -121,6 +121,12 @@ jobs:
     steps:
       - name: Debug Output
         run: |
+          echo "Upgrade Flavors: ${{ inputs.upgrade-flavors }}"
+          echo "Flavor: ${{ inputs.flavor }}"
+          echo "Type: ${{ inputs.type }}"
+          echo "Do Test: ${{ needs.doc-shim-check.outputs.do-test }}"
+          echo "${{ contains(inputs.upgrade-flavors, inputs.flavor) }}"
+          echo "${{ needs.doc-shim-check.outputs.do-test == 'true' }}"
           echo "${{ (contains(inputs.upgrade-flavors, inputs.flavor) || inputs.type == 'install') && (needs.doc-shim-check.outputs.do-test == 'true') }}"
 
   run:
