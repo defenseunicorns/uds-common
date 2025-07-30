@@ -29,7 +29,7 @@ lint:
     # Lint the repository
     - |
       if [[ "$[[ inputs.skip-license-checks ]]" == "false" ]]; then
-        LICENSE_OPTS="--set SKIP_LICENSE_CHECKS=true" 
+        LICENSE_OPTS="--set SKIP_LICENSE_CHECKS=true"
       fi
 
       if [[ "$[[ inputs.skip-compliance-checks ]]" == "false" ]]; then
