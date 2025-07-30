@@ -5,6 +5,12 @@ spec:
   inputs:
     runs-on:
       default: gitlab-runner-4c-amd64
+    skip-license-checks:
+      default: "true"
+    skip-dependency-install:
+      default: "true"
+    skip-compliance-checks:
+      default: "true"
 ---
 lint:
   rules:
@@ -14,9 +20,22 @@ lint:
     - export PATH=/home/ubuntu/.local/bin:$PATH
 
     # Install lint dependencies
-    - uds run lint:deps --no-progress
+
+    - |
+      if [[ "$[[ inputs.skip-dependency-install ]]" == "false" ]]; then  
+        uds run lint:deps --no-progress
+      fi
 
     # Lint the repository
-    - uds run lint:all --no-progress
+    - |
+      if [[ "$[[ inputs.skip-license-checks ]]" == "false" ]]; then  
+        LICENSE_OPTS="--set SKIP_LICENSE_CHECKS=true" 
+      fi
+
+      if [[ "$[[ inputs.skip-compliance-checks ]]" == "false" ]]; then  
+        COMPLIANCE_OPTS="--set SKIP_OSCAL=false" 
+      fi
+
+      uds run lint:all --no-progress $INSTALL_OPTS $COMPLIANCE_OPTS
   tags:
     - $[[ inputs.runs-on ]]

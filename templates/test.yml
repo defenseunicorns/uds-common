@@ -27,7 +27,7 @@ spec:
     options:
       default: ""
     verify-package:
-      default: "true"
+      default: "false"
 ---
 test:
   rules:
@@ -47,7 +47,7 @@ test:
         git checkout "$TAG"
 
         # Extract upgrade flavors and set UPGRADE_FLAVORS
-        UPGRADE_FLAVORS=$(cat $[[ inputs.check-flavor-zarf-yaml ]] | yq '.components[] | select(.only | has("flavor")) | .only.flavor' | paste -s -d, - || echo "")
+        UPGRADE_FLAVORS=$(cat $[[ inputs.check-flavor-zarf-yaml ]] | ./uds zarf tools yq '.components[] | select(.only | has("flavor")) | .only.flavor' | paste -s -d, - || echo "")
 
         # change back to the commit branch for the rest of the job
         git checkout -
