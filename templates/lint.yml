@@ -22,18 +22,18 @@ lint:
     # Install lint dependencies
 
     - |
-      if [[ "$[[ inputs.skip-dependency-install ]]" == "false" ]]; then  
+      if [[ "$[[ inputs.skip-dependency-install ]]" == "false" ]]; then
         uds run lint:deps --no-progress
       fi
 
     # Lint the repository
     - |
-      if [[ "$[[ inputs.skip-license-checks ]]" == "false" ]]; then  
+      if [[ "$[[ inputs.skip-license-checks ]]" == "false" ]]; then
         LICENSE_OPTS="--set SKIP_LICENSE_CHECKS=true" 
       fi
 
-      if [[ "$[[ inputs.skip-compliance-checks ]]" == "false" ]]; then  
-        COMPLIANCE_OPTS="--set SKIP_OSCAL=false" 
+      if [[ "$[[ inputs.skip-compliance-checks ]]" == "false" ]]; then
+        COMPLIANCE_OPTS="--set SKIP_OSCAL=false"
       fi
 
       uds run lint:all --no-progress $INSTALL_OPTS $COMPLIANCE_OPTS

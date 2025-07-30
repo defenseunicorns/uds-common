@@ -61,7 +61,7 @@ publish:
                                               --set GHCR_REGISTRY_TOKEN="$GH_PAT_READ_ONLY"
 
     - |
-      if [[ "$[[ inputs.install-deps ]]" == "true" ]]; then 
+      if [[ "$[[ inputs.install-deps ]]" == "true" ]]; then
         sudo uds run actions:install-deps
       fi
 
