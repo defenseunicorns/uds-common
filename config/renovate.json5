@@ -134,7 +134,8 @@
         {
             "customType": "regex",
             "fileMatch": [
-                ".*\\.ya?ml$"
+                ".*\\.ya?ml$",
+                ".*\\.md$"
             ],
             "matchStrings": [
                 // Test: https://regex101.com/r/d9t0lt/1
@@ -151,6 +152,7 @@
             "fileMatch": [
                 ".*\\.ya?ml$",
                 ".*\\.sh$",
+                ".*\\.md$",
                 ".*\\.?Dockerfile$"
             ],
             "matchStrings": [
@@ -166,7 +168,8 @@
         {
             "customType": "regex",
             "fileMatch": [
-                ".*\\.ya?ml$"
+                ".*\\.ya?ml$",
+                ".*\\.md$"
             ],
             "matchStrings": [
                 // Test: https://regex101.com/r/p3Cpjx/2
