@@ -4,6 +4,10 @@
 variables:
   - name: OSCALFILES
     default: ./oscal-component.yaml
+  - name: SKIP_LICENSE_CHECKS
+    default: "false"
+  - name: SKIP_OSCAL
+    default: "true"
 
 tasks:
   - name: deps
@@ -29,14 +33,17 @@ tasks:
       - description: Install addlicense via go
         # renovate: datasource=github-tags depName=google/addlicense versioning=semver
         cmd: go install github.com/google/addlicense@v1.1.1
+        if: ${{ eq .variables.SKIP_LICENSE_CHECKS "false" }}
 
   - name: all
     description: Run all linting commands
     actions:
       - task: yaml
       - task: oscal
+        if: ${{ eq .variables.SKIP_OSCAL "false" }}
       - task: shell
       - task: license
+        if: ${{ eq .variables.SKIP_LICENSE_CHECKS "false" }}
       - task: tasks
 
   - name: yaml
@@ -54,6 +61,7 @@ tasks:
           linux: bash
           darwin: bash
         cmd: |
+          echo "⚠️ WARNING: oscal linting has been deprecated and will be removed in a future release."
           IFS=',' read -r -a OSCALARRAY <<< "$OSCALFILES"
           for file in "${OSCALARRAY[@]}"; do
             if [ ! -f "$file" ]; then

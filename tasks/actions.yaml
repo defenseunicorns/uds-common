@@ -28,6 +28,8 @@ variables:
     default: package
   - name: COMMON_ZARF
     default: "true"
+  - name: SKIP_DEP_INSTALLATION
+    default: "false"
   - name: TYPE
     default: ""
   - name: FLAVOR
@@ -105,6 +107,7 @@ tasks:
     actions:
       - description: Install dependencies
         task: install-deps
+        if: ${{ eq .variables.SKIP_DEP_INSTALLATION "false" }}
       - description: authenticate to the registries
         task: authenticate-registries
 
