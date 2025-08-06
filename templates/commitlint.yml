@@ -19,7 +19,7 @@ commitlint:
         echo "module.exports = {extends: ['@commitlint/config-conventional']}" > commitlint.config.js
         echo "$CI_MERGE_REQUEST_TITLE" | npx commitlint
       elif
-        echo "$CI_MERGE_REQUEST_TITLE" | commitlint
+        echo "$CI_MERGE_REQUEST_TITLE" | npx commitlint
       fi
   tags:
     - $[[ inputs.runs-on ]]
