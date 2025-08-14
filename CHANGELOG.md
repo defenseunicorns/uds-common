@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.17.1](https://github.com/defenseunicorns/uds-common/compare/v1.17.0...v1.17.1) (2025-08-13)
+
+
+### Miscellaneous
+
+* add markdown file extension to renovate matches ([#531](https://github.com/defenseunicorns/uds-common/issues/531)) ([5336e6f](https://github.com/defenseunicorns/uds-common/commit/5336e6f93291362b09cc1fb3051ac5c7d35c3cc3))
+* **deps:** update uds common support dependencies ([#519](https://github.com/defenseunicorns/uds-common/issues/519)) ([5f500ab](https://github.com/defenseunicorns/uds-common/commit/5f500ab09c627472fc4527aa87c6ba8e77ccfc8d))
+* **deps:** update uds common support dependencies ([#530](https://github.com/defenseunicorns/uds-common/issues/530)) ([695feb1](https://github.com/defenseunicorns/uds-common/commit/695feb11bc3c20693b71fc61f8a9b71e9e98df30))
+* **deps:** update uds common support dependencies ([#532](https://github.com/defenseunicorns/uds-common/issues/532)) ([989cbb0](https://github.com/defenseunicorns/uds-common/commit/989cbb0f27b0174fecea57b65b68e21b6a3546a5))
+
 ## [1.17.0](https://github.com/defenseunicorns/uds-common/compare/v1.16.4...v1.17.0) (2025-07-24)
 
 
