@@ -3,4 +3,4 @@
 
 image:
   repository: quay.io/rfcurated/nginx
-  tag: 1.27.5-slim-jammy-rfcurated-rfhardened
+  tag: 1.29.1-slim-jammy-rfcurated-rfhardened
