@@ -6,8 +6,6 @@ variables:
     default: ./oscal-component.yaml
   - name: SKIP_LICENSE_CHECKS
     default: "false"
-  - name: SKIP_OSCAL
-    default: "true"
 
 tasks:
   - name: deps
@@ -39,8 +37,6 @@ tasks:
     description: Run all linting commands
     actions:
       - task: yaml
-      - task: oscal
-        if: ${{ eq .variables.SKIP_OSCAL "false" }}
       - task: shell
       - task: license
         if: ${{ eq .variables.SKIP_LICENSE_CHECKS "false" }}
@@ -52,25 +48,6 @@ tasks:
       # requires yamllint to be installed either from pip or brew
       - description: Lint YAML files
         cmd: yamllint . -c .yamllint --no-warnings
-
-  - name: oscal
-    description: Run linting checks on OSCAL
-    actions:
-      - description: Lint OSCAL files
-        shell:
-          linux: bash
-          darwin: bash
-        cmd: |
-          echo "⚠️ WARNING: oscal linting has been deprecated and will be removed in a future release."
-          IFS=',' read -r -a OSCALARRAY <<< "$OSCALFILES"
-          for file in "${OSCALARRAY[@]}"; do
-            if [ ! -f "$file" ]; then
-              echo "⚠️ WARNING: file $file does not exist."
-              exit 0
-            fi
-          done
-
-          lula tools lint -f "$OSCALFILES"
 
   - name: shell
     description: Run shellcheck on all Maru tasks, GitHub workflows, and local shell scripts

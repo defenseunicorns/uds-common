@@ -142,7 +142,6 @@ publish:
     paths:
       # Save debug logs as artifacts
       - $[[ inputs.artifact-dir ]]
-      - oscal-assessment-results.yaml
 
   tags:
     - $[[ inputs.runs-on ]]

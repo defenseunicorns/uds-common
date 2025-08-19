@@ -14,7 +14,6 @@ Pinning to a specific tag of a task (rather than `main`) with renovate watching 
 - UDS CLI: 0.27.10
 - UDS Core: 0.47.0
 - K3D: 5.8.3
-- Lula: 0.16.0
 
 > [!NOTE]
 > Zarf is not required for tasks in this repo, the vendored zarf (`uds zarf`) included with UDS CLI is used instead to prevent version mismatches.
@@ -104,7 +103,6 @@ ignore: [] # an array of paths to ignore
 | **deps** | Install linting tool dependencies |
 | **all** | Run all linting commands |
 | **yaml** | Run YAML linting checks |
-| **oscal** | Run linting checks on OSCAL |
 | **shell** | Run shellcheck on all Maru tasks, GitHub workflows, and local shell scripts |
 | **license** | Lint for the SPDX license identifier being in source files |
 | **fix-license** | Add the SPDX license identifier to source files |
@@ -115,13 +113,6 @@ ignore: [] # an array of paths to ignore
 | Name | Description |
 |------|-------------|
 | **verify-badge** | Verifies that a UDS Package implements UDS Package Practices flagging things that are out of compliance |
-
-### [compliance.yaml](./tasks/compliance.yaml)
-
-| Name | Description |
-|------|-------------|
-| **validate** | Lula Validate OSCAL Compliance |
-| **evaluate** | Lula Evaluate multiple OSCAL Assessment Results |
 
 ### [actions.yaml](./tasks/actions.yaml)
 

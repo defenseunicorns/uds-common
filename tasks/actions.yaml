@@ -124,16 +124,6 @@ tasks:
 
       - task: determine-arch
 
-      - description: Install Lula
-        env:
-          # renovate: datasource=github-tags depName=defenseunicorns/lula versioning=semver-coerced
-          - LULA_VERSION=v0.16.0
-        cmd: |
-          echo "Installing lula version $LULA_VERSION"
-          curl -o /usr/local/bin/lula -L \
-          "https://github.com/defenseunicorns/lula/releases/download/${LULA_VERSION}/lula_${LULA_VERSION}_$(uname -s)_${{ .variables.ARCH }}" \
-          && chmod +x /usr/local/bin/lula
-
       - description: Install uds-pk
         env:
           # renovate: datasource=github-tags depName=defenseunicorns/uds-pk versioning=semver-coerced
