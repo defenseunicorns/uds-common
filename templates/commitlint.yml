@@ -5,15 +5,15 @@ spec:
   inputs:
     runs-on:
       default: gitlab-runner-4c-amd64
-    skip-dependency-install:
-      default: "true"
+    install-dependencies:
+      default: "false"
 ---
 commitlint:
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TITLE !~ /^Draft/
   script:
     - |
-      if [[ "$[[ inputs.skip-dependency-install ]]" == "false" ]]; then
+      if [[ "$[[ inputs.install-dependencies ]]" == "true" ]]; then
         npm install --save-dev @commitlint/config-conventional@19.8.1
         npm install --save-dev @commitlint/cli@19.8.1
         echo "module.exports = {extends: ['@commitlint/config-conventional']}" > commitlint.config.js

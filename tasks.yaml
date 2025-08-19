@@ -9,7 +9,6 @@ includes:
   - publish: ./tasks/publish.yaml
   - pull: ./tasks/pull.yaml
   - upgrade: ./tasks/upgrade.yaml
-  - compliance: ./tasks/compliance.yaml
   - badge: ./tasks/badge.yaml
   - actions: ./tasks/actions.yaml
 
