@@ -28,7 +28,7 @@ spec:
     mirror:
       default: "true"
     install-dependencies:
-      default: "true"
+      default: "false"
     mirror-project-id:
       default: ${MIRROR_PROJECT_ID}
     publish-path:

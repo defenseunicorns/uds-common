@@ -8,7 +8,7 @@ spec:
     run-license-checks:
       default: "false"
     install-dependencies:
-      default: "true"
+      default: "false"
 
 ---
 lint:
