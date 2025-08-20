@@ -27,7 +27,7 @@ spec:
       default: uds
     mirror:
       default: "true"
-    install-deps:
+    install-dependencies:
       default: "true"
     mirror-project-id:
       default: ${MIRROR_PROJECT_ID}
@@ -61,7 +61,7 @@ publish:
                                               --set GHCR_REGISTRY_TOKEN="$GH_PAT_READ_ONLY"
 
     - |
-      if [[ "$[[ inputs.install-deps ]]" == "true" ]]; then
+      if [[ "$[[ inputs.install-dependencies ]]" == "true" ]]; then
         sudo uds run actions:install-deps
       fi
 
