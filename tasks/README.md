@@ -57,6 +57,13 @@ There are multiple task files available in this repository with different object
 |------|-------------|
 | **test-bundle** | Remove the deployed test bundle |
 
+### [compliance.yaml](./tasks/compliance.yaml)
+
+| Name | Description |
+|------|-------------|
+| **validate** | Deprecated: Lula Validate OSCAL Compliance |
+| **evaluate** | Deprecated: Lula Evaluate multiple OSCAL Assessment Results |
+
 ### [publish.yaml](./tasks/remove.yaml)
 
 | Name | Description |
