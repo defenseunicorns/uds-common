@@ -26,6 +26,8 @@ spec:
       default: zarf.yaml
     options:
       default: ""
+    run-verify-package:
+      default: "false"
 ---
 test:
   rules:
@@ -45,7 +47,7 @@ test:
         git checkout "$TAG"
 
         # Extract upgrade flavors and set UPGRADE_FLAVORS
-        UPGRADE_FLAVORS=$(cat $[[ inputs.check-flavor-zarf-yaml ]] | yq '.components[] | select(.only | has("flavor")) | .only.flavor' | paste -s -d, - || echo "")
+        UPGRADE_FLAVORS=$(cat $[[ inputs.check-flavor-zarf-yaml ]] | ./uds zarf tools yq '.components[] | select(.only | has("flavor")) | .only.flavor' | paste -s -d, - || echo "")
 
         # change back to the commit branch for the rest of the job
         git checkout -
@@ -72,7 +74,10 @@ test:
                                               --set GHCR_REGISTRY_USER="$GH_USER_READ_ONLY" \
                                               --set GHCR_REGISTRY_TOKEN="$GH_PAT_READ_ONLY"
     - uds run actions:test-deploy --set FLAVOR="$[[ inputs.flavor ]]" --set TYPE="$[[ inputs.type ]]" --set OPTIONS="$[[ inputs.options ]]"
-    - uds run actions:verify-badge
+    - |
+      if [[ "$[[ inputs.run-verify-package ]]" == "true" ]]; then
+        uds run actions:verify-badge
+      fi
 
   after_script:
     - |
@@ -93,6 +98,5 @@ test:
     name: artifacts-$[[ inputs.type ]]-$[[ inputs.flavor ]]-${CI_PIPELINE_ID}-${CI_JOB_ID}
     paths:
       - $[[ inputs.artifact-dir ]]
-      - oscal-assessment-results.yaml
   tags:
     - $[[ inputs.runs-on ]]

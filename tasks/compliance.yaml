@@ -3,7 +3,7 @@
 
 tasks:
   - name: validate
-    description: Lula Validate OSCAL Compliance
+    description: "Deprecated: Lula Validate OSCAL Compliance"
     inputs:
       oscalfile:
         description: OSCAL File to Validate
@@ -14,10 +14,10 @@ tasks:
       options:
         description: For setting additional flags
     actions:
-      - cmd: lula validate -f ${{ .inputs.oscalfile }} -o ${{ .inputs.assessment_results }} ${{ .inputs.options }}
+      - cmd: echo "Skipping OSCAL Validation. This task's functionality will be removed or replaced in a future release."
 
   - name: evaluate
-    description: Lula Evaluate multiple OSCAL Assessment Results
+    description: "Deprecated: Lula Evaluate multiple OSCAL Assessment Results"
     inputs:
       assessment_results:
         description: File path to the single Assessment Results file that contains the array of Assessment Results
@@ -25,4 +25,4 @@ tasks:
       options:
         description: For setting additional flags
     actions:
-      - cmd: lula evaluate -f ${{ .inputs.assessment_results }} ${{ .inputs.options }}
+      - cmd: echo "Skipping OSCAL Evaluation. This task's functionality will be removed or replaced in a future release."

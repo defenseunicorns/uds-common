@@ -7,9 +7,9 @@ includes:
   - deploy: ./tasks/deploy.yaml
   - lint: ./tasks/lint.yaml
   - publish: ./tasks/publish.yaml
+  - compliance: ./tasks/compliance.yaml
   - pull: ./tasks/pull.yaml
   - upgrade: ./tasks/upgrade.yaml
-  - compliance: ./tasks/compliance.yaml
   - badge: ./tasks/badge.yaml
   - actions: ./tasks/actions.yaml
 

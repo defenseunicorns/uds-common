@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.18.0](https://github.com/defenseunicorns/uds-common/compare/v1.17.1...v1.18.0) (2025-08-21)
+
+
+### Features
+
+* make uds-common air-gap compatible for gitlab ci components and remove lula ([#529](https://github.com/defenseunicorns/uds-common/issues/529)) ([f3277ec](https://github.com/defenseunicorns/uds-common/commit/f3277eca844f9dc352bbb6ccafea8b2cd35dc456))
+
+
+### Miscellaneous
+
+* **deps:** update uds common support dependencies ([#536](https://github.com/defenseunicorns/uds-common/issues/536)) ([65b7b60](https://github.com/defenseunicorns/uds-common/commit/65b7b60af5d69a5f598a8abcfeb80e68d510620c))
+* **deps:** update uds common support dependencies to v0.49.0 ([#534](https://github.com/defenseunicorns/uds-common/issues/534)) ([6f4e5a3](https://github.com/defenseunicorns/uds-common/commit/6f4e5a334d22ed0ddb4df8c240259c5cfba95c9f))
+
 ## [1.17.1](https://github.com/defenseunicorns/uds-common/compare/v1.17.0...v1.17.1) (2025-08-13)
 
 
