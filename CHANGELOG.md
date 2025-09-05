@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.19.0](https://github.com/defenseunicorns/uds-common/compare/v1.18.1...v1.19.0) (2025-09-05)
+
+
+### Features
+
+* enable license secrets to be passed for uds-package testing ([#540](https://github.com/defenseunicorns/uds-common/issues/540)) ([03e56c0](https://github.com/defenseunicorns/uds-common/commit/03e56c0face66246594904d5754415b3428349af))
+
 ## [1.18.1](https://github.com/defenseunicorns/uds-common/compare/v1.18.0...v1.18.1) (2025-09-03)
 
 
