@@ -23,10 +23,14 @@ tasks:
         cmd: cat ${{ .inputs.path }}/zarf.yaml | ./uds zarf tools yq .metadata.version
         setVariables:
           - name: PACKAGE_VERSION
+      - description: Get the current Zarf package flavor suffix
+        cmd: if [ -z "${{ .variables.flavor }}" ]; then echo ""; else echo "-${{ .variables.flavor }}"; fi
+        setVariables:
+          - name: FLAVOR_SUFFIX
       - description: Deploy the UDS Zarf Package
         env:
           - ZARF_CONFIG=${{ .inputs.config }}
-        cmd: ./uds zarf package deploy "${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${UDS_ARCH}-${PACKAGE_VERSION}.tar.zst" --confirm --no-progress ${{ .inputs.options }}
+        cmd: ./uds zarf package deploy "${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${UDS_ARCH}-${PACKAGE_VERSION}${FLAVOR_SUFFIX}.tar.zst" --confirm --no-progress ${{ .inputs.options }}
 
   - name: test-bundle
     description: Deploy the created test bundle (deploying package + dependencies for testing)

@@ -78,9 +78,13 @@ tasks:
         cmd: cat ${{ .inputs.path }}/zarf.yaml | ./uds zarf tools yq .metadata.name
         setVariables:
           - name: PACKAGE_NAME
+      - description: Get the current Zarf package flavor suffix
+        cmd: if [ -z "${{ .variables.flavor }}" ]; then echo ""; else echo "-${{ .variables.flavor }}"; fi
+        setVariables:
+          - name: FLAVOR_SUFFIX
       - description: Publish package for the supplied architecture
         cmd: |
-          ./uds zarf package publish "${{ .inputs.path }}/zarf-package-${{ .inputs.name }}-${{ .inputs.architecture }}-${{ .inputs.version }}.tar.zst" "oci://${TARGET_REPO}"
+          ./uds zarf package publish "${{ .inputs.path }}/zarf-package-${{ .inputs.name }}-${{ .inputs.architecture }}-${{ .inputs.version }}${FLAVOR_SUFFIX}.tar.zst" "oci://${TARGET_REPO}"
 
 
   - name: uds-pk-publish
@@ -110,7 +114,7 @@ tasks:
           - name: PACKAGE_NAME
       - description: publish using uds-pk
         cmd: |
-          ./uds zarf package publish "${{ .inputs.path }}/zarf-package-${{ .inputs.name }}-${{ .inputs.architecture }}-$(uds-pk release show ${{ .variables.FLAVOR }} --version-only).tar.zst" "oci://${TARGET_REPO}"
+          ./uds zarf package publish "${{ .inputs.path }}/zarf-package-${{ .inputs.name }}-${{ .inputs.architecture }}-$(uds-pk release show ${{ .variables.FLAVOR }}).tar.zst" "oci://${TARGET_REPO}"
 
           if [ -n "${GITLAB_CI}" ]; then
             uds-pk release gitlab "${{ .variables.FLAVOR }}"
@@ -151,7 +155,7 @@ tasks:
           - name: PACKAGE_NAME
       - description: Checkout latest tag and re-publish
         cmd: |
-          ./uds zarf package publish "${{ .inputs.path }}/zarf-package-${{ .inputs.name }}-${{ .inputs.architecture }}-$(uds-pk release show ${{ .variables.FLAVOR }} --version-only).tar.zst" "oci://${TARGET_REPO}"
+          ./uds zarf package publish "${{ .inputs.path }}/zarf-package-${{ .inputs.name }}-${{ .inputs.architecture }}-$(uds-pk release show ${{ .variables.FLAVOR }}).tar.zst" "oci://${TARGET_REPO}"
 
   - name: test-bundle
     description: Publish the test bundle for the supplied architecture
