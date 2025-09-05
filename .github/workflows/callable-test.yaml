@@ -60,6 +60,9 @@ on:
           CONTRIBUTING.md
           SECURITY.md
           config/renovate.json5
+    secrets:
+      LICENSE_KEY:
+        required: false
 
 # Permissions for the GITHUB_TOKEN used by the workflow.
 permissions:
@@ -150,7 +153,7 @@ jobs:
         shell: bash
 
       - name: Test
-        run: uds run actions:test-deploy --set FLAVOR="${{ inputs.flavor }}" --set TYPE="${{ inputs.type }}" --set OPTIONS="${{ inputs.options }}"
+        run: uds run actions:test-deploy --set FLAVOR="${{ inputs.flavor }}" --set TYPE="${{ inputs.type }}" --set OPTIONS="${{ inputs.options }}" --set LICENSE_KEY="${{ secrets.LICENSE_KEY }}"
         shell: bash
 
       - name: UDS Badge Verification
