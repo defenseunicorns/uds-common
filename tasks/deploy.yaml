@@ -27,7 +27,9 @@ tasks:
         setVariables:
           - name: PACKAGE_VERSION
       - description: Get the current Zarf package flavor suffix
-        cmd: if [ -z "${{ .inputs.flavor }}" ]; then echo ""; else echo "-${{ .inputs.flavor }}"; fi
+        cmd: |
+          # shellcheck disable=SC2157
+          if [ -z "${{ .inputs.flavor }}" ]; then echo ""; else echo "-${{ .inputs.flavor }}"; fi
         setVariables:
           - name: FLAVOR_SUFFIX
       - description: Deploy the UDS Zarf Package

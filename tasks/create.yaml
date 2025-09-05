@@ -72,6 +72,7 @@ tasks:
           git reset --hard HEAD
 
           # Get the latest tag matching the FLAVOR pattern
+          # shellcheck disable=SC2157
           if [[ -z "${{ .inputs.ignored_versions }}" ]]; then
             REPUBLISH_TAG=$(git tag --list "*-${{ .inputs.flavor }}" --sort=-v:refname | head -n 1)
           else
@@ -92,6 +93,7 @@ tasks:
 
           PACKAGE_NAME=$(cat ${{ .inputs.path }}/zarf.yaml | ./uds zarf tools yq .metadata.name)
           LOCAL_VERSION=$(cat ${{ .inputs.path }}/zarf.yaml | ./uds zarf tools yq .metadata.version)
+          # shellcheck disable=SC2157
           FLAVOR_SUFFIX=$(if [ -z "${{ .inputs.flavor }}" ]; then echo ""; else echo "-${{ .inputs.flavor }}"; fi)
 
           mv "${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${{ .inputs.architecture }}-${LOCAL_VERSION}${FLAVOR_SUFFIX}.tar.zst" "../${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${{ .inputs.architecture }}-${LOCAL_VERSION}${FLAVOR_SUFFIX}.tar.zst"

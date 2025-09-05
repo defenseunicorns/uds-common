@@ -106,7 +106,7 @@ tasks:
             raw_cmds=$(uds zarf tools yq -r "$yaml_query" "$yaml_file")
 
             # Strip any ${{ }} templates with the word "maru-expression" for compatibility
-            raw_scripts=$(echo "$raw_cmds" | sed 's/\${{[^}]*}}/\$maru-expression/g')
+            raw_scripts=$(echo "$raw_cmds" | sed 's/\${{[^}]*}}/\maru-expression/g')
 
             # If this file has scripts, lint them
             if [ -n "$raw_scripts" ]; then
