@@ -34,7 +34,6 @@ tasks:
             exit 0
           fi
 
-          # shellcheck disable=SC2157
           if [ -n "${{ .inputs.publish_path }}" ]; then
             repo="${{ .inputs.base_repo }}/${{ .inputs.publish_path }}"
             echo "${repo}"

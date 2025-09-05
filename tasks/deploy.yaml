@@ -14,6 +14,9 @@ tasks:
         description: Optionally provide a path to a Zarf config file
         default: ""
         required: false
+      flavor:
+        description: The flavor of the package to build
+        default: ${FLAVOR}
     actions:
       - description: Get the current Zarf package name
         cmd: cat ${{ .inputs.path }}/zarf.yaml | ./uds zarf tools yq .metadata.name
@@ -24,7 +27,7 @@ tasks:
         setVariables:
           - name: PACKAGE_VERSION
       - description: Get the current Zarf package flavor suffix
-        cmd: if [ -z "${{ .variables.flavor }}" ]; then echo ""; else echo "-${{ .variables.flavor }}"; fi
+        cmd: if [ -z "${{ .inputs.flavor }}" ]; then echo ""; else echo "-${{ .inputs.flavor }}"; fi
         setVariables:
           - name: FLAVOR_SUFFIX
       - description: Deploy the UDS Zarf Package
