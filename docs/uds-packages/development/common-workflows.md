@@ -46,4 +46,22 @@ You can see an example in `uds-package-sigstore`'s task file: [`ci-setup`](https
 
 License Keys can be passed along to a UDS Package in CI by setting a repository secret called `LICENSE_KEY`. 
 
-The License Key can then be consumed within a UDS Task. You can see an example in the `IDCommand` uds package: [`IDCommand`](https://github.com/uds-packages/idcommand/blob/chore/main/tasks/helpers.yaml)
+The License Key can then be consumed within a UDS Task. You can see an example UDS Task below that consumes the key and outputs it to a `uds-config.yaml`:
+```yaml
+tasks:
+  - name: all
+    actions:
+      - task: license_file
+
+  - name: license_file
+    actions:
+      - description: Write LICENSE_KEY from LICENSE_KEY env var to uds-config.yaml
+        cmd: |
+          # Export the env var so yq can use strenv()
+          export LICENSE_KEY="$LICENSE_KEY"
+
+          # Write into variables.idcommand.LICENSE_KEY
+          yq -i '.variables.idcommand.LICENSE_KEY = strenv(LICENSE_KEY)' uds-config.yaml
+        mute: true
+        dir: bundle
+```
