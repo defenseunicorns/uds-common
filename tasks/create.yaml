@@ -121,4 +121,21 @@ tasks:
     actions:
       - env:
           - UDS_CONFIG=${{ .inputs.config }}
-        cmd: ./uds create ${{ .inputs.path }} --confirm --no-progress --architecture="${{ .inputs.architecture }}" ${{ .inputs.options }}
+        cmd: |
+          # Find any flavored packages in the target directory
+          echo "Looking for ${FLAVOR} flavored packages in '.'"
+
+          # Find all flavored packages (with -flavor suffix before .tar.zst)
+          for FLAVORED_PACKAGE in $(find . -maxdepth 1 -name "zarf-package-*-${{ .inputs.architecture }}-dev-${FLAVOR}.tar.zst" 2>/dev/null || echo ""); do
+            # Extract the base name without flavor
+            BASE_NAME=$(echo "${FLAVORED_PACKAGE}" | sed 's/\(zarf-package-.*-${{ .inputs.architecture }}-dev\)-.*\.tar\.zst/\1.tar.zst/')
+            
+            echo "Found ${FLAVOR} flavored package: ${FLAVORED_PACKAGE}"
+            echo "Creating non-flavored version: ${BASE_NAME}"
+            
+            # Copy to non-flavored version (overwrite if exists)
+            cp "${FLAVORED_PACKAGE}" "${BASE_NAME}"
+          done
+          
+          # Proceed with bundle creation regardless of package file status
+          ./uds create ${{ .inputs.path }} --confirm --no-progress --architecture="${{ .inputs.architecture }}" ${{ .inputs.options }}
