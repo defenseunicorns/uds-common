@@ -27,8 +27,8 @@ lint:
 
     # Lint the repository
     - |
-      if [[ "$[[ inputs.run-license-checks ]]" == "true" ]]; then
-        LICENSE_OPTS="--set SKIP_LICENSE_CHECKS=true"
+      if [[ "$[[ inputs.run-license-checks ]]" == "false" ]]; then
+        LICENSE_OPTS="--set RUN_LICENSE_CHECKS=false"
       fi
 
       uds run lint:all --no-progress $LICENSE_OPTS
