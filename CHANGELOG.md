@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.19.1](https://github.com/defenseunicorns/uds-common/compare/v1.19.0...v1.19.1) (2025-09-09)
+
+
+### Miscellaneous
+
+* gitlab publish and lint template updates ([#542](https://github.com/defenseunicorns/uds-common/issues/542)) ([016f981](https://github.com/defenseunicorns/uds-common/commit/016f981e12ce2a64e727daf90a33e91baaf916f4))
+
 ## [1.19.0](https://github.com/defenseunicorns/uds-common/compare/v1.18.1...v1.19.0) (2025-09-05)
 
 
