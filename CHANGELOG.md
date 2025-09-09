@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.20.0](https://github.com/defenseunicorns/uds-common/compare/v1.19.1...v1.20.0) (2025-09-09)
+
+
+### ⚠ BREAKING CHANGES
+
+* **deps:** update uds common support dependencies (https://github.com/defenseunicorns/uds-common/pull/539)
+
+### Miscellaneous
+
+* **deps:** update uds common support dependencies (https://github.com/defenseunicorns/uds-common/pull/539) ([34f6f15](https://github.com/defenseunicorns/uds-common/commit/34f6f15956cb543d35bbf3ddd025541e466c5dc2))
+
 ## [1.19.1](https://github.com/defenseunicorns/uds-common/compare/v1.19.0...v1.19.1) (2025-09-09)
 
 
