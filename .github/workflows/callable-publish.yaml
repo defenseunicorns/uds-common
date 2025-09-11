@@ -110,14 +110,14 @@ jobs:
                 --set FLAVOR=${{ inputs.flavor }} \
                 --set ENABLE_UDS_PK=true \
                 --no-progress ${{ inputs.options }} \
-                --set LICENSE_KEY="${{ secrets.LICENSE_KEY }}"
+                --set LICENSE_KEY=${{ secrets.LICENSE_KEY }}
             else
               uds run publish-release \
                 --set USE_CHECKPOINT=false \
                 --set FLAVOR=${{ inputs.flavor }} \
                 --set ENABLE_UDS_PK=true \
                 --no-progress ${{ inputs.options }} \
-                --set LICENSE_KEY="${{ secrets.LICENSE_KEY }}"
+                --set LICENSE_KEY=${{ secrets.LICENSE_KEY }}
             fi
           fi
 
