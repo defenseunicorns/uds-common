@@ -79,7 +79,7 @@ tasks:
           # VARIABLES
           PACKAGE_NAME=$(cat ${{ .inputs.path }}/zarf.yaml | ./uds zarf tools yq .metadata.name)
           export PACKAGE_NAME
-          package_name=$PACKAGE_NAME LOCAL_VERSION=$(cat ../${{ .inputs.bundle_path }}/uds-bundle.yaml | ./uds zarf tools yq '.packages[] | select(.name = env(PACKAGE_NAME)) | .ref')
+          LOCAL_VERSION=$(cat ../${{ .inputs.bundle_path }}/uds-bundle.yaml | ./uds zarf tools yq '.packages[] | select(.name = env(PACKAGE_NAME)) | .ref')
           # shellcheck disable=SC2157
           if [[ -z "${{ .inputs.ignored_versions }}" ]]; then
             LATEST_VERSION=$(./uds zarf tools registry ls "${TARGET_REPO}/${PACKAGE_NAME}" | grep "${{ .inputs.flavor }}" | sort -V | tail -1)
