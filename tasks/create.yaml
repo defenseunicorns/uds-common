@@ -126,7 +126,7 @@ tasks:
           echo "Looking for ${FLAVOR} flavored packages in '.'"
 
           # Find all flavored packages (with -flavor suffix before .tar.zst)
-          for FLAVORED_PACKAGE in $(find . -maxdepth 1 -name "zarf-package-*-${{ .inputs.architecture }}-dev-${FLAVOR}.tar.zst" 2>/dev/null || echo ""); do
+          for FLAVORED_PACKAGE in $(find . -maxdepth 1 -name "zarf-package-*-${{ .inputs.architecture }}-*-${FLAVOR}.tar.zst" 2>/dev/null || echo ""); do
             # Extract the base name without flavor
             BASE_NAME=$(echo "${FLAVORED_PACKAGE}" | sed "s/-${FLAVOR}\.tar\.zst/.tar.zst/")
 
