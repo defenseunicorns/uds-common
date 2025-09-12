@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.20.2](https://github.com/defenseunicorns/uds-common/compare/v1.20.1...v1.20.2) (2025-09-12)
+
+
+### Miscellaneous
+
+* add LICENSE_KEY to publish flow ([#549](https://github.com/defenseunicorns/uds-common/issues/549)) ([1d88a58](https://github.com/defenseunicorns/uds-common/commit/1d88a58780d8269afa692dd7e10c23ad5e2df853))
+
 ## [1.20.1](https://github.com/defenseunicorns/uds-common/compare/v1.20.0...v1.20.1) (2025-09-11)
 
 
