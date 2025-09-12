@@ -34,6 +34,9 @@ on:
         type: boolean
         default: false
         description: "DEPRECATED: Whether to use the UDS Releaser for publishing"
+    secrets:
+      LICENSE_KEY:
+        required: false
 
 # Permissions for the GITHUB_TOKEN used by the workflow.
 permissions:
@@ -106,13 +109,15 @@ jobs:
                 --set USE_CHECKPOINT=false \
                 --set FLAVOR=${{ inputs.flavor }} \
                 --set ENABLE_UDS_PK=true \
-                --no-progress ${{ inputs.options }}
+                --no-progress ${{ inputs.options }} \
+                --set LICENSE_KEY=${{ secrets.LICENSE_KEY }}
             else
               uds run publish-release \
                 --set USE_CHECKPOINT=false \
                 --set FLAVOR=${{ inputs.flavor }} \
                 --set ENABLE_UDS_PK=true \
-                --no-progress ${{ inputs.options }}
+                --no-progress ${{ inputs.options }} \
+                --set LICENSE_KEY=${{ secrets.LICENSE_KEY }}
             fi
           fi
 
