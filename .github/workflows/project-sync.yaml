@@ -19,8 +19,8 @@ jobs:
       destination_org: uds-packages
       project_number: 2
       # Optional label filter (only add when item has any of these labels)
-      filter_labels: "tech-debt,tech-debt 💳,bug 🐞,documentation 📘,enhancement ✨,breaking-change 💔,possible-bug 🐛,bug,possible-bug,enhancement,support-deps,package-deps,cve"
-      label_operator: "OR"
+      filter_labels: tech-debt,tech-debt 💳,bug 🐞,documentation 📘,enhancement ✨,breaking-change 💔,possible-bug 🐛,bug,possible-bug,enhancement,support-deps,package-deps,cve
+      label_operator: OR
       app_id: ${{ vars.DEFENSEUNICORNS_PROJECT_SYNC_APP_ID }}
     secrets:
       APP_PRIVATE_KEY: ${{ secrets.DEFENSEUNICORNS_PROJECT_SYNC_APP_PRIVATE_KEY }}
