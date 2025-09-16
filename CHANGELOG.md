@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.20.1](https://github.com/defenseunicorns/uds-common/compare/v1.20.0...v1.20.1) (2025-09-11)
+
+
+### Bug Fixes
+
+* make upgrade task reference bundle versions ([#546](https://github.com/defenseunicorns/uds-common/issues/546)) ([7dd02fc](https://github.com/defenseunicorns/uds-common/commit/7dd02fc8906cd1d46fcb864fe5bd6b979b407ab0))
+
 ## [1.20.0](https://github.com/defenseunicorns/uds-common/compare/v1.19.1...v1.20.0) (2025-09-09)
 
 
