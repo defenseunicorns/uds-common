@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.20.2](https://github.com/defenseunicorns/uds-common/compare/v1.20.1...v1.20.2) (2025-09-16)
+
+
+### Bug Fixes
+
+* fix upgrade tests to rename local_version properly ([#553](https://github.com/defenseunicorns/uds-common/issues/553)) ([e00afe5](https://github.com/defenseunicorns/uds-common/commit/e00afe5fe88f3f34436f06713d8bc46db1bd25c3))
+
+
+### Miscellaneous
+
+* add LICENSE_KEY to publish flow ([#549](https://github.com/defenseunicorns/uds-common/issues/549)) ([1d88a58](https://github.com/defenseunicorns/uds-common/commit/1d88a58780d8269afa692dd7e10c23ad5e2df853))
+* **ci:** add project sync workflow ([#550](https://github.com/defenseunicorns/uds-common/issues/550)) ([ac3a4cc](https://github.com/defenseunicorns/uds-common/commit/ac3a4ccda49f0406bb48d4d830770e21faa0dc9a))
+* **deps:** update uds common support dependencies ([#545](https://github.com/defenseunicorns/uds-common/issues/545)) ([300dc06](https://github.com/defenseunicorns/uds-common/commit/300dc064e8172b58b3f1af980a925a74c880481c))
+
 ## [1.20.1](https://github.com/defenseunicorns/uds-common/compare/v1.20.0...v1.20.1) (2025-09-11)
 
 
