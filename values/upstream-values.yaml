@@ -3,5 +3,4 @@
 
 image:
   repository: nginx
-  # TODO: testing, revert this to 1.29.1
-  tag: latest
+  tag: 1.29.1

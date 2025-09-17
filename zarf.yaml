@@ -26,8 +26,7 @@ components:
         valuesFiles:
           - values/upstream-values.yaml
     images:
-      # TODO: testing, revert this to 1.29.1
-      - nginx:latest
+      - nginx:1.29.1
 
   - name: nginx
     required: true
