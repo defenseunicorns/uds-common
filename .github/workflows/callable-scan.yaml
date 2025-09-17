@@ -127,7 +127,7 @@ jobs:
           done
 
           mkdir -p sboms
-          mv "$(yq e '.metadata.name' zarf.yaml)"/*.json sboms/ 2>/dev/null || true
+          mv $(yq e '.metadata.name' zarf.yaml)/*.json sboms/
 
           SBOM_JSON="[]"
 
