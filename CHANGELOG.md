@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.20.3](https://github.com/defenseunicorns/uds-common/compare/v1.20.2...v1.20.3) (2025-09-17)
+
+
+### Bug Fixes
+
+* add sanitization of colons in scan action artifact upload ([#554](https://github.com/defenseunicorns/uds-common/issues/554)) ([57c2a5f](https://github.com/defenseunicorns/uds-common/commit/57c2a5f1295d9553d842ae37649271ce2a4ac903))
+
+
+### Miscellaneous
+
+* **deps:** update uds common support dependencies ([#552](https://github.com/defenseunicorns/uds-common/issues/552)) ([effeb6c](https://github.com/defenseunicorns/uds-common/commit/effeb6ce35674363e79a945014bf11d1b6f22419))
+
 ## [1.20.2](https://github.com/defenseunicorns/uds-common/compare/v1.20.1...v1.20.2) (2025-09-16)
 
 
