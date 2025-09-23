@@ -32,6 +32,10 @@ include:
   - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/scorecard@$CI_COMMIT_SHA
 
 test:
+  # if you are running on a container based runner
+  # you will have to add the image that will be used for the build environment
+  # note below image does not actually exist and is just a usage example
+  # image: ghcr.io/example/uds:1.0.0
   artifacts:
     # if you have specific report types that are natively supported by
     # gitlab you can include those here and they'll be included in addition to the
@@ -50,6 +54,10 @@ test:
         TYPE: [install, upgrade]
 
 publish:
+  # if you are running on a container based runner
+  # you will have to add the image that will be used for the build environment
+  # note below image does not actually exist and is just a usage example
+  # image: ghcr.io/example/uds:1.0.0
   parallel:
     matrix:
       - FLAVOR: [upstream, unicorn]

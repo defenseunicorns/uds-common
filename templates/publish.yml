@@ -27,6 +27,8 @@ spec:
       default: uds
     mirror:
       default: "true"
+    install-dependencies:
+      default: "false"
     mirror-project-id:
       default: ${MIRROR_PROJECT_ID}
     publish-path:
@@ -58,7 +60,10 @@ publish:
                                               --set GHCR_REGISTRY_USER="$GH_USER_READ_ONLY" \
                                               --set GHCR_REGISTRY_TOKEN="$GH_PAT_READ_ONLY"
 
-    - sudo uds run actions:install-deps
+    - |
+      if [[ "$[[ inputs.install-dependencies ]]" == "true" ]]; then
+        sudo uds run actions:install-deps
+      fi
 
     # Check if release is necessary for flavor and exit early if not
     - |
@@ -78,33 +83,30 @@ publish:
           TASK_NAME="publish-release"
         fi
 
-        ARGS=(
-          --set FLAVOR="$[[ inputs.flavor ]]"
-          --set ENABLE_UDS_PK=true
-        )
+        ARGS="--set FLAVOR=$[[ inputs.flavor ]] --set ENABLE_UDS_PK=true"
 
-        if [[ -n "$[[ inputs.base-repo ]]" ]]; then
-          ARGS+=(--set BASE_REPO="$[[ inputs.base-repo ]]")
+        if [ -n "$[[ inputs.base-repo ]]" ]; then
+          ARGS="$ARGS --set BASE_REPO=$[[ inputs.base-repo ]]"
         fi
 
-        if [[ -n "$[[ inputs.publish-path ]]" ]]; then
-          ARGS+=(--set PUBLISH_PATH="$[[ inputs.publish-path ]]")
+        if [ -n "$[[ inputs.publish-path ]]" ]; then
+          ARGS="$ARGS --set PUBLISH_PATH=$[[ inputs.publish-path ]]"
         fi
 
-        if [[ -n "$[[ inputs.team ]]" ]]; then
-          ARGS+=(--set TEAM="$[[ inputs.team ]]")
+        if [ -n "$[[ inputs.team ]]" ]; then
+          ARGS="$ARGS --set TEAM=$[[ inputs.team ]]"
         fi
 
-        echo Running $TASK_NAME "${ARGS[@]}" ${OPTIONS}
+        echo Running $TASK_NAME $ARGS ${OPTIONS}
 
-        UDS_USE_CHECKPOINT=false uds run $TASK_NAME "${ARGS[@]}" ${OPTIONS}
+        UDS_USE_CHECKPOINT=false uds run $TASK_NAME $ARGS ${OPTIONS}
 
     # TODO: @corang - this will be removed upon deployment of uds registry
     # Mirror package to github
     - |
         if [[ "$[[ inputs.mirror ]]" == "true" ]]; then
           export PKG_VERSION="$(uds-pk release show $[[ inputs.flavor ]] --version-only)"
-          export PKG_NAME="$(yq '.metadata.name' zarf.yaml)"
+          export PKG_NAME="$(./uds zarf tools yq '.metadata.name' zarf.yaml)"
           curl -sS --request POST \
             --form "token=${CI_JOB_TOKEN}" \
             --form "variables[VERSION]=${PKG_VERSION}" \
@@ -137,7 +139,6 @@ publish:
     paths:
       # Save debug logs as artifacts
       - $[[ inputs.artifact-dir ]]
-      - oscal-assessment-results.yaml
 
   tags:
     - $[[ inputs.runs-on ]]

@@ -2,8 +2,8 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
 
 variables:
-  - name: OSCALFILES
-    default: ./oscal-component.yaml
+  - name: RUN_LICENSE_CHECKS
+    default: "true"
 
 tasks:
   - name: deps
@@ -29,14 +29,15 @@ tasks:
       - description: Install addlicense via go
         # renovate: datasource=github-tags depName=google/addlicense versioning=semver
         cmd: go install github.com/google/addlicense@v1.1.1
+        if: ${{ eq .variables.RUN_LICENSE_CHECKS "true" }}
 
   - name: all
     description: Run all linting commands
     actions:
       - task: yaml
-      - task: oscal
       - task: shell
       - task: license
+        if: ${{ eq .variables.RUN_LICENSE_CHECKS "true" }}
       - task: tasks
 
   - name: yaml
@@ -45,24 +46,6 @@ tasks:
       # requires yamllint to be installed either from pip or brew
       - description: Lint YAML files
         cmd: yamllint . -c .yamllint --no-warnings
-
-  - name: oscal
-    description: Run linting checks on OSCAL
-    actions:
-      - description: Lint OSCAL files
-        shell:
-          linux: bash
-          darwin: bash
-        cmd: |
-          IFS=',' read -r -a OSCALARRAY <<< "$OSCALFILES"
-          for file in "${OSCALARRAY[@]}"; do
-            if [ ! -f "$file" ]; then
-              echo "⚠️ WARNING: file $file does not exist."
-              exit 0
-            fi
-          done
-
-          lula tools lint -f "$OSCALFILES"
 
   - name: shell
     description: Run shellcheck on all Maru tasks, GitHub workflows, and local shell scripts
@@ -123,7 +106,7 @@ tasks:
             raw_cmds=$(uds zarf tools yq -r "$yaml_query" "$yaml_file")
 
             # Strip any ${{ }} templates with the word "maru-expression" for compatibility
-            raw_scripts=$(echo "$raw_cmds" | sed 's/\${{[^}]*}}/maru-expression/g')
+            raw_scripts=$(echo "$raw_cmds" | sed 's/\${{[^}]*}}/\maru-expression/g')
 
             # If this file has scripts, lint them
             if [ -n "$raw_scripts" ]; then

@@ -28,6 +28,8 @@ variables:
     default: package
   - name: COMMON_ZARF
     default: "true"
+  - name: INSTALL_DEPENDENCIES
+    default: "true"
   - name: TYPE
     default: ""
   - name: FLAVOR
@@ -105,6 +107,7 @@ tasks:
     actions:
       - description: Install dependencies
         task: install-deps
+        if: ${{ eq .variables.INSTALL_DEPENDENCIES "true" }}
       - description: authenticate to the registries
         task: authenticate-registries
 
@@ -121,20 +124,10 @@ tasks:
 
       - task: determine-arch
 
-      - description: Install Lula
-        env:
-          # renovate: datasource=github-tags depName=defenseunicorns/lula versioning=semver-coerced
-          - LULA_VERSION=v0.16.0
-        cmd: |
-          echo "Installing lula version $LULA_VERSION"
-          curl -o /usr/local/bin/lula -L \
-          "https://github.com/defenseunicorns/lula/releases/download/${LULA_VERSION}/lula_${LULA_VERSION}_$(uname -s)_${{ .variables.ARCH }}" \
-          && chmod +x /usr/local/bin/lula
-
       - description: Install uds-pk
         env:
           # renovate: datasource=github-tags depName=defenseunicorns/uds-pk versioning=semver-coerced
-          - UDS_PK_VERSION=v0.0.14
+          - UDS_PK_VERSION=v0.1.1
         cmd: |
           echo "Installing uds-pk version $UDS_PK_VERSION"
           curl -o /usr/local/bin/uds-pk -L \

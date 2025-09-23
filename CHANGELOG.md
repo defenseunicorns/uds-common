@@ -1,5 +1,84 @@
 # Changelog
 
+## [1.20.3](https://github.com/defenseunicorns/uds-common/compare/v1.20.2...v1.20.3) (2025-09-17)
+
+
+### Bug Fixes
+
+* add sanitization of colons in scan action artifact upload ([#554](https://github.com/defenseunicorns/uds-common/issues/554)) ([57c2a5f](https://github.com/defenseunicorns/uds-common/commit/57c2a5f1295d9553d842ae37649271ce2a4ac903))
+
+
+### Miscellaneous
+
+* **deps:** update uds common support dependencies ([#552](https://github.com/defenseunicorns/uds-common/issues/552)) ([effeb6c](https://github.com/defenseunicorns/uds-common/commit/effeb6ce35674363e79a945014bf11d1b6f22419))
+
+## [1.20.2](https://github.com/defenseunicorns/uds-common/compare/v1.20.1...v1.20.2) (2025-09-16)
+
+
+### Bug Fixes
+
+* fix upgrade tests to rename local_version properly ([#553](https://github.com/defenseunicorns/uds-common/issues/553)) ([e00afe5](https://github.com/defenseunicorns/uds-common/commit/e00afe5fe88f3f34436f06713d8bc46db1bd25c3))
+
+
+### Miscellaneous
+
+* add LICENSE_KEY to publish flow ([#549](https://github.com/defenseunicorns/uds-common/issues/549)) ([1d88a58](https://github.com/defenseunicorns/uds-common/commit/1d88a58780d8269afa692dd7e10c23ad5e2df853))
+* **ci:** add project sync workflow ([#550](https://github.com/defenseunicorns/uds-common/issues/550)) ([ac3a4cc](https://github.com/defenseunicorns/uds-common/commit/ac3a4ccda49f0406bb48d4d830770e21faa0dc9a))
+* **deps:** update uds common support dependencies ([#545](https://github.com/defenseunicorns/uds-common/issues/545)) ([300dc06](https://github.com/defenseunicorns/uds-common/commit/300dc064e8172b58b3f1af980a925a74c880481c))
+
+## [1.20.1](https://github.com/defenseunicorns/uds-common/compare/v1.20.0...v1.20.1) (2025-09-11)
+
+
+### Bug Fixes
+
+* make upgrade task reference bundle versions ([#546](https://github.com/defenseunicorns/uds-common/issues/546)) ([7dd02fc](https://github.com/defenseunicorns/uds-common/commit/7dd02fc8906cd1d46fcb864fe5bd6b979b407ab0))
+
+## [1.20.0](https://github.com/defenseunicorns/uds-common/compare/v1.19.1...v1.20.0) (2025-09-09)
+
+
+### ⚠ BREAKING CHANGES
+
+* **deps:** update uds common support dependencies (https://github.com/defenseunicorns/uds-common/pull/539)
+
+### Miscellaneous
+
+* **deps:** update uds common support dependencies (https://github.com/defenseunicorns/uds-common/pull/539) ([34f6f15](https://github.com/defenseunicorns/uds-common/commit/34f6f15956cb543d35bbf3ddd025541e466c5dc2))
+
+## [1.19.1](https://github.com/defenseunicorns/uds-common/compare/v1.19.0...v1.19.1) (2025-09-09)
+
+
+### Miscellaneous
+
+* gitlab publish and lint template updates ([#542](https://github.com/defenseunicorns/uds-common/issues/542)) ([016f981](https://github.com/defenseunicorns/uds-common/commit/016f981e12ce2a64e727daf90a33e91baaf916f4))
+
+## [1.19.0](https://github.com/defenseunicorns/uds-common/compare/v1.18.1...v1.19.0) (2025-09-05)
+
+
+### Features
+
+* enable license secrets to be passed for uds-package testing ([#540](https://github.com/defenseunicorns/uds-common/issues/540)) ([03e56c0](https://github.com/defenseunicorns/uds-common/commit/03e56c0face66246594904d5754415b3428349af))
+
+## [1.18.1](https://github.com/defenseunicorns/uds-common/compare/v1.18.0...v1.18.1) (2025-09-03)
+
+
+### Miscellaneous
+
+* **deps:** update uds common package dependencies to v1.29.1 ([#533](https://github.com/defenseunicorns/uds-common/issues/533)) ([2ff905b](https://github.com/defenseunicorns/uds-common/commit/2ff905ba6fc349e49236a7748621f9cb2ccc8a92))
+* **deps:** update uds common support dependencies (uds-core to 0.51.0) ([#537](https://github.com/defenseunicorns/uds-common/issues/537)) ([b4b0a4e](https://github.com/defenseunicorns/uds-common/commit/b4b0a4e661344a1d2730a7bcd159fa29ae8639f2))
+
+## [1.18.0](https://github.com/defenseunicorns/uds-common/compare/v1.17.1...v1.18.0) (2025-08-21)
+
+
+### Features
+
+* make uds-common air-gap compatible for gitlab ci components and remove lula ([#529](https://github.com/defenseunicorns/uds-common/issues/529)) ([f3277ec](https://github.com/defenseunicorns/uds-common/commit/f3277eca844f9dc352bbb6ccafea8b2cd35dc456))
+
+
+### Miscellaneous
+
+* **deps:** update uds common support dependencies ([#536](https://github.com/defenseunicorns/uds-common/issues/536)) ([65b7b60](https://github.com/defenseunicorns/uds-common/commit/65b7b60af5d69a5f598a8abcfeb80e68d510620c))
+* **deps:** update uds common support dependencies to v0.49.0 ([#534](https://github.com/defenseunicorns/uds-common/issues/534)) ([6f4e5a3](https://github.com/defenseunicorns/uds-common/commit/6f4e5a334d22ed0ddb4df8c240259c5cfba95c9f))
+
 ## [1.17.1](https://github.com/defenseunicorns/uds-common/compare/v1.17.0...v1.17.1) (2025-08-13)
 
 

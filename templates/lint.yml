@@ -5,6 +5,11 @@ spec:
   inputs:
     runs-on:
       default: gitlab-runner-4c-amd64
+    run-license-checks:
+      default: "false"
+    install-dependencies:
+      default: "false"
+
 ---
 lint:
   rules:
@@ -14,9 +19,18 @@ lint:
     - export PATH=/home/ubuntu/.local/bin:$PATH
 
     # Install lint dependencies
-    - uds run lint:deps --no-progress
+
+    - |
+      if [[ "$[[ inputs.install-dependencies ]]" == "true" ]]; then
+        uds run lint:deps --no-progress
+      fi
 
     # Lint the repository
-    - uds run lint:all --no-progress
+    - |
+      if [[ "$[[ inputs.run-license-checks ]]" == "false" ]]; then
+        LICENSE_OPTS="--set RUN_LICENSE_CHECKS=false"
+      fi
+
+      uds run lint:all --no-progress $LICENSE_OPTS
   tags:
     - $[[ inputs.runs-on ]]

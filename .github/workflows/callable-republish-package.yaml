@@ -51,7 +51,7 @@ jobs:
         uses: defenseunicorns/setup-uds@ab842abcad1f7a3305c2538e3dd1950d0daacfa5 # v1.0.1
         with:
           # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
-          version: v0.27.11
+          version: v0.27.13
 
       - name: Environment setup
         run: |
@@ -88,7 +88,6 @@ jobs:
             /tmp/debug-*.log
             /tmp/uds-containerd-logs
             /tmp/k3d-uds-*.log
-            oscal-assessment-results.yaml
 
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: ${{ always() && inputs.reports-path != '' }}

@@ -41,3 +41,27 @@ You can see an example in this repo's task file: [`publish-release`](../../../ta
 This sets up any necessary dependencies on the host for this specific package - these could be CLI clients used for testing, or specific configuration changes needed to make the app run.
 
 You can see an example in `uds-package-sigstore`'s task file: [`ci-setup`](https://github.com/defenseunicorns/uds-package-sigstore/blob/f54e1160a6eda5be3c0aa55637efa2150b5f5152/tasks.yaml#L60)
+
+### License Keys
+
+License Keys can be passed along to a UDS Package in CI by setting a repository secret called `LICENSE_KEY`. 
+
+The License Key can then be consumed within a UDS Task. You can see an example UDS Task below that consumes the key and outputs it to a `uds-config.yaml`:
+```yaml
+tasks:
+  - name: all
+    actions:
+      - task: license_file
+
+  - name: license_file
+    actions:
+      - description: Write LICENSE_KEY from LICENSE_KEY env var to uds-config.yaml
+        cmd: |
+          # Export the env var so yq can use strenv()
+          export LICENSE_KEY="$LICENSE_KEY"
+
+          # Write into variables.idcommand.LICENSE_KEY
+          yq -i '.variables.idcommand.LICENSE_KEY = strenv(LICENSE_KEY)' uds-config.yaml
+        mute: true
+        dir: bundle
+```

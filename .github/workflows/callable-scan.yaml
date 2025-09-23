@@ -9,7 +9,7 @@ on:
       udsCliVersion:
         description: The uds-cli version to install
         # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
-        default: 0.27.11
+        default: 0.27.13
         type: string
       zarfYamlPath:
         description: The path to the zarf.yaml file
@@ -176,7 +176,7 @@ jobs:
           name: all-sboms
 
       - name: Scan SBOM
-        uses: anchore/scan-action@1638637db639e0ade3258b51db49a9a137574c3e # v6.5.1
+        uses: anchore/scan-action@f6601287cdb1efc985d6b765bbf99cb4c0ac29d8 # v7.0.0
         id: scan
         with:
           sbom: ${{ matrix.sbomName }}
@@ -189,6 +189,7 @@ jobs:
         run: |
           NAME=$(jq -r '.metadata.component.name + "@" + .metadata.component.version' ${{ steps.scan.outputs.cyclonedx-json }})
           NAME="${NAME//\//_}"
+          NAME="${NAME//:/_}"
           NAME="${NAME/docker.io_library_/}"
           mv ${{ steps.scan.outputs.cyclonedx-json }} "${NAME}.json"
           echo "artifactName=${NAME}" >> "$GITHUB_OUTPUT"
@@ -227,7 +228,7 @@ jobs:
 
       - name: Scan image
         id: scan
-        uses: anchore/scan-action@1638637db639e0ade3258b51db49a9a137574c3e # v6.5.1
+        uses: anchore/scan-action@f6601287cdb1efc985d6b765bbf99cb4c0ac29d8 # v7.0.0
         with:
           image: ${{ matrix.image }}
           fail-build: false
@@ -239,6 +240,7 @@ jobs:
         run: |
           NAME=$(jq -r '.metadata.component.name + "@" + .metadata.component.version' ${{ steps.scan.outputs.cyclonedx-json }})
           NAME="${NAME//\//_}"
+          NAME="${NAME//:/_}"
           NAME="${NAME/docker.io_library_/}"
           mv ${{ steps.scan.outputs.cyclonedx-json }} "${NAME}.json"
           echo "artifactName=${NAME}" >> "$GITHUB_OUTPUT"

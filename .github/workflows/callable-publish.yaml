@@ -34,6 +34,9 @@ on:
         type: boolean
         default: false
         description: "DEPRECATED: Whether to use the UDS Releaser for publishing"
+    secrets:
+      LICENSE_KEY:
+        required: false
 
 # Permissions for the GITHUB_TOKEN used by the workflow.
 permissions:
@@ -59,7 +62,7 @@ jobs:
         uses: defenseunicorns/setup-uds@ab842abcad1f7a3305c2538e3dd1950d0daacfa5 # v1.0.1
         with:
           # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
-          version: v0.27.11
+          version: v0.27.13
 
       - name: Environment setup
         run: |
@@ -106,13 +109,15 @@ jobs:
                 --set USE_CHECKPOINT=false \
                 --set FLAVOR=${{ inputs.flavor }} \
                 --set ENABLE_UDS_PK=true \
-                --no-progress ${{ inputs.options }}
+                --no-progress ${{ inputs.options }} \
+                --set LICENSE_KEY=${{ secrets.LICENSE_KEY }}
             else
               uds run publish-release \
                 --set USE_CHECKPOINT=false \
                 --set FLAVOR=${{ inputs.flavor }} \
                 --set ENABLE_UDS_PK=true \
-                --no-progress ${{ inputs.options }}
+                --no-progress ${{ inputs.options }} \
+                --set LICENSE_KEY=${{ secrets.LICENSE_KEY }}
             fi
           fi
 
@@ -137,7 +142,6 @@ jobs:
             /tmp/debug-*.log
             /tmp/uds-containerd-logs
             /tmp/k3d-uds-*.log
-            oscal-assessment-results.yaml
 
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: ${{ always() && inputs.reports-path != '' }}

@@ -89,12 +89,14 @@ tasks:
 
           uds-pk release update-yaml ${{ .inputs.flavor }}
 
-          ./uds zarf package create ${{ .inputs.path }} --confirm --no-progress --architecture="${{ .inputs.architecture }}" --flavor "${FLAVOR}" ${{ .inputs.options }}
+          ./uds zarf package create ${{ .inputs.path }} --confirm --no-progress --architecture="${{ .inputs.architecture }}" --flavor "${{ .inputs.flavor }}" ${{ .inputs.options }}
 
           PACKAGE_NAME=$(cat ${{ .inputs.path }}/zarf.yaml | ./uds zarf tools yq .metadata.name)
           LOCAL_VERSION=$(cat ${{ .inputs.path }}/zarf.yaml | ./uds zarf tools yq .metadata.version)
+          # shellcheck disable=SC2157
+          FLAVOR_SUFFIX=$(if [ -z "${{ .inputs.flavor }}" ]; then echo ""; else echo "-${{ .inputs.flavor }}"; fi)
 
-          mv "${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${{ .inputs.architecture }}-${LOCAL_VERSION}.tar.zst" "../${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${{ .inputs.architecture }}-${LOCAL_VERSION}.tar.zst"
+          mv "${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${{ .inputs.architecture }}-${LOCAL_VERSION}${FLAVOR_SUFFIX}.tar.zst" "../${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${{ .inputs.architecture }}-${LOCAL_VERSION}${FLAVOR_SUFFIX}.tar.zst"
 
       - description: Remove the recreate-test folder
         cmd: rm -rf recreate-test
@@ -119,4 +121,21 @@ tasks:
     actions:
       - env:
           - UDS_CONFIG=${{ .inputs.config }}
-        cmd: ./uds create ${{ .inputs.path }} --confirm --no-progress --architecture="${{ .inputs.architecture }}" ${{ .inputs.options }}
+        cmd: |
+          # Find any flavored packages in the target directory
+          echo "Looking for ${FLAVOR} flavored packages in '.'"
+
+          # Find all flavored packages (with -flavor suffix before .tar.zst)
+          for FLAVORED_PACKAGE in $(find . -maxdepth 1 -name "zarf-package-*-${{ .inputs.architecture }}-dev-${FLAVOR}.tar.zst" 2>/dev/null || echo ""); do
+            # Extract the base name without flavor
+            BASE_NAME=$(echo "${FLAVORED_PACKAGE}" | sed "s/-${FLAVOR}\.tar\.zst/.tar.zst/")
+
+            echo "Found ${FLAVOR} flavored package: ${FLAVORED_PACKAGE}"
+            echo "Creating non-flavored version: ${BASE_NAME}"
+
+            # Copy to non-flavored version (overwrite if exists)
+            cp "${FLAVORED_PACKAGE}" "${BASE_NAME}"
+          done
+
+          # Proceed with bundle creation regardless of package file status
+          ./uds create ${{ .inputs.path }} --confirm --no-progress --architecture="${{ .inputs.architecture }}" ${{ .inputs.options }}
