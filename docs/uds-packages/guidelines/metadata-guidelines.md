@@ -21,11 +21,11 @@ The following annotations are production ready and you are encouraged to use the
 
 | Annotation | Description | Example | Products |
 | --- | --- | --- | --- |
-| `dev.uds.title` | The human readable title for the package | <pre>"GitLab Runner"</pre> | [UDS Registry](https://github.com/defenseunicorns/uds-registry/blob/main/docs/development/development.md#zarf-package-metadata) |
-| `dev.uds.categories` | A list of dynamic categories the package belongs to | <pre>"Software Dev, IT Management, Kubernetes (K8s), Productivity"</pre> | [UDS Registry](https://github.com/defenseunicorns/uds-registry/blob/main/docs/development/development.md#zarf-package-metadata) |
-| `dev.uds.keywords` | A list of search keywords associated with the package | <pre>"CI/CD Pipelines, Automation, GitLab Integration"</pre> | [UDS Registry](https://github.com/defenseunicorns/uds-registry/blob/main/docs/development/development.md#zarf-package-metadata) |
-| `dev.uds.tagline` | A tagline for the package | <pre>"Open Source CI/CD Job Execution Tool"</pre> | [UDS Registry](https://github.com/defenseunicorns/uds-registry/blob/main/docs/development/development.md#zarf-package-metadata) |
-| `dev.uds.icon` | A base64 encoded icon for the package represented as a [data URI](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs) | <pre>"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="</pre> | [UDS Registry](https://github.com/defenseunicorns/uds-registry/blob/main/docs/development/development.md#zarf-package-metadata) |
+| `dev.uds.title` | The human readable title for the package | `"GitLab Runner"` | [UDS Registry](https://github.com/defenseunicorns/uds-registry/blob/main/docs/development/development.md#zarf-package-metadata) |
+| `dev.uds.categories` | A list of dynamic categories the package belongs to | `"Software Dev, Kubernetes (K8s)"` | [UDS Registry](https://github.com/defenseunicorns/uds-registry/blob/main/docs/development/development.md#zarf-package-metadata) |
+| `dev.uds.keywords` | A list of search keywords associated with the package | `"CI/CD Pipelines, Automation, GitLab"` | [UDS Registry](https://github.com/defenseunicorns/uds-registry/blob/main/docs/development/development.md#zarf-package-metadata) |
+| `dev.uds.tagline` | A tagline for the package | `"Open Source CI/CD Job Execution Tool"` | [UDS Registry](https://github.com/defenseunicorns/uds-registry/blob/main/docs/development/development.md#zarf-package-metadata) |
+| `dev.uds.icon` | A base64 encoded icon for the package represented as a [data URI](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs) | `"data:image/png;base64,iVBORw0KGgo..."` | [UDS Registry](https://github.com/defenseunicorns/uds-registry/blob/main/docs/development/development.md#zarf-package-metadata) |
 
 > [!IMPORTANT]
 > Consider how these annotations impact user experience when your package appears in the UDS Registry. Keep information concise and descriptive, and optimize icons for both size and quality.
@@ -36,5 +36,5 @@ Below are annotations that are experimental and not ready for broader use (yet).
 
 | Annotation | Description | Example | Products |
 | --- | --- | --- | --- |
-| `dev.uds.system` | Whether the package is a system package or an application package | <pre>"true"</pre> | [UDS Android](https://github.com/defenseunicorns/uds-android) |
-| `dev.uds.time.deploy.estimate` | An estimate of the time it will take to deploy the package represented as a [Go duration](https://pkg.go.dev/time#ParseDuration) | <pre>"15m"</pre> | [UDS Android](https://github.com/defenseunicorns/uds-android) |
+| `dev.uds.system` | Whether the package is a system package or an application package | `"true"` | [UDS Android](https://github.com/defenseunicorns/uds-android) |
+| `dev.uds.time.deploy.estimate` | An estimate of the time it will take to deploy the package represented as a [Go duration](https://pkg.go.dev/time#ParseDuration) | `"15m"` | [UDS Android](https://github.com/defenseunicorns/uds-android) |
