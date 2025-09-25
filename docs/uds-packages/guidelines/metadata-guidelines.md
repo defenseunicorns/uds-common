@@ -36,5 +36,4 @@ Below are annotations that are experimental and not ready for broader use (yet).
 
 | Annotation | Description | Example | Products |
 | --- | --- | --- | --- |
-| `dev.uds.system` | Whether the package is a system package or an application package | `"true"` | [UDS Android](https://uds.defenseunicorns.com/tactical-edge-deployments/technical-features/#uds-tactical-edge-technical-features) |
-| `dev.uds.time.deploy.estimate` | An estimate of the time it will take to deploy the package represented as a [Go duration](https://pkg.go.dev/time#ParseDuration) | `"15m"` | [UDS Android](https://uds.defenseunicorns.com/tactical-edge-deployments/technical-features/#uds-tactical-edge-technical-features) |
+| `dev.uds.system` | Whether the package is a system package (i.e. operating system or firmware) or an application package | `"true"` | [UDS Android](https://uds.defenseunicorns.com/tactical-edge-deployments/technical-features/#uds-tactical-edge-technical-features) |
