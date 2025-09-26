@@ -1,0 +1,45 @@
+# Copyright 2024 Defense Unicorns
+# SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
+
+name: Auto Update
+
+# Testing call conditions, this will be a schedule
+on:
+  # This workflow is triggered on pull requests to the main branch.
+  pull_request:
+    # milestoned is added here so that a PR can be re-triggered if it is milestoned.
+    types: [milestoned, opened, reopened, synchronize]
+    paths-ignore:
+      - "**.md"
+      - "**.jpg"
+      - "**.png"
+      - "**.gif"
+      - "**.svg"
+      - adr/**
+      - docs/**
+      - .gitignore
+      - renovate.json
+      - .release-please-config.json
+      - release-please-config.json
+      - CODEOWNERS
+      - LICENSE
+      - CONTRIBUTING.md
+      - SECURITY.md
+
+# Permissions for the GITHUB_TOKEN used by the workflow.
+permissions:
+  contents: write # Allows reading the content of the repository.
+  packages: read # Allows reading the content of the repository's packages.
+  id-token: write
+
+# Abort prior jobs in the same workflow / PR
+concurrency:
+  group: auto-update-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  auto-update:
+    uses: ./.github/workflows/callable-auto-update.yaml
+    with:
+      dry-run: true
+    secrets: inherit # Inherits all secrets from the parent workflow.
