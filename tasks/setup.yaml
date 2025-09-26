@@ -83,8 +83,8 @@ tasks:
 
             # Create admin user with curl
             PASSWORD=$(openssl rand -base64 12)
-            STATE_COOKIE=$(curl -s --output /dev/null --cookie-jar - http://localhost:8080/ | grep "WELCOME_STATE_CHECKER" | awk '{print $7}')
-            curl -s --show-error http://localhost:8080/ \
+            STATE_COOKIE=$(curl -sSf  --output /dev/null --cookie-jar - http://localhost:8080/ | grep "WELCOME_STATE_CHECKER" | awk '{print $7}')
+            curl -sSf -o /dev/null http://localhost:8080/ \
               -H "Cookie: WELCOME_STATE_CHECKER=${STATE_COOKIE}" \
               -H "Content-Type: application/x-www-form-urlencoded" \
               --data-urlencode "username=admin" \
@@ -135,7 +135,7 @@ tasks:
           KEYCLOAK_USER_PASSWORD="${{ .inputs.password }}"
 
           KEYCLOAK_ADMIN_PASSWORD=$(./uds zarf tools kubectl get secret -n keycloak keycloak-admin-password -o jsonpath='{.data.password}' | base64 -d)
-          KEYCLOAK_ADMIN_ACCESS_TOKEN=$(curl -s --location "https://keycloak.admin.uds.dev/realms/master/protocol/openid-connect/token" \
+          KEYCLOAK_ADMIN_ACCESS_TOKEN=$(curl -sSf --location "https://keycloak.admin.uds.dev/realms/master/protocol/openid-connect/token" \
             --header "Content-Type: application/x-www-form-urlencoded" \
             --data-urlencode "username=admin" \
             --data-urlencode "password=${KEYCLOAK_ADMIN_PASSWORD}" \
@@ -143,7 +143,7 @@ tasks:
             --data-urlencode "grant_type=password" | ./uds zarf tools yq .access_token)
 
           # Create a Keycloak User in the UDS Realm
-          curl -s --location "https://keycloak.admin.uds.dev/admin/realms/uds/users" \
+          curl -sSf -o /dev/null --location "https://keycloak.admin.uds.dev/admin/realms/uds/users" \
           --header "Content-Type: application/json" \
           --header "Authorization: Bearer ${KEYCLOAK_ADMIN_ACCESS_TOKEN}" \
             --data-raw '{
@@ -170,10 +170,10 @@ tasks:
               }'
 
           # Disable 2FA
-          CONDITIONAL_OTP_ID=$(curl -s --location "https://keycloak.admin.uds.dev/admin/realms/uds/authentication/flows/Authentication/executions" \
+          CONDITIONAL_OTP_ID=$(curl -sSf --location "https://keycloak.admin.uds.dev/admin/realms/uds/authentication/flows/Authentication/executions" \
             --header "Authorization: Bearer ${KEYCLOAK_ADMIN_ACCESS_TOKEN}" | ./uds zarf tools yq '.[] | select(.displayName == "Conditional OTP") | .id')
 
-          curl -s --location --request PUT "https://keycloak.admin.uds.dev/admin/realms/uds/authentication/flows/Authentication/executions" \
+          curl -sSf -o /dev/null --location --request PUT "https://keycloak.admin.uds.dev/admin/realms/uds/authentication/flows/Authentication/executions" \
           --header "Content-Type: application/json" \
           --header "Authorization: Bearer ${KEYCLOAK_ADMIN_ACCESS_TOKEN}" \
           --data "{
