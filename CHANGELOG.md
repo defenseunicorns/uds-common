@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.20.4](https://github.com/defenseunicorns/uds-common/compare/v1.20.3...v1.20.4) (2025-09-26)
+
+
+### Bug Fixes
+
+* update the keycloak user tasks to fail on curl non 200 response ([#559](https://github.com/defenseunicorns/uds-common/issues/559)) ([f9481b0](https://github.com/defenseunicorns/uds-common/commit/f9481b0ebcae821b63d588d2305e3610b1b78c2b))
+
+
+### Miscellaneous
+
+* **codeowners:** remove deprecated teams, add uds-foundry ([#556](https://github.com/defenseunicorns/uds-common/issues/556)) ([4c388dc](https://github.com/defenseunicorns/uds-common/commit/4c388dc475f031ed1a6008c5b043bb267315d3f6))
+
 ## [1.20.3](https://github.com/defenseunicorns/uds-common/compare/v1.20.2...v1.20.3) (2025-09-17)
 
 
