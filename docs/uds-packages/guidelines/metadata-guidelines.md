@@ -83,11 +83,11 @@ Implement each of the above annotations according to these specific guidelines:
 #### `dev.uds.icon`
 
 - **MUST** be encoded as a base64 [data URI](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs)
-- **SHOULD** be either `.png` or `.svg` format (`.svg` RECOMMENDED) with a transparent background
+- **SHOULD** be either `.png` or `.svg` format (`.svg` RECOMMENDED) square image with a transparent background
 - **RECOMMENDED** image size is `200x200px` to optimize both data size and image quality
 
 > [!TIP]
-> Consider how these annotations impact user experience when your package appears in the UDS Registry. Keep information concise and descriptive, and optimize icons for both size and quality.
+> Consider how these annotations impact user experience when your package appears in the UDS Registry. Keep information concise and descriptive, and think about how everything will be displayed within the views.
 
 ## Provisional Annotations
 
