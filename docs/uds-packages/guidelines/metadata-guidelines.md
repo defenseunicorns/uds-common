@@ -58,7 +58,6 @@ Implement each of the above annotations according to these specific guidelines:
   - Infrastructure
   - Kubernetes (K8s)
   - Load Balancing
-  - Network
   - Networking
   - Observability
   - Operator
