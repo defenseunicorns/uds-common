@@ -48,7 +48,7 @@ jobs:
       - name: Get flavors
         id: get-flavors
         run: |
-          FLAVORS="$(yq -o=json -I=0 '[.components[].only.flavor]' ${{ inputs.zarfYamlPath }})"
+          FLAVORS="$(yq -o=json -I=0 '[.components[].only.flavor // empty] | unique' '${{ inputs.zarfYamlPath }}')"
           echo "flavors=${FLAVORS}" >> "$GITHUB_OUTPUT"
 
   scan-flavor:
