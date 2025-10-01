@@ -99,7 +99,9 @@ jobs:
           echo "Bumping versions in releaser.yaml"
           for update in bump-status/*; do
             flavor=$(basename "$update" | cut -d '-' -f 1)
-            version=$(yq '.flavors[] | select(.name = env(flavor)).version' releaser.yaml)
+            export flavor
+
+            version=$(yq -r '.flavors[] | select(.name = env(flavor)).version' releaser.yaml)
 
             # Strip the last number and increment it
             main_version=${version%.*}
@@ -108,7 +110,7 @@ jobs:
 
             yq -i '
               (.flavors[]
-                | select(.name = env(flavor))
+                | select(.name == env(flavor))
                 | .version
               ) = env(new_version)
             ' releaser.yaml
