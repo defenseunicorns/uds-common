@@ -157,7 +157,7 @@ jobs:
             | jq -r '.config.digest'
             )
 
-            mkdir -p update-status
+            mkdir -p bump-status
 
             if [ "$IMAGE_ID" != "$CONFIG_DIGEST" ]; then
                 echo "Digest mismatch. Flagging for bump."
