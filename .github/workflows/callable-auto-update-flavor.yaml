@@ -126,7 +126,8 @@ jobs:
             IMAGE_NAME=$(jq -r '.source.name' $sbom)
             IMAGE_ID=$(jq -r '.source.metadata.imageID' $sbom)
             IMAGE_VERSION=$(jq -r '.source.version' $sbom)
-
+            mismatch=false
+            
             INSPECT=$(docker buildx imagetools inspect "$IMAGE_NAME:$IMAGE_VERSION" \
                 --format '{{ json .Manifest }}' \
                 | jq -r '
@@ -138,10 +139,25 @@ jobs:
                 .digest
             end')
 
-            CRANE=$(crane manifest $IMAGE_NAME@$INSPECT | jq -r '.config.digest')
-            mismatch=false
+            CONFIG_DIGEST=$(
+            docker buildx imagetools inspect --raw \
+                "$IMAGE_NAME@$(
+                docker buildx imagetools inspect "$IMAGE_NAME:$IMAGE_VERSION" \
+                    --format '{{ json .Manifest }}' \
+                | jq -r '
+                    if has("manifests") then
+                        .manifests[]
+                        | select(.platform.os=="linux" and .platform.architecture=="amd64")
+                        | .digest
+                    else
+                        .digest
+                    end
+                    '
+                )" \
+            | jq -r '.config.digest'
+            )
 
-            if [ "$IMAGE_ID" != "$CRANE" ]; then
+            if [ "$IMAGE_ID" != "$CONFIG_DIGEST" ]; then
                 echo "Digest mismatch. Flagging for bump."
                 mismatch=true
                 echo "mismatch=true" >> "$GITHUB_OUTPUT"
