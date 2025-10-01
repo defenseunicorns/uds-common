@@ -127,7 +127,7 @@ jobs:
             IMAGE_ID=$(jq -r '.source.metadata.imageID' $sbom)
             IMAGE_VERSION=$(jq -r '.source.version' $sbom)
             mismatch=false
-            
+
             INSPECT=$(docker buildx imagetools inspect "$IMAGE_NAME:$IMAGE_VERSION" \
                 --format '{{ json .Manifest }}' \
                 | jq -r '
@@ -156,6 +156,8 @@ jobs:
                 )" \
             | jq -r '.config.digest'
             )
+
+            mkdir -p update-status
 
             if [ "$IMAGE_ID" != "$CONFIG_DIGEST" ]; then
                 echo "Digest mismatch. Flagging for bump."
