@@ -146,7 +146,7 @@
             "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver-coerced{{/if}}",
             "extractVersionTemplate": "{{#if extractVersion}}{{{extractVersion}}}{{else}}^(?<version>.*)${{/if}}"
         },
-        // Matches specified datasources where a Go variable assignment (:=) separates the version on the following line
+        // Matches specified datasources where a Go variable assignment (:= or =) separates the version on the following line
         {
             "customType": "regex",
             "fileMatch": [
