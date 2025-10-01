@@ -1,10 +1,11 @@
 # Copyright 2024 Defense Unicorns
 # SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
 
-name: callable-auto-update
-    # Scan the sboms in the package, and compare to the current upstream images of the same tag. If
-    # there are less cves in any image and no images have more cves, then bump the uds version to trigger
-    # a new release.
+name:
+  callable-auto-update
+  # Scan the sboms in the package, and compare to the current upstream images of the same tag. If
+  # there are less cves in any image and no images have more cves, then bump the uds version to trigger
+  # a new release.
 
 on:
   workflow_call:
@@ -34,7 +35,7 @@ on:
 # Permissions for the GITHUB_TOKEN used by the workflow.
 permissions:
   contents: write # Allows us to read files from the repository for scanning, and writing the bumped releaser.yaml if applicable.
-  packages: read  # Allows us to pull the sboms from the published packages for comparison.
+  packages: read # Allows us to pull the sboms from the published packages for comparison.
 
 jobs:
   # figure out location of package for current flavor and arch
@@ -44,7 +45,7 @@ jobs:
   # scan image url
   # compare sbom scan to image scan
   # if any image has less cves and no image has more cves, then bump the uds version in releaser.yaml
-  get-sboms:
+  compare-digests:
     runs-on: ubuntu-latest
     outputs:
       sboms: ${{ steps.get-sboms.outputs.sboms }}
@@ -170,9 +171,9 @@ jobs:
             fi
           done
 
-      - name: Bump
+      - name: Save Releaser Bump Status
         if: ${{ steps.image-comparison.outputs.mismatch == 'true' }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: bump-${{ inputs.flavor }}
-          path: bump-status/${{ inputs.flavor}}-mismatch.txt"
+          path: bump-status/${{ inputs.flavor}}-mismatch.txt
