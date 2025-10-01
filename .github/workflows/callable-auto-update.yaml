@@ -101,14 +101,14 @@ jobs:
             flavor=$(basename "$update" | cut -d '-' -f 1)
             export flavor
 
-            version=$(yq -r '.flavors[] | select(.name = env(flavor)).version' releaser.yaml)
+            version=$(yq e -r '.flavors[] | select(.name == env(flavor)) | .version' releaser.yaml)
 
             # Strip the last number and increment it
             main_version=${version%.*}
             uds_version=${version##*.}
             new_version="${main_version}.$((uds_version + 1))"
 
-            yq -i '
+            yq e -i '
               (.flavors[]
                 | select(.name == env(flavor))
                 | .version
