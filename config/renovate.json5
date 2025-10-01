@@ -154,7 +154,7 @@
             ],
             "matchStrings": [
                 // Test: https://regex101.com/r/Cx8yrU/1
-                "\\/\\/ renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( extractVersion=(?<extractVersion>.*?))?( registryUrl=(?<registryUrl>.*?))?\s.*:?=\s*['\"]?(?<currentValue>.*?)['\"]"
+                "\\/\\/ renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( extractVersion=(?<extractVersion>.*?))?( registryUrl=(?<registryUrl>.*?))?\\s.*:?=\\s*['\"]?(?<currentValue>.*?)['\"]?(\\s|$)"
             ],
             "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver-coerced{{/if}}",
             "extractVersionTemplate": "{{#if extractVersion}}{{{extractVersion}}}{{else}}^(?<version>.*)${{/if}}"
