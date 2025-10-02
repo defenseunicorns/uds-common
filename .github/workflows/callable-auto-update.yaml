@@ -104,23 +104,20 @@ jobs:
         if: ${{ steps.decide-bump.outputs.bump == 'true' }}
         run: |
           echo "Bumping versions in releaser.yaml"
-          ls bump-status
-          for update in bump-status/*; do
+          for update in scan-results/*; do
             flavor=$(basename "$update" | cut -d '-' -f 1)
-            export flavor
+            version=$(yq '.flavors[] | select(.name = env(flavor)).version' releaser.yaml)
 
-            version=$(yq e -r '.flavors[] | select(.name == env(flavor)) | .version' releaser.yaml)
-
+            # Strip the last number and increment it
             main_version=${version%.*}
             uds_version=${version##*.}
             new_version="${main_version}.$((uds_version + 1))"
-            export new_version  # <-- make visible to yq
 
-            yq e -i '
+            yq -i '
               (.flavors[]
-                | select(.name == env(flavor))
+                | select(.name = env(flavor))
                 | .version
-              ) = strenv(new_version)
+              ) = env(new_version)
             ' releaser.yaml
           done
 
