@@ -97,54 +97,27 @@ jobs:
         if: ${{ steps.decide-bump.outputs.bump == 'true' }}
         run: |
           echo "Bumping versions in releaser.yaml"
-
-          set -Eeuo pipefail
-          set -x
-
-          yq --version
-          # Sanity check the YAML parses at all
-          yq e 'true' releaser.yaml >/dev/null
-
-          # Optional: list flavors found in releaser.yaml
-          yq e -r '.flavors[].name' releaser.yaml || true
-
-          ls -la bump-status || true
-
+          ls bump-status
           for update in bump-status/*; do
-            # Handle empty dir cleanly
-            [ -e "$update" ] || { echo "No bump-status entries"; break; }
-
-            flavor="$(basename "$update" | cut -d '-' -f 1)"
+            flavor=$(basename "$update" | cut -d '-' -f 1)
             export flavor
-            echo "Processing flavor=${flavor}"
 
-            # Read current version (raw)
-            version="$(yq e -r '.flavors[] | select(.name == strenv(flavor)) | .version' releaser.yaml || true)"
-            echo "Current version for ${flavor}: '${version}'"
+            version=$(yq e -r '.flavors[] | select(.name == env(flavor)) | .version' releaser.yaml)
 
-            # Guard: skip if not found
-            if [ -z "${version}" ] || ! [[ "${version}" =~ ^[0-9]+(\.[0-9]+)*$ ]]; then
-              echo "Skip: no valid version for flavor ${flavor}"
-              continue
-            fi
-
-            main_version="${version%.*}"
-            uds_version="${version##*.}"
+            main_version=${version%.*}
+            uds_version=${version##*.}
             new_version="${main_version}.$((uds_version + 1))"
-            export new_version
-            echo "New version for ${flavor}: '${new_version}'"
+            export new_version  # <-- make visible to yq
 
-            # In-place update; use strenv() so YAML parser doesn't choke on env value
             yq e -i '
               (.flavors[]
-                | select(.name == strenv(flavor))
+                | select(.name == env(flavor))
                 | .version
               ) = strenv(new_version)
             ' releaser.yaml
           done
 
-          set +x
-          echo "New releaser.yaml:"
+          echo "New releaser.yaml"
           cat releaser.yaml
 
       - name: Commit and push changes
