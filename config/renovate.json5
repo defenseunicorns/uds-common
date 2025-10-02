@@ -146,6 +146,19 @@
             "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver-coerced{{/if}}",
             "extractVersionTemplate": "{{#if extractVersion}}{{{extractVersion}}}{{else}}^(?<version>.*)${{/if}}"
         },
+        // Matches specified datasources where a Go variable assignment (:= or =) separates the version on the following line
+        {
+            "customType": "regex",
+            "fileMatch": [
+                ".*\\.go$"
+            ],
+            "matchStrings": [
+                // Test: https://regex101.com/r/JQQuzc/1
+                "\\/\\/ renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( extractVersion=(?<extractVersion>.*?))?( registryUrl=(?<registryUrl>.*?))?\\s.*:?=\\s*['\"]?(?<currentValue>.*?)['\"]?(\\s|$)"
+            ],
+            "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver-coerced{{/if}}",
+            "extractVersionTemplate": "{{#if extractVersion}}{{{extractVersion}}}{{else}}^(?<version>.*)${{/if}}"
+        },
         // Matches specified datasources where an environment variable separates the version on the following line (i.e. https://github.com/defenseunicorns/uds-common/blob/ce3ba974ef3ff88058809f4b9a78da281a65ffa0/.github/actions/setup/action.yaml#L9)
         {
             "customType": "regex",
