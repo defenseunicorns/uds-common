@@ -140,6 +140,7 @@ jobs:
           COMMIT_MSG: "chore(images): update due to rebuilt images being more secure"
         run: |
           set -Eeuo pipefail
+          set -x 
 
           # Current branch head (expectedHeadOid)
           HEAD_OID="$(git rev-parse HEAD)"
@@ -168,13 +169,14 @@ jobs:
           EOF
 
           gh api graphql \
-            -F githubRepository="$REPO" \
-            -F branchName="$BRANCH" \
-            -F expectedHeadOid="$HEAD_OID" \
-            -F commitMessage="$COMMIT_MSG" \
-            -F files[][path]="releaser.yaml" \
-            -F files[][contents]="$CONTENT_B64" \
-            -F "query=$GQL"
+            -f githubRepository="$REPO" \
+            -f branchName="$BRANCH" \
+            -f expectedHeadOid="$HEAD_OID" \
+            -f commitMessage="$COMMIT_MSG" \
+            -f files[][path]="releaser.yaml" \
+            -f files[][contents]="$CONTENT_B64" \
+            -f query="$GQL" \
+            --jq '.data.createCommitOnBranch.commit.url'
 
       # - name: Commit and push changes
       #   if: ${{ steps.decide-bump.outputs.bump == 'true' && inputs.dry-run != 'false' }}
