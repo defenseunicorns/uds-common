@@ -104,7 +104,7 @@ jobs:
         if: ${{ steps.decide-bump.outputs.bump == 'true' }}
         run: |
           echo "Bumping versions in releaser.yaml"
-          for update in scan-results/*; do
+          for update in bump-status/*; do
             flavor=$(basename "$update" | cut -d '-' -f 1)
             version=$(yq '.flavors[] | select(.name = env(flavor)).version' releaser.yaml)
 
