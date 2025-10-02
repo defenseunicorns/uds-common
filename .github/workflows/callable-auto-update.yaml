@@ -189,7 +189,7 @@ jobs:
           )"
 
           # Scalars with -f; array fields with -F; include --verbose
-          gh api graphql --verbose \
+          gh api graphql \
             -f query="$GQL" \
             -f githubRepository="$REPO" \
             -f branchName="$BRANCH" \
