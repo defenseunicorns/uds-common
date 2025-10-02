@@ -103,16 +103,16 @@ jobs:
 
             version=$(yq e -r '.flavors[] | select(.name == env(flavor)) | .version' releaser.yaml)
 
-            # Strip the last number and increment it
             main_version=${version%.*}
             uds_version=${version##*.}
             new_version="${main_version}.$((uds_version + 1))"
+            export new_version  # <-- make visible to yq
 
             yq e -i '
               (.flavors[]
                 | select(.name == env(flavor))
                 | .version
-              ) = env(new_version)
+              ) = strenv(new_version)  # <-- ensure a string, avoid YAML parse issues
             ' releaser.yaml
           done
 
