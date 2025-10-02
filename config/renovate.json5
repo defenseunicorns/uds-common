@@ -103,7 +103,8 @@
         {
             "customType": "regex",
             "fileMatch": [
-                ".*(\\.ya?ml|\\.json|\\.tf)$"
+                ".*(\\.ya?ml|\\.json|\\.tf)$",
+                ".*\\.?Dockerfile$"
             ],
             "matchStrings": [
                 // Test: https://regex101.com/r/321nL5/1
