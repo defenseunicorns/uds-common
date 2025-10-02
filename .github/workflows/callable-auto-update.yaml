@@ -131,12 +131,57 @@ jobs:
           echo "New releaser.yaml"
           cat releaser.yaml
 
-      - name: Commit and push changes
-        if: ${{ steps.decide-bump.outputs.bump == 'true' && inputs.dry-run != 'false' }}
+      - name: Commit releaser.yaml via GraphQL
+        if: ${{ steps.decide-bump.outputs.bump == 'true' && inputs.dry-run != false }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          BRANCH: cshoffner/testing
+          COMMIT_MSG: "chore(images): update due to rebuilt images being more secure"
         run: |
-          UPDATES="$(find bump-status/ -type f -print0 | xargs -0 cat)"
-          git config --local user.name "Defense Unicorns"
-          git config --local user.email "doug-defense-unicorns@users.noreply.github.com"
-          git add releaser.yaml
-          git commit -m "chore(images): update due to rebuilt images being more secure" -m "${UPDATES}"
-          git push
+          set -Eeuo pipefail
+
+          # Current branch head (expectedHeadOid)
+          HEAD_OID="$(git rev-parse HEAD)"
+
+          # Base64 content
+          CONTENT_B64="$(base64 -w0 releaser.yaml 2>/dev/null || base64 releaser.yaml | tr -d '\n')"
+
+          # Inline GraphQL mutation
+          read -r -d '' GQL <<'EOF'
+          mutation (
+            $githubRepository: String!,
+            $branchName: String!,
+            $expectedHeadOid: GitObjectID!,
+            $commitMessage: String!,
+            $files: [FileAddition!]!
+          ) {
+            createCommitOnBranch(input: {
+              branch: { repositoryNameWithOwner: $githubRepository, branchName: $branchName },
+              message: { headline: $commitMessage },
+              fileChanges: { additions: $files },
+              expectedHeadOid: $expectedHeadOid
+            }) {
+              commit { url oid }
+            }
+          }
+          EOF
+
+          gh api graphql \
+            -F githubRepository="$REPO" \
+            -F branchName="$BRANCH" \
+            -F expectedHeadOid="$HEAD_OID" \
+            -F commitMessage="$COMMIT_MSG" \
+            -F files[][path]="releaser.yaml" \
+            -F files[][contents]="$CONTENT_B64" \
+            -F "query=$GQL"
+
+      # - name: Commit and push changes
+      #   if: ${{ steps.decide-bump.outputs.bump == 'true' && inputs.dry-run != 'false' }}
+      #   run: |
+      #     UPDATES="$(find bump-status/ -type f -print0 | xargs -0 cat)"
+      #     git config --local user.name "Defense Unicorns"
+      #     git config --local user.email "doug-defense-unicorns@users.noreply.github.com"
+      #     git add releaser.yaml
+      #     git commit -m "chore(images): update due to rebuilt images being more secure" -m "${UPDATES}"
+      #     git push
