@@ -109,7 +109,8 @@ jobs:
           echo "Bumping versions in releaser.yaml"
           ls bump-status
           for update in bump-status/*; do
-            flavor=$(basename "$update" | cut -d '-' -f 1)
+            fname="$(basename "$update")"
+            flavor="${fname#update-}"
             export flavor
 
             version=$(yq e -r '.flavors[] | select(.name == env(flavor)) | .version' releaser.yaml)
