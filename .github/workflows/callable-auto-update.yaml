@@ -133,7 +133,7 @@ jobs:
           cat releaser.yaml
 
       - name: Commit releaser.yaml via GraphQL
-        if: ${{ steps.decide-bump.outputs.bump == 'true' && inputs.dry-run != false }}
+        if: ${{ steps.decide-bump.outputs.bump == 'true' && inputs.dry-run != 'false' }}
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
@@ -141,10 +141,30 @@ jobs:
           COMMIT_MSG: "chore(images): update due to rebuilt images being more secure"
         run: |
           set -Eeuo pipefail
-          set -x 
+          set -x
 
-          # Current branch head (expectedHeadOid)
-          HEAD_OID="$(git rev-parse HEAD)"
+          gh --version
+          gh auth status || true
+
+          echo "Repo: ${REPO}"
+          echo "Branch: ${BRANCH}"
+          echo "Git HEAD (local): $(git rev-parse HEAD)"
+          echo "Git status:"
+          git status --porcelain
+
+          # Verify the file actually changed; if not, exit cleanly
+          if git diff --quiet -- releaser.yaml; then
+            echo "No changes to releaser.yaml; nothing to commit."
+            exit 0
+          fi
+
+          # Prefer the *remote* branch head for expectedHeadOid to avoid mismatch
+          REMOTE_OID="$(gh api "repos/${REPO}/git/ref/heads/${BRANCH}" --jq .object.sha)"
+          echo "Remote head OID: ${REMOTE_OID}"
+
+          # Base64 content (no line wraps)
+          CONTENT_B64="$(base64 -w0 releaser.yaml 2>/dev/null || base64 releaser.yaml | tr -d '\n')"
+          echo "releaser.yaml size: $(wc -c < releaser.yaml) bytes"
 
           # Inline GraphQL mutation
           read -r -d '' GQL <<'EOF'
@@ -166,14 +186,33 @@ jobs:
           }
           EOF
 
-          gh api graphql \
-            -F githubRepository="$REPO" \
-            -F branchName="$BRANCH" \
-            -F expectedHeadOid="$HEAD_OID" \
-            -F commitMessage="$COMMIT_MSG" \
-            -F files[][path]="releaser.yaml" -F files[][contents]="$(base64 -w0 releaser.yaml)"\
-            -F query="$GQL" \
-            --jq '.data.createCommitOnBranch.commit.url'
+          # Run with --verbose and capture both stdout/stderr for troubleshooting
+          set +e
+          RESP_JSON="$(gh api graphql --verbose \
+            -f query="$GQL" \
+            -f githubRepository="$REPO" \
+            -f branchName="$BRANCH" \
+            -f expectedHeadOid="$REMOTE_OID" \
+            -f commitMessage="$COMMIT_MSG" \
+            -F files[][path]="releaser.yaml" \
+            -F files[][contents]="$CONTENT_B64" \
+          2>gh_error.log)"
+          rc=$?
+          set -e
+
+          echo "GraphQL response (raw):"
+          echo "${RESP_JSON}" | sed -e 's/{"data":/{"data":\n/' -e 's/,"errors":/,\n"errors":/'
+          echo "GraphQL stderr:"
+          cat gh_error.log || true
+
+          # If gh exited non-zero, show the parsed error and fail
+          if [ $rc -ne 0 ]; then
+            echo "GraphQL call failed (exit ${rc})."
+            exit $rc
+          fi
+
+          # Happy path: print commit URL if present
+          echo "${RESP_JSON}" | jq -r '.data.createCommitOnBranch.commit.url // "No commit URL in response"'
 
       # - name: Commit and push changes
       #   if: ${{ steps.decide-bump.outputs.bump == 'true' && inputs.dry-run != 'false' }}
