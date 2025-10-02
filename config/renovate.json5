@@ -153,7 +153,7 @@
                 ".*\\.go$"
             ],
             "matchStrings": [
-                // Test: https://regex101.com/r/Cx8yrU/1
+                // Test: https://regex101.com/r/JQQuzc/1
                 "\\/\\/ renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( extractVersion=(?<extractVersion>.*?))?( registryUrl=(?<registryUrl>.*?))?\\s.*:?=\\s*['\"]?(?<currentValue>.*?)['\"]?(\\s|$)"
             ],
             "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver-coerced{{/if}}",
