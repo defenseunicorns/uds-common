@@ -168,7 +168,7 @@ jobs:
           CONTENT_B64="$(base64 -w0 releaser.yaml 2>/dev/null || base64 releaser.yaml | tr -d '\n')"
           echo "releaser.yaml size: $(wc -c < releaser.yaml) bytes"
 
-          read -r -d '' GQL <<'EOF'
+          GQL="$(cat <<'EOF'
           mutation (
             $githubRepository: String!,
             $branchName: String!,
@@ -186,6 +186,7 @@ jobs:
             }
           }
           EOF
+          )"
 
           # Scalars with -f; array fields with -F; include --verbose
           gh api graphql --verbose \
