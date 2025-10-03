@@ -2,9 +2,9 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
 
 name: callable-auto-update
-    # Scan the sboms in the package, and compare to the current upstream images of the same tag. If
-    # there are less cves in any image and no images have more cves, then bump the uds version to trigger
-    # a new release.
+  # Scan the sboms in the package, grab the image digests, and compare to the current upstream image digests of the same tag. If
+  # the digests don't match in any image, then bump the uds version to trigger
+  # a new release.
 
 on:
   workflow_call:
