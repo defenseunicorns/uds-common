@@ -1,8 +1,7 @@
 # Copyright 2024 Defense Unicorns
 # SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
 
-name:
-  callable-auto-update
+name: callable-auto-update
   # Scan the sboms in the package, grab the image digests, and compare to the current upstream image digests of the same tag. If
   # the digests don't match in any image, then bump the uds version to trigger
   # a new release.
@@ -118,19 +117,15 @@ jobs:
           mkdir -p sboms
           mv "${PACKAGE_NAME}"/*.json sboms/
 
-          SBOM_JSON="[]"
-
           # Iterate over sboms
           # For each sbom, check if the image digest is the same as the upstream image digest
           for sbom in sboms/*; do
 
-            SBOM_NAME=$(basename "$sbom")
-            IMAGE_NAME=$(jq -r '.source.name' $sbom)
-            IMAGE_ID=$(jq -r '.source.metadata.imageID' $sbom)
-            IMAGE_VERSION=$(jq -r '.source.version' $sbom)
-            mismatch=false
+            IMAGE_NAME=$(jq -r '.source.name' "$sbom")
+            IMAGE_ID=$(jq -r '.source.metadata.imageID' "$sbom")
+            IMAGE_VERSION=$(jq -r '.source.version' "$sbom")
             mkdir -p bump-status
-            
+
             CONFIG_DIGEST=$(
             docker buildx imagetools inspect --raw \
                 "$IMAGE_NAME@$(
@@ -151,7 +146,6 @@ jobs:
 
             if [ "$IMAGE_ID" != "$CONFIG_DIGEST" ]; then
                 echo "Digest mismatch. Flagging for bump."
-                mismatch=true
                 echo "mismatch=true" >> "$GITHUB_OUTPUT"
                 echo "TRUE" > "bump-status/${FLAVOR}-mismatch.txt"
                 break
