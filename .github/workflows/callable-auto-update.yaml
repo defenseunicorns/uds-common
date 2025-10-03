@@ -133,41 +133,29 @@ jobs:
           cat releaser.yaml
 
       - name: Commit releaser.yaml via GraphQL
-        if: ${{ steps.decide-bump.outputs.bump == 'true' && inputs.dry-run != 'false' }}
+        if: ${{ steps.decide-bump.outputs.bump == 'true' && !inputs.dry-run }}
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
-          BRANCH: cshoffner/testing
+          BRANCH: ${{ github.head_ref || github.ref_name }}
           COMMIT_MSG: "chore(images): update due to rebuilt images being more secure"
         run: |
           set -Eeuo pipefail
           set -x
-          cat releaser.yaml
-          gh --version
-          gh auth status || true
-          echo "Token has contents:write?"; gh api rate_limit >/dev/null && echo yes || echo no
-          echo "Confirm file exists & changed:"; ls -l releaser.yaml; git diff -- releaser.yaml | sed -n '1,50p'
-          echo "Branch ref sanity:"; gh api "repos/${REPO}/branches/${BRANCH}" --jq '.name, .commit.sha'
-          echo "Repo: ${REPO}"
-          echo "Branch: ${BRANCH}"
-          echo "Git HEAD (local): $(git rev-parse HEAD)"
-          echo "Git status:"
-          git status --porcelain
 
-          # Verify the file actually changed; if not, exit cleanly
+          # Verify the file actually changed; if not, exit
           if git diff --quiet -- releaser.yaml; then
             echo "No changes to releaser.yaml; nothing to commit."
             exit 0
           fi
 
-          # Prefer remote head for expectedHeadOid
+          # fetch current commit SHA
           REMOTE_OID="$(gh api "repos/${REPO}/git/ref/heads/${BRANCH}" --jq .object.sha)"
-          echo "Remote head OID: ${REMOTE_OID}"
 
-          # Base64 content (no wraps)
+          # Set Base64 content
           CONTENT_B64="$(base64 -w0 releaser.yaml 2>/dev/null || base64 releaser.yaml | tr -d '\n')"
-          echo "releaser.yaml size: $(wc -c < releaser.yaml) bytes"
 
+          # Create GraphQL Mutation
           GQL="$(cat <<'EOF'
           mutation (
             $githubRepository: String!,
@@ -188,7 +176,7 @@ jobs:
           EOF
           )"
 
-          # Scalars with -f; array fields with -F; include --verbose
+          # Call GitHub API to create commit
           gh api graphql \
             -f query="$GQL" \
             -f githubRepository="$REPO" \
@@ -198,13 +186,3 @@ jobs:
             -F files[][path]="releaser.yaml" \
             -F files[][contents]="$CONTENT_B64" \
             --jq '.data.createCommitOnBranch.commit.url'
-
-      # - name: Commit and push changes
-      #   if: ${{ steps.decide-bump.outputs.bump == 'true' && inputs.dry-run != 'false' }}
-      #   run: |
-      #     UPDATES="$(find bump-status/ -type f -print0 | xargs -0 cat)"
-      #     git config --local user.name "Defense Unicorns"
-      #     git config --local user.email "doug-defense-unicorns@users.noreply.github.com"
-      #     git add releaser.yaml
-      #     git commit -m "chore(images): update due to rebuilt images being more secure" -m "${UPDATES}"
-      #     git push
