@@ -41,10 +41,9 @@ jobs:
   # pull sboms out of package
   # scan sboms
   # pull image url out of sbom
-  # scan image url
-  # compare sbom scan to image scan
-  # if any image has less cves and no image has more cves, then bump the uds version in releaser.yaml
-  get-sboms:
+  # compare sbom container digest to url image digest
+  # if any two image digests are different, then bump the uds version in releaser.yaml
+  compare-digests:
     runs-on: ubuntu-latest
     outputs:
       sboms: ${{ steps.get-sboms.outputs.sboms }}
@@ -68,8 +67,8 @@ jobs:
           --set RAPIDFORT_PASSWORD="${{ secrets.RAPIDFORT_PASSWORD }}"
         shell: bash
 
-      - name: Get SBOMs
-        id: get-sboms
+      - name: Scan SBOMs and compare digests to upstream images
+        id: image-comparison
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
@@ -80,6 +79,7 @@ jobs:
         run: |
           TAG=$(yq -r '.flavors[] | select(.name == env(FLAVOR)) | (.version + "-" + .name)' releaser.yaml)
           PACKAGE_NAME=$(yq e '.metadata.name' ${{ inputs.zarfYamlPath }})
+
           echo "Package name: ${PACKAGE_NAME}"
           # Set public prefix based on org and if package prefix is empty
           if [[ $REPO_OWNER == "defenseunicorns" ]]; then
@@ -119,369 +119,49 @@ jobs:
 
           SBOM_JSON="[]"
 
+          # Iterate over sboms
+          # For each sbom, check if the image digest is the same as the upstream image digest
           for sbom in sboms/*; do
+
             SBOM_NAME=$(basename "$sbom")
             IMAGE_NAME=$(jq -r '.source.name' $sbom)
+            IMAGE_ID=$(jq -r '.source.metadata.imageID' $sbom)
             IMAGE_VERSION=$(jq -r '.source.version' $sbom)
-            REMOTE_IMAGE="$IMAGE_NAME:$IMAGE_VERSION"
-            SBOM_JSON=$(echo "${SBOM_JSON}" | jq -c --arg remoteImage "${REMOTE_IMAGE}" --arg sbomName "${SBOM_NAME}" '. + [{sbomName: $sbomName, remoteImage: $remoteImage}]')
+            mismatch=false
+            mkdir -p bump-status
+            
+            CONFIG_DIGEST=$(
+            docker buildx imagetools inspect --raw \
+                "$IMAGE_NAME@$(
+                docker buildx imagetools inspect "$IMAGE_NAME:$IMAGE_VERSION" \
+                    --format '{{ json .Manifest }}' \
+                | jq -r '
+                    if has("manifests") then
+                        .manifests[]
+                        | select(.platform.os=="linux" and .platform.architecture=="amd64")
+                        | .digest
+                    else
+                        .digest
+                    end
+                    '
+                )" \
+            | jq -r '.config.digest'
+            )
+
+            if [ "$IMAGE_ID" != "$CONFIG_DIGEST" ]; then
+                echo "Digest mismatch. Flagging for bump."
+                mismatch=true
+                echo "mismatch=true" >> "$GITHUB_OUTPUT"
+                echo "TRUE" > "bump-status/${FLAVOR}-mismatch.txt"
+                break
+            else
+                echo "Digest match for $IMAGE_NAME:$IMAGE_VERSION"
+            fi
           done
 
-          echo "sboms=${SBOM_JSON}" >> "$GITHUB_OUTPUT"
-
-      - name: Upload SBOMs
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        with:
-          name: ${{ inputs.flavor }}-all-sboms
-          path: sboms/
-
-  scan-and-compare:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        include: ${{ fromJson(needs.get-sboms.outputs.sboms) }}
-    needs: get-sboms
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-
-      - name: Install UDS CLI
-        uses: defenseunicorns/setup-uds@ab842abcad1f7a3305c2538e3dd1950d0daacfa5 # v1.0.1
-        with:
-          version: v${{ inputs.udsCliVersion }}
-
-      - name: Environment setup
-        run: |
-          echo "MARU_AUTH=\"{\"raw.githubusercontent.com\": \"${{ secrets.GITHUB_TOKEN }}\"}\"" >> "GITHUB_ENV"
-          uds run actions:setup-environment \
-          --set REGISTRY1_USERNAME="${{ secrets.IRON_BANK_ROBOT_USERNAME }}" \
-          --set REGISTRY1_PASSWORD="${{ secrets.IRON_BANK_ROBOT_PASSWORD }}" \
-          --set GH_TOKEN="${{ secrets.GITHUB_TOKEN }}" \
-          --set RAPIDFORT_USERNAME="${{ secrets.RAPIDFORT_USERNAME }}" \
-          --set RAPIDFORT_PASSWORD="${{ secrets.RAPIDFORT_PASSWORD }}"
-        shell: bash
-
-      # Temporary until branch is merged, released, and new version in uds-common
-      - name: Clone uds-pk
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-        with:
-          repository: defenseunicorns/uds-pk
-          ref: simple-compare-output
-          path: uds-pk
-
-      - name: Download SBOMs from GitHub Actions Artifacts
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
-        with:
-          name: ${{ inputs.flavor }}-all-sboms
-
-      - name: Scan Image
-        uses: anchore/scan-action@16910ac423301c6d30554b83a7f71ac6ff4a51f3 # v6.4.0
-        id: scan-image
-        with:
-          image: ${{ matrix.remoteImage }}
-          fail-build: false
-          output-format: cyclonedx-json
-
-      - name: Scan SBOM
-        uses: anchore/scan-action@16910ac423301c6d30554b83a7f71ac6ff4a51f3 # v6.4.0
-        id: scan-sbom
-        with:
-          sbom: ${{ matrix.sbomName }}
-          fail-build: false
-          output-format: cyclonedx-json
-
-      - name: Compare Scans
-        id: compare-scans
-        shell: bash
-        run: |
-          if [ ! -s "${{ steps.scan-sbom.outputs.cyclonedx-json }}" ]; then
-            echo "Error: SBOM scan file '${{ steps.scan-sbom.outputs.cyclonedx-json }}' is empty. Grype must have encountered an error."
-            exit 1
-          fi
-
-          if [ ! -s "${{ steps.scan-image.outputs.cyclonedx-json }}" ]; then
-            echo "Error: Image scan file '${{ steps.scan-image.outputs.cyclonedx-json }}' is empty. Grype must have encountered an error."
-            exit 1
-          fi
-
-          pushd uds-pk
-          go mod download
-          COMPARISON="$(go run main.go compare-scans ${{ steps.scan-sbom.outputs.cyclonedx-json }} ${{ steps.scan-image.outputs.cyclonedx-json }} --output=simple)"
-          popd
-
-          echo "${COMPARISON}"
-
-          NEW_NUM="$(echo "$COMPARISON" | grep 'New' | awk '{print $3}')"
-          FIXED_NUM="$(echo "$COMPARISON" | grep 'Fixed' | awk '{print $3}')"
-
-          # Three possible states:
-          # There are new cves, this package cannot be updated
-          # There are no new cves, but also no fixed cves, it doesn't matter for this image if the package is updated
-          # There are no new cves, and there are fixed cves, this package should be updated
-
-          # output should be an "enum" of skip, no-change, or update
-
-          # Since a package can't decide which images to update, we have to treat any image being worse as a showstopper
-
-          mkdir -p update-status
-
-          if [[ "$NEW_NUM" -gt 0 ]]; then
-            echo "There are new vulnerabilities, skipping update for ${{ matrix.sbomName }}"
-            echo "upload=true" >> "$GITHUB_OUTPUT"
-            touch "update-status/${{ matrix.sbomName }}.skip"
-          elif [[ "$NEW_NUM" -eq 0 && "$FIXED_NUM" -eq 0 ]]; then
-            echo "No new vulnerabilities and no fixed vulnerabilities, skipping update for ${{ matrix.sbomName }}"
-            echo "upload=false" >> "$GITHUB_OUTPUT"
-          elif [[ "$NEW_NUM" -eq 0 && "$FIXED_NUM" -gt 0 ]]; then
-            echo "Vulnerabilities have been fixed without introducing new ones, requesting update for ${{ matrix.sbomName }}"
-            echo "upload=true" >> "$GITHUB_OUTPUT"
-            touch "update-status/${{ matrix.sbomName }}.update"
-          fi
-
-      - name: Upload update status as artifact
-        if: ${{ steps.compare-scans.outputs.upload == 'true' }}
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        with:
-          name: update-status-${{ matrix.sbomName }}
-          path: update-status/${{ matrix.sbomName }}.*
-
-  bump-if-needed:
-    runs-on: ubuntu-latest
-    needs: [scan-and-compare]
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-
-      - name: Download sbom scan results from GitHub Actions Artifacts
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
-        with:
-          path: update-statuses
-          pattern: update-status-*
-          merge-multiple: true
-
-      - name: Decide if bump or skip
-        id: decide-bump
-        shell: bash
-        run: |
-          # Check if any sbom scan has an update status of "skip" if so we skip
-          if ls update-statuses/*.skip > /dev/null 2>&1; then
-            echo "There are images with new vulnerabilities, skipping bump."
-            echo "Images with new vulnerabilities:"
-            ls -1 update-statuses/*.skip
-            echo "bump=false" >> "$GITHUB_OUTPUT"
-          elif ls update-statuses/*.update > /dev/null 2>&1; then
-            echo "There are images with fixed vulnerabilities, and no images with new vulnerabilities, bumping version."
-            echo "Images with fixed vulnerabilities:"
-            UPDATES="$(ls -1 update-statuses/*.update)"
-            echo "${UPDATES}"
-
-            echo "${UPDATES}" > ${{ inputs.flavor}}-updates.txt
-
-            echo "bump=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "No images have fixed vulnerabilities, and no images have new vulnerabilities, do not bump version."
-            echo "bump=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Bump
-        if: ${{ steps.decide-bump.outputs.bump == 'true' }}
+      - name: Save Releaser Bump Status
+        if: ${{ steps.image-comparison.outputs.mismatch == 'true' }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: update-${{ inputs.flavor }}
-          path: ${{ inputs.flavor}}-updates
-
-        # run: |
-        #   # Bump the version in releaser.yaml
-        #   version=$(yq '.flavors[] | select(.name = "${{ inputs.flavor }}").version' releaser.yaml)
-        #   # Strip the last number and increment it
-        #   main_version=${version%.*}
-        #   uds_version=${version##*.}
-        #   new_version="${main_version}.$((uds_version + 1))"
-
-        #   yq -i '
-        #     (.flavors[]
-        #       | select(.name = "${{ inputs.flavor }}")
-        #       | .version
-        #     ) = env(new_version)
-        #   ' releaser.yaml
-
-        #   echo "New releaser.yaml"
-        #   cat releaser.yaml
-
-  # scan-images:
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     matrix:
-  #       image: ${{ fromJson(needs.get-images.outputs.images) }}
-  #   needs: get-images
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-
-  #     - name: Install UDS CLI
-  #       uses: defenseunicorns/setup-uds@ab842abcad1f7a3305c2538e3dd1950d0daacfa5 # v1.0.1
-  #       with:
-  #         version: v${{ inputs.udsCliVersion }}
-
-  #     - name: Environment setup
-  #       run: |
-  #           echo "MARU_AUTH=\"{\"raw.githubusercontent.com\": \"${{ secrets.GITHUB_TOKEN }}\"}\"" >> "GITHUB_ENV"
-  #           uds run actions:setup-environment \
-  #           --set REGISTRY1_USERNAME="${{ secrets.IRON_BANK_ROBOT_USERNAME }}" \
-  #           --set REGISTRY1_PASSWORD="${{ secrets.IRON_BANK_ROBOT_PASSWORD }}" \
-  #           --set GH_TOKEN="${{ secrets.GITHUB_TOKEN }}" \
-  #           --set RAPIDFORT_USERNAME="${{ secrets.RAPIDFORT_USERNAME }}" \
-  #           --set RAPIDFORT_PASSWORD="${{ secrets.RAPIDFORT_PASSWORD }}"
-  #       shell: bash
-
-  #     - name: Scan image
-  #       id: scan
-  #       uses: anchore/scan-action@7c05671ae9be166aeb155bad2d7df9121823df32 # v6.1.0
-  #       with:
-  #         image: ${{ matrix.image }}
-  #         fail-build: false
-  #         output-format: cyclonedx-json
-
-  #     - name: Format artifact name
-  #       id: format-artifact-name
-  #       shell: bash
-  #       run: |
-  #         NAME=$(jq -r '.metadata.component.name + "@" + .metadata.component.version' ${{ steps.scan.outputs.cyclonedx-json }})
-  #         NAME="${NAME//\//_}"
-  #         NAME="${NAME/docker.io_library_/}"
-  #         mv ${{ steps.scan.outputs.cyclonedx-json }} "${NAME}.json"
-  #         echo "artifactName=${NAME}" >> "$GITHUB_OUTPUT"
-
-  #     - name: Upload scan results
-  #       uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-  #       with:
-  #         name: scan-image-${{ steps.format-artifact-name.outputs.artifactName }}
-  #         path: ${{ steps.format-artifact-name.outputs.artifactName }}.json
-
-  # compare-scans:
-  #   runs-on: ubuntu-latest
-  #   needs: [scan-sboms, scan-images]
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-
-  #     - name: Install UDS CLI
-  #       uses: defenseunicorns/setup-uds@ab842abcad1f7a3305c2538e3dd1950d0daacfa5 # v1.0.1
-  #       with:
-  #         version: v${{ inputs.udsCliVersion }}
-
-  #     - name: Environment setup
-  #       run: |
-  #         uds run actions:install-deps
-  #       shell: bash
-
-  #     - name: Download sbom scan results from GitHub Actions Artifacts
-  #       uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
-  #       with:
-  #         path: sbom-scan-results
-  #         pattern: scan-sbom-*
-  #         merge-multiple: true
-
-  #     - name: Download image scan results from GitHub Actions Artifacts
-  #       uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
-  #       with:
-  #         path: image-scan-results
-  #         pattern: scan-image-*
-  #         merge-multiple: true
-
-  #     - name: Compare scans
-  #       id: compare-scans
-  #       shell: bash
-  #       run: |
-  #         sbomScans=$(ls sbom-scan-results)
-  #         imageScans=$(ls image-scan-results)
-
-  #         COMMENT_MARKDOWN=""
-
-  #         for imageScan in $imageScans; do
-  #           imageName=$(echo "$imageScan" | cut -d "@" -f 1)
-  #           imageScanned="false"
-
-  #           for sbomScan in $sbomScans; do
-  #             sbomName=$(echo "$sbomScan" | cut -d "@" -f 1)
-
-  #             if [[ "$imageName" == "$sbomName" ]]; then
-  #               echo "Match found: $imageName with $sbomName"
-  #               # Allow different images is necessary because of implied urls with docker hub images (i.e. docker.io/library isn't always present)
-  #               COMMENT_MARKDOWN+=$(uds-pk compare-scans "sbom-scan-results/$sbomScan" "image-scan-results/$imageScan" --allow-different-images)
-  #               COMMENT_MARKDOWN+=$'\n'
-  #               imageScanned="true"
-  #               break
-  #             fi
-  #             echo "No match found: $imageName with sbom: $sbomName"
-  #           done
-
-  #           if [[ "$imageScanned" == "false" ]]; then
-  #             echo "No match found for new image: $imageName"
-  #             COMMENT_MARKDOWN+="### No comparable image found, assuming new image"
-  #             COMMENT_MARKDOWN+=$'\n'
-  #             COMMENT_MARKDOWN+=$(uds-pk compare-scans "image-scan-results/$imageScan" "image-scan-results/$imageScan")
-  #             COMMENT_MARKDOWN+=$'\n'
-  #           fi
-  #         done
-
-  #         echo "${COMMENT_MARKDOWN}" > comment.md
-
-  #         pipx install mdformat
-
-  #         mdformat comment.md
-
-  #         CHAR_COUNT=$(wc -m comment.md | cut -d ' ' -f1)
-
-  #         echo "Characters in comparison: ${CHAR_COUNT}"
-
-  #         if [[ $CHAR_COUNT -gt 65536 ]]; then
-  #           echo "artifact=true" >> "$GITHUB_OUTPUT"
-  #         else
-  #           echo "artifact=false" >> "$GITHUB_OUTPUT"
-  #         fi
-
-  #     - name: Post markdown as comment
-  #       if: ${{ steps.compare-scans.outputs.artifact == 'false' }}
-  #       env:
-  #         GH_TOKEN: ${{ github.token }}
-  #       run: |
-  #         gh pr comment ${{ github.event.pull_request.number }} \
-  #           --repo ${{ github.repository }} \
-  #           --body-file comment.md \
-  #           --edit-last \
-  #           --create-if-none
-
-  #     - name: Upload comparison results
-  #       id: upload-comparison-results
-  #       if: ${{ steps.compare-scans.outputs.artifact == 'true' }}
-  #       uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-  #       with:
-  #         name: scan-comparison
-  #         path: comment.md
-
-  #     - name: Post comment about artifact
-  #       if: ${{ steps.compare-scans.outputs.artifact == 'true' }}
-  #       env:
-  #         GH_TOKEN: ${{ github.token }}
-  #       # If the comment is too long, means there's a lot of images so we want to have them collapsed to minimize the comment size
-  #       run: |
-  #         {
-  #           echo "Full scan comparison results are too large to post as a comment. Link to full results artifact: [Results](${{ steps.upload-comparison-results.outputs.artifact-url}})"
-  #           echo "Summarized results are below:"
-  #           echo "<details>"
-  #           echo
-  #           sed '/<details>/,/<\/details>/d' comment.md | sed '/^______________________________________________________________________$/{
-  #           i\
-  #           </details>
-  #           a\
-  #           <details>
-  #           d
-  #           }' | sed -E 's/^(### )([^`]+)( `)/<summary>\2<\/summary>\n\n\0/'
-  #         } >> summary.md
-  #          tac summary.md | sed '0,/<details>/ s/<details>//' | tac > summary-done.md
-  #         gh pr comment ${{ github.event.pull_request.number }} \
-  #           --repo ${{ github.repository }} \
-  #           --body-file summary-done.md \
-  #           --edit-last \
-  #           --create-if-none
+          path: bump-status/${{ inputs.flavor}}-mismatch.txt
