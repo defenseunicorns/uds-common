@@ -154,8 +154,9 @@ jobs:
           # Set Base64 content
           CONTENT_B64="$(base64 -w0 releaser.yaml 2>/dev/null || base64 releaser.yaml | tr -d '\n')"
 
-          # shellcheck disable=SC1009,SC1039,SC1072,SC1073 - this is to get around shellcheck indenting for the heredoc
           # Create GraphQL Mutation
+          # disabling shellcheck for heredoc indentation warnings
+          # shellcheck disable=SC1009,SC1039,SC1072,SC1073
           GQL="$(cat <<'EOF'
           mutation (
             $githubRepository: String!,
