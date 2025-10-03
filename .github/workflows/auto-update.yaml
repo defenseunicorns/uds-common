@@ -4,27 +4,10 @@
 name: Auto Update
 
 # Testing call conditions, this will be a schedule
+
 on:
-  # This workflow is triggered on pull requests to the main branch.
-  pull_request:
-    # milestoned is added here so that a PR can be re-triggered if it is milestoned.
-    types: [milestoned, opened, reopened, synchronize]
-    paths-ignore:
-      - "**.md"
-      - "**.jpg"
-      - "**.png"
-      - "**.gif"
-      - "**.svg"
-      - adr/**
-      - docs/**
-      - .gitignore
-      - renovate.json
-      - .release-please-config.json
-      - release-please-config.json
-      - CODEOWNERS
-      - LICENSE
-      - CONTRIBUTING.md
-      - SECURITY.md
+  schedule:
+    - cron: 0 14 * * * # daily at 8 AM Central (CST = UTC−6)
 
 # Permissions for the GITHUB_TOKEN used by the workflow.
 permissions:
