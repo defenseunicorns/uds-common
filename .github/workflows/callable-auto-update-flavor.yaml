@@ -118,6 +118,9 @@ jobs:
           PACKAGE_ARCHS=$(uds zarf tools registry manifest ghcr.io/${REPO_OWNER}/${PUBLIC_URL}:${TAG} | jq -r '.manifests[].platform.architecture')
           for arch in $PACKAGE_ARCHS; do
             SBOM_PATH="${PACKAGE}-${arch}"
+
+            uds zarf package inspect sbom "$PACKAGE_SBOM" -a $arch --output "$SBOM_PATH"
+
             mkdir -p "${SBOM_PATH}/sboms"
             mv ${SBOM_PATH}/${PACKAGE}/*.json ${SBOM_PATH}/sboms/
 
