@@ -104,9 +104,9 @@ jobs:
           echo "Private package URL: ${PRIVATE_URL}"
 
           # Check for the public package
-          if uds zarf package inspect sbom "oci://ghcr.io/${REPO_OWNER}/${PUBLIC_URL}:${TAG}" >/dev/null 2>&1; then
+          if uds zarf tools registry manifest ghcr.io/${REPO_OWNER}/${PUBLIC_URL}:${TAG} >/dev/null 2>&1; then
             echo "Public package found: oci://ghcr.io/${REPO_OWNER}/${PUBLIC_URL}:${TAG}"
-          elif uds zarf package inspect sbom "oci://ghcr.io/${REPO_OWNER}/${PRIVATE_URL}:${TAG}" >/dev/null 2>&1; then
+          elif uds zarf tools registry manifest ghcr.io/${REPO_OWNER}/${PRIVATE_URL}:${TAG} >/dev/null 2>&1; then
             echo "Private package found: oci://ghcr.io/${REPO_OWNER}/${PRIVATE_URL}:${TAG}"
           else
             echo "No package found for flavor ${FLAVOR} with tag ${TAG}"
@@ -114,44 +114,49 @@ jobs:
             exit 1
           fi
 
-          mkdir -p sboms
-          mv "${PACKAGE_NAME}"/*.json sboms/
+          # Iterate over package architectures
+          PACKAGE_ARCHS=$(uds zarf tools registry manifest $PACKAGE_OCI | jq -r '.manifests[].platform.architecture')
+          for arch in $PACKAGE_ARCHS; do
+            SBOM_PATH="${PACKAGE}-${arch}"
+            mkdir -p "${SBOM_PATH}/sboms"
+            mv ${SBOM_PATH}/${PACKAGE}/*.json ${SBOM_PATH}/sboms/
 
-          # Iterate over sboms
-          # For each sbom, check if the image digest is the same as the upstream image digest
-          for sbom in sboms/*; do
+            # Iterate over sboms
+            # For each sbom, check if the image digest is the same as the upstream image digest
+            for sbom in "${SBOM_PATH}/sboms/*"; do
 
-            IMAGE_NAME=$(jq -r '.source.name' "$sbom")
-            IMAGE_ID=$(jq -r '.source.metadata.imageID' "$sbom")
-            IMAGE_VERSION=$(jq -r '.source.version' "$sbom")
-            mkdir -p bump-status
+              IMAGE_NAME=$(jq -r '.source.name' "$sbom")
+              IMAGE_ID=$(jq -r '.source.metadata.imageID' "$sbom")
+              IMAGE_VERSION=$(jq -r '.source.version' "$sbom")
+              mkdir -p bump-status
 
-            CONFIG_DIGEST=$(
-            docker buildx imagetools inspect --raw \
-                "$IMAGE_NAME@$(
-                docker buildx imagetools inspect "$IMAGE_NAME:$IMAGE_VERSION" \
-                    --format '{{ json .Manifest }}' \
-                | jq -r '
-                    if has("manifests") then
-                        .manifests[]
-                        | select(.platform.os=="linux" and .platform.architecture=="amd64")
-                        | .digest
-                    else
-                        .digest
-                    end
-                    '
-                )" \
-            | jq -r '.config.digest'
-            )
+              CONFIG_DIGEST=$(
+              docker buildx imagetools inspect --raw \
+                  "$IMAGE_NAME@$(
+                  docker buildx imagetools inspect "$IMAGE_NAME:$IMAGE_VERSION" \
+                      --format '{{ json .Manifest }}' \
+                  | jq -r --arg arch "$arch" '
+                      if has("manifests") then
+                          .manifests[]
+                          | select(.platform.os=="linux" and .platform.architecture==$arch)
+                          | .digest
+                      else
+                          .digest
+                      end
+                      '
+                  )" \
+              | jq -r '.config.digest'
+              )
 
-            if [ "$IMAGE_ID" != "$CONFIG_DIGEST" ]; then
-                echo "Digest mismatch. Flagging for bump."
-                echo "mismatch=true" >> "$GITHUB_OUTPUT"
-                echo "TRUE" > "bump-status/${FLAVOR}-mismatch.txt"
-                break
-            else
-                echo "Digest match for $IMAGE_NAME:$IMAGE_VERSION"
-            fi
+              if [ "$IMAGE_ID" != "$CONFIG_DIGEST" ]; then
+                  echo "Digest mismatch. Flagging for bump."
+                  echo "mismatch=true" >> "$GITHUB_OUTPUT"
+                  echo "TRUE" > "bump-status/${FLAVOR}-mismatch.txt"
+                  break
+              else
+                  echo "Digest match for $IMAGE_NAME:$IMAGE_VERSION"
+              fi
+            done
           done
 
       - name: Save Releaser Bump Status
