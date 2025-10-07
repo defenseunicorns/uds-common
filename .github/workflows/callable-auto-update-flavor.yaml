@@ -106,8 +106,10 @@ jobs:
           # Check for the public package
           if uds zarf tools registry manifest ghcr.io/${REPO_OWNER}/${PUBLIC_URL}:${TAG} >/dev/null 2>&1; then
             echo "Public package found: oci://ghcr.io/${REPO_OWNER}/${PUBLIC_URL}:${TAG}"
+            PACKAGE_URL="${PUBLIC_URL}"
           elif uds zarf tools registry manifest ghcr.io/${REPO_OWNER}/${PRIVATE_URL}:${TAG} >/dev/null 2>&1; then
             echo "Private package found: oci://ghcr.io/${REPO_OWNER}/${PRIVATE_URL}:${TAG}"
+            PACKAGE_URL="${PRIVATE_URL}"
           else
             echo "No package found for flavor ${FLAVOR} with tag ${TAG}"
             echo "Tried oci://ghcr.io/${REPO_OWNER}/${PUBLIC_URL}:${TAG} and oci://ghcr.io/${REPO_OWNER}/${PRIVATE_URL}:${TAG}"
@@ -115,7 +117,7 @@ jobs:
           fi
 
           # Iterate over package architectures
-          PACKAGE_ARCHS=$(uds zarf tools registry manifest ghcr.io/${REPO_OWNER}/${PUBLIC_URL}:${TAG} | jq -r '.manifests[].platform.architecture')
+          PACKAGE_ARCHS=$(uds zarf tools registry manifest ghcr.io/${REPO_OWNER}/${PACKAGE_URL}:${TAG} | jq -r '.manifests[].platform.architecture')
           for arch in $PACKAGE_ARCHS; do
             SBOM_PATH="${PACKAGE}-${arch}"
 
