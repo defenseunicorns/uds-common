@@ -121,12 +121,12 @@ jobs:
           PACKAGE_ARCHS=$(uds zarf tools registry manifest ghcr.io/${REPO_OWNER}/${PACKAGE_URL}:${TAG} | jq -r '.manifests[].platform.architecture')
           echo $PACKAGE_ARCHS
           for arch in $PACKAGE_ARCHS; do
-            SBOM_PATH="${PACKAGE}-${arch}"
+            SBOM_PATH="${PACKAGE_NAME}-${arch}"
             echo $SBOM_PATH
             uds zarf package inspect sbom oci://ghcr.io/${REPO_OWNER}/${PACKAGE_URL}:${TAG} -a $arch --output "$SBOM_PATH"
             
             mkdir -p "${SBOM_PATH}/sboms"
-            mv ${SBOM_PATH}/${PACKAGE}/*.json ${SBOM_PATH}/sboms/
+            mv ${SBOM_PATH}/${PACKAGE_NAME}/*.json ${SBOM_PATH}/sboms/
 
             # Iterate over sboms
             # For each sbom, check if the image digest is the same as the upstream image digest
