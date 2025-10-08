@@ -117,8 +117,9 @@ jobs:
           fi
 
           # Iterate over package architectures
-          echo "Checking package architectures for flavor ${FLAVOR} with url oci://ghcr.io/${REPO_OWNER}/${PACKAGE_URL}:${TAG}"
+          echo "Checking package architectures for flavor ${FLAVOR} with url ghcr.io/${REPO_OWNER}/${PACKAGE_URL}:${TAG}"
           PACKAGE_ARCHS=$(uds zarf tools registry manifest ghcr.io/${REPO_OWNER}/${PACKAGE_URL}:${TAG} | jq -r '.manifests[].platform.architecture')
+          echo $PACKAGE_ARCHS
           for arch in $PACKAGE_ARCHS; do
             SBOM_PATH="${PACKAGE}-${arch}"
 
