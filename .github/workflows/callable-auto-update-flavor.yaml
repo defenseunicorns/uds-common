@@ -104,10 +104,10 @@ jobs:
           echo "Private package URL: ${PRIVATE_URL}"
 
           # Check for the public package
-          if uds zarf tools registry manifest ghcr.io/${REPO_OWNER}/${PUBLIC_URL}:${TAG} >/dev/null 2>&1; then
+          if uds zarf tools registry manifest "ghcr.io/${REPO_OWNER}/${PUBLIC_URL}:${TAG}" >/dev/null 2>&1; then
             echo "Public package found: oci://ghcr.io/${REPO_OWNER}/${PUBLIC_URL}:${TAG}"
             PACKAGE_URL="${PUBLIC_URL}"
-          elif uds zarf tools registry manifest ghcr.io/${REPO_OWNER}/${PRIVATE_URL}:${TAG} >/dev/null 2>&1; then
+          elif uds zarf tools registry manifest "ghcr.io/${REPO_OWNER}/${PRIVATE_URL}:${TAG}" >/dev/null 2>&1; then
             echo "Private package found: oci://ghcr.io/${REPO_OWNER}/${PRIVATE_URL}:${TAG}"
             PACKAGE_URL="${PRIVATE_URL}"
           else
@@ -117,19 +117,19 @@ jobs:
           fi
 
           # Iterate over package architectures
-          PACKAGE_ARCHS=$(uds zarf tools registry manifest ghcr.io/${REPO_OWNER}/${PACKAGE_URL}:${TAG} | jq -r '.manifests[].platform.architecture')
+          PACKAGE_ARCHS=$(uds zarf tools registry manifest "ghcr.io/${REPO_OWNER}/${PACKAGE_URL}:${TAG}" | jq -r '.manifests[].platform.architecture')
 
           for arch in $PACKAGE_ARCHS; do
             SBOM_PATH="${PACKAGE_NAME}-${arch}"
-            
-            uds zarf package inspect sbom oci://ghcr.io/${REPO_OWNER}/${PACKAGE_URL}:${TAG} -a $arch --output "$SBOM_PATH"
-            
+
+            uds zarf package inspect sbom "oci://ghcr.io/${REPO_OWNER}/${PACKAGE_URL}:${TAG}" -a "$arch" --output "$SBOM_PATH"
+
             mkdir -p "${SBOM_PATH}/sboms"
-            mv ${SBOM_PATH}/${PACKAGE_NAME}/*.json ${SBOM_PATH}/sboms/
+            mv "${SBOM_PATH}"/"${PACKAGE_NAME}"/*.json "${SBOM_PATH}"/sboms/
 
             # Iterate over sboms
             # For each sbom, check if the image digest is the same as the upstream image digest
-            for sbom in ${SBOM_PATH}/sboms/*; do
+            for sbom in "${SBOM_PATH}"/sboms/*; do
               IMAGE_NAME=$(jq -r '.source.name' "$sbom")
               IMAGE_ID=$(jq -r '.source.metadata.imageID' "$sbom")
               IMAGE_VERSION=$(jq -r '.source.version' "$sbom")
