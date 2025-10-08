@@ -117,9 +117,8 @@ jobs:
           fi
 
           # Iterate over package architectures
-          echo "Checking package architectures for flavor ${FLAVOR} with url ghcr.io/${REPO_OWNER}/${PACKAGE_URL}:${TAG}"
           PACKAGE_ARCHS=$(uds zarf tools registry manifest ghcr.io/${REPO_OWNER}/${PACKAGE_URL}:${TAG} | jq -r '.manifests[].platform.architecture')
-          echo $PACKAGE_ARCHS
+
           for arch in $PACKAGE_ARCHS; do
             SBOM_PATH="${PACKAGE_NAME}-${arch}"
             
@@ -132,8 +131,8 @@ jobs:
             ls ${SBOM_PATH}/sboms
             # Iterate over sboms
             # For each sbom, check if the image digest is the same as the upstream image digest
-            for sbom in "${SBOM_PATH}/sboms/*"; do
-
+            for sbom in ${SBOM_PATH}/sboms/*; do
+              echo "sbom: $sbom"
               IMAGE_NAME=$(jq -r '.source.name' "$sbom")
               IMAGE_ID=$(jq -r '.source.metadata.imageID' "$sbom")
               IMAGE_VERSION=$(jq -r '.source.version' "$sbom")
