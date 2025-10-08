@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.20.4](https://github.com/defenseunicorns/uds-common/compare/v1.20.3...v1.20.4) (2025-10-08)
+
+
+### Bug Fixes
+
+* update the keycloak user tasks to fail on curl non 200 response ([#559](https://github.com/defenseunicorns/uds-common/issues/559)) ([f9481b0](https://github.com/defenseunicorns/uds-common/commit/f9481b0ebcae821b63d588d2305e3610b1b78c2b))
+
+
+### Miscellaneous
+
+* added renovate rule for go variables ([#561](https://github.com/defenseunicorns/uds-common/issues/561)) ([e7a16d5](https://github.com/defenseunicorns/uds-common/commit/e7a16d53642d246ced59e5e99c947b32ad93bcb0))
+* **codeowners:** remove deprecated teams, add uds-foundry ([#556](https://github.com/defenseunicorns/uds-common/issues/556)) ([4c388dc](https://github.com/defenseunicorns/uds-common/commit/4c388dc475f031ed1a6008c5b043bb267315d3f6))
+* **deps:** update package-deps to v1.29.2 ([#564](https://github.com/defenseunicorns/uds-common/issues/564)) ([97242d2](https://github.com/defenseunicorns/uds-common/commit/97242d2013e3a36f95cce66c8a9fb257156f6c88))
+* **deps:** update uds common support dependencies (core 0.53.1, zarf 0.63.0, uds-cli 0.27.15) ([#557](https://github.com/defenseunicorns/uds-common/issues/557)) ([e2cd439](https://github.com/defenseunicorns/uds-common/commit/e2cd439682b44792fb6aa4353e97db5fa42b35bd))
+* expand UDS Package annotation guidance ([#560](https://github.com/defenseunicorns/uds-common/issues/560)) ([81d8993](https://github.com/defenseunicorns/uds-common/commit/81d899307a920ecc7dae9df2c8997ada965a3d75))
+* update renovate config to pick up npm install in dockerfiles ([#562](https://github.com/defenseunicorns/uds-common/issues/562)) ([b82dd48](https://github.com/defenseunicorns/uds-common/commit/b82dd48748adecc94b0cb2a2f79094dfc642d89e))
+
 ## [1.20.3](https://github.com/defenseunicorns/uds-common/compare/v1.20.2...v1.20.3) (2025-09-17)
 
 
