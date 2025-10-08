@@ -125,14 +125,11 @@ jobs:
             uds zarf package inspect sbom oci://ghcr.io/${REPO_OWNER}/${PACKAGE_URL}:${TAG} -a $arch --output "$SBOM_PATH"
             
             mkdir -p "${SBOM_PATH}/sboms"
-            
             mv ${SBOM_PATH}/${PACKAGE_NAME}/*.json ${SBOM_PATH}/sboms/
-            echo "sbompath/sboms"
-            ls ${SBOM_PATH}/sboms
+
             # Iterate over sboms
             # For each sbom, check if the image digest is the same as the upstream image digest
             for sbom in ${SBOM_PATH}/sboms/*; do
-              echo "sbom: $sbom"
               IMAGE_NAME=$(jq -r '.source.name' "$sbom")
               IMAGE_ID=$(jq -r '.source.metadata.imageID' "$sbom")
               IMAGE_VERSION=$(jq -r '.source.version' "$sbom")
