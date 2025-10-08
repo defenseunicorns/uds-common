@@ -103,21 +103,26 @@ jobs:
 
           echo "Private package URL: ${PRIVATE_URL}"
 
-          # Check for the public package
-          if uds zarf tools registry manifest "ghcr.io/${REPO_OWNER}/${PUBLIC_URL}:${TAG}" >/dev/null 2>&1; then
+          # Check for public or private package
+          MANIFEST_OUTPUT=$(uds zarf tools registry manifest "ghcr.io/${REPO_OWNER}/${PUBLIC_URL}:${TAG}" 2>/dev/null)
+          if [ -n "$MANIFEST_OUTPUT" ]; then
             echo "Public package found: oci://ghcr.io/${REPO_OWNER}/${PUBLIC_URL}:${TAG}"
             PACKAGE_URL="${PUBLIC_URL}"
-          elif uds zarf tools registry manifest "ghcr.io/${REPO_OWNER}/${PRIVATE_URL}:${TAG}" >/dev/null 2>&1; then
-            echo "Private package found: oci://ghcr.io/${REPO_OWNER}/${PRIVATE_URL}:${TAG}"
-            PACKAGE_URL="${PRIVATE_URL}"
           else
-            echo "No package found for flavor ${FLAVOR} with tag ${TAG}"
-            echo "Tried oci://ghcr.io/${REPO_OWNER}/${PUBLIC_URL}:${TAG} and oci://ghcr.io/${REPO_OWNER}/${PRIVATE_URL}:${TAG}"
-            exit 1
+            # Try private next
+            MANIFEST_OUTPUT=$(uds zarf tools registry manifest "ghcr.io/${REPO_OWNER}/${PRIVATE_URL}:${TAG}" 2>/dev/null)
+            if [ -n "$MANIFEST_OUTPUT" ]; then
+              echo "Private package found: oci://ghcr.io/${REPO_OWNER}/${PRIVATE_URL}:${TAG}"
+              PACKAGE_URL="${PRIVATE_URL}"
+            else
+              echo "No package found for flavor ${FLAVOR} with tag ${TAG}"
+              echo "Tried oci://ghcr.io/${REPO_OWNER}/${PUBLIC_URL}:${TAG} and oci://ghcr.io/${REPO_OWNER}/${PRIVATE_URL}:${TAG}"
+              exit 1
+            fi
           fi
 
           # Iterate over package architectures
-          PACKAGE_ARCHS=$(uds zarf tools registry manifest "ghcr.io/${REPO_OWNER}/${PACKAGE_URL}:${TAG}" | jq -r '.manifests[].platform.architecture')
+          PACKAGE_ARCHS=$(echo "$MANIFEST_OUTPUT" | jq -r '.manifests[].platform.architecture')
 
           for arch in $PACKAGE_ARCHS; do
             SBOM_PATH="${PACKAGE_NAME}-${arch}"
