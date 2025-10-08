@@ -81,37 +81,30 @@ jobs:
           PACKAGE_NAME=$(yq e '.metadata.name' ${{ inputs.zarfYamlPath }})
 
           echo "Package name: ${PACKAGE_NAME}"
-          # Set public prefix based on org and if package prefix is empty
+
+          # Handle org-specific prefix
           if [[ $REPO_OWNER == "defenseunicorns" ]]; then
-            PUBLIC_URL="packages/uds/${PACKAGE_NAME}"
-          elif [[ -z "$PACKAGE_PREFIX" ]]; then
-            PUBLIC_URL="${PACKAGE_NAME}"
+            PUBLIC_BASE="packages/uds"
+            PRIVATE_BASE="packages/private/uds"
           else
-            PUBLIC_URL="${PACKAGE_PREFIX}/${PACKAGE_NAME}"
+            PUBLIC_BASE="${PACKAGE_PREFIX:-}"
+            PRIVATE_BASE="${PRIVATE_PACKAGE_PREFIX:-}"
           fi
+
+          # Construct URLs
+          PUBLIC_URL="${PUBLIC_BASE:+${PUBLIC_BASE}/}${PACKAGE_NAME}"
+          PRIVATE_URL="${PRIVATE_BASE:+${PRIVATE_BASE}/}${PACKAGE_NAME}"
 
           echo "Public package URL: ${PUBLIC_URL}"
-
-          # Set private prefix based on org and if private package prefix is empty
-          if [[ $REPO_OWNER == "defenseunicorns" ]]; then
-            PRIVATE_URL="packages/private/uds/${PACKAGE_NAME}"
-          elif [[ -z "$PRIVATE_PACKAGE_PREFIX" ]]; then
-            PRIVATE_URL="${PACKAGE_NAME}"
-          else
-            PRIVATE_URL="${PRIVATE_PACKAGE_PREFIX}/${PACKAGE_NAME}"
-          fi
-
           echo "Private package URL: ${PRIVATE_URL}"
 
           # Check for public or private package
-          MANIFEST_OUTPUT=$(uds zarf tools registry manifest "ghcr.io/${REPO_OWNER}/${PUBLIC_URL}:${TAG}" 2>/dev/null)
-          if [ -n "$MANIFEST_OUTPUT" ]; then
+          if MANIFEST_OUTPUT=$(uds zarf tools registry manifest "ghcr.io/${REPO_OWNER}/${PUBLIC_URL}:${TAG}" 2>/dev/null); then
             echo "Public package found: oci://ghcr.io/${REPO_OWNER}/${PUBLIC_URL}:${TAG}"
             PACKAGE_URL="${PUBLIC_URL}"
           else
             # Try private next
-            MANIFEST_OUTPUT=$(uds zarf tools registry manifest "ghcr.io/${REPO_OWNER}/${PRIVATE_URL}:${TAG}" 2>/dev/null)
-            if [ -n "$MANIFEST_OUTPUT" ]; then
+            if MANIFEST_OUTPUT=$(uds zarf tools registry manifest "ghcr.io/${REPO_OWNER}/${PRIVATE_URL}:${TAG}" 2>/dev/null); then
               echo "Private package found: oci://ghcr.io/${REPO_OWNER}/${PRIVATE_URL}:${TAG}"
               PACKAGE_URL="${PRIVATE_URL}"
             else
