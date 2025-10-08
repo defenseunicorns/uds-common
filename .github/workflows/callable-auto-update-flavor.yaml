@@ -123,7 +123,7 @@ jobs:
           for arch in $PACKAGE_ARCHS; do
             SBOM_PATH="${PACKAGE}-${arch}"
 
-            SBOM=$(uds zarf package inspect sbom "$PACKAGE_SBOM" -a $arch --output "$SBOM_PATH")
+            SBOM=$(uds zarf package inspect sbom oci://ghcr.io/${REPO_OWNER}/${PACKAGE_URL}:${TAG} -a $arch --output "$SBOM_PATH")
             echo "SBOM: ${SBOM}"
             mkdir -p "${SBOM_PATH}/sboms"
             mv ${SBOM_PATH}/${PACKAGE}/*.json ${SBOM_PATH}/sboms/
