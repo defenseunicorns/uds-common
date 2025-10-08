@@ -104,15 +104,12 @@ jobs:
           echo "Private package URL: ${PRIVATE_URL}"
 
           # Check for public or private package
-          MANIFEST_OUTPUT=$(uds zarf tools registry manifest "ghcr.io/${REPO_OWNER}/${PUBLIC_URL}:${TAG}")
-          echo "MANIFEST_OUTPUT: $MANIFEST_OUTPUT"
-          if [ -n "$MANIFEST_OUTPUT" ]; then
+          if MANIFEST_OUTPUT=$(uds zarf tools registry manifest "ghcr.io/${REPO_OWNER}/${PUBLIC_URL}:${TAG}" 2>/dev/null); then
             echo "Public package found: oci://ghcr.io/${REPO_OWNER}/${PUBLIC_URL}:${TAG}"
             PACKAGE_URL="${PUBLIC_URL}"
           else
             # Try private next
-            MANIFEST_OUTPUT=$(uds zarf tools registry manifest "ghcr.io/${REPO_OWNER}/${PRIVATE_URL}:${TAG}" 2>/dev/null)
-            if [ -n "$MANIFEST_OUTPUT" ]; then
+            if MANIFEST_OUTPUT=$(uds zarf tools registry manifest "ghcr.io/${REPO_OWNER}/${PRIVATE_URL}:${TAG}" 2>/dev/null); then
               echo "Private package found: oci://ghcr.io/${REPO_OWNER}/${PRIVATE_URL}:${TAG}"
               PACKAGE_URL="${PRIVATE_URL}"
             else
