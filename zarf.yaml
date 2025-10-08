@@ -42,7 +42,7 @@ components:
         valuesFiles:
           - values/registry1-values.yaml
     images:
-      - registry1.dso.mil/ironbank/opensource/nginx/nginx:1.29.1
+      - registry1.dso.mil/ironbank/opensource/nginx/nginx:1.29.2
 
   - name: nginx
     required: true
