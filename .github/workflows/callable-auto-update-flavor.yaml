@@ -77,6 +77,12 @@ jobs:
           PRIVATE_PACKAGE_PREFIX: ${{ inputs.privatePackagePrefix }}
           FLAVOR: ${{ inputs.flavor }}
         run: |
+          # Check if releaser.yaml exists
+          if [[ ! -f releaser.yaml ]]; then
+            echo "No releaser.yaml found, skipping..."
+            exit 0
+          fi
+
           TAG=$(yq -r '.flavors[] | select(.name == env(FLAVOR)) | (.version + "-" + .name)' releaser.yaml)
           PACKAGE_NAME=$(yq e '.metadata.name' ${{ inputs.zarfYamlPath }})
 
