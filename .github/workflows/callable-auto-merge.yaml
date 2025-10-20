@@ -125,11 +125,11 @@ jobs:
 
           images_for_flavor() {
             local flavor="$1"
-            FLAVOR="${flavor}" uds zarf tools yq -r "${image_filter}" "${ZARF_YAML}"
+            FLAVOR="${flavor}" uds zarf tools yq -r "${image_filter}" "${RELEASER_YAML}"
           }
 
           # Collect unique, non-null flavors
-          FLAVORS="$(uds zarf tools yq -r '.components[].only.flavor | select(. != null)' "${ZARF_YAML}" | sort -u)"
+          FLAVORS="$(uds zarf tools yq -r '.components[].only.flavor | select(. != null)' "${RELEASER_YAML}" | sort -u)"
 
           # Read flavors into array
           FLAVOR_ARR=()
