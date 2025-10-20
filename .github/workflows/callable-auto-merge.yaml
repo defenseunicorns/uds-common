@@ -66,10 +66,10 @@ jobs:
           set -euo pipefail
 
           # Single releaser expected in repo root or current working directory
-          RELEASER_YAML="releaser.yaml"
-          if [[ ! -f "${RELEASER_YAML}" ]]; then
-            echo "No releaser.yaml found, skipping..."
-            echo "No releaser.yaml found, skipping..." >> "$GITHUB_STEP_SUMMARY"
+          ZARF_YAML="zarf.yaml"
+          if [[ ! -f "${ZARF_YAML}" ]]; then
+            echo "No zarf.yaml found, skipping..."
+            echo "No zarf.yaml found, skipping..." >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
 
@@ -125,11 +125,11 @@ jobs:
 
           images_for_flavor() {
             local flavor="$1"
-            FLAVOR="${flavor}" uds zarf tools yq -r "${image_filter}" "${RELEASER_YAML}"
+            FLAVOR="${flavor}" uds zarf tools yq -r "${image_filter}" "${ZARF_YAML}"
           }
 
           # Collect unique, non-null flavors
-          FLAVORS="$(uds zarf tools yq -r '.components[].only.flavor | select(. != null)' "${RELEASER_YAML}" | sort -u)"
+          FLAVORS="$(uds zarf tools yq -r '.components[].only.flavor | select(. != null)' "${ZARF_YAML}" | sort -u)"
 
           # Read flavors into array
           FLAVOR_ARR=()
