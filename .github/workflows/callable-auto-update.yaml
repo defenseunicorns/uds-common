@@ -132,7 +132,7 @@ jobs:
           cat releaser.yaml
 
       - name: Commit releaser.yaml via GraphQL
-        if: ${{ steps.decide-bump.outputs.bump == 'true' && inputs.dry-run != false }}
+        if: ${{ steps.decide-bump.outputs.bump == 'true' && inputs.dry-run != true }}
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
