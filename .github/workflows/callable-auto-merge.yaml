@@ -11,10 +11,6 @@ on:
         # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
         default: 0.27.15
         type: string
-      zarfYamlPath:
-        description: The path to the zarf.yaml file
-        default: zarf.yaml
-        type: string
       packagePrefix:
         description: The prefix for public packages
         default: ""
