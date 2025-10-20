@@ -11,9 +11,8 @@ on:
 
 # Permissions for the GITHUB_TOKEN used by the workflow.
 permissions:
-  contents: write # Allows reading the content of the repository.
+  contents: write # Allows writing content to the repository.
   packages: read # Allows reading the content of the repository's packages.
-  id-token: write
 
 # Abort prior jobs in the same workflow / PR
 concurrency:

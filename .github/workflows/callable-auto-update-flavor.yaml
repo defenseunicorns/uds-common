@@ -77,6 +77,8 @@ jobs:
           PRIVATE_PACKAGE_PREFIX: ${{ inputs.privatePackagePrefix }}
           FLAVOR: ${{ inputs.flavor }}
         run: |
+          set -Eeuo pipefail
+          
           # Check if releaser.yaml exists
           if [[ ! -f releaser.yaml ]]; then
             echo "No releaser.yaml found, skipping..."
