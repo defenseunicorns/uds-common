@@ -1,0 +1,191 @@
+# Copyright 2024 Defense Unicorns
+# SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
+
+name: callable-auto-update
+  # Scan the sboms in the package, grab the image digests, and compare to the current upstream image digests of the same tag. If
+  # the digests don't match in any image, then bump the uds version to trigger
+  # a new release.
+
+on:
+  workflow_call:
+    inputs:
+      udsCliVersion:
+        description: The uds-cli version to install
+        # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
+        default: 0.27.6
+        type: string
+      zarfYamlPath:
+        description: The path to the zarf.yaml file
+        default: zarf.yaml
+        type: string
+      packagePrefix:
+        description: The prefix for public packages
+        default: ""
+        type: string
+      privatePackagePrefix:
+        description: The prefix for private packages
+        default: private
+        type: string
+      dry-run:
+        description: Enable dry-run mode, which doesn't commits changes to the repository.
+        default: false
+        type: boolean
+
+# Permissions for the GITHUB_TOKEN used by the workflow.
+permissions:
+  contents: write # Allows us to read files from the repository for scanning, and writing the bumped releaser.yaml if applicable.
+  packages: read # Allows us to pull the sboms from the published packages for comparison.
+
+jobs:
+  get-flavors:
+    runs-on: ubuntu-latest
+    outputs:
+      flavors: ${{ steps.get-flavors.outputs.flavors }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Get flavors
+        id: get-flavors
+        run: |
+          FLAVORS="$(yq -o=json -I=0 '[.components[].only.flavor | select(. != null)] | unique' '${{ inputs.zarfYamlPath }}')"
+          echo "flavors=${FLAVORS}" >> "$GITHUB_OUTPUT"
+
+  scan-flavor:
+    needs: get-flavors
+    strategy:
+      matrix:
+        flavor: ${{ fromJson(needs.get-flavors.outputs.flavors) }}
+    uses: ./.github/workflows/callable-auto-update-flavor.yaml
+    secrets: inherit
+    with:
+      udsCliVersion: ${{ inputs.udsCliVersion }}
+      zarfYamlPath: ${{ inputs.zarfYamlPath }}
+      packagePrefix: ${{ inputs.packagePrefix }}
+      privatePackagePrefix: ${{ inputs.privatePackagePrefix }}
+      flavor: ${{ matrix.flavor }}
+
+  commit-changes:
+    runs-on: ubuntu-latest
+    needs: scan-flavor
+    steps:
+      - name: Download Releaser Bump Status Results
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          path: bump-status
+          pattern: update-*
+
+      - name: Check if any flavors need to be bumped
+        id: decide-bump
+        run: |
+          set -Eeuo pipefail
+          mkdir -p bump-status
+          UPDATES=$(ls -1 bump-status/)
+          if [ -z "$UPDATES" ]; then
+            echo "No updates found."
+            echo "bump=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "Updates found:"
+            echo "${UPDATES}"
+            echo "bump=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        if: ${{ steps.decide-bump.outputs.bump == 'true' }}
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+          fetch-depth: 0
+
+      - name: Download Releaser Bump Status Results
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        if: ${{ steps.decide-bump.outputs.bump == 'true' }}
+        with:
+          path: bump-status
+          pattern: update-*
+
+      - name: Bump versions in releaser.yaml
+        if: ${{ steps.decide-bump.outputs.bump == 'true' }}
+        run: |
+          set -Eeuo pipefail
+          echo "Bumping versions in releaser.yaml"
+          ls bump-status
+          for update in bump-status/*; do
+            fname="$(basename "$update")"
+            flavor="${fname#update-}"
+            export flavor
+
+            version=$(yq e -r '.flavors[] | select(.name == env(flavor)) | .version' releaser.yaml)
+
+            main_version=${version%.*}
+            uds_version=${version##*.}
+            new_version="${main_version}.$((uds_version + 1))"
+            export new_version
+
+            yq e -i '
+              (.flavors[]
+                | select(.name == env(flavor))
+                | .version
+              ) = strenv(new_version)
+            ' releaser.yaml
+          done
+
+          echo "New releaser.yaml"
+          cat releaser.yaml
+
+      - name: Commit releaser.yaml via GraphQL
+        if: ${{ steps.decide-bump.outputs.bump == 'true' && inputs.dry-run != true }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          BRANCH: ${{ github.head_ref || github.ref_name }}
+          COMMIT_MSG: "chore(images): update due to rebuilt images being more secure"
+        run: |
+          set -Eeuo pipefail
+          set -x
+
+          # Verify the file actually changed; if not, exit
+          if git diff --quiet -- releaser.yaml; then
+            echo "No changes to releaser.yaml; nothing to commit."
+            exit 0
+          fi
+
+          # fetch current commit SHA
+          REMOTE_OID="$(gh api "repos/${REPO}/git/ref/heads/${BRANCH}" --jq .object.sha)"
+
+          # Set Base64 content
+          CONTENT_B64="$(base64 -w0 releaser.yaml 2>/dev/null || base64 releaser.yaml | tr -d '\n')"
+
+          # Create GraphQL Mutation
+          # disabling shellcheck for heredoc indentation warnings
+          # shellcheck disable=SC1009,SC1039,SC1072,SC1073
+          GQL="$(cat <<'EOF'
+          mutation (
+            $githubRepository: String!,
+            $branchName: String!,
+            $expectedHeadOid: GitObjectID!,
+            $commitMessage: String!,
+            $files: [FileAddition!]!
+          ) {
+            createCommitOnBranch(input: {
+              branch: { repositoryNameWithOwner: $githubRepository, branchName: $branchName },
+              message: { headline: $commitMessage },
+              fileChanges: { additions: $files },
+              expectedHeadOid: $expectedHeadOid
+            }) {
+              commit { url oid }
+            }
+          }
+          EOF
+          )"
+
+          # Call GitHub API to create commit
+          gh api graphql \
+            -f query="$GQL" \
+            -f githubRepository="$REPO" \
+            -f branchName="$BRANCH" \
+            -f expectedHeadOid="$REMOTE_OID" \
+            -f commitMessage="$COMMIT_MSG" \
+            -F files[][path]="releaser.yaml" \
+            -F files[][contents]="$CONTENT_B64" \
+            --jq '.data.createCommitOnBranch.commit.url'
