@@ -1,0 +1,27 @@
+# Copyright 2024 Defense Unicorns
+# SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
+
+name: Auto Update
+
+# Testing call conditions, this will be a schedule
+
+on:
+  schedule:
+    - cron: 0 14 * * * # daily at 8 AM Central (CST = UTC−6)
+
+# Permissions for the GITHUB_TOKEN used by the workflow.
+permissions:
+  contents: write # Allows writing content to the repository.
+  packages: read # Allows reading the content of the repository's packages.
+
+# Abort prior jobs in the same workflow / PR
+concurrency:
+  group: auto-update-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  auto-update:
+    uses: ./.github/workflows/callable-auto-update.yaml
+    with:
+      dry-run: true
+    secrets: inherit # Inherits all secrets from the parent workflow.
