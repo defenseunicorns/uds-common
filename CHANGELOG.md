@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.21.0](https://github.com/defenseunicorns/uds-common/compare/v1.20.5...v1.21.0) (2025-10-27)
+
+
+### Features
+
+* add auto update ci ([#563](https://github.com/defenseunicorns/uds-common/issues/563)) ([5c9e124](https://github.com/defenseunicorns/uds-common/commit/5c9e1245dc70a28852792a2babe8b260dd004852))
+
 ## [1.20.5](https://github.com/defenseunicorns/uds-common/compare/v1.20.4...v1.20.5) (2025-10-15)
 
 
