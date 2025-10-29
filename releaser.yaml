@@ -9,5 +9,5 @@ flavors:
     # renovate-uds: datasource=docker depName=registry1.dso.mil/ironbank/opensource/nginx/nginx
     version: 1.29.2-uds.0
   - name: unicorn
-    # renovate-uds: datasource=docker depName=quay.io/rfcurated/nginx
+    # renovate-uds: datasource=docker depName=quay.io/rfcurated/neuvector/controller versioning=docker extractVersion=^(?<version>\d+\.\d+\.\d+)(?:-.*)?$
     version: 1.29.1-uds.0
