@@ -51,7 +51,7 @@ jobs:
         uses: defenseunicorns/setup-uds@ab842abcad1f7a3305c2538e3dd1950d0daacfa5 # v1.0.1
         with:
           # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
-          version: v0.27.15
+          version: v0.27.16
 
       - name: Environment setup
         run: |
@@ -77,7 +77,7 @@ jobs:
         run: uds run actions:save-logs
         shell: bash
 
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         if: ${{ always() }}
         with:
           name: debug-log-${{ inputs.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ runner.arch }}
@@ -89,7 +89,7 @@ jobs:
             /tmp/uds-containerd-logs
             /tmp/k3d-uds-*.log
 
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         if: ${{ always() && inputs.reports-path != '' }}
         with:
           name: ${{ inputs.reports-name }}-${{ inputs.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ runner.arch }}
