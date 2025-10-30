@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.21.2](https://github.com/defenseunicorns/uds-common/compare/v1.21.1...v1.21.2) (2025-10-30)
+
+
+### Bug Fixes
+
+* check if keycloak-user exists ([#576](https://github.com/defenseunicorns/uds-common/issues/576)) ([e390375](https://github.com/defenseunicorns/uds-common/commit/e39037563a4cc3fad8058e043aa9fd48d3a4c412))
+* releaser renovate match for RF ([#573](https://github.com/defenseunicorns/uds-common/issues/573)) ([18598e7](https://github.com/defenseunicorns/uds-common/commit/18598e750ffe9749e7f2952fa3e0a3f61812e4e1))
+
+
+### Miscellaneous
+
+* **deps:** update uds common package dependencies ([#572](https://github.com/defenseunicorns/uds-common/issues/572)) ([b388eda](https://github.com/defenseunicorns/uds-common/commit/b388eda57ba3814f7ba5ee5f21a3710996ce4508))
+
 ## [1.21.1](https://github.com/defenseunicorns/uds-common/compare/v1.21.0...v1.21.1) (2025-10-29)
 
 
