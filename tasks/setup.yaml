@@ -142,44 +142,54 @@ tasks:
             --data-urlencode "client_id=admin-cli" \
             --data-urlencode "grant_type=password" | ./uds zarf tools yq .access_token)
 
-          # Create a Keycloak User in the UDS Realm
-          curl -sSf -o /dev/null --location "https://keycloak.admin.uds.dev/admin/realms/uds/users" \
-          --header "Content-Type: application/json" \
-          --header "Authorization: Bearer ${KEYCLOAK_ADMIN_ACCESS_TOKEN}" \
-            --data-raw '{
-              "username": "'"${KEYCLOAK_USER_NAME}"'",
-              "firstName": "'"${KEYCLOAK_USER_FIRST_NAME}"'",
-              "lastName": "'"${KEYCLOAK_USER_LAST_NAME}"'",
-              "email": "'"${KEYCLOAK_USER_NAME}"'@uds.dev",
-              "attributes": {
-                "mattermostid": "1"
-              },
-              "emailVerified": true,
-              "enabled": true,
-              "requiredActions": [],
-              "credentials": [
-                {
-                  "type": "password",
-                  "value": "'"${KEYCLOAK_USER_PASSWORD}"'",
-                  "temporary": false
-                }
-              ]'"${KEYCLOAK_USER_GROUP:+,
-                  \"groups\": [
-                    \"${KEYCLOAK_USER_GROUP}\"
-                  ]}"'
-              }'
+          # Check for existing user
+          EXISTING_USER=$(curl -sS "https://keycloak.admin.uds.dev/admin/realms/uds/users?username=${KEYCLOAK_USER_NAME}" \
+            -H "Authorization: Bearer ${KEYCLOAK_ADMIN_ACCESS_TOKEN}" \
+            | ./uds zarf tools yq '.[0].id // ""')
 
-          # Disable 2FA
-          CONDITIONAL_OTP_ID=$(curl -sSf --location "https://keycloak.admin.uds.dev/admin/realms/uds/authentication/flows/Authentication/executions" \
-            --header "Authorization: Bearer ${KEYCLOAK_ADMIN_ACCESS_TOKEN}" | ./uds zarf tools yq '.[] | select(.displayName == "Conditional OTP") | .id')
+          if [ "$EXISTING_USER" ]; then
+            echo "User ${KEYCLOAK_USER_NAME} already exists. Skipping create."
+          else
 
-          curl -sSf -o /dev/null --location --request PUT "https://keycloak.admin.uds.dev/admin/realms/uds/authentication/flows/Authentication/executions" \
-          --header "Content-Type: application/json" \
-          --header "Authorization: Bearer ${KEYCLOAK_ADMIN_ACCESS_TOKEN}" \
-          --data "{
-                  \"id\": \"${CONDITIONAL_OTP_ID}\",
-                  \"requirement\": \"DISABLED\"
-              }"
+            # Create a Keycloak User in the UDS Realm
+            curl -sSf -o /dev/null --location "https://keycloak.admin.uds.dev/admin/realms/uds/users" \
+            --header "Content-Type: application/json" \
+            --header "Authorization: Bearer ${KEYCLOAK_ADMIN_ACCESS_TOKEN}" \
+              --data-raw '{
+                "username": "'"${KEYCLOAK_USER_NAME}"'",
+                "firstName": "'"${KEYCLOAK_USER_FIRST_NAME}"'",
+                "lastName": "'"${KEYCLOAK_USER_LAST_NAME}"'",
+                "email": "'"${KEYCLOAK_USER_NAME}"'@uds.dev",
+                "attributes": {
+                  "mattermostid": "1"
+                },
+                "emailVerified": true,
+                "enabled": true,
+                "requiredActions": [],
+                "credentials": [
+                  {
+                    "type": "password",
+                    "value": "'"${KEYCLOAK_USER_PASSWORD}"'",
+                    "temporary": false
+                  }
+                ]'"${KEYCLOAK_USER_GROUP:+,
+                    \"groups\": [
+                      \"${KEYCLOAK_USER_GROUP}\"
+                    ]}"'
+                }'
+
+            # Disable 2FA
+            CONDITIONAL_OTP_ID=$(curl -sSf --location "https://keycloak.admin.uds.dev/admin/realms/uds/authentication/flows/Authentication/executions" \
+              --header "Authorization: Bearer ${KEYCLOAK_ADMIN_ACCESS_TOKEN}" | ./uds zarf tools yq '.[] | select(.displayName == "Conditional OTP") | .id')
+
+            curl -sSf -o /dev/null --location --request PUT "https://keycloak.admin.uds.dev/admin/realms/uds/authentication/flows/Authentication/executions" \
+            --header "Content-Type: application/json" \
+            --header "Authorization: Bearer ${KEYCLOAK_ADMIN_ACCESS_TOKEN}" \
+            --data "{
+                    \"id\": \"${CONDITIONAL_OTP_ID}\",
+                    \"requirement\": \"DISABLED\"
+                }"
+          fi
 
   - name: create-doug-user
     description: DEPRECATED! Please consider using keycloak-user instead
