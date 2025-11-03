@@ -1,0 +1,137 @@
+# Copyright 2024 Defense Unicorns
+# SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
+
+name: Callable-Scan
+
+on:
+  workflow_call:
+    inputs:
+      udsCliVersion:
+        description: The uds-cli version to install
+        # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
+        default: 0.27.13
+        type: string
+      zarfYamlPath:
+        description: The path to the zarf.yaml file
+        default: zarf.yaml
+        type: string
+      packagePrefix:
+        description: The prefix for public packages
+        default: ""
+        type: string
+      privatePackagePrefix:
+        description: The prefix for private packages
+        default: private
+        type: string
+
+# Permissions for the GITHUB_TOKEN used by the workflow.
+permissions:
+  contents: read # Allows reading the content of the repository.
+  packages: read # Allows reading the content of the repository's packages.
+  pull-requests: write # Allows writing the scan results comment to the pull request.
+
+# Abort prior jobs in the same workflow / PR
+concurrency:
+  group: scan-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  get-sboms:
+    runs-on: ubuntu-latest
+    outputs:
+      sboms: ${{ steps.get-sboms.outputs.sboms }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+
+      - name: Install UDS CLI
+        uses: defenseunicorns/setup-uds@ab842abcad1f7a3305c2538e3dd1950d0daacfa5 # v1.0.1
+        with:
+          version: v${{ inputs.udsCliVersion }}
+
+      - name: Environment setup
+        run: |
+          echo "MARU_AUTH=\"{\"raw.githubusercontent.com\": \"${{ secrets.GITHUB_TOKEN }}\"}\"" >> "GITHUB_ENV"
+          uds run actions:setup-environment \
+          --set REGISTRY1_USERNAME="${{ secrets.IRON_BANK_ROBOT_USERNAME }}" \
+          --set REGISTRY1_PASSWORD="${{ secrets.IRON_BANK_ROBOT_PASSWORD }}" \
+          --set GH_TOKEN="${{ secrets.GITHUB_TOKEN }}" \
+          --set RAPIDFORT_USERNAME="${{ secrets.RAPIDFORT_USERNAME }}" \
+          --set RAPIDFORT_PASSWORD="${{ secrets.RAPIDFORT_PASSWORD }}"
+        shell: bash
+
+      - name: Compare scans
+        id: compare-scans
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          REPO_OWNER: ${{ github.repository_owner }}
+          PACKAGE_PREFIX: ${{ inputs.packagePrefix }}
+          PRIVATE_PACKAGE_PREFIX: ${{ inputs.privatePackagePrefix }}
+        run: |
+          uds-pk scan compare \
+            --public-packages-prefix "${PACKAGE_PREFIX}" \
+            --private-packages-prefix "${PRIVATE_PACKAGE_PREFIX}" \
+            --zarf-yaml-path ${{ inputs.zarfYamlPath }} \
+            --allow-different-images --repo-owner "$REPO_OWNER" --allow-different-images > comment.md
+          
+          echo "generated with uds-pk scan compare" >> comment.md
+          
+          pipx install mdformat
+
+          mdformat comment.md
+
+          CHAR_COUNT=$(wc -m comment.md | cut -d ' ' -f1)
+
+          echo "Characters in comparison: ${CHAR_COUNT}"
+
+          if [[ $CHAR_COUNT -gt 65536 ]]; then
+            echo "artifact=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "artifact=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Post markdown as comment
+        if: ${{ steps.compare-scans.outputs.artifact == 'false' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh pr comment ${{ github.event.pull_request.number }} \
+            --repo ${{ github.repository }} \
+            --body-file comment.md \
+            --edit-last \
+            --create-if-none
+
+      - name: Upload comparison results
+        id: upload-comparison-results
+        if: ${{ steps.compare-scans.outputs.artifact == 'true' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: scan-comparison
+          path: comment.md
+
+      - name: Post comment about artifact
+        if: ${{ steps.compare-scans.outputs.artifact == 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        # If the comment is too long, means there's a lot of images so we want to have them collapsed to minimize the comment size
+        run: |
+          {
+            echo "Full scan comparison results are too large to post as a comment. Link to full results artifact: [Results](${{ steps.upload-comparison-results.outputs.artifact-url}})"
+            echo "Summarized results are below:"
+            echo "<details>"
+            echo
+            sed '/<details>/,/<\/details>/d' comment.md | sed '/^______________________________________________________________________$/{
+            i\
+            </details>
+            a\
+            <details>
+            d
+            }' | sed -E 's/^(### )([^`]+)( `)/<summary>\2<\/summary>\n\n\0/'
+          } >> summary.md
+           tac summary.md | sed '0,/<details>/ s/<details>//' | tac > summary-done.md
+          gh pr comment ${{ github.event.pull_request.number }} \
+            --repo ${{ github.repository }} \
+            --body-file summary-done.md \
+            --edit-last \
+            --create-if-none
