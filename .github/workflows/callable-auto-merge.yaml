@@ -19,6 +19,18 @@ on:
         description: The prefix for private packages
         default: private
         type: string
+      excludes:
+        description: JSON array of image name patterns to exclude (match name or substring)
+        default: "[]"
+        type: string
+      nameRewriteSed:
+        description: JSON array of sed -E expressions to rewrite image names
+        default: "[]"
+        type: string
+      allowPatchMismatch:
+        description: Collapse tags to major.minor before comparison
+        default: true
+        type: boolean
 
 permissions:
   contents: read
@@ -57,11 +69,8 @@ jobs:
         id: check-image-flavors
         shell: bash
         env:
-          GH_TOKEN: ${{ github.token }}
-          REPO_OWNER: ${{ github.repository_owner }}
-          REPO_NAME: ${{ github.event.repository.name }}
-          PACKAGE_PREFIX: ${{ inputs.packagePrefix }}
-          PRIVATE_PACKAGE_PREFIX: ${{ inputs.privatePackagePrefix }}
+          EXCLUDES: ${{ inputs.excludes }}
+          NAME_REWRITE_SED: ${{ inputs.nameRewriteSed }}
         run: |
           set -euo pipefail
 
@@ -76,11 +85,11 @@ jobs:
           # --- Begin: your script (paths adapted for CI workspace) ---
 
           # list of images to exclude example: ("cfssl-self-sign" "gitlab-sidekiq")
-          EXCLUDES=()
+          # EXCLUDES=()
 
           # Optional name rewrite rules (sed -E). Applied in order to the image NAME (left of ':').
           # Example: strip a final "-ee": 's/-ee$//'
-          NAME_REWRITE_SED=()
+          # NAME_REWRITE_SED=()
 
           normalize_image() {
             # $1 is "name:tag"
@@ -209,6 +218,10 @@ jobs:
       - name: Check Chart Flavors
         id: check-chart-flavors
         shell: bash
+        env:
+          EXCLUDES: ${{ inputs.excludes }}
+          NAME_REWRITE_SED: ${{ inputs.nameRewriteSed }}
+          ALLOW_PATCH_MISMATCH: ${{ inputs.allowPatchMismatch }}
         run: |
           set -euo pipefail
 
@@ -228,9 +241,9 @@ jobs:
           fi
 
           # Optional excludes & name rewrites (apply to image NAME only, not tags)
-          EXCLUDES=()         # e.g., ("cfssl-self-sign" "gitlab-sidekiq")
-          NAME_REWRITE_SED=() # e.g., ('s/-ee$//')
-          ALLOW_PATCH_MISMATCH=TRUE   # set true or 1 to ignore patch differences
+          # EXCLUDES=()         # e.g., ("cfssl-self-sign" "gitlab-sidekiq")
+          # NAME_REWRITE_SED=() # e.g., ('s/-ee$//')
+          # ALLOW_PATCH_MISMATCH=TRUE   # set true or 1 to ignore patch differences
 
           normalize_image() {
             local full="$1"
