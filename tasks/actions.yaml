@@ -112,8 +112,18 @@ tasks:
       - description: authenticate to the registries
         task: authenticate-registries
 
+  - name: setup-environment-2
+    description: Setup the runner environment for testing UDS Packages
+    actions:
+    # mstodo: rollback the task name changes
+      - description: Install dependencies - 2
+        task: install-deps-2
+        if: ${{ eq .variables.INSTALL_DEPENDENCIES "true" }}
+      - description: authenticate to the registries
+        task: authenticate-registries
+
   - name: install-deps
-    description: Install the runner dependencies for testing UDS Packages - 2
+    description: Install the runner dependencies for testing UDS Packages
     actions:
       - description: Install k3d
         env:
