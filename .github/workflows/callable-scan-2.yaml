@@ -58,6 +58,8 @@ jobs:
           --set GH_TOKEN="${{ secrets.GITHUB_TOKEN }}" \
           --set RAPIDFORT_USERNAME="${{ secrets.RAPIDFORT_USERNAME }}" \
           --set RAPIDFORT_PASSWORD="${{ secrets.RAPIDFORT_PASSWORD }}"
+          
+          uds run actions:install-deps
         shell: bash
 
       - name: Compare scans

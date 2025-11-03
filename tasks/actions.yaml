@@ -105,14 +105,38 @@ tasks:
   - name: setup-environment
     description: Setup the runner environment for testing UDS Packages
     actions:
-      - description: Install dependencies
-        task: install-deps
+    # mstodo: rollback the task name changes
+      - description: Install dependencies - 2
+        task: install-deps-2
         if: ${{ eq .variables.INSTALL_DEPENDENCIES "true" }}
       - description: authenticate to the registries
         task: authenticate-registries
 
   - name: install-deps
-    description: Install the runner dependencies for testing UDS Packages
+    description: Install the runner dependencies for testing UDS Packages - 2
+    actions:
+      - description: Install k3d
+        env:
+          # renovate: datasource=github-tags depName=k3d-io/k3d versioning=semver-coerced
+          - K3D_VERSION=v5.8.3
+        cmd: |
+          echo "Installing k3d version $K3D_VERSION"
+          curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | TAG="${K3D_VERSION}" bash
+
+      - task: determine-arch
+
+      - description: Install uds-pk-1.1.2
+        env:
+          # renovate: datasource=github-tags depName=defenseunicorns/uds-pk versioning=semver-coerced
+          - UDS_PK_VERSION=v0.1.2
+        cmd: |
+          echo "Installing uds-pk version $UDS_PK_VERSION"
+          curl -o /usr/local/bin/uds-pk -L \
+          "https://github.com/defenseunicorns/uds-pk/releases/download/${UDS_PK_VERSION}/uds-pk_${UDS_PK_VERSION}_$(uname -s)_${{ .variables.ARCH }}" \
+          && chmod +x /usr/local/bin/uds-pk
+    # mstodo: drop install-deps-2
+  - name: install-deps-2
+    description: Install the runner dependencies for testing UDS Packages - 2
     actions:
       - description: Install k3d
         env:
