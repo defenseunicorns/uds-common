@@ -36,7 +36,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  get-sboms:
+  scan-and-compare:
     runs-on: ubuntu-latest
     outputs:
       sboms: ${{ steps.get-sboms.outputs.sboms }}
