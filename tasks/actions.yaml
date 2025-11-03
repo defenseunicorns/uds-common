@@ -124,7 +124,7 @@ tasks:
 
       - task: determine-arch
 
-      - description: Install uds-pk
+      - description: Install uds-pk-1.1.2
         env:
           # renovate: datasource=github-tags depName=defenseunicorns/uds-pk versioning=semver-coerced
           - UDS_PK_VERSION=v0.1.2
