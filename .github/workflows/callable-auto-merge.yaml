@@ -29,7 +29,7 @@ on:
         type: string
       allowPatchMismatch:
         description: Collapse tags to major.minor before comparison
-        default: true
+        default: false
         type: string
 
 permissions:
