@@ -74,7 +74,7 @@ jobs:
           uds-pk scan compare \
             --public-packages-prefix "${PACKAGE_PREFIX}" \
             --private-packages-prefix "${PRIVATE_PACKAGE_PREFIX}" \
-            --zarf-yaml-path ${{ inputs.zarfYamlPath }} \
+            --zarf-yaml-path ${{ inputs.zarfYamlPath }} --verbose \
             --allow-different-images --repo-owner "$REPO_OWNER" --allow-different-images > comment.md
           
           echo "generated with uds-pk scan compare" >> comment.md
