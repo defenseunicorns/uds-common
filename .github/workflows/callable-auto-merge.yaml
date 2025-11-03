@@ -245,7 +245,7 @@ jobs:
           # NAME_REWRITE_SED=() # e.g., ('s/-ee$//')
           # ALLOW_PATCH_MISMATCH=TRUE   # set true or 1 to ignore patch differences
 
-          EXCLUDES=()
+          # EXCLUDES=()
           if [[ -n "${EXCLUDES:-}" ]]; then
             # Strip whitespace around commas, remove duplicate spaces, then split on commas
             IFS=',' read -r -a EXCLUDES <<< "$(echo "${EXCLUDES}" | sed 's/[[:space:]]*,[[:space:]]*/,/g')"
