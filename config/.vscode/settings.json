@@ -8,10 +8,10 @@
       ]
     },
     "yaml.schemas": {
-      "https://raw.githubusercontent.com/defenseunicorns/uds-cli/v0.27.16/uds.schema.json": [
+      "https://raw.githubusercontent.com/defenseunicorns/uds-cli/v0.27.17/uds.schema.json": [
         "uds-bundle.yaml"
       ],
-      "https://raw.githubusercontent.com/defenseunicorns/uds-cli/v0.27.16/tasks.schema.json": [
+      "https://raw.githubusercontent.com/defenseunicorns/uds-cli/v0.27.17/tasks.schema.json": [
         "tasks.yaml",
         "tasks/**/*.yaml",
         "src/**/validate.yaml"
