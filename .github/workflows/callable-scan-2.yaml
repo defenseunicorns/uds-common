@@ -71,7 +71,6 @@ jobs:
           PACKAGE_PREFIX: ${{ inputs.packagePrefix }}
           PRIVATE_PACKAGE_PREFIX: ${{ inputs.privatePackagePrefix }}
         run: |
-#          mstodo: investigate if grype installation wouldn't be better in a separate task
           curl -sSfL https://get.anchore.io/grype | sudo sh -s -- -b /usr/local/bin
           uds-pk scan compare \
             --public-packages-prefix "${PACKAGE_PREFIX}" \
