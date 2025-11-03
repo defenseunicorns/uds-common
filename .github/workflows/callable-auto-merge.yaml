@@ -21,7 +21,7 @@ on:
         type: string
       excludes:
         description: JSON array of image name patterns to exclude (match name or substring)
-        default: "[]"
+        default: ""
         type: string
       nameRewriteSed:
         description: JSON array of sed -E expressions to rewrite image names
@@ -245,10 +245,10 @@ jobs:
           # NAME_REWRITE_SED=() # e.g., ('s/-ee$//')
           # ALLOW_PATCH_MISMATCH=TRUE   # set true or 1 to ignore patch differences
 
-          # Parse EXCLUDES/NAME_REWRITE_SED from JSON arrays (requires jq, present on ubuntu-latest)
           EXCLUDES=()
-          if [[ -n "${EXCLUDES_JSON:-}" && "${EXCLUDES_JSON}" != "[]" ]]; then
-            mapfile -t EXCLUDES < <(jq -r '.[]' <<<"${EXCLUDES_JSON}")
+          if [[ -n "${EXCLUDES:-}" ]]; then
+            # Strip whitespace around commas, remove duplicate spaces, then split on commas
+            IFS=',' read -r -a EXCLUDES <<< "$(echo "${EXCLUDES}" | sed 's/[[:space:]]*,[[:space:]]*/,/g')"
           fi
 
           NAME_REWRITE_SED=()
