@@ -122,7 +122,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if ./uds-pk/uds-pk release check "${{ inputs.flavor }}"; then
+#         # mstodo: switch to base repo, extract package name in uds-pk
+          PACKAGE_NAME="cat zarf.yaml | zarf tools yq .metadata.name"
+          if ./uds-pk/uds-pk release check "${{ inputs.flavor }}" --arch "${{ inputs.arch }}" --repository-url "ghcr.io/defenseunicorns/packages/uds/$PACKAGE_NAME"; then
             echo "Release not found, will proceed with publishing"
             ./uds-pk/uds-pk release update-yaml ${{ inputs.flavor }}
             if {{ inputs.arch }} != "arm64"; then
