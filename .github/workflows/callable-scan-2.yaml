@@ -58,7 +58,7 @@ jobs:
           --set GH_TOKEN="${{ secrets.GITHUB_TOKEN }}" \
           --set RAPIDFORT_USERNAME="${{ secrets.RAPIDFORT_USERNAME }}" \
           --set RAPIDFORT_PASSWORD="${{ secrets.RAPIDFORT_PASSWORD }}"
-          
+
           uds run actions:install-deps
         shell: bash
 
@@ -77,9 +77,9 @@ jobs:
             --private-packages-prefix "${PRIVATE_PACKAGE_PREFIX}" \
             --zarf-yaml-path ${{ inputs.zarfYamlPath }} --verbose \
             --allow-different-images --repo-owner "$REPO_OWNER" --allow-different-images > comment.md
-          
+
           echo "generated with uds-pk scan compare" >> comment.md
-          
+
           pipx install mdformat
 
           mdformat comment.md
