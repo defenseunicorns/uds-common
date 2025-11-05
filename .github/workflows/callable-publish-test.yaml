@@ -125,8 +125,9 @@ jobs:
           PACKAGE_NAME="cat zarf.yaml | zarf tools yq .metadata.name"
           if ./uds-pk/uds-pk release check "${{ inputs.flavor }}" --arch "${{ inputs.arch }}" --repository-url "ghcr.io/defenseunicorns/packages/uds/$PACKAGE_NAME"; then
             echo "Release not found, will proceed with publishing"
+            echo "Architecture: ${{ inputs.arch }}"
             ./uds-pk/uds-pk release update-yaml ${{ inputs.flavor }}
-            if {{ inputs.arch }} != "arm64"; then
+            if if [ "${{ inputs.arch }}" != "arm64" ]; then
               echo "inflicting failure for non-arm64"
               exit 1
             fi
