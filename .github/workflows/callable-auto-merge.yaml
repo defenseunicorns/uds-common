@@ -11,10 +11,6 @@ on:
         # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
         default: 0.27.15
         type: string
-      zarfYamlPath:
-        description: The path to the zarf.yaml file
-        default: zarf.yaml
-        type: string
       packagePrefix:
         description: The prefix for public packages
         default: ""
@@ -22,6 +18,18 @@ on:
       privatePackagePrefix:
         description: The prefix for private packages
         default: private
+        type: string
+      excludes:
+        description: Comma separated list of image name patterns to exclude (match name or substring)
+        default: ""
+        type: string
+      nameRewriteSed:
+        description: Comma separated list of sed -E expressions to rewrite image names
+        default: ""
+        type: string
+      allowPatchMismatch:
+        description: Collapse tags to major.minor before comparison
+        default: false
         type: string
 
 permissions:
@@ -61,33 +69,30 @@ jobs:
         id: check-image-flavors
         shell: bash
         env:
-          GH_TOKEN: ${{ github.token }}
-          REPO_OWNER: ${{ github.repository_owner }}
-          REPO_NAME: ${{ github.event.repository.name }}
-          PACKAGE_PREFIX: ${{ inputs.packagePrefix }}
-          PRIVATE_PACKAGE_PREFIX: ${{ inputs.privatePackagePrefix }}
+          EXCLUDES: ${{ inputs.excludes }}
+          NAME_REWRITE_SED: ${{ inputs.nameRewriteSed }}
         run: |
           set -euo pipefail
 
-          # Single releaser expected in repo root or current working directory
-          RELEASER_YAML="releaser.yaml"
-          if [[ ! -f "${RELEASER_YAML}" ]]; then
-            echo "No releaser.yaml found, skipping..."
-            echo "No releaser.yaml found, skipping..." >> "$GITHUB_STEP_SUMMARY"
+          # Check for root zarf.yaml
+          ZARF_YAML="zarf.yaml"
+          if [[ ! -f "${ZARF_YAML}" ]]; then
+            echo "No zarf.yaml found, skipping..."
+            echo "No zarf.yaml found, skipping..." >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
 
-          # --- Begin: your script (paths adapted for CI workspace) ---
+          # Convert comma separated EXCLUDES and NAME_REWRITE_SED to arrays
+          if [[ -n "${EXCLUDES:-}" ]]; then
+            IFS=',' read -r -a EXCLUDES <<< "$(echo "${EXCLUDES}" | sed 's/[[:space:]]*,[[:space:]]*/,/g')"
+          fi
 
-          # list of images to exclude example: ("cfssl-self-sign" "gitlab-sidekiq")
-          EXCLUDES=()
+          if [[ -n "${NAME_REWRITE_SED:-}" ]]; then
+            IFS=',' read -r -a NAME_REWRITE_SED <<< "$(echo "${NAME_REWRITE_SED}" | sed 's/[[:space:]]*,[[:space:]]*/,/g')"
+          fi
 
-          # Optional name rewrite rules (sed -E). Applied in order to the image NAME (left of ':').
-          # Example: strip a final "-ee": 's/-ee$//'
-          NAME_REWRITE_SED=()
-
+          # Function to normalize image names
           normalize_image() {
-            # $1 is "name:tag"
             local full="$1"
             local name="${full%%:*}"
             local tag="${full#*:}"
@@ -99,8 +104,8 @@ jobs:
             printf '%s:%s\n' "$n" "$tag"
           }
 
+          # Function to check if an image should be excluded
           is_excluded() {
-            # $1 is "name:tag"
             local full="$1"
             local name="${full%%:*}"
             local pat
@@ -162,6 +167,7 @@ jobs:
 
           # Collect mismatches to report at the end
           MISMATCHES=()
+          failures=0
 
           # For each flavor, check each image against all other flavors; only record mismatches
           for src_flavor in "${FLAVOR_ARR[@]}"; do
@@ -184,27 +190,197 @@ jobs:
               done
 
               if ! $match_found; then
-                MISMATCHES+=("MISMATCH: '${image}' from flavor '${src_flavor}' not found in any other flavor.")
+                printf 'MISMATCH [%s] %s\n' "$src_flavor" "$image"
+                failures=$((failures+1))
               fi
             done < "${src_file}"
           done
 
-          if (( ${#MISMATCHES[@]} > 0 )); then
-            printf '%s\n' "${MISMATCHES[@]}"
-            {
-              echo "## Image Flavor Consistency — Fail"
-              echo ""
-              echo "**Mismatches:**"
-              echo '```'
-              printf '%s\n' "${MISMATCHES[@]}"
-              echo '```'
-            } >> "$GITHUB_STEP_SUMMARY"
+          if (( failures > 0 )); then
+            printf 'RESULT: FAIL (%d mismatch%s)\n' "$failures" "$([[ $failures -eq 1 ]] && echo "" || echo "es")"
             exit 1
+          else
+            echo 'RESULT: OK'
           fi
 
-          echo "All images are consistent across all flavors."
-          {
-            echo "## Image Flavor Consistency — OK"
-            echo ""
-            echo "All images are consistent across all flavors."
-          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Check Chart Flavors
+        id: check-chart-flavors
+        shell: bash
+        env:
+          EXCLUDES: ${{ inputs.excludes }}
+          NAME_REWRITE_SED: ${{ inputs.nameRewriteSed }}
+          ALLOW_PATCH_MISMATCH: ${{ inputs.allowPatchMismatch }}
+        run: |
+          set -euo pipefail
+
+          ZARF_YAML="zarf.yaml"
+          COMMON_PATH="${GITHUB_WORKSPACE}/common"
+
+          # Check for root zarf.yaml and common/
+          if [[ ! -f "${ZARF_YAML}" ]]; then
+            echo "No zarf.yaml found, skipping..."
+            echo "No zarf.yaml found, skipping..." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          if [[ ! -d "${COMMON_PATH}" ]]; then
+            echo "No common/ directory found, skipping..."
+            echo "No common/ directory found, skipping..." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          # Convert comma separated EXCLUDES and NAME_REWRITE_SED to arrays
+          if [[ -n "${EXCLUDES:-}" ]]; then
+            # Strip whitespace around commas, remove duplicate spaces, then split on commas
+            IFS=',' read -r -a EXCLUDES <<< "$(echo "${EXCLUDES}" | sed 's/[[:space:]]*,[[:space:]]*/,/g')"
+          fi
+
+          if [[ -n "${NAME_REWRITE_SED:-}" ]]; then
+            IFS=',' read -r -a NAME_REWRITE_SED <<< "$(echo "${NAME_REWRITE_SED}" | sed 's/[[:space:]]*,[[:space:]]*/,/g')"
+          fi
+
+          # Function to normalize image names
+          normalize_image() {
+            local full="$1"
+            local name="${full%%:*}"
+            local tag="${full#*:}"
+
+            # apply optional name rewrites
+            local n="$name"
+            local expr
+            for expr in "${NAME_REWRITE_SED[@]:-}"; do
+              n="$(printf '%s' "$n" | sed -E "$expr")"
+            done
+
+            # strip leading v/V; remove build suffix after '-'
+            tag="${tag#v}"; tag="${tag#V}"
+            tag="${tag%%-*}"
+
+            # If allowed, collapse semantic versions to major.minor so patch differences pass
+            if [[ "${ALLOW_PATCH_MISMATCH}" == "true" ]]; then
+              if [[ "$tag" =~ ^([0-9]+)\.([0-9]+)\.[0-9A-Za-z]+$ ]]; then
+                tag="${BASH_REMATCH[1]}.${BASH_REMATCH[2]}"
+                echo "Stripping patch from tag: ${tag}"
+              fi
+            fi
+            printf '%s:%s\n' "$n" "$tag"
+          }
+
+          # Function to check if an image is excluded
+          is_excluded() {
+            local full="$1"
+            local name="${full%%:*}"
+            local pat
+            for pat in "${EXCLUDES[@]:-}"; do
+              [[ -n "$pat" ]] || continue
+              if [[ "$pat" == *:* ]]; then
+                [[ "$full" == "$pat" ]] && return 0
+              else
+                [[ "$name" == "$pat" || "$name" == *"$pat"* ]] && return 0
+              fi
+            done
+            return 1
+          }
+
+          # List images discovered via find-images in common/
+          list_find_images() {
+            uds zarf dev find-images "$COMMON_PATH" \
+              | uds zarf tools yq -r '.components[].images[]'
+          }
+
+          # Collect images from list_find_images
+          collect_find_images() {
+            while IFS= read -r img; do
+              [[ -n "$img" ]] || continue
+              local basename="${img##*/}"     # drop registry/path
+              [[ "$basename" == *:* ]] || continue
+              local normalized
+              normalized="$(normalize_image "$basename")"
+              is_excluded "$normalized" && continue
+              printf '%s\n' "$normalized"
+            done < <(list_find_images)
+          }
+
+          # yq filter to extract images for a given flavor
+          image_filter='
+            .components[]
+            | select((.only.flavor|type=="!!str") and .only.flavor == env(FLAVOR))
+            | .images[]?
+            | sub("^.*/"; "")                          # remove registry path
+            | capture("(?<name>[^:]+):(?<tag>.*)")     # split name/tag
+            | .tag |= sub("-.*$"; "")                  # strip build suffix from TAG
+            | .tag |= sub("^[vV]"; "")                 # remove leading "v" or "V" from tag
+            | "\(.name):\(.tag)"                       # reconstruct image name:tag
+          '
+
+          images_for_flavor() {
+            FLAVOR="$1" uds zarf tools yq -r "${image_filter}" "${ZARF_YAML}"
+          }
+
+          # Collect images for a given flavor
+          collect_flavor_images() {
+            local flavor="$1"
+            while IFS= read -r img; do
+              [[ -n "$img" ]] || continue
+              local normalized
+              normalized="$(normalize_image "$img")"
+              is_excluded "$normalized" && continue
+              printf '%s\n' "$normalized"
+            done < <(images_for_flavor "$flavor")
+          }
+
+          # Discover unique flavors
+          FLAVORS="$(uds zarf tools yq -r '.components[].only.flavor | select(. != null)' "${ZARF_YAML}" | sort -u)"
+
+          if [[ -z "${FLAVORS}" ]]; then
+            echo "No flavors found."
+            echo "No flavors found in zarf.yaml." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          # Precompute found images from common/
+          tmpdir="$(mktemp -d)"; trap 'rm -rf "'"$tmpdir"'"' EXIT
+          collect_find_images | sort -u > "${tmpdir}/found.txt"
+
+          declare -a REPORT=()
+          failures=0
+
+          # Compare for each flavor
+          while IFS= read -r f; do
+            [[ -n "$f" ]] || continue
+            collect_flavor_images "$f" | sort -u > "${tmpdir}/flavor_${f}.txt" || true
+
+            comm -23 "${tmpdir}/found.txt"  "${tmpdir}/flavor_${f}.txt" > "${tmpdir}/only_in_found_${f}.txt"  || true
+            comm -13 "${tmpdir}/found.txt"  "${tmpdir}/flavor_${f}.txt" > "${tmpdir}/only_in_flavor_${f}.txt" || true
+
+            had_fail=0
+
+            if [[ -s "${tmpdir}/only_in_found_${f}.txt" ]]; then
+              while IFS= read -r img; do
+                [[ -n "$img" ]] || continue
+                printf 'FAIL [%s] missing in zarf.yaml: %s\n' "$f" "$img"
+                failures=$((failures+1))
+                had_fail=1
+              done < "${tmpdir}/only_in_found_${f}.txt"
+            fi
+
+            if [[ -s "${tmpdir}/only_in_flavor_${f}.txt" ]]; then
+              while IFS= read -r img; do
+                [[ -n "$img" ]] || continue
+                printf 'FAIL [%s] missing in find-images: %s\n' "$f" "$img"
+                failures=$((failures+1))
+                had_fail=1
+              done < "${tmpdir}/only_in_flavor_${f}.txt"
+            fi
+
+            if [[ "$had_fail" -eq 0 ]]; then
+              printf 'OK   [%s] sets match\n' "$f"
+            fi
+          done <<< "${FLAVORS}"
+
+          if (( failures > 0 )); then
+            printf 'RESULT: FAIL (%d mismatch%s)\n' "$failures" "$([[ $failures -eq 1 ]] && echo "" || echo "es")"
+            exit 1
+          else
+            echo 'RESULT: OK'
+          fi
