@@ -127,7 +127,7 @@ jobs:
             echo "Release not found, will proceed with publishing"
             echo "Architecture: ${{ inputs.arch }}"
             ./uds-pk/uds-pk release update-yaml ${{ inputs.flavor }}
-            if if [ "${{ inputs.arch }}" != "arm64" ]; then
+            if [ "${{ inputs.arch }}" != "arm64" ]; then
               echo "inflicting failure for non-arm64"
               exit 1
             fi
