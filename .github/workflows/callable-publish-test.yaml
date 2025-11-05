@@ -6,6 +6,10 @@ name: Callable-Publish
 on:
   workflow_call:
     inputs:
+      arch:
+        description: The architecture to publish for; arm64, amd64, etc.
+        required: true
+        type: string
       runsOn:
         default: ubuntu-latest
         type: string
@@ -123,6 +127,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           PACKAGE_NAME="cat zarf.yaml | zarf tools yq .metadata.name"
+          ARCH="cat zarf.yaml | zarf tools yq .metadata.architecture"
           if ./uds-pk/uds-pk release check "${{ inputs.flavor }}" --arch "${{ inputs.arch }}" --repository-url "ghcr.io/defenseunicorns/packages/uds/$PACKAGE_NAME"; then
             echo "Release not found, will proceed with publishing"
             echo "Architecture: ${{ inputs.arch }}"
