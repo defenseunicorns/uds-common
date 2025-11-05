@@ -147,6 +147,8 @@ jobs:
                 --no-progress ${{ inputs.options }} \
                 --set LICENSE_KEY=${{ secrets.LICENSE_KEY }}
             fi
+          else
+            echo "Release found, will not proceed with publishing"
           fi
 
       - name: Debug Output
