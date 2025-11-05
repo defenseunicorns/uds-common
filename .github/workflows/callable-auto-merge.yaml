@@ -167,6 +167,7 @@ jobs:
 
           # Collect mismatches to report at the end
           MISMATCHES=()
+          failures=0
 
           # For each flavor, check each image against all other flavors; only record mismatches
           for src_flavor in "${FLAVOR_ARR[@]}"; do
