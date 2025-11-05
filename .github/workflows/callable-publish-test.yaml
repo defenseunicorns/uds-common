@@ -132,6 +132,11 @@ jobs:
             echo "Release not found, will proceed with publishing"
             echo "Architecture: ${{ inputs.arch }}"
             ./uds-pk/uds-pk release update-yaml ${{ inputs.flavor }}
+            if [ "${{ inputs.arch }}" != "arm64" ]; then
+              echo "finishing early for non-arm64"
+              echo "we're exiting successfully because we don't need the failure, we just don't want the image to be published"
+              exit 0
+            fi
             if uds run --list | grep -wq 'publish-package'; then
               uds run publish-package \
                 --set USE_CHECKPOINT=false \
