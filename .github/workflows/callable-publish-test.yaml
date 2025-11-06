@@ -10,6 +10,10 @@ on:
         description: The architecture to publish for; arm64, amd64, etc.
         required: true
         type: string
+      base-repo:
+        description: The base repository to publish to
+        required: true
+        type: string
       runsOn:
         default: ubuntu-latest
         type: string
@@ -128,7 +132,7 @@ jobs:
         run: |
           echo "BASE_REPO: ${BASE_REPO}"
           env | grep -i package
-          if ./uds-pk/uds-pk release check "${{ inputs.flavor }}" --arch "${{ inputs.arch }}" --repository-url "ghcr.io/defenseunicorns/packages/uds/${PACKAGE_NAME}" --verbose; then
+          if ./uds-pk/uds-pk release check "${{ inputs.flavor }}" --arch "${{ inputs.arch }}" --base-repo "${{ base-repo }}" --verbose; then
             echo "Release not found, will proceed with publishing"
             echo "Architecture: ${{ inputs.arch }}"
             ./uds-pk/uds-pk release update-yaml ${{ inputs.flavor }}
@@ -150,8 +154,8 @@ jobs:
           else
             echo "Release found, will not proceed with publishing"
           fi
-          
-          if ./uds-pk/uds-pk release check "${{ inputs.flavor }}" --arch "${{ inputs.arch }}" --repository-url "ghcr.io/defenseunicorns/packages/uds/${PACKAGE_NAME}" --verbose; then
+          ghcr.io/uds-packages/private/fider:v0.28.1-uds.1-unicorn
+          if ./uds-pk/uds-pk release check "${{ inputs.flavor }}" --arch "${{ inputs.arch }}" --repository-url "${{ base-repo }}/uds/${PACKAGE_NAME}" --verbose; then
             echo "Release not found after publishing attempt, something went wrong"
             exit 1
           else
