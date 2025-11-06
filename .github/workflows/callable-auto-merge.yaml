@@ -1,0 +1,385 @@
+# Copyright 2024 Defense Unicorns
+# SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
+
+name: Callable-Auto-Merge-Checks
+
+on:
+  workflow_call:
+    inputs:
+      udsCliVersion:
+        description: The uds-cli version to install
+        # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
+        default: 0.27.15
+        type: string
+      packagePrefix:
+        description: The prefix for public packages
+        default: ""
+        type: string
+      privatePackagePrefix:
+        description: The prefix for private packages
+        default: private
+        type: string
+      excludes:
+        description: Comma separated list of image name patterns to exclude (match name or substring)
+        default: ""
+        type: string
+      nameRewriteSed:
+        description: Comma separated list of sed -E expressions to rewrite image names
+        default: ""
+        type: string
+      allowPatchMismatch:
+        description: Collapse tags to major.minor before comparison
+        default: false
+        type: string
+
+permissions:
+  contents: read
+  packages: read
+  pull-requests: write
+
+concurrency:
+  group: scan-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check-flavors:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+
+      - name: Install UDS CLI
+        uses: defenseunicorns/setup-uds@ab842abcad1f7a3305c2538e3dd1950d0daacfa5 # v1.0.1
+        with:
+          version: v${{ inputs.udsCliVersion }}
+
+      - name: Environment setup
+        shell: bash
+        run: |
+          echo 'MARU_AUTH={"raw.githubusercontent.com":"${{ secrets.GITHUB_TOKEN }}"}' >> "$GITHUB_ENV"
+          uds run actions:setup-environment \
+            --set REGISTRY1_USERNAME="${{ secrets.IRON_BANK_ROBOT_USERNAME }}" \
+            --set REGISTRY1_PASSWORD="${{ secrets.IRON_BANK_ROBOT_PASSWORD }}" \
+            --set GH_TOKEN="${{ secrets.GITHUB_TOKEN }}" \
+            --set RAPIDFORT_USERNAME="${{ secrets.RAPIDFORT_USERNAME }}" \
+            --set RAPIDFORT_PASSWORD="${{ secrets.RAPIDFORT_PASSWORD }}"
+
+      - name: Check Image Flavors
+        id: check-image-flavors
+        shell: bash
+        env:
+          EXCLUDES: ${{ inputs.excludes }}
+          NAME_REWRITE_SED: ${{ inputs.nameRewriteSed }}
+        run: |
+          set -euo pipefail
+
+          # Check for root zarf.yaml
+          ZARF_YAML="zarf.yaml"
+          if [[ ! -f "${ZARF_YAML}" ]]; then
+            echo "No zarf.yaml found, skipping..."
+            echo "No zarf.yaml found, skipping..." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          # Convert comma separated EXCLUDES and NAME_REWRITE_SED to arrays
+          if [[ -n "${EXCLUDES:-}" ]]; then
+            IFS=',' read -r -a EXCLUDES <<< "$(echo "${EXCLUDES}" | sed 's/[[:space:]]*,[[:space:]]*/,/g')"
+          fi
+
+          if [[ -n "${NAME_REWRITE_SED:-}" ]]; then
+            IFS=',' read -r -a NAME_REWRITE_SED <<< "$(echo "${NAME_REWRITE_SED}" | sed 's/[[:space:]]*,[[:space:]]*/,/g')"
+          fi
+
+          # Function to normalize image names
+          normalize_image() {
+            local full="$1"
+            local name="${full%%:*}"
+            local tag="${full#*:}"
+            local n="$name"
+            local expr
+            for expr in "${NAME_REWRITE_SED[@]:-}"; do
+              n="$(printf '%s' "$n" | sed -E "$expr")"
+            done
+            printf '%s:%s\n' "$n" "$tag"
+          }
+
+          # Function to check if an image should be excluded
+          is_excluded() {
+            local full="$1"
+            local name="${full%%:*}"
+            local pat
+            for pat in "${EXCLUDES[@]:-}"; do
+              [[ -n "${pat}" ]] || continue
+              if [[ "$pat" == *:* ]]; then
+                [[ "$full" == "$pat" ]] && return 0
+              else
+                [[ "$name" == "$pat" || "$name" == *"$pat"* ]] && return 0
+              fi
+            done
+            return 1
+          }
+
+          # yq filter to extract images for a given flavor
+          image_filter='
+            .components[]
+            | select((.only.flavor|type=="!!str") and .only.flavor == env(FLAVOR))
+            | .images[]?
+            | sub("^.*/"; "")                          # remove registry path
+            | capture("(?<name>[^:]+):(?<tag>.*)")     # split name/tag
+            | .tag |= sub("-.*$"; "")                  # strip build suffix from TAG
+            | .tag |= sub("^[vV]"; "")                 # remove leading "v" or "V" from tag
+            | "\(.name):\(.tag)"                       # reconstruct image name:tag
+          '
+
+          images_for_flavor() {
+            local flavor="$1"
+            FLAVOR="${flavor}" uds zarf tools yq -r "${image_filter}" "${ZARF_YAML}"
+          }
+
+          # Collect unique, non-null flavors
+          FLAVORS="$(uds zarf tools yq -r '.components[].only.flavor | select(. != null)' "${ZARF_YAML}" | sort -u)"
+
+          # Read flavors into array
+          FLAVOR_ARR=()
+          while IFS= read -r f; do
+            [[ -n "${f}" ]] && FLAVOR_ARR+=("${f}")
+          done <<< "${FLAVORS}"
+
+          # Exit if no flavors found
+          if [[ ${#FLAVOR_ARR[@]} -eq 0 ]]; then
+            echo "No flavors found."
+            echo "No flavors found in releaser.yaml." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          # Cache images per flavor (deduped, applying exclusions and name rewrites)
+          tmpdir="$(mktemp -d)"; trap 'rm -rf "'"$tmpdir"'"' EXIT
+          for f in "${FLAVOR_ARR[@]}"; do
+            {
+              while IFS= read -r img; do
+                [[ -n "$img" ]] || continue
+                is_excluded "$img" && continue
+                normalize_image "$img"
+              done < <(images_for_flavor "${f}")
+            } | sort -u > "${tmpdir}/${f}.txt" || true
+          done
+
+          # Collect mismatches to report at the end
+          MISMATCHES=()
+          failures=0
+
+          # For each flavor, check each image against all other flavors; only record mismatches
+          for src_flavor in "${FLAVOR_ARR[@]}"; do
+            src_file="${tmpdir}/${src_flavor}.txt"
+            [[ -s "${src_file}" ]] || continue
+
+            while IFS= read -r image; do
+              [[ -n "${image}" ]] || continue
+              is_excluded "$image" && continue
+
+              match_found=false
+              for tgt_flavor in "${FLAVOR_ARR[@]}"; do
+                [[ "${tgt_flavor}" == "${src_flavor}" ]] && continue
+                tgt_file="${tmpdir}/${tgt_flavor}.txt"
+                [[ -s "${tgt_file}" ]] || continue
+                if grep -Fxq -- "${image}" "${tgt_file}"; then
+                  match_found=true
+                  break
+                fi
+              done
+
+              if ! $match_found; then
+                printf 'MISMATCH [%s] %s\n' "$src_flavor" "$image"
+                failures=$((failures+1))
+              fi
+            done < "${src_file}"
+          done
+
+          if (( failures > 0 )); then
+            printf 'RESULT: FAIL (%d mismatch%s)\n' "$failures" "$([[ $failures -eq 1 ]] && echo "" || echo "es")"
+            exit 1
+          else
+            echo 'RESULT: OK'
+          fi
+
+      - name: Check Chart Flavors
+        id: check-chart-flavors
+        shell: bash
+        env:
+          EXCLUDES: ${{ inputs.excludes }}
+          NAME_REWRITE_SED: ${{ inputs.nameRewriteSed }}
+          ALLOW_PATCH_MISMATCH: ${{ inputs.allowPatchMismatch }}
+        run: |
+          set -euo pipefail
+
+          ZARF_YAML="zarf.yaml"
+          COMMON_PATH="${GITHUB_WORKSPACE}/common"
+
+          # Check for root zarf.yaml and common/
+          if [[ ! -f "${ZARF_YAML}" ]]; then
+            echo "No zarf.yaml found, skipping..."
+            echo "No zarf.yaml found, skipping..." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          if [[ ! -d "${COMMON_PATH}" ]]; then
+            echo "No common/ directory found, skipping..."
+            echo "No common/ directory found, skipping..." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          # Convert comma separated EXCLUDES and NAME_REWRITE_SED to arrays
+          if [[ -n "${EXCLUDES:-}" ]]; then
+            IFS=',' read -r -a EXCLUDES <<< "$(echo "${EXCLUDES}" | sed 's/[[:space:]]*,[[:space:]]*/,/g')"
+          fi
+
+          if [[ -n "${NAME_REWRITE_SED:-}" ]]; then
+            IFS=',' read -r -a NAME_REWRITE_SED <<< "$(echo "${NAME_REWRITE_SED}" | sed 's/[[:space:]]*,[[:space:]]*/,/g')"
+          fi
+
+          # Function to normalize image names
+          normalize_image() {
+            local full="$1"
+            local name="${full%%:*}"
+            local tag="${full#*:}"
+
+            # apply optional name rewrites
+            local n="$name"
+            local expr
+            for expr in "${NAME_REWRITE_SED[@]:-}"; do
+              n="$(printf '%s' "$n" | sed -E "$expr")"
+            done
+
+            # strip leading v/V; remove build suffix after '-'
+            tag="${tag#v}"; tag="${tag#V}"
+            tag="${tag%%-*}"
+
+            # If allowed, collapse semantic versions to major.minor so patch differences pass
+            if [[ "${ALLOW_PATCH_MISMATCH}" == "true" ]]; then
+              if [[ "$tag" =~ ^([0-9]+)\.([0-9]+)\.[0-9A-Za-z]+$ ]]; then
+                tag="${BASH_REMATCH[1]}.${BASH_REMATCH[2]}"
+                >&2 echo "Stripping patch from tag: ${tag}"
+              fi
+            fi
+            printf '%s:%s\n' "$n" "$tag"
+          }
+
+          # Function to check if an image is excluded
+          is_excluded() {
+            local full="$1"
+            local name="${full%%:*}"
+            local pat
+            for pat in "${EXCLUDES[@]:-}"; do
+              [[ -n "$pat" ]] || continue
+              if [[ "$pat" == *:* ]]; then
+                [[ "$full" == "$pat" ]] && return 0
+              else
+                [[ "$name" == "$pat" || "$name" == *"$pat"* ]] && return 0
+              fi
+            done
+            return 1
+          }
+
+          # List images discovered via find-images in common/
+          list_find_images() {
+            uds zarf dev find-images "$COMMON_PATH" \
+              | uds zarf tools yq -r '.components[].images[]'
+          }
+
+          # Collect images from list_find_images
+          collect_find_images() {
+            while IFS= read -r img; do
+              [[ -n "$img" ]] || continue
+              local basename="${img##*/}"     # drop registry/path
+              [[ "$basename" == *:* ]] || continue
+              local normalized
+              normalized="$(normalize_image "$basename")"
+              is_excluded "$normalized" && continue
+              printf '%s\n' "$normalized"
+            done < <(list_find_images)
+          }
+
+          # yq filter to extract images for a given flavor
+          image_filter='
+            .components[]
+            | select((.only.flavor|type=="!!str") and .only.flavor == env(FLAVOR))
+            | .images[]?
+            | sub("^.*/"; "")                          # remove registry path
+            | capture("(?<name>[^:]+):(?<tag>.*)")     # split name/tag
+            | .tag |= sub("-.*$"; "")                  # strip build suffix from TAG
+            | .tag |= sub("^[vV]"; "")                 # remove leading "v" or "V" from tag
+            | "\(.name):\(.tag)"                       # reconstruct image name:tag
+          '
+
+          images_for_flavor() {
+            FLAVOR="$1" uds zarf tools yq -r "${image_filter}" "${ZARF_YAML}"
+          }
+
+          # Collect images for a given flavor
+          collect_flavor_images() {
+            local flavor="$1"
+            while IFS= read -r img; do
+              [[ -n "$img" ]] || continue
+              local normalized
+              normalized="$(normalize_image "$img")"
+              is_excluded "$normalized" && continue
+              printf '%s\n' "$normalized"
+            done < <(images_for_flavor "$flavor")
+          }
+
+          # Discover unique flavors
+          FLAVORS="$(uds zarf tools yq -r '.components[].only.flavor | select(. != null)' "${ZARF_YAML}" | sort -u)"
+
+          if [[ -z "${FLAVORS}" ]]; then
+            echo "No flavors found."
+            echo "No flavors found in zarf.yaml." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          # Precompute found images from common/
+          tmpdir="$(mktemp -d)"; trap 'rm -rf "'"$tmpdir"'"' EXIT
+          collect_find_images | sort -u > "${tmpdir}/found.txt"
+
+          declare -a REPORT=()
+          failures=0
+
+          # Compare for each flavor
+          while IFS= read -r f; do
+            [[ -n "$f" ]] || continue
+            collect_flavor_images "$f" | sort -u > "${tmpdir}/flavor_${f}.txt" || true
+
+            comm -23 "${tmpdir}/found.txt"  "${tmpdir}/flavor_${f}.txt" > "${tmpdir}/only_in_found_${f}.txt"  || true
+            comm -13 "${tmpdir}/found.txt"  "${tmpdir}/flavor_${f}.txt" > "${tmpdir}/only_in_flavor_${f}.txt" || true
+
+            had_fail=0
+
+            if [[ -s "${tmpdir}/only_in_found_${f}.txt" ]]; then
+              while IFS= read -r img; do
+                [[ -n "$img" ]] || continue
+                printf 'FAIL [%s] missing in zarf.yaml: %s\n' "$f" "$img"
+                failures=$((failures+1))
+                had_fail=1
+              done < "${tmpdir}/only_in_found_${f}.txt"
+            fi
+
+            if [[ -s "${tmpdir}/only_in_flavor_${f}.txt" ]]; then
+              while IFS= read -r img; do
+                [[ -n "$img" ]] || continue
+                printf 'FAIL [%s] missing in find-images: %s\n' "$f" "$img"
+                failures=$((failures+1))
+                had_fail=1
+              done < "${tmpdir}/only_in_flavor_${f}.txt"
+            fi
+
+            if [[ "$had_fail" -eq 0 ]]; then
+              printf 'OK   [%s] sets match\n' "$f"
+            fi
+          done <<< "${FLAVORS}"
+
+          if (( failures > 0 )); then
+            printf 'RESULT: FAIL (%d mismatch%s)\n' "$failures" "$([[ $failures -eq 1 ]] && echo "" || echo "es")"
+            exit 1
+          else
+            echo 'RESULT: OK'
+          fi
