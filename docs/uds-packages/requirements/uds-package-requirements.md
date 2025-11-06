@@ -109,10 +109,9 @@ The CODEOWNERS file should address two key concerns:
 Template CODEOWNERS file:
 
 ```text
-* @defenseunicorns/uds-package-maintainers
-# * @name-of-creator/s #optional during package creation to enable velocity
-# * @name-of-established-known-team #optional addition to "uds-package-maintainers"
+* @uds-packages/uds-foundry
+# * @additional-team - as appropriate
 
-/CODEOWNERS @jeff-mccoy @daveworth 
+/CODEOWNERS @jeff-mccoy @daveworth
 /LICENS* @jeff-mccoy @austenbryan
 ```
