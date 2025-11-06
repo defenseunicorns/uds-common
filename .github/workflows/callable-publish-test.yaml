@@ -126,9 +126,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          PACKAGE_NAME="cat zarf.yaml | zarf tools yq .metadata.name"
-          ARCH="cat zarf.yaml | zarf tools yq .metadata.architecture"
-          if ./uds-pk/uds-pk release check "${{ inputs.flavor }}" --arch "${{ inputs.arch }}" --repository-url "ghcr.io/defenseunicorns/packages/uds/$PACKAGE_NAME"; then
+          PACKAGE_NAME=$(cat zarf.yaml | zarf tools yq .metadata.name)
+          echo "Package name: $PACKAGE_NAME"
+          if ./uds-pk/uds-pk release check "${{ inputs.flavor }}" --arch "${{ inputs.arch }}" --repository-url "ghcr.io/defenseunicorns/packages/uds/${PACKAGE_NAME}" --verbose; then
             echo "Release not found, will proceed with publishing"
             echo "Architecture: ${{ inputs.arch }}"
             ./uds-pk/uds-pk release update-yaml ${{ inputs.flavor }}
@@ -149,6 +149,13 @@ jobs:
             fi
           else
             echo "Release found, will not proceed with publishing"
+          fi
+          
+          if ./uds-pk/uds-pk release check "${{ inputs.flavor }}" --arch "${{ inputs.arch }}" --repository-url "ghcr.io/defenseunicorns/packages/uds/${PACKAGE_NAME}" --verbose; then
+            echo "Release not found after publishing attempt, something went wrong"
+            exit 1
+          else
+            echo "Release found, successfully published"
           fi
 
       - name: Debug Output
