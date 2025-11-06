@@ -132,7 +132,7 @@ jobs:
         run: |
           echo "BASE_REPO: ${BASE_REPO}"
           env | grep -i package
-          if ./uds-pk/uds-pk release check "${{ inputs.flavor }}" --arch "${{ inputs.arch }}" --base-repo "${{ base-repo }}" --verbose; then
+          if ./uds-pk/uds-pk release check "${{ inputs.flavor }}" --arch "${{ inputs.arch }}" --base-repo "${{ inputs.base-repo }}" --verbose; then
             echo "Release not found, will proceed with publishing"
             echo "Architecture: ${{ inputs.arch }}"
             ./uds-pk/uds-pk release update-yaml ${{ inputs.flavor }}
@@ -155,7 +155,7 @@ jobs:
             echo "Release found, will not proceed with publishing"
           fi
           ghcr.io/uds-packages/private/fider:v0.28.1-uds.1-unicorn
-          if ./uds-pk/uds-pk release check "${{ inputs.flavor }}" --arch "${{ inputs.arch }}" --repository-url "${{ base-repo }}/uds/${PACKAGE_NAME}" --verbose; then
+          if ./uds-pk/uds-pk release check "${{ inputs.flavor }}" --arch "${{ inputs.arch }}" --repository-url "${{ inputs.base-repo }}/uds/${PACKAGE_NAME}" --verbose; then
             echo "Release not found after publishing attempt, something went wrong"
             exit 1
           else
