@@ -126,7 +126,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          PACKAGE_NAME=$(cat zarf.yaml | zarf tools yq .metadata.name)
+          echo "BASE_REPO: ${BASE_REPO}"
+          env | grep -i package
+          PACKAGE_NAME=$(cat zarf.yaml | yq .metadata.name)
           echo "Package name: $PACKAGE_NAME"
           if ./uds-pk/uds-pk release check "${{ inputs.flavor }}" --arch "${{ inputs.arch }}" --repository-url "ghcr.io/defenseunicorns/packages/uds/${PACKAGE_NAME}" --verbose; then
             echo "Release not found, will proceed with publishing"
