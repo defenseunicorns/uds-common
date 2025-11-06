@@ -231,7 +231,6 @@ jobs:
 
           # Convert comma separated EXCLUDES and NAME_REWRITE_SED to arrays
           if [[ -n "${EXCLUDES:-}" ]]; then
-            # Strip whitespace around commas, remove duplicate spaces, then split on commas
             IFS=',' read -r -a EXCLUDES <<< "$(echo "${EXCLUDES}" | sed 's/[[:space:]]*,[[:space:]]*/,/g')"
           fi
 
@@ -260,7 +259,7 @@ jobs:
             if [[ "${ALLOW_PATCH_MISMATCH}" == "true" ]]; then
               if [[ "$tag" =~ ^([0-9]+)\.([0-9]+)\.[0-9A-Za-z]+$ ]]; then
                 tag="${BASH_REMATCH[1]}.${BASH_REMATCH[2]}"
-                echo "Stripping patch from tag: ${tag}"
+                >&2 echo "Stripping patch from tag: ${tag}"
               fi
             fi
             printf '%s:%s\n' "$n" "$tag"
