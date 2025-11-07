@@ -1,0 +1,91 @@
+variables:
+  - name: ZARF_YAML
+    default: "./zarf.yaml"
+
+tasks:
+  - name: compare-image-flavors
+    actions:
+      - description: Compare Image flavors
+        cmd: |
+          FLAVORS="$(uds zarf tools yq -r '.components[].only.flavor | select(. != null)' "${ZARF_YAML}" | sort -u)"
+
+          # convert flavors to array
+          flavor_data="{}"
+          while IFS= read -r flavor; do
+              flavor_array+=("$flavor")
+          done <<< "$FLAVORS"
+
+          # loop through flavors, collect images into associative array
+          for flavor in "${flavor_array[@]}"; do
+              image_filter='
+              .components[]
+              | select((.only.flavor|type=="!!str") and .only.flavor == env(FLAVOR))
+              | .images[]?
+              | sub("^.*/"; "")                          # remove registry path
+              | capture("(?<name>[^:]+):(?<tag>.*)")     # split name/tag
+              | .tag |= sub("-.*$"; "")                  # strip build suffix from TAG
+              | .tag |= sub("^[vV]"; "")                 # remove leading "v" or "V" from tag
+              | "\(.name):\(.tag)"                       # reconstruct image name:tag
+              '
+
+              # pull images into a json array
+              # add flavor and images to array
+              images_json="$(FLAVOR="$flavor" uds zarf tools yq -r "${image_filter}" "${ZARF_YAML}" | sort -u | jq -R . | jq -s .)"
+              
+              flavor_data="$(echo "$flavor_data" | jq --arg flavor "$flavor" --argjson images "$images_json" '.[$flavor] = $images')"
+          done
+
+          # for each flavor, find images that don't exist in the other flavors
+          for current_flavor in "${flavor_array[@]}"; do
+
+              current_images="$(echo "$flavor_data" | jq -r --arg flavor "$current_flavor" '.[$flavor][]')"
+
+              # track if we mismatched images
+              mismatched_images=false
+              
+              # check each image in the current flavor
+              while IFS= read -r image; do
+
+                  [ -z "$image" ] && continue
+                  
+                  # all images are unique until proven otherwise
+                  is_unique=true
+                  
+                  for other_flavor in "${flavor_array[@]}"; do
+                      # stop from comparing flavor against self
+                      if [ "$other_flavor" = "$current_flavor" ]; then
+                          continue
+                      fi
+                      
+                      # grab images from the flavor we are comparing against
+                      other_images="${flavor_images[$other_flavor]}"
+                      
+                      # compare this current image to all other images in that flavor
+                      # it's no longer unique if there's a match
+                      if echo "$flavor_data" | jq -e --arg flavor "$other_flavor" --arg image "$image" '.[$flavor] | index($image)' > /dev/null 2>&1; then
+                          is_unique=false
+                          break
+                      fi
+                  done
+                  
+                  # if the image doesn't exist in any other flavor, it's unique
+                  # echo the flavor and image that are mismatched
+                  if [ "$is_unique" = true ]; then
+                      echo "Flavor: $current_flavor"
+                      echo "  - $image"
+                      mismatched_images=true
+                      # flag a separate mismatch so we can declare at the end
+                      mismatch=TRUE
+                  fi
+                  
+              done <<< "$current_images"
+          done
+
+          if [ "$mismatch" != TRUE ]; then
+            echo "Images are consistent across flavors."
+          fi
+
+  - name: compare-chart-images
+    actions:
+      - description: Get image flavors
+        cmd: |
