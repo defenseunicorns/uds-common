@@ -26,9 +26,9 @@ on:
 
 # Permissions for the GITHUB_TOKEN used by the workflow.
 permissions:
-  contents: read # Allows reading the content of the repository.
-  packages: read # Allows reading the content of the repository's packages.
-  pull-requests: write # Allows writing the scan results comment to the pull request.
+  contents: read  # Allows reading the content of the repository.
+  packages: read  # Allows reading the content of the repository's packages.
+  pull-requests: write  # Allows writing the scan results comment to the pull request.
 
 # Abort prior jobs in the same workflow / PR
 concurrency:
@@ -72,13 +72,13 @@ jobs:
           PRIVATE_PACKAGE_PREFIX: ${{ inputs.privatePackagePrefix }}
         run: |
           curl -sSfL https://get.anchore.io/grype | sudo sh -s -- -b /usr/local/bin
-          
+
           uds-pk scan compare \
             --public-packages-prefix "${PACKAGE_PREFIX}" \
             --private-packages-prefix "${PRIVATE_PACKAGE_PREFIX}" \
             --zarf-yaml-path ${{ inputs.zarfYamlPath }} --verbose \
             --allow-different-images --repo-owner "$REPO_OWNER" --allow-different-images > comment.md
-          
+
           echo "----" >> comment.md
           echo "generated with uds-pk scan compare" >> comment.md
 
@@ -106,7 +106,7 @@ jobs:
       - name: Upload comparison results
         id: upload-comparison-results
         if: ${{ steps.compare-scans.outputs.artifact == 'true' }}
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4.6.2
         with:
           name: scan-comparison
           path: comment.md
