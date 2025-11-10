@@ -52,7 +52,7 @@ jobs:
       - name: Environment setup
         run: |
           echo "MARU_AUTH=\"{\"raw.githubusercontent.com\": \"${{ secrets.GITHUB_TOKEN }}\"}\"" >> "GITHUB_ENV"
-          uds run actions:setup-environment-2 \
+          uds run actions:setup-environment \
           --set REGISTRY1_USERNAME="${{ secrets.IRON_BANK_ROBOT_USERNAME }}" \
           --set REGISTRY1_PASSWORD="${{ secrets.IRON_BANK_ROBOT_PASSWORD }}" \
           --set GH_TOKEN="${{ secrets.GITHUB_TOKEN }}" \
@@ -72,17 +72,15 @@ jobs:
           PRIVATE_PACKAGE_PREFIX: ${{ inputs.privatePackagePrefix }}
         run: |
           curl -sSfL https://get.anchore.io/grype | sudo sh -s -- -b /usr/local/bin
+          
           uds-pk scan compare \
             --public-packages-prefix "${PACKAGE_PREFIX}" \
             --private-packages-prefix "${PRIVATE_PACKAGE_PREFIX}" \
             --zarf-yaml-path ${{ inputs.zarfYamlPath }} --verbose \
             --allow-different-images --repo-owner "$REPO_OWNER" --allow-different-images > comment.md
-
+          
+          echo "----" >> comment.md
           echo "generated with uds-pk scan compare" >> comment.md
-
-          pipx install mdformat
-
-          mdformat comment.md
 
           CHAR_COUNT=$(wc -m comment.md | cut -d ' ' -f1)
 
