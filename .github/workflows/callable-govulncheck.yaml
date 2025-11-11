@@ -1,0 +1,72 @@
+# Copyright 2025 Defense Unicorns
+# SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
+
+name: govulncheck
+
+on:
+  workflow_call:
+    inputs:
+      cache:
+        default: true
+        required: false
+        type: string
+      cache-dependency-path:
+        default: "go.sum"
+        required: false
+        type: string
+      go-version:
+        default: "stable"
+        required: false
+        type: string
+      go-version-file:
+        default: ""
+        required: false
+        type: string
+      output-format:
+        default: "text"
+        required: false
+        type: string
+      output-file:
+        default: ""
+        required: false
+        type: string
+      pattern:
+        default: "./..."
+        required: false
+        type: string
+      work-dir:
+        default: "."
+        required: false
+        type: string
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00 # v6.0.0
+        if: ${{ inputs.go-version-file != "" }}
+        with:
+          go-version-file: ${{ inputs.go-version-file }}
+          cache: ${{ inputs.cache }}
+          cache-dependency-path: ${{ inputs.cache-dependency-path }}
+
+      - uses: actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00 # v6.0.0
+        if: ${{ inputs.go-version-file == "" }}
+        with:
+          go-version: ${{ inputs.go-version }}
+          cache: ${{ inputs.cache }}
+          cache-dependency-path: ${{ inputs.cache-dependency-path }}
+
+      - name: Install govulncheck
+        run: |
+          go install golang.org/x/vuln/cmd/govulncheck@latest
+
+      - name: Run govulncheck
+        if: ${{ inputs.output-file == "" }}
+        run: |
+          govulncheck -C ${{ inputs.work-dir }} -format ${{ inputs.output-format }} ${{ inputs.pattern }}
+
+      - name: Run govulncheck and save output to a file
+        if: ${{ inputs.output-file != "" }}
+        run: |
+          govulncheck -C ${{ inputs.work-dir }} -format ${{ inputs.output-format }} ${{ inputs.pattern }} > ${{ inputs.output-file }}
