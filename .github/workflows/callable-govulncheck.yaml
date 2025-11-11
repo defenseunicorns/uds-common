@@ -11,11 +11,11 @@ on:
         required: false
         type: string
       cache-dependency-path:
-        default: "go.sum"
+        default: go.sum
         required: false
         type: string
       go-version:
-        default: "stable"
+        default: stable
         required: false
         type: string
       go-version-file:
@@ -23,7 +23,7 @@ on:
         required: false
         type: string
       output-format:
-        default: "text"
+        default: text
         required: false
         type: string
       output-file:
@@ -31,11 +31,11 @@ on:
         required: false
         type: string
       pattern:
-        default: "./..."
+        default: ./...
         required: false
         type: string
       work-dir:
-        default: "."
+        default: .
         required: false
         type: string
 
@@ -63,10 +63,14 @@ jobs:
 
       - name: Run govulncheck
         if: ${{ inputs.output-file == "" }}
+        shell: bash
         run: |
+          # shellcheck disable=SC2094
           govulncheck -C ${{ inputs.work-dir }} -format ${{ inputs.output-format }} ${{ inputs.pattern }}
 
       - name: Run govulncheck and save output to a file
         if: ${{ inputs.output-file != "" }}
+        shell: bash
         run: |
+          # shellcheck disable=SC2094
           govulncheck -C ${{ inputs.work-dir }} -format ${{ inputs.output-format }} ${{ inputs.pattern }} > ${{ inputs.output-file }}
