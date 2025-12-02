@@ -43,7 +43,7 @@ jobs:
       flavors: ${{ steps.get-flavors.outputs.flavors }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
 
       - name: Get flavors
         id: get-flavors
@@ -91,7 +91,7 @@ jobs:
           fi
 
       - name: Checkout repository
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
         if: ${{ steps.decide-bump.outputs.bump == 'true' }}
         with:
           ref: ${{ github.head_ref || github.ref_name }}
