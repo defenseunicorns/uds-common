@@ -78,30 +78,6 @@ Use appropriate tooling to ensure code quality and consistency.
 
     > **Note:** Strive for individual package tests to complete in under 10 minutes when possible.
 
-## **Best Practice Examples**
-The following examples demonstrate best practices for implementing various types of tests in UDS packages:
-
-- ### **Journey Tests**
-    ---
-    The `uds-package-gitlab` repository provides a good example of journey test implementation.
-    These files demonstrate how to set up and structure end-to-end tests using Playwright, including authentication handling and test suite organization.
-
-    - **Test Configuration**: [playwright.config.ts](https://github.com/defenseunicorns/uds-package-gitlab/blob/main/tests/playwright.config.ts)
-    - **Test Suite**: [gitlab.test.ts](https://github.com/defenseunicorns/uds-package-gitlab/blob/main/tests/gitlab.test.ts)
-    - **Authentication Setup**: [auth.setup.ts](https://github.com/defenseunicorns/uds-package-gitlab/blob/main/tests/auth.setup.ts)
-
-- ### Upgrade Tests
-    ---
-    - The [uds-common](https://github.com/defenseunicorns/uds-common/blob/main/.github/actions/test-deploy/action.yaml) action is reused in packages.
-    - Example task in the [uds-package-gitlab repository](https://github.com/defenseunicorns/uds-package-gitlab/blob/main/tasks.yaml#L48-L68)
-
-- ### **Test Execution**
-    ---
-    Both `uds-package-gitlab` and `uds-package-gitlab-runner` use a `test.yaml` file to define their test execution process. These files are used by [Maru Runner](https://github.com/defenseunicorns/maru-runner), which is built into the [uds-cli tool](https://uds.defenseunicorns.com/cli/runner/).  These YAML files demonstrate how to set up and run tests locally or in CI/CD pipelines.
-
-    - [uds-package-gitlab/tasks/test.yaml](https://github.com/defenseunicorns/uds-package-gitlab/blob/main/tasks/test.yaml)
-    - [uds-package-gitlab-runner/tasks/test.yaml](https://github.com/defenseunicorns/uds-package-gitlab-runner/blob/main/tasks/test.yaml)
-
 ## Consistency Across Packages
 
 These examples serve to codify the "Consistency" best practice. By following similar patterns across different UDS packages, we ensure a uniform approach to testing, making it easier for developers to understand and maintain tests across the ecosystem.
