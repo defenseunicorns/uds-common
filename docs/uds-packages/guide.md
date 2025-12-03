@@ -46,7 +46,7 @@ Your goal is to bundle the upstream helm chart and images into a single Zarf pac
 - [ ] The Command `uds zarf dev generate` may be useful to generate an initial `zarf.yaml` file for your application.
 - [ ] Identify the application's images, the command `uds zarf dev find-images` may be useful.
 - [ ] The application may require additional configurations at build time or runtime, consider [Zarf Component Actions](https://docs.zarf.dev/ref/examples/component-actions/)
-- [ ] Start to monitor for the application reaching out to the internet.
+- [ ] Start to monitor for the application reaching out to the internet and remediate by either blocking egress in the case of "phone home" scenarios or develop a workaround so the application can function without internet access. For example, bundling assets in the package that would otherwise be downloaded at runtime in a connected environment.
 
 #### Checkout
 Your repository has a `zarf.yaml`, you can build a single artifact with `uds zarf package create`, and deploy it to a [k3d-core-dev-slim cluster](https://github.com/defenseunicorns/uds-core?tab=readme-ov-file#uds-package-development) using `uds zarf package deploy`
