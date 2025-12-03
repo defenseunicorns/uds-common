@@ -42,7 +42,7 @@ jobs:
       sboms: ${{ steps.get-sboms.outputs.sboms }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
 
       - name: Install UDS CLI
         uses: defenseunicorns/setup-uds@ab842abcad1f7a3305c2538e3dd1950d0daacfa5 # v1.0.1
@@ -150,7 +150,7 @@ jobs:
       images: ${{ steps.get-images.outputs.images }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
 
       - name: Install UDS CLI
         uses: defenseunicorns/setup-uds@ab842abcad1f7a3305c2538e3dd1950d0daacfa5 # v1.0.1
@@ -176,7 +176,7 @@ jobs:
           name: all-sboms
 
       - name: Scan SBOM
-        uses: anchore/scan-action@3aaf50d765cfcceafa51d322ccb790e40f6cd8c5 # v7.2.0
+        uses: anchore/scan-action@40a61b52209e9d50e87917c5b901783d546b12d0 # v7.2.1
         id: scan
         with:
           sbom: ${{ matrix.sbomName }}
@@ -208,7 +208,7 @@ jobs:
     needs: get-images
     steps:
       - name: Checkout repository
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
 
       - name: Install UDS CLI
         uses: defenseunicorns/setup-uds@ab842abcad1f7a3305c2538e3dd1950d0daacfa5 # v1.0.1
@@ -228,7 +228,7 @@ jobs:
 
       - name: Scan image
         id: scan
-        uses: anchore/scan-action@3aaf50d765cfcceafa51d322ccb790e40f6cd8c5 # v7.2.0
+        uses: anchore/scan-action@40a61b52209e9d50e87917c5b901783d546b12d0 # v7.2.1
         with:
           image: ${{ matrix.image }}
           fail-build: false
@@ -256,7 +256,7 @@ jobs:
     needs: [scan-sboms, scan-images]
     steps:
       - name: Checkout repository
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
 
       - name: Install UDS CLI
         uses: defenseunicorns/setup-uds@ab842abcad1f7a3305c2538e3dd1950d0daacfa5 # v1.0.1
