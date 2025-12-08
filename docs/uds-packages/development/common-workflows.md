@@ -40,8 +40,6 @@ You can see an example in this repo's task file: [`publish-release`](../../../ta
 
 This sets up any necessary dependencies on the host for this specific package - these could be CLI clients used for testing, or specific configuration changes needed to make the app run.
 
-You can see an example in `uds-package-sigstore`'s task file: [`ci-setup`](https://github.com/defenseunicorns/uds-package-sigstore/blob/f54e1160a6eda5be3c0aa55637efa2150b5f5152/tasks.yaml#L60)
-
 ### License Keys
 
 License Keys can be passed along to a UDS Package in CI by setting a repository secret called `LICENSE_KEY`. 
