@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.21.5](https://github.com/defenseunicorns/uds-common/compare/v1.21.4...v1.21.5) (2025-12-09)
+
+
+### Bug Fixes
+
+* always run verify test and fail if not successful ([#592](https://github.com/defenseunicorns/uds-common/issues/592)) ([205b0d1](https://github.com/defenseunicorns/uds-common/commit/205b0d196fb02d06dc6cc73e2afe4aaf8e0c2c72))
+
+
+### Miscellaneous
+
+* **deps:** update uds common support dependencies ([#589](https://github.com/defenseunicorns/uds-common/issues/589)) ([c60d2c6](https://github.com/defenseunicorns/uds-common/commit/c60d2c6ddea2e19be63c0d2402d18d4bee146402))
+* **deps:** update uds common support dependencies ([#591](https://github.com/defenseunicorns/uds-common/issues/591)) ([0a66442](https://github.com/defenseunicorns/uds-common/commit/0a66442884e7d9f757eb923ebf1079c4f93c325d))
+
 ## [1.21.4](https://github.com/defenseunicorns/uds-common/compare/v1.21.3...v1.21.4) (2025-12-02)
 
 
