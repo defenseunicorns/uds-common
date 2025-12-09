@@ -8,15 +8,15 @@
       ]
     },
     "yaml.schemas": {
-      "https://raw.githubusercontent.com/defenseunicorns/uds-cli/v0.27.18/uds.schema.json": [
+      "https://raw.githubusercontent.com/defenseunicorns/uds-cli/v0.27.19/uds.schema.json": [
         "uds-bundle.yaml"
       ],
-      "https://raw.githubusercontent.com/defenseunicorns/uds-cli/v0.27.18/tasks.schema.json": [
+      "https://raw.githubusercontent.com/defenseunicorns/uds-cli/v0.27.19/tasks.schema.json": [
         "tasks.yaml",
         "tasks/**/*.yaml",
         "src/**/validate.yaml"
       ],
-      "https://raw.githubusercontent.com/defenseunicorns/zarf/v0.66.0/zarf.schema.json": [
+      "https://raw.githubusercontent.com/defenseunicorns/zarf/v0.67.0/zarf.schema.json": [
         "zarf.yaml"
       ]
     },
