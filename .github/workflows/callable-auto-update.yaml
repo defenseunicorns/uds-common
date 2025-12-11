@@ -209,26 +209,26 @@ jobs:
           BASE_OID="$(echo "$META_JSON" | jq -r '.data.repository.baseRef.target.oid')"
           LABEL_ID="$(echo "$META_JSON" | jq -r '.data.repository.label.id // empty')"
 
-          # Create the label if it does not exist
-          if [ -z "$LABEL_ID" ]; then
-            CREATE_LABEL_GQL='
-            mutation ($repositoryId: ID!, $name: String!) {
-              createLabel(input: {
-                repositoryId: $repositoryId,
-                name: $name,
-                color: "ededed"
-              }) {
-                label { id }
-              }
-            }
-            '
-            LABEL_JSON="$(gh api graphql \
-              -f query="$CREATE_LABEL_GQL" \
-              -f repositoryId="$REPO_ID" \
-              -f name="$PR_LABEL"
-            )"
-            LABEL_ID="$(echo "$LABEL_JSON" | jq -r '.data.createLabel.label.id')"
-          fi
+          # # Create the label if it does not exist
+          # if [ -z "$LABEL_ID" ]; then
+          #   CREATE_LABEL_GQL='
+          #   mutation ($repositoryId: ID!, $name: String!) {
+          #     createLabel(input: {
+          #       repositoryId: $repositoryId,
+          #       name: $name,
+          #       color: "ededed"
+          #     }) {
+          #       label { id }
+          #     }
+          #   }
+          #   '
+          #   LABEL_JSON="$(gh api graphql \
+          #     -f query="$CREATE_LABEL_GQL" \
+          #     -f repositoryId="$REPO_ID" \
+          #     -f name="$PR_LABEL"
+          #   )"
+          #   LABEL_ID="$(echo "$LABEL_JSON" | jq -r '.data.createLabel.label.id')"
+          # fi
 
           # Create a new branch (ref) from the base branch
           CREATE_REF_GQL='
