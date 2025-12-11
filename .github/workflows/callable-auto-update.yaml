@@ -105,7 +105,7 @@ jobs:
           pattern: update-*
 
       - name: Bump versions in releaser.yaml
-        if: ${{ steps.decide-bump.outputs.bump == 'true' }}
+        # if: ${{ steps.decide-bump.outputs.bump == 'true' }}
         run: |
           set -Eeuo pipefail
           echo "Bumping versions in releaser.yaml"
