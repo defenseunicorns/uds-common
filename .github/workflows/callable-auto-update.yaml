@@ -190,9 +190,6 @@ jobs:
               baseRef: ref(qualifiedName: $baseRef) {
                 target { oid }
               }
-              label(name: $labelName) {
-                id
-              }
             }
           }
           '
@@ -207,7 +204,7 @@ jobs:
 
           REPO_ID="$(echo "$META_JSON" | jq -r '.data.repository.id')"
           BASE_OID="$(echo "$META_JSON" | jq -r '.data.repository.baseRef.target.oid')"
-          LABEL_ID="$(echo "$META_JSON" | jq -r '.data.repository.label.id // empty')"
+          # LABEL_ID="$(echo "$META_JSON" | jq -r '.data.repository.label.id // empty')"
 
           # # Create the label if it does not exist
           # if [ -z "$LABEL_ID" ]; then
