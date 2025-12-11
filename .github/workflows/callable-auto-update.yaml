@@ -107,31 +107,51 @@ jobs:
       - name: Bump versions in releaser.yaml
         # if: ${{ steps.decide-bump.outputs.bump == 'true' }}
         run: |
-          set -Eeuo pipefail
-          echo "Bumping versions in releaser.yaml"
-          ls bump-status
-          for update in bump-status/*; do
-            fname="$(basename "$update")"
-            flavor="${fname#update-}"
-            export flavor
+          fname="upstream"
+          flavor="${fname}"
+          export flavor
 
-            version=$(yq e -r '.flavors[] | select(.name == env(flavor)) | .version' releaser.yaml)
+          version=$(yq e -r '.flavors[] | select(.name == env(flavor)) | .version' releaser.yaml)
 
-            main_version=${version%.*}
-            uds_version=${version##*.}
-            new_version="${main_version}.$((uds_version + 1))"
-            export new_version
+          main_version=${version%.*}
+          uds_version=${version##*.}
+          new_version="${main_version}.$((uds_version + 1))"
+          export new_version
 
-            yq e -i '
-              (.flavors[]
-                | select(.name == env(flavor))
-                | .version
-              ) = strenv(new_version)
-            ' releaser.yaml
-          done
-
+          yq e -i '
+            (.flavors[]
+              | select(.name == env(flavor))
+              | .version
+            ) = strenv(new_version)
+          ' releaser.yaml
           echo "New releaser.yaml"
           cat releaser.yaml
+
+          # set -Eeuo pipefail
+          # echo "Bumping versions in releaser.yaml"
+          # ls bump-status
+          # for update in bump-status/*; do
+          #   fname="$(basename "$update")"
+          #   flavor="${fname#update-}"
+          #   export flavor
+
+          #   version=$(yq e -r '.flavors[] | select(.name == env(flavor)) | .version' releaser.yaml)
+
+          #   main_version=${version%.*}
+          #   uds_version=${version##*.}
+          #   new_version="${main_version}.$((uds_version + 1))"
+          #   export new_version
+
+          #   yq e -i '
+          #     (.flavors[]
+          #       | select(.name == env(flavor))
+          #       | .version
+          #     ) = strenv(new_version)
+          #   ' releaser.yaml
+          # done
+
+          # echo "New releaser.yaml"
+          # cat releaser.yaml
 
       - name: Create PR for releaser.yaml update via GraphQL
         # if: ${{ steps.decide-bump.outputs.bump == 'true' && inputs.dry-run != true }}
