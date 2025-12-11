@@ -184,7 +184,7 @@ jobs:
 
           # Fetch repository ID, base branch HEAD OID, and label ID
           READ_META_GQL='
-          query ($owner: String!, $name: String!, $baseRef: String!, $labelName: String!) {
+          query ($owner: String!, $name: String!, $baseRef: String!) {
             repository(owner: $owner, name: $name) {
               id
               baseRef: ref(qualifiedName: $baseRef) {
