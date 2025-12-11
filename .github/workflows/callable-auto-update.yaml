@@ -134,7 +134,7 @@ jobs:
           cat releaser.yaml
 
       - name: Create PR for releaser.yaml update via GraphQL
-        if: ${{ steps.decide-bump.outputs.bump == 'true' && inputs.dry-run != true }}
+        # if: ${{ steps.decide-bump.outputs.bump == 'true' && inputs.dry-run != true }}
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
