@@ -133,33 +133,105 @@ jobs:
           echo "New releaser.yaml"
           cat releaser.yaml
 
-      - name: Commit releaser.yaml via GraphQL
+      - name: Create PR for releaser.yaml update via GraphQL
         if: ${{ steps.decide-bump.outputs.bump == 'true' && inputs.dry-run != true }}
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
-          BRANCH: ${{ github.head_ref || github.ref_name }}
-          COMMIT_MSG: "chore(images): update due to rebuilt images being more secure"
+          BASE_BRANCH: ${{ github.head_ref || github.ref_name }}
+          COMMIT_MSG: "chore(automatedImages): update due to rebuilt images being more secure"
+          PR_TITLE: "chore(automatedImages): update releaser.yaml to republish images"
+          PR_BODY: "Automated update of releaser.yaml due to rebuilt images being more secure."
+          PR_LABEL: "republish"
         run: |
           set -Eeuo pipefail
           set -x
 
           # Verify the file actually changed; if not, exit
           if git diff --quiet -- releaser.yaml; then
-            echo "No changes to releaser.yaml; nothing to commit."
+            echo "No changes to releaser.yaml; nothing to do."
             exit 0
           fi
 
-          # fetch current commit SHA
-          REMOTE_OID="$(gh api "repos/${REPO}/git/ref/heads/${BRANCH}" --jq .object.sha)"
+          OWNER="${REPO%%/*}"
+          NAME="${REPO#*/}"
 
-          # Set Base64 content
+          # Set branch name
+          PR_BRANCH="chore/automated-republish-${GITHUB_RUN_ID:-manual}"
+
+          # Create Base64 content of releaser.yaml
           CONTENT_B64="$(base64 -w0 releaser.yaml 2>/dev/null || base64 releaser.yaml | tr -d '\n')"
 
-          # Create GraphQL Mutation
-          # disabling shellcheck for heredoc indentation warnings
-          # shellcheck disable=SC1009,SC1039,SC1072,SC1073
-          GQL="$(cat <<'EOF'
+          # Fetch repository ID, base branch HEAD OID, and label ID
+          READ_META_GQL='
+          query ($owner: String!, $name: String!, $baseRef: String!, $labelName: String!) {
+            repository(owner: $owner, name: $name) {
+              id
+              baseRef: ref(qualifiedName: $baseRef) {
+                target { oid }
+              }
+              label(name: $labelName) {
+                id
+              }
+            }
+          }
+          '
+
+          META_JSON="$(gh api graphql \
+            -f query="$READ_META_GQL" \
+            -f owner="$OWNER" \
+            -f name="$NAME" \
+            -f baseRef="refs/heads/$BASE_BRANCH" \
+            -f labelName="$PR_LABEL"
+          )"
+
+          REPO_ID="$(echo "$META_JSON" | jq -r '.data.repository.id')"
+          BASE_OID="$(echo "$META_JSON" | jq -r '.data.repository.baseRef.target.oid')"
+          LABEL_ID="$(echo "$META_JSON" | jq -r '.data.repository.label.id // empty')"
+
+          # Create the label if it does not exist
+          if [ -z "$LABEL_ID" ]; then
+            CREATE_LABEL_GQL='
+            mutation ($repositoryId: ID!, $name: String!) {
+              createLabel(input: {
+                repositoryId: $repositoryId,
+                name: $name,
+                color: "ededed"
+              }) {
+                label { id }
+              }
+            }
+            '
+            LABEL_JSON="$(gh api graphql \
+              -f query="$CREATE_LABEL_GQL" \
+              -f repositoryId="$REPO_ID" \
+              -f name="$PR_LABEL"
+            )"
+            LABEL_ID="$(echo "$LABEL_JSON" | jq -r '.data.createLabel.label.id')"
+          fi
+
+          # Create a new branch (ref) from the base branch
+          CREATE_REF_GQL='
+          mutation ($repositoryId: ID!, $refName: String!, $oid: GitObjectID!) {
+            createRef(input: {
+              repositoryId: $repositoryId,
+              name: $refName,
+              oid: $oid
+            }) {
+              ref { name }
+            }
+          }
+          '
+
+          gh api graphql \
+            -f query="$CREATE_REF_GQL" \
+            -f repositoryId="$REPO_ID" \
+            -f refName="refs/heads/$PR_BRANCH" \
+            -f oid="$BASE_OID" \
+            --jq '.data.createRef.ref.name'
+
+          # Create a commit on the new branch with releaser.yaml
+          CREATE_COMMIT_GQL='
           mutation (
             $githubRepository: String!,
             $branchName: String!,
@@ -173,19 +245,73 @@ jobs:
               fileChanges: { additions: $files },
               expectedHeadOid: $expectedHeadOid
             }) {
-              commit { url oid }
+              commit { oid url }
             }
           }
-          EOF
-          )"
+          '
 
-          # Call GitHub API to create commit
-          gh api graphql \
-            -f query="$GQL" \
+          COMMIT_JSON="$(gh api graphql \
+            -f query="$CREATE_COMMIT_GQL" \
             -f githubRepository="$REPO" \
-            -f branchName="$BRANCH" \
-            -f expectedHeadOid="$REMOTE_OID" \
+            -f branchName="$PR_BRANCH" \
+            -f expectedHeadOid="$BASE_OID" \
             -f commitMessage="$COMMIT_MSG" \
             -F files[][path]="releaser.yaml" \
-            -F files[][contents]="$CONTENT_B64" \
-            --jq '.data.createCommitOnBranch.commit.url'
+            -F files[][contents]="$CONTENT_B64"
+          )"
+
+          echo "$COMMIT_JSON" | jq -r '.data.createCommitOnBranch.commit.url'
+
+          # Create the pull request from PR_BRANCH -> BASE_BRANCH
+          CREATE_PR_GQL='
+          mutation (
+            $repositoryId: ID!,
+            $baseRefName: String!,
+            $headRefName: String!,
+            $title: String!,
+            $body: String!
+          ) {
+            createPullRequest(input: {
+              repositoryId: $repositoryId,
+              baseRefName: $baseRefName,
+              headRefName: $headRefName,
+              title: $title,
+              body: $body
+            }) {
+              pullRequest { id url number }
+            }
+          }
+          '
+
+          PR_JSON="$(gh api graphql \
+            -f query="$CREATE_PR_GQL" \
+            -f repositoryId="$REPO_ID" \
+            -f baseRefName="$BASE_BRANCH" \
+            -f headRefName="$PR_BRANCH" \
+            -f title="$PR_TITLE" \
+            -f body="$PR_BODY"
+          )"
+
+          PR_ID="$(echo "$PR_JSON" | jq -r '.data.createPullRequest.pullRequest.id')"
+          PR_URL="$(echo "$PR_JSON" | jq -r '.data.createPullRequest.pullRequest.url')"
+          echo "Created PR: $PR_URL"
+
+          # Add the "republish" label to the PR
+          ADD_LABEL_GQL='
+          mutation ($labelableId: ID!, $labelIds: [ID!]!) {
+            addLabelsToLabelable(input: {
+              labelableId: $labelableId,
+              labelIds: $labelIds
+            }) {
+              labelable {
+                ... on PullRequest { url }
+              }
+            }
+          }
+          '
+
+          gh api graphql \
+            -f query="$ADD_LABEL_GQL" \
+            -f labelableId="$PR_ID" \
+            -f labelIds="[$LABEL_ID]" \
+            --jq '.data.addLabelsToLabelable.labelable.url'
