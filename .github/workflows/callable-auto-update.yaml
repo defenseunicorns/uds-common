@@ -230,88 +230,88 @@ jobs:
             -f oid="$BASE_OID" \
             --jq '.data.createRef.ref.name'
 
-          # Create a commit on the new branch with releaser.yaml
-          CREATE_COMMIT_GQL='
-          mutation (
-            $githubRepository: String!,
-            $branchName: String!,
-            $expectedHeadOid: GitObjectID!,
-            $commitMessage: String!,
-            $files: [FileAddition!]!
-          ) {
-            createCommitOnBranch(input: {
-              branch: { repositoryNameWithOwner: $githubRepository, branchName: $branchName },
-              message: { headline: $commitMessage },
-              fileChanges: { additions: $files },
-              expectedHeadOid: $expectedHeadOid
-            }) {
-              commit { oid url }
-            }
-          }
-          '
+          # # Create a commit on the new branch with releaser.yaml
+          # CREATE_COMMIT_GQL='
+          # mutation (
+          #   $githubRepository: String!,
+          #   $branchName: String!,
+          #   $expectedHeadOid: GitObjectID!,
+          #   $commitMessage: String!,
+          #   $files: [FileAddition!]!
+          # ) {
+          #   createCommitOnBranch(input: {
+          #     branch: { repositoryNameWithOwner: $githubRepository, branchName: $branchName },
+          #     message: { headline: $commitMessage },
+          #     fileChanges: { additions: $files },
+          #     expectedHeadOid: $expectedHeadOid
+          #   }) {
+          #     commit { oid url }
+          #   }
+          # }
+          # '
 
-          COMMIT_JSON="$(gh api graphql \
-            -f query="$CREATE_COMMIT_GQL" \
-            -f githubRepository="$REPO" \
-            -f branchName="$PR_BRANCH" \
-            -f expectedHeadOid="$BASE_OID" \
-            -f commitMessage="$COMMIT_MSG" \
-            -F files[][path]="releaser.yaml" \
-            -F files[][contents]="$CONTENT_B64"
-          )"
+          # COMMIT_JSON="$(gh api graphql \
+          #   -f query="$CREATE_COMMIT_GQL" \
+          #   -f githubRepository="$REPO" \
+          #   -f branchName="$PR_BRANCH" \
+          #   -f expectedHeadOid="$BASE_OID" \
+          #   -f commitMessage="$COMMIT_MSG" \
+          #   -F files[][path]="releaser.yaml" \
+          #   -F files[][contents]="$CONTENT_B64"
+          # )"
 
-          echo "$COMMIT_JSON" | jq -r '.data.createCommitOnBranch.commit.url'
+          # echo "$COMMIT_JSON" | jq -r '.data.createCommitOnBranch.commit.url'
 
-          # Create the pull request from PR_BRANCH -> BASE_BRANCH
-          CREATE_PR_GQL='
-          mutation (
-            $repositoryId: ID!,
-            $baseRefName: String!,
-            $headRefName: String!,
-            $title: String!,
-            $body: String!
-          ) {
-            createPullRequest(input: {
-              repositoryId: $repositoryId,
-              baseRefName: $baseRefName,
-              headRefName: $headRefName,
-              title: $title,
-              body: $body
-            }) {
-              pullRequest { id url number }
-            }
-          }
-          '
+          # # Create the pull request from PR_BRANCH -> BASE_BRANCH
+          # CREATE_PR_GQL='
+          # mutation (
+          #   $repositoryId: ID!,
+          #   $baseRefName: String!,
+          #   $headRefName: String!,
+          #   $title: String!,
+          #   $body: String!
+          # ) {
+          #   createPullRequest(input: {
+          #     repositoryId: $repositoryId,
+          #     baseRefName: $baseRefName,
+          #     headRefName: $headRefName,
+          #     title: $title,
+          #     body: $body
+          #   }) {
+          #     pullRequest { id url number }
+          #   }
+          # }
+          # '
 
-          PR_JSON="$(gh api graphql \
-            -f query="$CREATE_PR_GQL" \
-            -f repositoryId="$REPO_ID" \
-            -f baseRefName="$BASE_BRANCH" \
-            -f headRefName="$PR_BRANCH" \
-            -f title="$PR_TITLE" \
-            -f body="$PR_BODY"
-          )"
+          # PR_JSON="$(gh api graphql \
+          #   -f query="$CREATE_PR_GQL" \
+          #   -f repositoryId="$REPO_ID" \
+          #   -f baseRefName="$BASE_BRANCH" \
+          #   -f headRefName="$PR_BRANCH" \
+          #   -f title="$PR_TITLE" \
+          #   -f body="$PR_BODY"
+          # )"
 
-          PR_ID="$(echo "$PR_JSON" | jq -r '.data.createPullRequest.pullRequest.id')"
-          PR_URL="$(echo "$PR_JSON" | jq -r '.data.createPullRequest.pullRequest.url')"
-          echo "Created PR: $PR_URL"
+          # PR_ID="$(echo "$PR_JSON" | jq -r '.data.createPullRequest.pullRequest.id')"
+          # PR_URL="$(echo "$PR_JSON" | jq -r '.data.createPullRequest.pullRequest.url')"
+          # echo "Created PR: $PR_URL"
 
-          # Add the "republish" label to the PR
-          ADD_LABEL_GQL='
-          mutation ($labelableId: ID!, $labelIds: [ID!]!) {
-            addLabelsToLabelable(input: {
-              labelableId: $labelableId,
-              labelIds: $labelIds
-            }) {
-              labelable {
-                ... on PullRequest { url }
-              }
-            }
-          }
-          '
+          # # Add the "republish" label to the PR
+          # ADD_LABEL_GQL='
+          # mutation ($labelableId: ID!, $labelIds: [ID!]!) {
+          #   addLabelsToLabelable(input: {
+          #     labelableId: $labelableId,
+          #     labelIds: $labelIds
+          #   }) {
+          #     labelable {
+          #       ... on PullRequest { url }
+          #     }
+          #   }
+          # }
+          # '
 
-          gh api graphql \
-            -f query="$ADD_LABEL_GQL" \
-            -f labelableId="$PR_ID" \
-            -f labelIds="[$LABEL_ID]" \
-            --jq '.data.addLabelsToLabelable.labelable.url'
+          # gh api graphql \
+          #   -f query="$ADD_LABEL_GQL" \
+          #   -f labelableId="$PR_ID" \
+          #   -f labelIds="[$LABEL_ID]" \
+          #   --jq '.data.addLabelsToLabelable.labelable.url'
