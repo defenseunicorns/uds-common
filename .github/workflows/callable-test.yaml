@@ -35,7 +35,7 @@ on:
       udsCliVersion:
         description: The uds-cli version to install
         # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
-        default: 0.27.19
+        default: 0.27.20
         type: string
       file-filter:
         type: string
@@ -178,7 +178,7 @@ jobs:
           # shellcheck disable=SC3028
           echo "suffix=${RANDOM}" >> "$GITHUB_OUTPUT"
 
-      - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         if: ${{ always() }}
         with:
           name: debug-log-${{ inputs.type }}-${{ inputs.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ runner.arch }}-${{ steps.uniq.outputs.suffix }}
@@ -190,7 +190,7 @@ jobs:
             /tmp/uds-containerd-logs
             /tmp/k3d-uds-*.log
 
-      - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         if: ${{ always() && inputs.reports-path != '' }}
         with:
           name: ${{ inputs.reports-name }}-${{ inputs.type }}-${{ inputs.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ runner.arch }}-${{ steps.uniq.outputs.suffix }}}
