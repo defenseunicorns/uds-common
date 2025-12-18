@@ -59,6 +59,9 @@ tasks:
           echo "::group::kubectl get events"
           uds zarf tools kubectl get events -A --sort-by='.lastTimestamp' || echo "failed" | tee ${{ .variables.LOG_DIR }}/debug-k-get-events.log
           echo "::endgroup::"
+          echo "::group::kubectl get authorizationpolicies"
+          uds zarf tools kubectl get authorizationpolicies -o yaml -A || echo "failed" | tee ${{ .variables.LOG_DIR }}/debug-k-get-authpolicies.log
+          echo "::endgroup::"
           echo "::group::kubectl describe nodes"
           uds zarf tools kubectl describe nodes k3d-uds-server-0 || echo "failed" | tee ${{ .variables.LOG_DIR }}/debug-k-describe-node.log
           echo "::endgroup::"
