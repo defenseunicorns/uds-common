@@ -33,6 +33,12 @@ tasks:
           else
             ./uds deploy oci://defenseunicorns/uds/${{ if eq .inputs.snapshots "true" }}snapshots/${{ end }}bundles/k3d-core-slim-dev:${{ .inputs.version }} --set INSECURE_ADMIN_PASSWORD_GENERATION=${{ .inputs.insecure_keycloak_admin }} --confirm --no-progress ${{ .inputs.options }}
           fi
+      - description: Validate Keycloak endpoint
+        wait:
+          network:
+            protocol: https
+            address: sso.uds.dev
+            code: 200
 
   - name: k3d-full-cluster
     description: Creates a k3d cluster for testing based on the K3d + UDS Core Full bundle
