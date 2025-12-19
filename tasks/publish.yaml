@@ -238,6 +238,16 @@ tasks:
           
           # TARGET_REPO 
           TARGET="${BASE_REPO}/source/${REPO}-source:${GIT_REF}"
+
+          # Check if artifact already exists
+          if oras manifest fetch "${TARGET}" > /dev/null 2>&1; then
+            echo "[INFO] Artifact ${TARGET} already exists, skipping publish"
+            cd ..
+            rm -rf "$WORK_DIR"
+            exit 0
+          fi
+          
+          echo "[INFO] Artifact ${TARGET} does not exist, proceeding with publish"
           
           rm -rf "$WORK_DIR"
           mkdir -p "$WORK_DIR"
