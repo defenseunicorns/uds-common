@@ -249,7 +249,7 @@ tasks:
 
           rm -rf "$WORK_DIR"
           mkdir -p "$WORK_DIR"
-          cd "$WORK_DIR"
+          cd "$WORK_DIR" || exit 1
 
           # Fetch release data
           URL="https://api.github.com/repos/${OWNER}/${REPO}/releases/tags/${GIT_REF}"
@@ -284,5 +284,5 @@ tasks:
             "source.tar.gz:application/gzip" \
             "release-notes.md:text/markdown"
 
-          cd ..
+          cd .. || exit 1
           rm -rf "$WORK_DIR"
