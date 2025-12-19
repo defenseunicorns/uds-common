@@ -134,7 +134,6 @@ jobs:
 
       - name: Publish Repo Contents
         if: ${{ inputs.publish-repo }}
-        needs: ${{ steps.}}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
