@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.22.0](https://github.com/defenseunicorns/uds-common/compare/v1.21.5...v1.22.0) (2025-12-19)
+
+
+### Features
+
+* add publish of repo's release assets to oci when publishing from uds-packages github org ([#597](https://github.com/defenseunicorns/uds-common/issues/597)) ([30ed95f](https://github.com/defenseunicorns/uds-common/commit/30ed95fe0a1897ebed47aaa603a9785fa0b945a8))
+
+
+### Miscellaneous
+
+* **deps:** update uds common package dependencies to v1.29.4 ([#593](https://github.com/defenseunicorns/uds-common/issues/593)) ([ec76571](https://github.com/defenseunicorns/uds-common/commit/ec765710b72b9f366bd6698270fa1bec038e1f8f))
+
 ## [1.21.5](https://github.com/defenseunicorns/uds-common/compare/v1.21.4...v1.21.5) (2025-12-09)
 
 
