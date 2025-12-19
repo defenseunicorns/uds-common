@@ -133,7 +133,8 @@ jobs:
           fi
 
       - name: Publish Repo Contents
-        if: ${{ inputs.publish-repo }}
+        if: ${{ inputs.publish-repo && (steps.publish-release-please.conclusion == 'success' || steps.publish-uds-pk.outputs.published == 'true') }}
+        needs: ${{ steps.}}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
