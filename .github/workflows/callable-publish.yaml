@@ -95,11 +95,12 @@ jobs:
       - name: Publish Packages/Bundles - release-please
         if: ${{ steps.parse-inputs.outputs.uds-pk == 'false' }}
         run: |
-          if uds run --list | grep -wq 'publish-package'; then
-            uds run publish-package --set USE_CHECKPOINT=false --set FLAVOR=${{ inputs.flavor }} --no-progress ${{ inputs.options }}
-          else
-            uds run publish-release --set USE_CHECKPOINT=false --set FLAVOR=${{ inputs.flavor }} --no-progress ${{ inputs.options }}
-          fi
+          echo "NOOP"
+          # if uds run --list | grep -wq 'publish-package'; then
+          #   uds run publish-package --set USE_CHECKPOINT=false --set FLAVOR=${{ inputs.flavor }} --no-progress ${{ inputs.options }}
+          # else
+          #   uds run publish-release --set USE_CHECKPOINT=false --set FLAVOR=${{ inputs.flavor }} --no-progress ${{ inputs.options }}
+          # fi
 
       - name: Publish Packages/Bundles - uds-pk
         if: ${{ steps.parse-inputs.outputs.uds-pk == 'true' }}
@@ -126,7 +127,7 @@ jobs:
           fi
 
       - name: Publish Repo Contents
-        if: ${{ inputs.publish-repo == 'true' }}
+        if: ${{ inputs.publish-repo }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
