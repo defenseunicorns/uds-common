@@ -73,7 +73,7 @@ jobs:
         uses: oras-project/setup-oras@v1.2.4 # v1.2.1
         with:
           # renovate: datasource=github-tags depName=oras-project/oras versioning=semver
-          version: v1.3.0
+          version: 1.3.0
 
       - name: Environment setup
         run: |
