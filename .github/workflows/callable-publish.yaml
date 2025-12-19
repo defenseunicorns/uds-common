@@ -106,25 +106,24 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "NOOP"
-          # if uds-pk release check "${{ inputs.flavor }}"; then
-          #   uds-pk release update-yaml ${{ inputs.flavor }}
-          #   if uds run --list | grep -wq 'publish-package'; then
-          #     uds run publish-package \
-          #       --set USE_CHECKPOINT=false \
-          #       --set FLAVOR=${{ inputs.flavor }} \
-          #       --set ENABLE_UDS_PK=true \
-          #       --no-progress ${{ inputs.options }} \
-          #       --set LICENSE_KEY=${{ secrets.LICENSE_KEY }}
-          #   else
-          #     uds run publish-release \
-          #       --set USE_CHECKPOINT=false \
-          #       --set FLAVOR=${{ inputs.flavor }} \
-          #       --set ENABLE_UDS_PK=true \
-          #       --no-progress ${{ inputs.options }} \
-          #       --set LICENSE_KEY=${{ secrets.LICENSE_KEY }}
-          #   fi
-          # fi
+          if uds-pk release check "${{ inputs.flavor }}"; then
+            uds-pk release update-yaml ${{ inputs.flavor }}
+            if uds run --list | grep -wq 'publish-package'; then
+              uds run publish-package \
+                --set USE_CHECKPOINT=false \
+                --set FLAVOR=${{ inputs.flavor }} \
+                --set ENABLE_UDS_PK=true \
+                --no-progress ${{ inputs.options }} \
+                --set LICENSE_KEY=${{ secrets.LICENSE_KEY }}
+            else
+              uds run publish-release \
+                --set USE_CHECKPOINT=false \
+                --set FLAVOR=${{ inputs.flavor }} \
+                --set ENABLE_UDS_PK=true \
+                --no-progress ${{ inputs.options }} \
+                --set LICENSE_KEY=${{ secrets.LICENSE_KEY }}
+            fi
+          fi
 
       - name: Publish Repo Contents
         if: ${{ inputs.publish-repo }}
