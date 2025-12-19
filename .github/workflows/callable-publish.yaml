@@ -26,6 +26,10 @@ on:
       timeout:
         type: number
         default: 40
+      publish-repo:
+        type: boolean
+        default: true
+        description: Whether to also publish repo contents as a separate artifact
       uds-pk:
         type: boolean
         default: true
@@ -120,6 +124,15 @@ jobs:
                 --set LICENSE_KEY=${{ secrets.LICENSE_KEY }}
             fi
           fi
+
+      - name: Publish Repo Contents
+        if: ${{ inputs.publish-repo == 'true' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          uds run publish:repo \
+            --set FLAVOR=${{ inputs.flavor }} \
+            --no-progress ${{ inputs.options }}
 
       - name: Debug Output
         if: ${{ always() }}

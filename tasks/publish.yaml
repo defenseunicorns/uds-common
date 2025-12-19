@@ -196,3 +196,84 @@ tasks:
       - description: Publish bundle for the supplied architecture
         cmd: |
           ./uds publish "${{ .inputs.path }}/uds-bundle-${{ .inputs.name }}-${{ .inputs.architecture }}-${{ .inputs.version }}.tar.zst" "oci://${TARGET_REPO}/bundles" --no-progress
+
+  - name: repo
+    description: Publish point in time repo snapshot to OCI
+    inputs:
+      flavor:
+        description: The flavor of the package to publish
+        default: ${FLAVOR}
+      base_repo:
+        description: The flavor of the package to publish
+        default: ${BASE_REPO}
+    actions:
+      - description: publish repo source to oci
+        if: ${{ eq .variables.BASE_REPO "ghcr.io/uds-packages" }}
+        task: git-to-oci
+        with:
+          flavor: ${{ .inputs.flavor }}
+      - description: Skip publish of Repo Source if not in uds-packages org       
+        if: ${{ ne .variables.BASE_REPO "ghcr.io/uds-packages" }}
+        cmd: echo "Skipping Repo source Publish to OCI"
+          
+
+
+  - name: git-to-oci
+    description: Package git repo as OCI artifact with release notes
+    inputs:
+      flavor:
+        description: The flavor of the package to publish
+        default: ${FLAVOR}
+    actions:
+      - description: Package and push
+        cmd: |
+          WORK_DIR=".git-to-oci-tmp"
+          ORIGIN_URL=$(git remote get-url origin)
+          OWNER=$(echo "$ORIGIN_URL" | sed -nE 's@.*github.com[:/]([^/]+)/([^/.]+)(\.git)?$@\1@p')
+          REPO=$(echo "$ORIGIN_URL" | sed -nE 's@.*github.com[:/]([^/]+)/([^/.]+)(\.git)?$@\2@p')
+          
+          # Get release tag from flavor
+          GIT_REF=$(uds-pk release show ${{ .inputs.flavor }})
+          
+          # TARGET_REPO 
+          TARGET="${TARGET_REPO}/source/${REPO}-source:${GIT_REF}"
+          
+          rm -rf "$WORK_DIR"
+          mkdir -p "$WORK_DIR"
+          cd "$WORK_DIR"
+          
+          # Fetch release data
+          URL="https://api.github.com/repos/${OWNER}/${REPO}/releases/tags/${GIT_REF}"
+          RELEASE_JSON=$(curl -sS -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${GITHUB_TOKEN}" "$URL")
+          
+          # Extract fields
+          BODY=$(echo "$RELEASE_JSON" | jq -r '.body')
+          TARBALL_URL=$(echo "$RELEASE_JSON" | jq -r '.tarball_url')
+          CREATED_AT=$(echo "$RELEASE_JSON" | jq -r '.created_at')
+          TARGET_COMMIT=$(echo "$RELEASE_JSON" | jq -r '.target_commitish')
+          
+          if [ "$BODY" = "null" ] || [ -z "$BODY" ]; then
+            echo "ERROR: No release found for tag ${GIT_REF}"
+            exit 1
+          fi
+          
+          # Download tarball
+          curl -sS -L -H "Authorization: Bearer ${GITHUB_TOKEN}" "$TARBALL_URL" -o source.tar.gz
+          
+          # Save release notes
+          echo "$BODY" > release-notes.md
+          
+          # Push to registry
+          oras push \
+            --plain-http \
+            --artifact-type "application/vnd.git.source.v1.tar+gzip" \
+            --annotation "org.opencontainers.image.revision=${TARGET_COMMIT}" \
+            --annotation "org.opencontainers.image.created=${CREATED_AT}" \
+            --annotation "org.opencontainers.image.source=${ORIGIN_URL}" \
+            --annotation "dev.git.ref=${GIT_REF}" \
+            "${TARGET}" \
+            "source.tar.gz:application/gzip" \
+            "release-notes.md:text/markdown"
+          
+          cd ..
+          rm -rf "$WORK_DIR"
