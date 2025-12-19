@@ -267,7 +267,6 @@ tasks:
           
           # Push to registry
           oras push \
-            --plain-http \
             --artifact-type "application/vnd.git.source.v1.tar+gzip" \
             --annotation "org.opencontainers.image.revision=${TARGET_COMMIT}" \
             --annotation "org.opencontainers.image.created=${CREATED_AT}" \
