@@ -216,8 +216,6 @@ tasks:
         if: ${{ ne .variables.BASE_REPO "ghcr.io/uds-packages" }}
         cmd: echo "Skipping Repo source Publish to OCI"
 
-
-
   - name: git-to-oci
     description: Package git repo as OCI artifact with release notes
     inputs:
