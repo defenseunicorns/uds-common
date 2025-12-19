@@ -70,7 +70,7 @@ jobs:
 
       - name: Install ORAS CLI
         if: ${{ inputs.publish-repo }}
-        uses: oras-project/setup-oras@ee7dbe1144cb00080a89497f937dae78f85ffc71 # v1.2.1
+        uses: oras-project/setup-oras@v1.2.4 # v1.2.1
         with:
           # renovate: datasource=github-tags depName=oras-project/oras versioning=semver
           version: v1.2.1
