@@ -236,7 +236,7 @@ tasks:
           GIT_REF=$(uds-pk release show ${{ .inputs.flavor }})
           
           # TARGET_REPO 
-          TARGET="${TARGET_REPO}/source/${REPO}-source:${GIT_REF}"
+          TARGET="${BASE_REPO}/source/${REPO}-source:${GIT_REF}"
           
           rm -rf "$WORK_DIR"
           mkdir -p "$WORK_DIR"
@@ -246,22 +246,21 @@ tasks:
           URL="https://api.github.com/repos/${OWNER}/${REPO}/releases/tags/${GIT_REF}"
           RELEASE_JSON=$(curl -sS -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${GITHUB_TOKEN}" "$URL")
           
-          # Extract fields
-          BODY=$(echo "$RELEASE_JSON" | jq -r '.body')
+          # Extract fields (except body which we'll write directly to file)
           TARBALL_URL=$(echo "$RELEASE_JSON" | jq -r '.tarball_url')
           CREATED_AT=$(echo "$RELEASE_JSON" | jq -r '.created_at')
           TARGET_COMMIT=$(echo "$RELEASE_JSON" | jq -r '.target_commitish')
           
-          if [ "$BODY" = "null" ] || [ -z "$BODY" ]; then
+          # Write release notes directly to file to avoid shell escaping issues
+          echo "$RELEASE_JSON" | jq -r '.body // empty' > release-notes.md
+          
+          if [ ! -s release-notes.md ]; then
             echo "ERROR: No release found for tag ${GIT_REF}"
             exit 1
           fi
           
           # Download tarball
           curl -sS -L -H "Authorization: Bearer ${GITHUB_TOKEN}" "$TARBALL_URL" -o source.tar.gz
-          
-          # Save release notes
-          echo "$BODY" > release-notes.md
           
           # Push to registry
           oras push \
