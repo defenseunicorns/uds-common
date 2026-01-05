@@ -9,7 +9,7 @@ on:
       udsCliVersion:
         description: The uds-cli version to install
         # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
-        default: 0.27.19
+        default: 0.27.20
         type: string
       zarfYamlPath:
         description: The path to the zarf.yaml file
@@ -139,7 +139,7 @@ jobs:
           echo "sboms=${SBOM_JSON}" >> "$GITHUB_OUTPUT"
 
       - name: Upload SBOMs
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: all-sboms
           path: sboms/
@@ -171,12 +171,12 @@ jobs:
     needs: get-sboms
     steps:
       - name: Download SBOMs from GitHub Actions Artifacts
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: all-sboms
 
       - name: Scan SBOM
-        uses: anchore/scan-action@40a61b52209e9d50e87917c5b901783d546b12d0 # v7.2.1
+        uses: anchore/scan-action@3c9a191a0fbab285ca6b8530b5de5a642cba332f # v7.2.2
         id: scan
         with:
           sbom: ${{ matrix.sbomName }}
@@ -195,7 +195,7 @@ jobs:
           echo "artifactName=${NAME}" >> "$GITHUB_OUTPUT"
 
       - name: Upload scan results
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: scan-sbom-${{ steps.format-artifact-name.outputs.artifactName }}
           path: ${{ steps.format-artifact-name.outputs.artifactName }}.json
@@ -228,7 +228,7 @@ jobs:
 
       - name: Scan image
         id: scan
-        uses: anchore/scan-action@40a61b52209e9d50e87917c5b901783d546b12d0 # v7.2.1
+        uses: anchore/scan-action@3c9a191a0fbab285ca6b8530b5de5a642cba332f # v7.2.2
         with:
           image: ${{ matrix.image }}
           fail-build: false
@@ -246,7 +246,7 @@ jobs:
           echo "artifactName=${NAME}" >> "$GITHUB_OUTPUT"
 
       - name: Upload scan results
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: scan-image-${{ steps.format-artifact-name.outputs.artifactName }}
           path: ${{ steps.format-artifact-name.outputs.artifactName }}.json
@@ -269,14 +269,14 @@ jobs:
         shell: bash
 
       - name: Download sbom scan results from GitHub Actions Artifacts
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           path: sbom-scan-results
           pattern: scan-sbom-*
           merge-multiple: true
 
       - name: Download image scan results from GitHub Actions Artifacts
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           path: image-scan-results
           pattern: scan-image-*
@@ -348,7 +348,7 @@ jobs:
       - name: Upload comparison results
         id: upload-comparison-results
         if: ${{ steps.compare-scans.outputs.artifact == 'true' }}
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: scan-comparison
           path: comment.md
