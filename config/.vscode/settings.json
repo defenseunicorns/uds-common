@@ -16,7 +16,7 @@
         "tasks/**/*.yaml",
         "src/**/validate.yaml"
       ],
-      "https://raw.githubusercontent.com/defenseunicorns/zarf/v0.67.0/zarf.schema.json": [
+      "https://raw.githubusercontent.com/defenseunicorns/zarf/v0.68.1/zarf.schema.json": [
         "zarf.yaml"
       ]
     },
