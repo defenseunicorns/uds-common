@@ -160,8 +160,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
           BASE_BRANCH: ${{ github.head_ref || github.ref_name }}
-          COMMIT_MSG: "republish(automated): update due to rebuilt images being more secure"
-          PR_TITLE: "republish(automated): update releaser.yaml to republish images"
+          COMMIT_MSG: "chore(republish): update due to rebuilt images being more secure"
+          PR_TITLE: "chore(republish): update releaser.yaml to republish images"
           PR_BODY: "Automated update of releaser.yaml due to rebuilt images being more secure."
           PR_LABEL: "republish"
         run: |
