@@ -12,7 +12,7 @@ on:
       udsCliVersion:
         description: The uds-cli version to install
         # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
-        default: 0.27.20
+        default: 0.27.21
         type: string
       zarfYamlPath:
         description: The path to the zarf.yaml file
