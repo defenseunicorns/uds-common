@@ -270,7 +270,7 @@ jobs:
               --jq '.data.createRef.ref.name'
           fi
 
-          # # Create a commit on the new branch with releaser.yaml
+          # Create a commit on the new branch with releaser.yaml
           CREATE_COMMIT_GQL='
           mutation (
             $githubRepository: String!,
@@ -396,5 +396,5 @@ jobs:
           gh api graphql \
             -f query="$ADD_LABEL_GQL" \
             -f labelableId="$PR_ID" \
-            -F labelIds="[$LABEL_ID]" \
+            -F labelIds[]="$LABEL_ID" \
             --jq '.data.addLabelsToLabelable.labelable.url'
