@@ -205,6 +205,23 @@ jobs:
           BASE_OID="$(echo "$META_JSON" | jq -r '.data.repository.baseRef.target.oid')"
           PR_REF_ID="$(echo "$META_JSON" | jq -r '.data.repository.prRef.id // empty')"
 
+          # Look up label ID (node id) by name
+          LABEL_ID=""
+          LABEL_LOOKUP_GQL='
+          query ($owner: String!, $name: String!, $labelName: String!) {
+            repository(owner: $owner, name: $name) {
+              label(name: $labelName) { id }
+            }
+          }
+          '
+          LABEL_ID="$(gh api graphql \
+            -f query="$LABEL_LOOKUP_GQL" \
+            -f owner="$OWNER" \
+            -f name="$NAME" \
+            -f labelName="$PR_LABEL" \
+            --jq '.data.repository.label.id // empty'
+          )"
+
           # Create the label if it does not exist
           if [ -z "$LABEL_ID" ]; then
             CREATE_LABEL_GQL='
