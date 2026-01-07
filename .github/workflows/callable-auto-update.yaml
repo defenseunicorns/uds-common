@@ -80,6 +80,7 @@ jobs:
       - name: Check if any flavors need to be bumped
         id: decide-bump
         run: |
+          # shellcheck shell=bash
           set -Eeuo pipefail
           mkdir -p bump-status
           UPDATES=$(ls -1 bump-status/)
@@ -94,7 +95,7 @@ jobs:
 
       - name: Checkout repository
         uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
-        # if: ${{ steps.decide-bump.outputs.bump == 'true' }}
+        if: ${{ steps.decide-bump.outputs.bump == 'true' }}
         with:
           ref: ${{ github.head_ref || github.ref_name }}
           fetch-depth: 0
@@ -110,6 +111,7 @@ jobs:
         if: ${{ steps.decide-bump.outputs.bump == 'true' }}
         run: |
           # This job will bump the releaser.yaml version for the specified flavor.
+          # shellcheck shell=bash
           set -Eeuo pipefail
           echo "Bumping versions in releaser.yaml"
           ls bump-status
@@ -144,8 +146,8 @@ jobs:
           BASE_BRANCH: ${{ github.head_ref || github.ref_name }}
           COMMIT_MSG: "chore(republish): update due to rebuilt images being more secure"
           PR_TITLE: "chore(republish): update releaser.yaml to republish images"
-          PR_BODY: "Automated update of releaser.yaml due to rebuilt images being more secure."
-          PR_LABEL: "republish"
+          PR_BODY: Automated update of releaser.yaml due to rebuilt images being more secure.
+          PR_LABEL: republish
         run: |
           # This job will create a PR to update the version in releaser.yaml, by doing the following:
           # 1. Create a new branch defined in the `PR_BRANCH` variable
@@ -153,6 +155,7 @@ jobs:
           # 3. Create a PR from the new branch to `BASE_BRANCH` (main by default)
           # 4. Add label to the PR, defined in the `PR_LABEL` variable
 
+          # shellcheck shell=bash
           set -Eeuo pipefail
           set -x
 
