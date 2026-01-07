@@ -229,7 +229,8 @@ jobs:
               createLabel(input: {
                 repositoryId: $repositoryId,
                 name: $name,
-                color: "ededed"
+                color: "d93f0b",
+                description: "Auotomated job triggered for republishing images"
               }) {
                 label { id }
               }
