@@ -362,22 +362,22 @@ jobs:
             echo "Created PR: $PR_URL"
           fi
 
-          # # Add the "republish" label to the PR
-          # ADD_LABEL_GQL='
-          # mutation ($labelableId: ID!, $labelIds: [ID!]!) {
-          #   addLabelsToLabelable(input: {
-          #     labelableId: $labelableId,
-          #     labelIds: $labelIds
-          #   }) {
-          #     labelable {
-          #       ... on PullRequest { url }
-          #     }
-          #   }
-          # }
-          # '
+          # Add the "republish" label to the PR
+          ADD_LABEL_GQL='
+          mutation ($labelableId: ID!, $labelIds: [ID!]!) {
+            addLabelsToLabelable(input: {
+              labelableId: $labelableId,
+              labelIds: $labelIds
+            }) {
+              labelable {
+                ... on PullRequest { url }
+              }
+            }
+          }
+          '
 
-          # gh api graphql \
-          #   -f query="$ADD_LABEL_GQL" \
-          #   -f labelableId="$PR_ID" \
-          #   -f labelIds="[$LABEL_ID]" \
-          #   --jq '.data.addLabelsToLabelable.labelable.url'
+          gh api graphql \
+            -f query="$ADD_LABEL_GQL" \
+            -f labelableId="$PR_ID" \
+            -f labelIds="[$LABEL_ID]" \
+            --jq '.data.addLabelsToLabelable.labelable.url'
