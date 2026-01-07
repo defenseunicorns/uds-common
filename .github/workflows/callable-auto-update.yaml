@@ -396,5 +396,5 @@ jobs:
           gh api graphql \
             -f query="$ADD_LABEL_GQL" \
             -f labelableId="$PR_ID" \
-            -f labelIds="[$LABEL_ID]" \
+            -F labelIds="[$LABEL_ID]" \
             --jq '.data.addLabelsToLabelable.labelable.url'
