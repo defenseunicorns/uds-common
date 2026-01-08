@@ -144,9 +144,9 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
           BASE_BRANCH: ${{ github.head_ref || github.ref_name }}
-          COMMIT_MSG: "chore(republish): update due to rebuilt images being more secure"
+          COMMIT_MSG: "chore(republish): update due to updated source images"
           PR_TITLE: "chore(republish): update releaser.yaml to republish images"
-          PR_BODY: Automated update of releaser.yaml due to rebuilt images being more secure.
+          PR_BODY: Automated update of releaser.yaml due to updated source images.
           PR_LABEL: republish
         run: |
           # This job will create a PR to update the version in releaser.yaml, by doing the following:
