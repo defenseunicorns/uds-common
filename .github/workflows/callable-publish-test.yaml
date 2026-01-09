@@ -154,6 +154,8 @@ jobs:
           else
             echo "Release found, will not proceed with publishing"
           fi
+          echo "printing tags for debugging"
+          git tag
           if ./uds-pk/uds-pk release check "${{ inputs.flavor }}" --arch "${{ inputs.arch }}" --base-repo "${{ inputs.base-repo }}" --verbose; then
             echo "Release not found after publishing attempt, something went wrong"
             exit 1
