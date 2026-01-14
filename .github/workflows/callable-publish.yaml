@@ -7,9 +7,10 @@ on:
   workflow_call:
     inputs:
       arch:
-        description: The architecture to publish for; arm64, amd64, etc.
-        required: true
+        description: The architecture to publish for; arm64, amd64, etc. (defaults to runner architecture when empty)
+        required: false
         type: string
+        default: ""
       base-repo:
         description: The base repository to publish to (defaults to ghcr.io/<organization> when empty)
         required: false
@@ -108,6 +109,18 @@ jobs:
             echo "uds-pk=true" >> "$GITHUB_OUTPUT"
           fi
 
+          # Compute arch output: use provided input when set, otherwise derive from runner.arch
+          if [ -n "${{ inputs.arch }}" ]; then
+            echo "arch=${{ inputs.arch }}" >> "$GITHUB_OUTPUT"
+          else
+            # Map runner.arch (X64, ARM64) to expected values (amd64, arm64)
+            case "${{ runner.arch }}" in
+              X64)   echo "arch=amd64" >> "$GITHUB_OUTPUT" ;;
+              ARM64) echo "arch=arm64" >> "$GITHUB_OUTPUT" ;;
+              *)     echo "arch=${{ runner.arch }}" >> "$GITHUB_OUTPUT" ;;
+            esac
+          fi
+
           # Compute base-repo output: use provided input when set, otherwise default to ghcr.io/<organization>
           if [ -n "${{ inputs.base-repo }}" ]; then
             echo "base-repo=${{ inputs.base-repo }}" >> "$GITHUB_OUTPUT"
@@ -131,7 +144,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if uds-pk release check "${{ inputs.flavor }}" --arch "${{ inputs.arch }}" --base-repo "${{ steps.parse-inputs.outputs.base-repo }}" --verbose; then
+          if uds-pk release check "${{ inputs.flavor }}" --arch "${{ steps.parse-inputs.outputs.arch }}" --base-repo "${{ steps.parse-inputs.outputs.base-repo }}" --verbose; then
             uds-pk release update-yaml ${{ inputs.flavor }}
             if uds run --list | grep -wq 'publish-package'; then
               uds run publish-package \
