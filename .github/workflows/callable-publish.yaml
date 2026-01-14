@@ -7,13 +7,15 @@ on:
   workflow_call:
     inputs:
       arch:
-        description: The architecture to publish for; arm64, amd64, etc.
-        required: true
+        description: The architecture to publish for; arm64, amd64, etc. (defaults to runner architecture when empty)
+        required: false
         type: string
+        default: ""
       base-repo:
-        description: The base repository to publish to
-        required: true
+        description: The base repository to publish to (defaults to ghcr.io/<organization> when empty)
+        required: false
         type: string
+        default: ""
       runsOn:
         default: ubuntu-latest
         type: string
@@ -97,6 +99,7 @@ jobs:
       - name: Parse inputs
         id: parse-inputs
         run: |
+          # Determine uds-pk flag (preserve existing deprecated handling)
           if [ "${{ inputs.uds-releaser }}" = "true" ]; then
             echo "::warning title=Deprecated-Input::The uds-releaser input is deprecated, please use uds-pk instead"
             echo "uds-pk=true" >> "$GITHUB_OUTPUT"
@@ -106,6 +109,32 @@ jobs:
             echo "uds-pk=true" >> "$GITHUB_OUTPUT"
           fi
 
+          # Compute arch output: use provided input when set, otherwise derive from runner.arch
+          if [ -n "${{ inputs.arch }}" ]; then
+            resolved_arch="${{ inputs.arch }}"
+          else
+            # Map runner.arch (X64, ARM64) to expected values (amd64, arm64)
+            case "${{ runner.arch }}" in
+              X64)   resolved_arch="amd64" ;;
+              ARM64) resolved_arch="arm64" ;;
+              *)     resolved_arch="${{ runner.arch }}" ;;
+            esac
+          fi
+          echo "arch=${resolved_arch}" >> "$GITHUB_OUTPUT"
+
+          # Compute base-repo output: use provided input when set, otherwise default to ghcr.io/<organization>
+          if [ -n "${{ inputs.base-repo }}" ]; then
+            resolved_base_repo="${{ inputs.base-repo }}"
+          else
+            # Prefer GITHUB_REPOSITORY_OWNER if present, else parse GITHUB_REPOSITORY
+            owner="${GITHUB_REPOSITORY_OWNER:-${GITHUB_REPOSITORY%%/*}}"
+            resolved_base_repo="ghcr.io/${owner}"
+          fi
+          echo "base-repo=${resolved_base_repo}" >> "$GITHUB_OUTPUT"
+
+          # Debug output
+          echo "Resolved arch: ${resolved_arch}"
+          echo "Resolved base-repo: ${resolved_base_repo}"
 
       - name: Publish Packages/Bundles - release-please
         if: ${{ steps.parse-inputs.outputs.uds-pk == 'false' }}
@@ -121,7 +150,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if uds-pk release check "${{ inputs.flavor }}" --arch "${{ inputs.arch }}" --base-repo "${{ inputs.base-repo }}" --verbose; then
+          if uds-pk release check "${{ inputs.flavor }}" --arch "${{ steps.parse-inputs.outputs.arch }}" --base-repo "${{ steps.parse-inputs.outputs.base-repo }}" --verbose; then
             uds-pk release update-yaml ${{ inputs.flavor }}
             if uds run --list | grep -wq 'publish-package'; then
               uds run publish-package \
