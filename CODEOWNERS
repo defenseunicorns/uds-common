@@ -1,7 +1,4 @@
-* @defenseunicorns/uds-foundry @defenseunicorns/uds-core
-
-# Common Renovate Configuration (updates as soon as it hits `main`)
-/config/renovate.json5 @defenseunicorns/uds-platform-leads
+* @defenseunicorns/uds-foundry @defenseunicorns/uds-foundation
 
 # Additional privileged files
 /CODEOWNERS @jeff-mccoy @daveworth

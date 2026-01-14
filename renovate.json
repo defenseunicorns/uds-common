@@ -73,6 +73,17 @@
       ]
     },
     {
+      "groupName": "UDS Common Foundation Dependencies",
+      "labels": [
+        "foundation-deps"
+      ],
+      "commitMessageTopic": "foundation-deps",
+      "matchPackageNames": [
+        "defenseunicorns/uds-core",
+        "defenseunicorns/uds-cli"
+      ]
+    },
+    {
       "groupName": "UDS Common Package Dependencies",
       "labels": [
         "package-deps"
