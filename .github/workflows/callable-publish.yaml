@@ -11,9 +11,10 @@ on:
         required: true
         type: string
       base-repo:
-        description: The base repository to publish to
-        required: true
+        description: The base repository to publish to (defaults to ghcr.io/<organization> when empty)
+        required: false
         type: string
+        default: ""
       runsOn:
         default: ubuntu-latest
         type: string
@@ -97,6 +98,7 @@ jobs:
       - name: Parse inputs
         id: parse-inputs
         run: |
+          # Determine uds-pk flag (preserve existing deprecated handling)
           if [ "${{ inputs.uds-releaser }}" = "true" ]; then
             echo "::warning title=Deprecated-Input::The uds-releaser input is deprecated, please use uds-pk instead"
             echo "uds-pk=true" >> "$GITHUB_OUTPUT"
@@ -106,6 +108,14 @@ jobs:
             echo "uds-pk=true" >> "$GITHUB_OUTPUT"
           fi
 
+          # Compute base-repo output: use provided input when set, otherwise default to ghcr.io/<organization>
+          if [ -n "${{ inputs.base-repo }}" ]; then
+            echo "base-repo=${{ inputs.base-repo }}" >> "$GITHUB_OUTPUT"
+          else
+            # Prefer GITHUB_REPOSITORY_OWNER if present, else parse GITHUB_REPOSITORY
+            owner="${GITHUB_REPOSITORY_OWNER:-${GITHUB_REPOSITORY%%/*}}"
+            echo "base-repo=ghcr.io/${owner}" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Publish Packages/Bundles - release-please
         if: ${{ steps.parse-inputs.outputs.uds-pk == 'false' }}
@@ -121,7 +131,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if uds-pk release check "${{ inputs.flavor }}" --arch "${{ inputs.arch }}" --base-repo "${{ inputs.base-repo }}" --verbose; then
+          if uds-pk release check "${{ inputs.flavor }}" --arch "${{ inputs.arch }}" --base-repo "${{ steps.parse-inputs.outputs.base-repo }}" --verbose; then
             uds-pk release update-yaml ${{ inputs.flavor }}
             if uds run --list | grep -wq 'publish-package'; then
               uds run publish-package \
