@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.23.0](https://github.com/defenseunicorns/uds-common/compare/v1.22.1...v1.23.0) (2026-01-15)
+
+
+### Features
+
+* callable-publish figuring out organization/base-repo ([#607](https://github.com/defenseunicorns/uds-common/issues/607)) ([897916d](https://github.com/defenseunicorns/uds-common/commit/897916d4d21feb3c1865d3a925ec953a5d0727ea))
+* re-runnable callable publish ([#604](https://github.com/defenseunicorns/uds-common/issues/604)) ([7a02006](https://github.com/defenseunicorns/uds-common/commit/7a02006e3312a64e2b9df7d28b5c711c88af3549))
+
+
+### Miscellaneous
+
+* **deps:** update uds common foundation dependencies to v0.59.0 ([#606](https://github.com/defenseunicorns/uds-common/issues/606)) ([d372815](https://github.com/defenseunicorns/uds-common/commit/d3728153bb4d3c04a462a928208ad7c1a006b7ff))
+* **deps:** update uds common support dependencies to v0.27.21 ([#600](https://github.com/defenseunicorns/uds-common/issues/600)) ([b8c4e14](https://github.com/defenseunicorns/uds-common/commit/b8c4e1444377139aa0fece7dfdbc460e7863ab39))
+* update codeowners, split core/cli renovates ([#605](https://github.com/defenseunicorns/uds-common/issues/605)) ([0745909](https://github.com/defenseunicorns/uds-common/commit/0745909cc30a27aabba0e212d80894664fef7630))
+
 ## [1.22.1](https://github.com/defenseunicorns/uds-common/compare/v1.22.0...v1.22.1) (2026-01-05)
 
 
