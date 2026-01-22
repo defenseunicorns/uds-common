@@ -1,9 +1,11 @@
 # Copyright 2024 Defense Unicorns
 # SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
 
-name: Auto Update
+# EXPERIMENTAL
+# This workflow is not yet ready for production use.
+# This is currently being tested by the UDS Foundry team.
 
-# Testing call conditions, this will be a schedule
+name: Auto Update
 
 on:
   schedule:
