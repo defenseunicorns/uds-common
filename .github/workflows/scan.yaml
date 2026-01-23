@@ -28,3 +28,7 @@ jobs:
   scan:
     uses: ./.github/workflows/callable-scan.yaml
     secrets: inherit # Inherits all secrets from the parent workflow.
+#    mstodo: drop this
+  scan-test:
+    uses: ./.github/workflows/callable-scan-test.yaml
+    secrets: inherit
