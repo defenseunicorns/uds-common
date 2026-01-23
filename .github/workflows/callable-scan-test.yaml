@@ -73,7 +73,6 @@ jobs:
           cd /tmp/uds-pk
           git checkout michalsz/fix-github-token-handling
           go build -o /usr/local/bin/uds-pk
-          uds-pk version
 
       - name: Compare scans
         id: compare-scans
