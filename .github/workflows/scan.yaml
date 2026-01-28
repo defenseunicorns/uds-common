@@ -25,6 +25,9 @@ on:
       - config/renovate.json5
 
 jobs:
-  scan:
+#  scan:
+#    uses: ./.github/workflows/callable-scan.yaml
+#    secrets: inherit # Inherits all secrets from the parent workflow.
+  scan-test:
     uses: ./.github/workflows/callable-scan.yaml
-    secrets: inherit # Inherits all secrets from the parent workflow.
+    secrets: inherit
