@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.24.0](https://github.com/defenseunicorns/uds-common/compare/v1.23.0...v1.24.0) (2026-02-04)
+
+
+### ⚠ BREAKING CHANGES
+
+* **deps:** update uds common foundation dependencies to v0.60.1 ([#612](https://github.com/defenseunicorns/uds-common/issues/612))
+
+### Features
+
+* callable scan pipeline with uds-pk scan compare ([#580](https://github.com/defenseunicorns/uds-common/issues/580)) ([269ac35](https://github.com/defenseunicorns/uds-common/commit/269ac35555525a31b419c449c07c5e7e70a1e30a))
+
+
+### Miscellaneous
+
+* **deps:** update uds common foundation dependencies to v0.60.1 ([#612](https://github.com/defenseunicorns/uds-common/issues/612)) ([326a4b7](https://github.com/defenseunicorns/uds-common/commit/326a4b74c75bf22f84eb986af43242b302e4f98c))
+* **deps:** update uds common support dependencies ([#603](https://github.com/defenseunicorns/uds-common/issues/603)) ([26f98f6](https://github.com/defenseunicorns/uds-common/commit/26f98f6a94ff02ae5b9692eb8e89ca89f9f30822))
+* **deps:** update uds common support dependencies ([#609](https://github.com/defenseunicorns/uds-common/issues/609)) ([040451f](https://github.com/defenseunicorns/uds-common/commit/040451f242a5405dd51336597d3a5bf40b75ad6f))
+* **deps:** update uds common support dependencies ([#610](https://github.com/defenseunicorns/uds-common/issues/610)) ([e384091](https://github.com/defenseunicorns/uds-common/commit/e384091ffa41b5de974c152641926fb21c4ebde5))
+
 ## [1.23.0](https://github.com/defenseunicorns/uds-common/compare/v1.22.1...v1.23.0) (2026-01-15)
 
 
