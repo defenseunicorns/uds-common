@@ -62,6 +62,15 @@ jobs:
           uds run actions:install-deps
         shell: bash
 
+      - name: Disable containerd image store (grype incompatible with OCI tar format)
+        run: |
+          if [ -f /etc/docker/daemon.json ]; then
+            sudo jq '.features."containerd-snapshotter" = false' /etc/docker/daemon.json | sudo tee /tmp/daemon.json && sudo mv /tmp/daemon.json /etc/docker/daemon.json
+          else
+            echo '{"features":{"containerd-snapshotter":false}}' | sudo tee /etc/docker/daemon.json
+          fi
+          sudo systemctl restart docker
+
       - name: Compare scans
         id: compare-scans
         shell: bash
