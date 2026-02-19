@@ -140,6 +140,19 @@ jobs:
               IMAGE_NAME=$(jq -r '.source.name' "$sbom")
               IMAGE_ID=$(jq -r '.source.metadata.imageID' "$sbom")
               IMAGE_VERSION=$(jq -r '.source.version' "$sbom")
+
+              # Skip SBOMs that aren't container images
+              if [[ "$IMAGE_NAME" == /* ]]; then
+                echo "Skipping non-image SBOM source: $IMAGE_NAME ($sbom)"
+                continue
+              fi
+
+              # Must have a version/tag to inspect remotely
+              if [[ -z "${IMAGE_VERSION}" || "${IMAGE_VERSION}" == "null" ]]; then
+                echo "Skipping SBOM with no image version: $IMAGE_NAME ($sbom)"
+                continue
+              fi
+
               mkdir -p bump-status
 
               CONFIG_DIGEST=$(
