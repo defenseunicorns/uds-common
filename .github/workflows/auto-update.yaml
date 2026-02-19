@@ -15,6 +15,7 @@ on:
 permissions:
   contents: write # Allows writing content to the repository.
   packages: read # Allows reading the content of the repository's packages.
+  pull-requests: write # Allows creating or updating pull requests.
 
 # Abort prior jobs in the same workflow / PR
 concurrency:
