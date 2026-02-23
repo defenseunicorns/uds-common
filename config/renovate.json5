@@ -154,7 +154,7 @@
                 // Test: https://regex101.com/r/xaPuAs/2
                 "(?ms)^[ \\t]*(?:\\/\\/|#)\\s*renovate:\\s*datasource=(?<datasource>.*?)\\s+depName=(?<depName>.*?)(\\s+versioning=(?<versioning>.*?))?(\\s+extractVersion=(?<extractVersion>.*?))?(\\s+registryUrl=(?<registryUrl>.*?))?\\s*$\\s*^[ \\t]*[^\n=]+?\\s*=\\s*['\"]?(?<currentValue>[^'\"\n]+)['\"]?\\s*$"
             ],
-            "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver-coerced{{/if}}",
+            "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}docker{{/if}}",
             "extractVersionTemplate": "{{#if extractVersion}}{{{extractVersion}}}{{else}}^(?<version>.*)${{/if}}"
         },
         // Matches specified datasources where a colon separates the version on the following line (i.e. https://github.com/defenseunicorns/zarf/blob/7e91d3b9823b52fe6d0f563d692c8af57faa6005/examples/big-bang/zarf.yaml#L5)
