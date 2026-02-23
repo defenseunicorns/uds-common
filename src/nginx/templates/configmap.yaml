@@ -8,6 +8,22 @@ metadata:
   labels:
     {{- include "nginx.labels" . | nindent 4 }}
 data:
+  nginx.conf: |
+    worker_processes auto;
+    error_log /dev/stderr notice;
+
+    events { worker_connections 1024; }
+
+    http {
+        access_log /dev/stdout;
+        include       /etc/nginx/mime.types;
+        default_type  application/octet-stream;
+
+        sendfile on;
+        keepalive_timeout 65;
+
+        include /etc/nginx/conf.d/*.conf;
+    }
   default.conf: |
     server {
         listen       8080;
