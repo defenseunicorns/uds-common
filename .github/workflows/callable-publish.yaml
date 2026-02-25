@@ -6,6 +6,16 @@ name: Callable-Publish
 on:
   workflow_call:
     inputs:
+      arch:
+        description: The architecture to publish for; arm64, amd64, etc. (defaults to runner architecture when empty)
+        required: false
+        type: string
+        default: ""
+      base-repo:
+        description: The base repository to publish to (defaults to ghcr.io/<organization> when empty)
+        required: false
+        type: string
+        default: ""
       runsOn:
         default: ubuntu-latest
         type: string
@@ -58,7 +68,7 @@ jobs:
       id-token: write
 
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
 
@@ -66,7 +76,7 @@ jobs:
         uses: defenseunicorns/setup-uds@ab842abcad1f7a3305c2538e3dd1950d0daacfa5 # v1.0.1
         with:
           # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
-          version: v0.27.19
+          version: v0.28.3
 
       - name: Install ORAS CLI
         if: ${{ inputs.publish-repo }}
@@ -89,6 +99,7 @@ jobs:
       - name: Parse inputs
         id: parse-inputs
         run: |
+          # Determine uds-pk flag (preserve existing deprecated handling)
           if [ "${{ inputs.uds-releaser }}" = "true" ]; then
             echo "::warning title=Deprecated-Input::The uds-releaser input is deprecated, please use uds-pk instead"
             echo "uds-pk=true" >> "$GITHUB_OUTPUT"
@@ -98,6 +109,32 @@ jobs:
             echo "uds-pk=true" >> "$GITHUB_OUTPUT"
           fi
 
+          # Compute arch output: use provided input when set, otherwise derive from runner.arch
+          if [ -n "${{ inputs.arch }}" ]; then
+            resolved_arch="${{ inputs.arch }}"
+          else
+            # Map runner.arch (X64, ARM64) to expected values (amd64, arm64)
+            case "${{ runner.arch }}" in
+              X64)   resolved_arch="amd64" ;;
+              ARM64) resolved_arch="arm64" ;;
+              *)     resolved_arch="${{ runner.arch }}" ;;
+            esac
+          fi
+          echo "arch=${resolved_arch}" >> "$GITHUB_OUTPUT"
+
+          # Compute base-repo output: use provided input when set, otherwise default to ghcr.io/<organization>
+          if [ -n "${{ inputs.base-repo }}" ]; then
+            resolved_base_repo="${{ inputs.base-repo }}"
+          else
+            # Prefer GITHUB_REPOSITORY_OWNER if present, else parse GITHUB_REPOSITORY
+            owner="${GITHUB_REPOSITORY_OWNER:-${GITHUB_REPOSITORY%%/*}}"
+            resolved_base_repo="ghcr.io/${owner}"
+          fi
+          echo "base-repo=${resolved_base_repo}" >> "$GITHUB_OUTPUT"
+
+          # Debug output
+          echo "Resolved arch: ${resolved_arch}"
+          echo "Resolved base-repo: ${resolved_base_repo}"
 
       - name: Publish Packages/Bundles - release-please
         if: ${{ steps.parse-inputs.outputs.uds-pk == 'false' }}
@@ -113,7 +150,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if uds-pk release check "${{ inputs.flavor }}"; then
+          if uds-pk release check "${{ inputs.flavor }}" --arch "${{ steps.parse-inputs.outputs.arch }}" --base-repo "${{ steps.parse-inputs.outputs.base-repo }}" --verbose; then
             uds-pk release update-yaml ${{ inputs.flavor }}
             if uds run --list | grep -wq 'publish-package'; then
               uds run publish-package \
@@ -151,7 +188,7 @@ jobs:
         run: uds run actions:save-logs
         shell: bash
 
-      - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         if: ${{ always() }}
         with:
           name: debug-log-${{ inputs.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ runner.arch }}
@@ -163,7 +200,7 @@ jobs:
             /tmp/uds-containerd-logs
             /tmp/k3d-uds-*.log
 
-      - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         if: ${{ always() && inputs.reports-path != '' }}
         with:
           name: ${{ inputs.reports-name }}-${{ inputs.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ runner.arch }}
