@@ -93,6 +93,7 @@ tasks:
           ./uds zarf package pull \
             "oci://${TARGET_REPO}/${PACKAGE_NAME}:${LATEST_VERSION}" \
             --no-progress \
+            --architecture=${{ .inputs.architecture }} \
             -o ${{ .inputs.path }}
 
           # NOTE: This does not include the flavor suffix because the bundle will need to reference all flavors easily
