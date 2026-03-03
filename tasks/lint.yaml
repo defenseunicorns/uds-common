@@ -101,6 +101,7 @@ tasks:
 
           shopt -s nullglob # if nothing matches the glob expand to nothing
           # Lint all scripts in Maru tasks
+          # shellcheck disable=SC2043
           for yaml_file in ${{ .inputs.task_globs }}; do
 
             # Look through all of the task actions and format .cmd entries with a dynamic shebang based on .shell.linux
@@ -109,8 +110,9 @@ tasks:
             # Query the actual YAML file for the commands
             raw_cmds=$(uds zarf tools yq -r "$yaml_query" "$yaml_file")
 
-            # Strip any ${{ }} templates with the word "maru-expression" for compatibility
-            raw_scripts=$(echo "$raw_cmds" | sed 's/\${{[^}]*}}/\maru-expression/g')
+            # Strip any \$\{\{ \}\} templates with the word "maru-expression" for compatibility
+            maru_expr_pattern=$'\x24\x7b\x7b[^}]*\x7d\x7d'
+            raw_scripts=$(printf '%s' "$raw_cmds" | sed "s|$maru_expr_pattern|maru-expression|g")
 
             # If this file has scripts, lint them
             if [ -n "$raw_scripts" ]; then
@@ -133,8 +135,9 @@ tasks:
             # Query the actual YAML file for the commands
             raw_runs=$(uds zarf tools yq -r '.jobs[].steps[]' "$yaml_file" | uds zarf tools yq -r "$yaml_query")
 
-            # Strip any ${{ }} templates with the word "github-expression" for compatibility
-            raw_scripts=$(echo "$raw_runs" | sed 's/\${{[^}]*}}/github-expression/g')
+            # Strip any \$\{\{ \}\} templates with the word "github-expression" for compatibility
+            github_expr_pattern=$'\x24\x7b\x7b[^}]*\x7d\x7d'
+            raw_scripts=$(printf '%s' "$raw_runs" | sed "s|$github_expr_pattern|github-expression|g")
 
             # If this file has scripts, lint them
             if [ -n "$raw_scripts" ]; then
