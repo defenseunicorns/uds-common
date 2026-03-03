@@ -49,6 +49,10 @@ tasks:
 
   - name: shell
     description: Run shellcheck on all Maru tasks, GitHub workflows, and local shell scripts
+    inputs:
+      task_globs:
+        description: Globs to match to Maru task files in the repo
+        default: tasks.yaml tasks/*.yaml
     actions:
       - description: Lint shell scripts in Maru tasks, GitHub workflows and .sh files
         shell:
@@ -97,7 +101,7 @@ tasks:
 
           shopt -s nullglob # if nothing matches the glob expand to nothing
           # Lint all scripts in Maru tasks
-          for yaml_file in tasks.yaml tasks/*.yaml; do
+          for yaml_file in ${{ .inputs.task_globs }}; do
 
             # Look through all of the task actions and format .cmd entries with a dynamic shebang based on .shell.linux
             yaml_query='.tasks[].actions[] | "---\n#!/bin/"+(.shell.linux // "sh")+"\n"+.cmd'
