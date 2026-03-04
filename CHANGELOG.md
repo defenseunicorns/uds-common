@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.24.2](https://github.com/defenseunicorns/uds-common/compare/v1.24.1...v1.24.2) (2026-03-04)
+
+
+### Bug Fixes
+
+* add architecture input to zarf pull in upgrade ([#596](https://github.com/defenseunicorns/uds-common/issues/596)) ([f9dfd17](https://github.com/defenseunicorns/uds-common/commit/f9dfd17d11a955315940103e2e46191f8d157cb6))
+
+
+### Miscellaneous
+
+* **deps:** update uds common foundation dependencies to v0.28.4 ([#629](https://github.com/defenseunicorns/uds-common/issues/629)) ([7d1cef7](https://github.com/defenseunicorns/uds-common/commit/7d1cef7c4190ebfcf0f26b0967e87059e3757e9f))
+* **deps:** update uds common support dependencies ([#627](https://github.com/defenseunicorns/uds-common/issues/627)) ([c60f1bd](https://github.com/defenseunicorns/uds-common/commit/c60f1bd1ca394566341078129d53ccdd3f7f38d0))
+
 ## [1.24.1](https://github.com/defenseunicorns/uds-common/compare/v1.24.0...v1.24.1) (2026-02-24)
 
 
