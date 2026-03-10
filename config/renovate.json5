@@ -138,8 +138,8 @@
                 "(^|/)bundle\\.uds\\.hcl$"
             ],
             "matchStrings": [
-                // Test: https://regex101.com/r/b8Tt3T/1
-                "(?m)^\\s*source\\s*=\\s*\"(?!.*\\$\\{)(?:oci:\\/\\/)?(?<depName>[\\w.-]+(?:\\/[\\w.-]+)+):(?<currentValue>[\\w][\\w.-]*)\"\\s*$"
+                // Test: https://regex101.com/r/6TLM3M/1
+                "(?m)^\\s*source\\s*=\\s*\"(?:oci:\\/\\/)?(?<depName>[A-Za-z0-9._-]+(?:\\/[A-Za-z0-9._-]+)+):(?<currentValue>[A-Za-z0-9_][A-Za-z0-9._-]*)\"\\s*$"
             ],
             "datasourceTemplate": "docker",
             "versioningTemplate": "docker"
