@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.24.3](https://github.com/defenseunicorns/uds-common/compare/v1.24.2...v1.24.3) (2026-03-10)
+
+
+### Bug Fixes
+
+* renovate on bundles ([#632](https://github.com/defenseunicorns/uds-common/issues/632)) ([4bcc9f3](https://github.com/defenseunicorns/uds-common/commit/4bcc9f30e65b80b51ce3cd88a59d3f219032ea64))
+
+
+### Miscellaneous
+
+* allow task file globs to be configured in shell lint ([#628](https://github.com/defenseunicorns/uds-common/issues/628)) ([a28169d](https://github.com/defenseunicorns/uds-common/commit/a28169d8c896a25a90df6e31f0470b52d5690a51))
+
 ## [1.24.2](https://github.com/defenseunicorns/uds-common/compare/v1.24.1...v1.24.2) (2026-03-04)
 
 
