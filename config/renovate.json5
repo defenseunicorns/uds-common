@@ -144,11 +144,12 @@
             "datasourceTemplate": "docker",
             "versioningTemplate": "docker"
         },
-        // Matches bundle.uds.hcl manual renovate hints using HCL comments then an = version assignment
+        // Matches HCL files (bundle.uds.hcl, *.tf) manual renovate hints using HCL comments then an = version assignment
         {
             "customType": "regex",
             "fileMatch": [
-                "(^|/)bundle\\.uds\\.hcl$"
+                "(^|/)bundle\\.uds\\.hcl$",
+                ".*\\.tf$"
             ],
             "matchStrings": [
                 // Test: https://regex101.com/r/xaPuAs/2
