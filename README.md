@@ -7,6 +7,9 @@
 
 This repo acts as a UDS Package Framework that contains common configuration, tasks and documentation useful for building downstream UDS Packages.  It defines and helps consumers implement [UDS package practices](https://docs.defenseunicorns.com/core/concepts/configuration--packaging/package-requirements/) within their specific package repositories and is intended to help streamline keeping those practices up to date over time.
 
+> [!TIP]
+> Looking for information on how to build a UDS Package? Visit our [How-To Guide](https://docs.defenseunicorns.com/core/how-to-guides/packaging-applications/create-uds-package/)
+
 ## Contents
 
 The repo itself contains:
