@@ -1,3 +1,6 @@
+> [!WARNING]  
+> This document has been deprecated and is no longer maintained. Visit the new Package Guide [here](https://docs.defenseunicorns.com/core/how-to-guides/packaging-applications/create-uds-package/).
+
 # UDS Registry Package Integration Guide
 
 ## Introduction
