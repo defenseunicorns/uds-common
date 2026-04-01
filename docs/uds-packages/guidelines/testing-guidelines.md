@@ -1,3 +1,6 @@
+> [!WARNING]  
+> This document has been deprecated and is no longer maintained. Visit the new Package Testing [here](https://docs.defenseunicorns.com/core/how-to-guides/packaging-applications/package-testing/).
+
 # Testing Guidelines for Registry UDS Packages
 ## Table of Contents
 

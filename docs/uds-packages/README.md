@@ -1,3 +1,6 @@
+> [!WARNING]  
+> This document has been deprecated and is no longer maintained. Visit the new Package Overview [here](https://docs.defenseunicorns.com/core/how-to-guides/packaging-applications/overview/).
+
 # Quick Start - UDS Packages
 
 This Quick Start is intended to provide the most concise and direct path for creating a UDS package.

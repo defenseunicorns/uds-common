@@ -1,3 +1,6 @@
+> [!WARNING]  
+> This document has been deprecated and is no longer maintained. Visit the new Package requirements documentation [here](https://docs.defenseunicorns.com/core/concepts/configuration--packaging/package-requirements/).
+
 # UDS Registry Package Requirements
 
 This document describes the standards for UDS Registry Package Requirements. It is not a comprehensive guide to creating UDS Packages and assumes familiarity with the UDS ecosystem and UDS Package Custom Resource. If you are unfamiliar with these concepts, please first refer to the [package integration guide](https://github.com/defenseunicorns/uds-common/blob/main/docs/uds-packages/guide.md) providing more detailed information.
