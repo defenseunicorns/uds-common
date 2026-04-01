@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.24.3](https://github.com/defenseunicorns/uds-common/compare/v1.24.2...v1.24.3) (2026-04-01)
+
+
+### Bug Fixes
+
+* match tf files in renovate ([#635](https://github.com/defenseunicorns/uds-common/issues/635)) ([651417c](https://github.com/defenseunicorns/uds-common/commit/651417cc6629e8a31f8709975990b9a69cf99e8b))
+* renovate on bundles ([#632](https://github.com/defenseunicorns/uds-common/issues/632)) ([4bcc9f3](https://github.com/defenseunicorns/uds-common/commit/4bcc9f30e65b80b51ce3cd88a59d3f219032ea64))
+
+
+### Miscellaneous
+
+* add banner redirect for docs ([#637](https://github.com/defenseunicorns/uds-common/issues/637)) ([2b10358](https://github.com/defenseunicorns/uds-common/commit/2b10358452712317c1c9a54a3ca6b88859440137))
+* allow task file globs to be configured in shell lint ([#628](https://github.com/defenseunicorns/uds-common/issues/628)) ([a28169d](https://github.com/defenseunicorns/uds-common/commit/a28169d8c896a25a90df6e31f0470b52d5690a51))
+* **ci:** fix releaser version for unicorn common test ([#638](https://github.com/defenseunicorns/uds-common/issues/638)) ([ba58701](https://github.com/defenseunicorns/uds-common/commit/ba5870161ef8deee2f402fb16b8ca281775ca7f6))
+* **deps:** update uds common foundation dependencies ([#631](https://github.com/defenseunicorns/uds-common/issues/631)) ([092c5f1](https://github.com/defenseunicorns/uds-common/commit/092c5f18dc0bb0898617f83a63f42acc35473485))
+* **deps:** update uds common package dependencies ([#634](https://github.com/defenseunicorns/uds-common/issues/634)) ([38a1691](https://github.com/defenseunicorns/uds-common/commit/38a1691c044de58b5ad6536f36c0bb84dfb0707b))
+
 ## [1.24.2](https://github.com/defenseunicorns/uds-common/compare/v1.24.1...v1.24.2) (2026-03-04)
 
 
