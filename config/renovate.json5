@@ -388,7 +388,19 @@
         // Sets a minimum release age for all datasources with timestamps except defenseunicorns maintained packages
         {
             "matchDatasources": ["crate", "rubygems", "docker", "github-releases", "terraform-provider", "github-tags", "go", "maven", "npm", "nuget", "pypi", "jsr"],
-            "matchPackageNames": ["!pepr", "!defenseunicorns/**", "!zarf-dev/**", "!github.com/defenseunicorns/**", "!github.com/zarf-dev/**", "!ghcr.io/defenseunicorns/*", "!ghcr.io/zarf-dev/*", "!registry.defenseunicorns.com/**"],
+            "matchPackageNames": [
+                "!pepr",
+                "!defenseunicorns/**",
+                "!zarf-dev/**",
+                "!uds-packages/**",
+                "!github.com/defenseunicorns/**",
+                "!github.com/zarf-dev/**",
+                "!github.com/uds-packages/**",
+                "!ghcr.io/defenseunicorns/*",
+                "!ghcr.io/zarf-dev/*",
+                "!ghcr.io/uds-packages/*",
+                "!registry.defenseunicorns.com/**"
+            ],
             "minimumReleaseAge": "3 days",
             "internalChecksFilter": "strict",
             "prCreation": "not-pending"
