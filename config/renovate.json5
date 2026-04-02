@@ -396,9 +396,9 @@
                 "!github.com/defenseunicorns/**",
                 "!github.com/zarf-dev/**",
                 "!github.com/uds-packages/**",
-                "!ghcr.io/defenseunicorns/*",
-                "!ghcr.io/zarf-dev/*",
-                "!ghcr.io/uds-packages/*",
+                "!ghcr.io/defenseunicorns/**",
+                "!ghcr.io/zarf-dev/**",
+                "!ghcr.io/uds-packages/**",
                 "!registry.defenseunicorns.com/**"
             ],
             "minimumReleaseAge": "3 days",
