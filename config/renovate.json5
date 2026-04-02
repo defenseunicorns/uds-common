@@ -387,7 +387,7 @@
         },
         // Sets a minimum release age for all datasources with timestamps except defenseunicorns maintained packages
         {
-            "matchDatasources": ["crate", "rubygems", "docker", "github-releases", "terraform-provider", "github-tags", "go", "maven", "npm", "nuget", "pypi", "jsr"],
+            "matchDatasources": ["crate", "rubygems", "github-releases", "terraform-provider", "github-tags", "go", "maven", "npm", "nuget", "pypi", "jsr"],
             "matchPackageNames": [
                 "!pepr",
                 "!defenseunicorns/**",
@@ -403,7 +403,8 @@
             ],
             "minimumReleaseAge": "3 days",
             "internalChecksFilter": "strict",
-            "prCreation": "not-pending"
+            "prCreation": "not-pending",
+            "minimumReleaseAgeBehaviour": "timestamp-required"
         }
     ]
 }
