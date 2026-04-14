@@ -390,6 +390,7 @@
             "matchDatasources": ["crate", "rubygems", "github-releases", "terraform-provider", "github-tags", "go", "maven", "npm", "nuget", "pypi", "jsr"],
             "matchPackageNames": [
                 "!pepr",
+                "!@defenseunicorns/**",
                 "!defenseunicorns/**",
                 "!zarf-dev/**",
                 "!uds-packages/**",
