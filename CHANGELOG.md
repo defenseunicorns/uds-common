@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.24.5](https://github.com/defenseunicorns/uds-common/compare/v1.24.4...v1.24.5) (2026-04-14)
+
+
+### Bug Fixes
+
+* handle v prefix in tags for test-upgrade ([#649](https://github.com/defenseunicorns/uds-common/issues/649)) ([b074243](https://github.com/defenseunicorns/uds-common/commit/b07424388c2eb9e88d70e37b050fd5629ef0f106))
+* remove prCreation from common renovate config ([#647](https://github.com/defenseunicorns/uds-common/issues/647)) ([681baac](https://github.com/defenseunicorns/uds-common/commit/681baaccfba9188c706025472240c5ec44441c91))
+
+
+### Miscellaneous
+
+* add our defenseunicorns org prefix for npm ([#641](https://github.com/defenseunicorns/uds-common/issues/641)) ([e4b9cf0](https://github.com/defenseunicorns/uds-common/commit/e4b9cf010fd71281844210e43a84a8b5ca36c943))
+* **deps:** update uds common foundation dependencies ([#643](https://github.com/defenseunicorns/uds-common/issues/643)) ([abcefcf](https://github.com/defenseunicorns/uds-common/commit/abcefcf0179e9d51be562e2426e2906e3d0341a5))
+* **deps:** update uds common package dependencies ([#644](https://github.com/defenseunicorns/uds-common/issues/644)) ([1371aa8](https://github.com/defenseunicorns/uds-common/commit/1371aa8d5e65b77397870eec5582d946768348d8))
+* **deps:** update uds common support dependencies ([#646](https://github.com/defenseunicorns/uds-common/issues/646)) ([d3ae37b](https://github.com/defenseunicorns/uds-common/commit/d3ae37b74e83e21ebd6e984902f65af6e2007577))
+
 ## [1.24.4](https://github.com/defenseunicorns/uds-common/compare/v1.24.3...v1.24.4) (2026-04-07)
 
 
