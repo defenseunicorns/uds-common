@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.24.4](https://github.com/defenseunicorns/uds-common/compare/v1.24.3...v1.24.4) (2026-04-07)
+
+
+### Bug Fixes
+
+* **ci:** proper github env setup for maru auth ([#642](https://github.com/defenseunicorns/uds-common/issues/642)) ([0f28072](https://github.com/defenseunicorns/uds-common/commit/0f280721588af60ebaaa6b0a90945c5be8eea70e))
+
+
+### Miscellaneous
+
+* add a minimum release age to common renovate ([#639](https://github.com/defenseunicorns/uds-common/issues/639)) ([ac85223](https://github.com/defenseunicorns/uds-common/commit/ac8522378dfc193ac9b972b8a914d56e38b45a08))
+* **deps:** update uds common support dependencies ([#630](https://github.com/defenseunicorns/uds-common/issues/630)) ([2e3c999](https://github.com/defenseunicorns/uds-common/commit/2e3c9991a7bcd977f7e01c519318103d920844c8))
+* downgrade oras cli dep ([#645](https://github.com/defenseunicorns/uds-common/issues/645)) ([31a0fce](https://github.com/defenseunicorns/uds-common/commit/31a0fcec229d1202f057764947c350818c799471))
+
 ## [1.24.3](https://github.com/defenseunicorns/uds-common/compare/v1.24.2...v1.24.3) (2026-04-01)
 
 

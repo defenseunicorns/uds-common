@@ -13,7 +13,7 @@ on:
       udsCliVersion:
         description: The uds-cli version to install
         # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
-        default: 0.30.0
+        default: 0.30.2
         type: string
       zarfYamlPath:
         description: The path to the zarf.yaml file
@@ -59,7 +59,7 @@ jobs:
 
       - name: Environment setup
         run: |
-          echo "MARU_AUTH=\"{\"raw.githubusercontent.com\": \"${{ secrets.GITHUB_TOKEN }}\"}\"" >> "GITHUB_ENV"
+          echo "MARU_AUTH=\"{\"raw.githubusercontent.com\": \"${{ secrets.GITHUB_TOKEN }}\"}\"" >> "$GITHUB_ENV"
           uds run actions:setup-environment \
           --set REGISTRY1_USERNAME="${{ secrets.IRON_BANK_ROBOT_USERNAME }}" \
           --set REGISTRY1_PASSWORD="${{ secrets.IRON_BANK_ROBOT_PASSWORD }}" \
@@ -186,7 +186,7 @@ jobs:
 
       - name: Save Releaser Bump Status
         if: ${{ steps.image-comparison.outputs.mismatch == 'true' }}
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: update-${{ inputs.flavor }}
           path: bump-status/${{ inputs.flavor}}-mismatch.txt

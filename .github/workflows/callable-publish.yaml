@@ -76,18 +76,18 @@ jobs:
         uses: defenseunicorns/setup-uds@ab842abcad1f7a3305c2538e3dd1950d0daacfa5 # v1.0.1
         with:
           # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
-          version: v0.30.0
+          version: v0.30.2
 
       - name: Install ORAS CLI
         if: ${{ inputs.publish-repo }}
-        uses: oras-project/setup-oras@22ce207df3b08e061f537244349aac6ae1d214f6 # v1.2.4
+        uses: oras-project/setup-oras@38de303aac69abb66f3e6255b7198bff35f323e3 # v2.0.0
         with:
           # renovate: datasource=github-tags depName=oras-project/oras versioning=semver
-          version: 1.3.0
+          version: 1.3.1
 
       - name: Environment setup
         run: |
-            echo "MARU_AUTH=\"{\"raw.githubusercontent.com\": \"${{ secrets.GITHUB_TOKEN }}\"}\"" >> "GITHUB_ENV"
+            echo "MARU_AUTH=\"{\"raw.githubusercontent.com\": \"${{ secrets.GITHUB_TOKEN }}\"}\"" >> "$GITHUB_ENV"
             uds run actions:setup-environment \
             --set REGISTRY1_USERNAME="${{ secrets.IRON_BANK_ROBOT_USERNAME }}" \
             --set REGISTRY1_PASSWORD="${{ secrets.IRON_BANK_ROBOT_PASSWORD }}" \
@@ -188,7 +188,7 @@ jobs:
         run: uds run actions:save-logs
         shell: bash
 
-      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: ${{ always() }}
         with:
           name: debug-log-${{ inputs.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ runner.arch }}
@@ -200,7 +200,7 @@ jobs:
             /tmp/uds-containerd-logs
             /tmp/k3d-uds-*.log
 
-      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: ${{ always() && inputs.reports-path != '' }}
         with:
           name: ${{ inputs.reports-name }}-${{ inputs.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ runner.arch }}
