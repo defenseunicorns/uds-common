@@ -403,7 +403,6 @@
             ],
             "minimumReleaseAge": "3 days",
             "internalChecksFilter": "strict",
-            "prCreation": "not-pending",
             "minimumReleaseAgeBehaviour": "timestamp-required"
         }
     ]
