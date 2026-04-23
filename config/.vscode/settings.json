@@ -27,7 +27,7 @@
       "**/uds-exemption.yaml",
       "**/exemptions.yaml",
       "**/exemption.yaml"
-    ],
+    ]
   },
   "cSpell.words": [
     "alertmanager",
