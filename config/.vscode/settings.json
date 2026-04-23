@@ -20,9 +20,14 @@
       "zarf.yaml"
     ],
     "https://raw.githubusercontent.com/defenseunicorns/uds-core/main/schemas/package-v1alpha1.schema.json": [
-      "package.yaml",
-      "uds-package.yaml"
-    ]
+      "**/package.yaml",
+      "**/uds-package.yaml"
+    ],
+    "https://raw.githubusercontent.com/defenseunicorns/uds-core/main/schemas/exemption-v1alpha1.schema.json": [
+      "**/uds-exemption.yaml",
+      "**/exemptions.yaml",
+      "**/exemption.yaml"
+    ],
   },
   "cSpell.words": [
     "alertmanager",
