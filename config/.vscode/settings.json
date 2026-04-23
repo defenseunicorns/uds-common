@@ -20,7 +20,8 @@
       "zarf.yaml"
     ],
     "https://raw.githubusercontent.com/defenseunicorns/uds-core/main/schemas/package-v1alpha1.schema.json": [
-      "package.yaml"
+      "package.yaml",
+      "uds-package.yaml"
     ]
   },
   "cSpell.words": [
