@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.24.6](https://github.com/defenseunicorns/uds-common/compare/v1.24.5...v1.24.6) (2026-04-28)
+
+
+### Bug Fixes
+
+* downgrade oras cli version ([#658](https://github.com/defenseunicorns/uds-common/issues/658)) ([448dc8c](https://github.com/defenseunicorns/uds-common/commit/448dc8c745aa640a1bc3db3d73ba9c3011df40b1))
+
+
+### Miscellaneous
+
+* **deps:** update uds common foundation dependencies ([#650](https://github.com/defenseunicorns/uds-common/issues/650)) ([295d464](https://github.com/defenseunicorns/uds-common/commit/295d464d6c3e3c449131b302e258a85024400c8a))
+* **deps:** update uds common foundation dependencies to v1.2.2 ([#657](https://github.com/defenseunicorns/uds-common/issues/657)) ([13d6ea5](https://github.com/defenseunicorns/uds-common/commit/13d6ea52d8a1c53d19e13fa784d35f53ac3ebffa))
+* **deps:** update uds common package dependencies ([#651](https://github.com/defenseunicorns/uds-common/issues/651)) ([0a0046f](https://github.com/defenseunicorns/uds-common/commit/0a0046f7ff0d3ef2fbb58485ddefdc9a5488a2e2))
+* **deps:** update uds common support dependencies ([#653](https://github.com/defenseunicorns/uds-common/issues/653)) ([45de06c](https://github.com/defenseunicorns/uds-common/commit/45de06c2d5b8dca0cb7622b50ba77479098dc062))
+
 ## [1.24.5](https://github.com/defenseunicorns/uds-common/compare/v1.24.4...v1.24.5) (2026-04-14)
 
 
