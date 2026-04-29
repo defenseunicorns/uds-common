@@ -84,6 +84,7 @@ tasks:
           # Latest tag for package/flavor. Strips tag, sorts, returns original.
           # e.g. {1.5.0, v1.6.0, v1.5.1} -> v1.6.0
           # else filters ignored_versions.
+          # shellcheck disable=SC2157
           if [[ -z "${{ .inputs.ignored_versions }}" ]]; then
             LATEST_VERSION=$(./uds zarf tools registry ls "${TARGET_REPO}/${PACKAGE_NAME}" | grep "${{ .inputs.flavor }}" | awk '{ orig=$0; sub(/^v/, "", $0); print $0"\t"orig }' | sort -V | tail -1 | cut -f2)
           else
