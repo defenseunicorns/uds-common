@@ -1,4 +1,4 @@
-# Copyright 2024 Defense Unicorns
+# Copyright 2024-2026 Defense Unicorns
 # SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
 
 includes:
@@ -82,9 +82,9 @@ tasks:
           LOCAL_VERSION=$(cat ../${{ .inputs.bundle_path }}/uds-bundle.yaml | ./uds zarf tools yq '.packages[] | select(.name == env(PACKAGE_NAME)) | .ref' | uniq )
           # shellcheck disable=SC2157
           if [[ -z "${{ .inputs.ignored_versions }}" ]]; then
-            LATEST_VERSION=$(./uds zarf tools registry ls "${TARGET_REPO}/${PACKAGE_NAME}" | grep "${{ .inputs.flavor }}" | sed 's/^v//' | sort -V | tail -1)
+            LATEST_VERSION=$(./uds zarf tools registry ls "${TARGET_REPO}/${PACKAGE_NAME}" | grep "${{ .inputs.flavor }}" | awk '{ orig=$0; sub(/^v/, "", $0); print $0"\t"orig }' | sort -V | tail -1 | cut -f2)
           else
-            LATEST_VERSION=$(./uds zarf tools registry ls "${TARGET_REPO}/${PACKAGE_NAME}" | grep -v "${{ .inputs.ignored_versions }}" | grep "${{ .inputs.flavor }}" | sed 's/^v//' | sort -V | tail -1)
+            LATEST_VERSION=$(./uds zarf tools registry ls "${TARGET_REPO}/${PACKAGE_NAME}" | grep -v "${{ .inputs.ignored_versions }}" | grep "${{ .inputs.flavor }}" | awk '{ orig=$0; sub(/^v/, "", $0); print $0"\t"orig }' | sort -V | tail -1 | cut -f2)
           fi
           BUNDLE_NAME=$(cat ${{ .inputs.bundle_path }}/uds-bundle.yaml | ./uds zarf tools yq .metadata.name)
           PREVIOUS_BUNDLE_VERSION=$(cat ${{ .inputs.bundle_path }}/uds-bundle.yaml | ./uds zarf tools yq .metadata.version)
