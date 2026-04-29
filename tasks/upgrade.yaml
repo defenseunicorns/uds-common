@@ -98,7 +98,7 @@ tasks:
 
           # NOTE: This does not include the flavor suffix because the bundle will need to reference all flavors easily
           if [ ! -e "${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${{ .inputs.architecture }}-${LOCAL_VERSION}.tar.zst" ]; then
-            mv "${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${{ .inputs.architecture }}-${LATEST_VERSION#v}.tar.zst" "${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${{ .inputs.architecture }}-${LOCAL_VERSION}.tar.zst"
+            mv "${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${{ .inputs.architecture }}-${LATEST_VERSION}.tar.zst" "${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${{ .inputs.architecture }}-${LOCAL_VERSION}.tar.zst"
           fi
 
           # Run any dependency commands (i.e. uds run dependencies:create)
