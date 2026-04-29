@@ -15,7 +15,7 @@ commitlint:
     - |
       if [[ "$[[ inputs.install-dependencies ]]" == "true" ]]; then
         npm install --save-dev @commitlint/config-conventional@20.5.0
-        npm install --save-dev @commitlint/cli@20.5.0
+        npm install --save-dev @commitlint/cli@20.5.2
         echo "module.exports = {extends: ['@commitlint/config-conventional']}" > commitlint.config.js
         echo "$CI_MERGE_REQUEST_TITLE" | npx commitlint
       elif
