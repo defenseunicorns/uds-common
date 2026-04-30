@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.24.7](https://github.com/defenseunicorns/uds-common/compare/v1.24.6...v1.24.7) (2026-04-30)
+
+
+### Bug Fixes
+
+* pull oci artifact from proper tags ([#660](https://github.com/defenseunicorns/uds-common/issues/660)) ([a10bd99](https://github.com/defenseunicorns/uds-common/commit/a10bd99108e7b3a265788b72ed82068777ae6af6))
+
+
+### Miscellaneous
+
+* **deps:** update uds common foundation dependencies to v1.3.0 ([#659](https://github.com/defenseunicorns/uds-common/issues/659)) ([d99e231](https://github.com/defenseunicorns/uds-common/commit/d99e23129301ff06ddf2c6be3e9ac5467eb44b44))
+
 ## [1.24.6](https://github.com/defenseunicorns/uds-common/compare/v1.24.5...v1.24.6) (2026-04-28)
 
 
