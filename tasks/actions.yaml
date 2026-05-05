@@ -1,4 +1,4 @@
-# Copyright 2024 Defense Unicorns
+# Copyright 2024-2026 Defense Unicorns
 # SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
 
 variables:
@@ -21,6 +21,10 @@ variables:
   - name: RAPIDFORT_USERNAME
     default: ""
   - name: RAPIDFORT_PASSWORD
+    default: ""
+  - name: CHAINGUARD_IDENTITY
+    default: ""
+  - name: CHAINGUARD_TOKEN
     default: ""
   - name: CHART_PATH
     default: chart/
@@ -152,6 +156,32 @@ tasks:
           registry: quay.io
           registry_username: ${{ .variables.RAPIDFORT_USERNAME }}
           registry_token: ${{ .variables.RAPIDFORT_PASSWORD }}
+
+      - description: Chainguard Login
+        if: ${{ ne .variables.CHAINGUARD_IDENTITY "" }}
+        cmd: |
+          if [ -z "$GITLAB_CI" ]; then
+            curl -o /usr/local/bin/chainctl -L \
+            "https://dl.enforce.dev/chainctl/latest/chainctl_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/aarch64/arm64/')" \
+            && chmod +x /usr/local/bin/chainctl
+          fi
+
+          LOGIN_ARGS="--identity \"${{ .variables.CHAINGUARD_IDENTITY }}\""
+          TOKEN=${{ .variables.CHAINGUARD_TOKEN }}
+          if [ -n "$TOKEN" ]; then
+            LOGIN_ARGS="$LOGIN_ARGS --identity-token \"$TOKEN\""
+          fi
+
+          if eval chainctl auth login "$LOGIN_ARGS" -v=0; then
+            echo Logged in as ${{ .variables.CHAINGUARD_IDENTITY }}!
+          else
+            echo Unable to assume the identity ${{ .variables.CHAINGUARD_IDENTITY }}.
+          exit 1
+          fi
+          if ! eval chainctl auth configure-docker "$LOGIN_ARGS" -v=0; then
+            echo Unable to register credential helper as ${{ .variables.CHAINGUARD_IDENTITY }}.
+            exit 1
+          fi
 
       - description: GHCR Registry Login
         if: ${{ ne .variables.GH_TOKEN "" }}
