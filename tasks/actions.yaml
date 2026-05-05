@@ -169,15 +169,18 @@ tasks:
           IDENTITY="${{ .variables.CHAINGUARD_IDENTITY }}"
           TOKEN="${{ .variables.CHAINGUARD_TOKEN }}"
 
-          LOGIN_ARGS=(--identity "$IDENTITY" -v=2)
           if [ -n "$TOKEN" ]; then
-            LOGIN_ARGS+=(--identity-token "$TOKEN")
+            chainctl auth login --identity "$IDENTITY" --identity-token "$TOKEN" -v=2 || {
+              echo "Unable to assume the identity $IDENTITY."
+              exit 1
+            }
+          else
+            chainctl auth login --identity "$IDENTITY" -v=2 || {
+              echo "Unable to assume the identity $IDENTITY."
+              exit 1
+            }
           fi
 
-          if ! chainctl auth login "${LOGIN_ARGS[@]}"; then
-            echo "Unable to assume the identity $IDENTITY."
-            exit 1
-          fi
           if ! chainctl auth configure-docker --identity "$IDENTITY" -v=2; then
             echo "Unable to register credential helper as $IDENTITY."
             exit 1
