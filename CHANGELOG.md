@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.24.8](https://github.com/defenseunicorns/uds-common/compare/v1.24.7...v1.24.8) (2026-05-05)
+
+
+### Miscellaneous
+
+* add cgr to renovate config ([#666](https://github.com/defenseunicorns/uds-common/issues/666)) ([3c8bc77](https://github.com/defenseunicorns/uds-common/commit/3c8bc779e87b4266c6a3c92795cf6815985f1762))
+* add chainguard creds ([#664](https://github.com/defenseunicorns/uds-common/issues/664)) ([f95716f](https://github.com/defenseunicorns/uds-common/commit/f95716f5b5b6ec93db52474a4efeda8efd9253c6))
+* **deps:** update uds common foundation dependencies to v0.30.4 ([#663](https://github.com/defenseunicorns/uds-common/issues/663)) ([15bd9c1](https://github.com/defenseunicorns/uds-common/commit/15bd9c11ba783db90595a587890145b72f385efa))
+
 ## [1.24.7](https://github.com/defenseunicorns/uds-common/compare/v1.24.6...v1.24.7) (2026-04-30)
 
 

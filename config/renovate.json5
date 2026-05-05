@@ -52,6 +52,12 @@
             "password": "{{ secrets.RAPIDFORT_PASSWORD }}"
         },
         {
+            "matchHost": "cgr.dev",
+            "description": "Encrypted creds for cgr.dev, scoped to this Github org using: https://docs.renovatebot.com/getting-started/migrating-secrets/#migrate-your-secrets-in-encrypted-form",
+            "username": "{{ secrets.CHAINGUARD_USERNAME }}",
+            "password": "{{ secrets.CHAINGUARD_PASSWORD }}"
+        },
+        {
             "matchHost": "ghcr.io",
             "hostType": "docker",
             "description": "Encrypted creds for ghcr.io, scoped to this Github org using: https://docs.renovatebot.com/getting-started/migrating-secrets/#migrate-your-secrets-in-encrypted-form",

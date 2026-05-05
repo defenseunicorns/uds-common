@@ -1,4 +1,4 @@
-# Copyright 2024 Defense Unicorns
+# Copyright 2024-2026 Defense Unicorns
 # SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
 
 name: Callable-Scan
@@ -9,7 +9,7 @@ on:
       udsCliVersion:
         description: The uds-cli version to install
         # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
-        default: 0.30.3
+        default: 0.30.4
         type: string
       zarfYamlPath:
         description: The path to the zarf.yaml file
@@ -28,6 +28,7 @@ on:
 permissions:
   contents: read # Allows reading the content of the repository.
   packages: read # Allows reading the content of the repository's packages.
+  id-token: write # Allows authentication to Chainguard via OIDC.
   pull-requests: write # Allows writing the scan results comment to the pull request.
 
 # Abort prior jobs in the same workflow / PR
@@ -57,7 +58,8 @@ jobs:
           --set REGISTRY1_PASSWORD="${{ secrets.IRON_BANK_ROBOT_PASSWORD }}" \
           --set GH_TOKEN="${{ secrets.GITHUB_TOKEN }}" \
           --set RAPIDFORT_USERNAME="${{ secrets.RAPIDFORT_USERNAME }}" \
-          --set RAPIDFORT_PASSWORD="${{ secrets.RAPIDFORT_PASSWORD }}"
+          --set RAPIDFORT_PASSWORD="${{ secrets.RAPIDFORT_PASSWORD }}" \
+          --set CHAINGUARD_IDENTITY="${{ secrets.CHAINGUARD_IDENTITY }}"
 
           uds run actions:install-deps
         shell: bash
