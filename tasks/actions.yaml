@@ -161,28 +161,25 @@ tasks:
         if: ${{ ne .variables.CHAINGUARD_IDENTITY "" }}
         cmd: |
           if [ -z "$GITLAB_CI" ]; then
-            curl -o /usr/local/bin/chainctl -fsL --retry 5 --retry-delay 1 \
+            curl -o /usr/local/bin/chainctl -L \
             "https://dl.enforce.dev/chainctl/latest/chainctl_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/aarch64/arm64/')" \
             && chmod +x /usr/local/bin/chainctl
           fi
 
-          IDENTITY="${{ .variables.CHAINGUARD_IDENTITY }}"
-          TOKEN="${{ .variables.CHAINGUARD_TOKEN }}"
-
+          LOGIN_ARGS="--identity \"${{ .variables.CHAINGUARD_IDENTITY }}\""
+          TOKEN=${{ .variables.CHAINGUARD_TOKEN }}
           if [ -n "$TOKEN" ]; then
-            chainctl auth login --identity "$IDENTITY" --identity-token "$TOKEN" -v=2 || {
-              echo "Unable to assume the identity $IDENTITY."
-              exit 1
-            }
-          else
-            chainctl auth login --identity "$IDENTITY" -v=2 || {
-              echo "Unable to assume the identity $IDENTITY."
-              exit 1
-            }
+            LOGIN_ARGS="$LOGIN_ARGS --identity-token \"$TOKEN\""
           fi
 
-          if ! chainctl auth configure-docker --identity "$IDENTITY" -v=2; then
-            echo "Unable to register credential helper as $IDENTITY."
+          if eval chainctl auth login "$LOGIN_ARGS" -v=2; then
+            echo Logged in as ${{ .variables.CHAINGUARD_IDENTITY }}!
+          else
+            echo Unable to assume the identity ${{ .variables.CHAINGUARD_IDENTITY }}.
+          exit 1
+          fi
+          if ! eval chainctl auth configure-docker "$LOGIN_ARGS" -v=2; then
+            echo Unable to register credential helper as ${{ .variables.CHAINGUARD_IDENTITY }}.
             exit 1
           fi
 
