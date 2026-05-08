@@ -73,6 +73,11 @@ tasks:
 
   - name: keycloak-admin-user
     description: Sets up the Keycloak admin user for dev/testing if not already created
+    inputs:
+      port:
+        description: Local port for the Keycloak port-forward (override if 8080 is already in use)
+        default: "8080"
+        required: false
     actions:
       - description: Create Keycloak Admin User
         cmd: |
@@ -81,7 +86,7 @@ tasks:
             echo "Admin user exists, skipping..."
           else
             # Start port-forward with zarf
-            ./uds zarf tools kubectl port-forward -n keycloak svc/keycloak-http 8080:8080 &
+            ./uds zarf tools kubectl port-forward -n keycloak svc/keycloak-http ${{ .inputs.port }}:8080 &
             PF_PID=$!
 
             # Wait a bit to ensure port-forward is ready
@@ -89,8 +94,8 @@ tasks:
 
             # Create admin user with curl
             PASSWORD=$(openssl rand -base64 12)
-            STATE_COOKIE=$(curl -sSf  --output /dev/null --cookie-jar - http://localhost:8080/ | grep "WELCOME_STATE_CHECKER" | awk '{print $7}')
-            curl -sSf -o /dev/null http://localhost:8080/ \
+            STATE_COOKIE=$(curl -sSf  --output /dev/null --cookie-jar - http://localhost:${{ .inputs.port }}/ | grep "WELCOME_STATE_CHECKER" | awk '{print $7}')
+            curl -sSf -o /dev/null http://localhost:${{ .inputs.port }}/ \
               -H "Cookie: WELCOME_STATE_CHECKER=${STATE_COOKIE}" \
               -H "Content-Type: application/x-www-form-urlencoded" \
               --data-urlencode "username=admin" \
@@ -130,8 +135,14 @@ tasks:
         description: First name of the user to create
         default: Unicorn
         required: false
+      port:
+        description: Local port for the Keycloak port-forward (override if 8080 is already in use)
+        default: "8080"
+        required: false
     actions:
       - task: keycloak-admin-user
+        with:
+          port: ${{ .inputs.port }}
       - description: Creating the ${{ .inputs.username }} user in Keycloak
         cmd: |
           KEYCLOAK_USER_GROUP="${{ .inputs.group }}"
