@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.24.9](https://github.com/defenseunicorns/uds-common/compare/v1.24.8...v1.24.9) (2026-05-08)
+
+
+### Miscellaneous
+
+* added port override to keycloak user setup ([#668](https://github.com/defenseunicorns/uds-common/issues/668)) ([32ec478](https://github.com/defenseunicorns/uds-common/commit/32ec4785d3429dc7384c260ad0bdc569025265a9))
+
 ## [1.24.8](https://github.com/defenseunicorns/uds-common/compare/v1.24.7...v1.24.8) (2026-05-05)
 
 
