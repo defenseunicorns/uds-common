@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.24.10](https://github.com/defenseunicorns/uds-common/compare/v1.24.9...v1.24.10) (2026-05-11)
+
+
+### Bug Fixes
+
+* add id-token:write to auto-update and callable-auto-update workflows ([#671](https://github.com/defenseunicorns/uds-common/issues/671)) ([f102aac](https://github.com/defenseunicorns/uds-common/commit/f102aac731b64bed09ca7b586c08286c0d8db473))
+
+
+### Miscellaneous
+
+* **deps:** update uds common foundation dependencies to v1.3.1 ([#667](https://github.com/defenseunicorns/uds-common/issues/667)) ([96dab3f](https://github.com/defenseunicorns/uds-common/commit/96dab3f28d00b1149b889adc7b01e15d088cb1f4))
+
+## [1.24.9](https://github.com/defenseunicorns/uds-common/compare/v1.24.8...v1.24.9) (2026-05-08)
+
+
+### Miscellaneous
+
+* added port override to keycloak user setup ([#668](https://github.com/defenseunicorns/uds-common/issues/668)) ([32ec478](https://github.com/defenseunicorns/uds-common/commit/32ec4785d3429dc7384c260ad0bdc569025265a9))
+
 ## [1.24.8](https://github.com/defenseunicorns/uds-common/compare/v1.24.7...v1.24.8) (2026-05-05)
 
 

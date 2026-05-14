@@ -56,4 +56,4 @@ components:
         valuesFiles:
           - values/unicorn-values.yaml
     images:
-      - quay.io/rfcurated/nginx:1.30.0-slim-jammy-rfcurated-rfhardened
+      - cgr.dev/defenseunicorns.com/nginx:1.30.0
