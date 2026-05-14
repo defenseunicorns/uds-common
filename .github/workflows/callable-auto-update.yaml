@@ -37,6 +37,7 @@ permissions:
   contents: write # Allows us to read files from the repository for scanning, and writing the bumped releaser.yaml if applicable.
   packages: read # Allows us to pull the sboms from the published packages for comparison.
   pull-requests: write # Allows us to create a PR if needed.
+  id-token: write # Allows authentication to Chainguard via OIDC. (Needed by callable-auto-update-flavor)
 
 jobs:
   get-flavors:
