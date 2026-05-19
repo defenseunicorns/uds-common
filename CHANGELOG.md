@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.24.11](https://github.com/defenseunicorns/uds-common/compare/v1.24.10...v1.24.11) (2026-05-18)
+
+
+### Bug Fixes
+
+* **renovate:** update kustomization links in zarf.yaml that contain https ([#662](https://github.com/defenseunicorns/uds-common/issues/662)) ([75e6b47](https://github.com/defenseunicorns/uds-common/commit/75e6b47551355f97c563ece2157bc725685fad2b))
+
+
+### Miscellaneous
+
+* **deps:** update uds common foundation dependencies to v0.31.0 ([#676](https://github.com/defenseunicorns/uds-common/issues/676)) ([4689ee7](https://github.com/defenseunicorns/uds-common/commit/4689ee7b2caa49c5519b4ed9aa2b75bd1df3257b))
+* **deps:** update uds common foundation dependencies to v1.4.0 ([#672](https://github.com/defenseunicorns/uds-common/issues/672)) ([7fc1452](https://github.com/defenseunicorns/uds-common/commit/7fc145263393ee7948d07dda81075a52cd8642da))
+* **deps:** update uds common support dependencies ([#655](https://github.com/defenseunicorns/uds-common/issues/655)) ([5ae12fb](https://github.com/defenseunicorns/uds-common/commit/5ae12fbffb85d18603c22d6ff5d6b702abd55af8))
+* remove experimental messaging ([#677](https://github.com/defenseunicorns/uds-common/issues/677)) ([86db0da](https://github.com/defenseunicorns/uds-common/commit/86db0daad005c09fb1c41e26765841c2a844fb8b))
+* swap rf images for cgr ([#674](https://github.com/defenseunicorns/uds-common/issues/674)) ([a238c79](https://github.com/defenseunicorns/uds-common/commit/a238c79ddd068e190fb4dfed13dd8b267293a349))
+
 ## [1.24.10](https://github.com/defenseunicorns/uds-common/compare/v1.24.9...v1.24.10) (2026-05-11)
 
 
