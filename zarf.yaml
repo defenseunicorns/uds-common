@@ -30,7 +30,7 @@ components:
         valuesFiles:
           - values/upstream-values.yaml
     images:
-      - nginx:1.29.7
+      - nginx:1.30.0
 
   - name: nginx
     required: true
@@ -46,7 +46,7 @@ components:
         valuesFiles:
           - values/registry1-values.yaml
     images:
-      - registry1.dso.mil/ironbank/opensource/nginx/nginx:1.29.7
+      - registry1.dso.mil/ironbank/opensource/nginx/nginx:1.30.0
 
   - name: nginx
     required: true
@@ -60,4 +60,4 @@ components:
         valuesFiles:
           - values/unicorn-values.yaml
     images:
-      - quay.io/rfcurated/nginx:1.29.7-slim-jammy-rfcurated-rfhardened
+      - cgr.dev/defenseunicorns.com/nginx:1.30.0

@@ -1,4 +1,4 @@
-# Copyright 2024 Defense Unicorns
+# Copyright 2024-2026 Defense Unicorns
 # SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
 
 name: Callable-Scan
@@ -9,7 +9,7 @@ on:
       udsCliVersion:
         description: The uds-cli version to install
         # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
-        default: 0.30.0
+        default: 0.31.0
         type: string
       zarfYamlPath:
         description: The path to the zarf.yaml file
@@ -28,6 +28,7 @@ on:
 permissions:
   contents: read # Allows reading the content of the repository.
   packages: read # Allows reading the content of the repository's packages.
+  id-token: write # Allows authentication to Chainguard via OIDC.
   pull-requests: write # Allows writing the scan results comment to the pull request.
 
 # Abort prior jobs in the same workflow / PR
@@ -51,13 +52,14 @@ jobs:
 
       - name: Environment setup
         run: |
-          echo "MARU_AUTH=\"{\"raw.githubusercontent.com\": \"${{ secrets.GITHUB_TOKEN }}\"}\"" >> "GITHUB_ENV"
+          echo "MARU_AUTH=\"{\"raw.githubusercontent.com\": \"${{ secrets.GITHUB_TOKEN }}\"}\"" >> "$GITHUB_ENV"
           uds run actions:setup-environment \
           --set REGISTRY1_USERNAME="${{ secrets.IRON_BANK_ROBOT_USERNAME }}" \
           --set REGISTRY1_PASSWORD="${{ secrets.IRON_BANK_ROBOT_PASSWORD }}" \
           --set GH_TOKEN="${{ secrets.GITHUB_TOKEN }}" \
           --set RAPIDFORT_USERNAME="${{ secrets.RAPIDFORT_USERNAME }}" \
-          --set RAPIDFORT_PASSWORD="${{ secrets.RAPIDFORT_PASSWORD }}"
+          --set RAPIDFORT_PASSWORD="${{ secrets.RAPIDFORT_PASSWORD }}" \
+          --set CHAINGUARD_IDENTITY="${{ secrets.CHAINGUARD_IDENTITY }}"
 
           uds run actions:install-deps
         shell: bash
@@ -106,7 +108,7 @@ jobs:
       - name: Upload comparison results
         id: upload-comparison-results
         if: ${{ steps.compare-scans.outputs.artifact == 'true' }}
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: scan-comparison
           path: comment.md

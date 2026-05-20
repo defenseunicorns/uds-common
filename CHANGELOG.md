@@ -1,5 +1,106 @@
 # Changelog
 
+## [1.24.11](https://github.com/defenseunicorns/uds-common/compare/v1.24.10...v1.24.11) (2026-05-18)
+
+
+### Bug Fixes
+
+* **renovate:** update kustomization links in zarf.yaml that contain https ([#662](https://github.com/defenseunicorns/uds-common/issues/662)) ([75e6b47](https://github.com/defenseunicorns/uds-common/commit/75e6b47551355f97c563ece2157bc725685fad2b))
+
+
+### Miscellaneous
+
+* **deps:** update uds common foundation dependencies to v0.31.0 ([#676](https://github.com/defenseunicorns/uds-common/issues/676)) ([4689ee7](https://github.com/defenseunicorns/uds-common/commit/4689ee7b2caa49c5519b4ed9aa2b75bd1df3257b))
+* **deps:** update uds common foundation dependencies to v1.4.0 ([#672](https://github.com/defenseunicorns/uds-common/issues/672)) ([7fc1452](https://github.com/defenseunicorns/uds-common/commit/7fc145263393ee7948d07dda81075a52cd8642da))
+* **deps:** update uds common support dependencies ([#655](https://github.com/defenseunicorns/uds-common/issues/655)) ([5ae12fb](https://github.com/defenseunicorns/uds-common/commit/5ae12fbffb85d18603c22d6ff5d6b702abd55af8))
+* remove experimental messaging ([#677](https://github.com/defenseunicorns/uds-common/issues/677)) ([86db0da](https://github.com/defenseunicorns/uds-common/commit/86db0daad005c09fb1c41e26765841c2a844fb8b))
+* swap rf images for cgr ([#674](https://github.com/defenseunicorns/uds-common/issues/674)) ([a238c79](https://github.com/defenseunicorns/uds-common/commit/a238c79ddd068e190fb4dfed13dd8b267293a349))
+
+## [1.24.10](https://github.com/defenseunicorns/uds-common/compare/v1.24.9...v1.24.10) (2026-05-11)
+
+
+### Bug Fixes
+
+* add id-token:write to auto-update and callable-auto-update workflows ([#671](https://github.com/defenseunicorns/uds-common/issues/671)) ([f102aac](https://github.com/defenseunicorns/uds-common/commit/f102aac731b64bed09ca7b586c08286c0d8db473))
+
+
+### Miscellaneous
+
+* **deps:** update uds common foundation dependencies to v1.3.1 ([#667](https://github.com/defenseunicorns/uds-common/issues/667)) ([96dab3f](https://github.com/defenseunicorns/uds-common/commit/96dab3f28d00b1149b889adc7b01e15d088cb1f4))
+
+## [1.24.9](https://github.com/defenseunicorns/uds-common/compare/v1.24.8...v1.24.9) (2026-05-08)
+
+
+### Miscellaneous
+
+* added port override to keycloak user setup ([#668](https://github.com/defenseunicorns/uds-common/issues/668)) ([32ec478](https://github.com/defenseunicorns/uds-common/commit/32ec4785d3429dc7384c260ad0bdc569025265a9))
+
+## [1.24.8](https://github.com/defenseunicorns/uds-common/compare/v1.24.7...v1.24.8) (2026-05-05)
+
+
+### Miscellaneous
+
+* add cgr to renovate config ([#666](https://github.com/defenseunicorns/uds-common/issues/666)) ([3c8bc77](https://github.com/defenseunicorns/uds-common/commit/3c8bc779e87b4266c6a3c92795cf6815985f1762))
+* add chainguard creds ([#664](https://github.com/defenseunicorns/uds-common/issues/664)) ([f95716f](https://github.com/defenseunicorns/uds-common/commit/f95716f5b5b6ec93db52474a4efeda8efd9253c6))
+* **deps:** update uds common foundation dependencies to v0.30.4 ([#663](https://github.com/defenseunicorns/uds-common/issues/663)) ([15bd9c1](https://github.com/defenseunicorns/uds-common/commit/15bd9c11ba783db90595a587890145b72f385efa))
+
+## [1.24.7](https://github.com/defenseunicorns/uds-common/compare/v1.24.6...v1.24.7) (2026-04-30)
+
+
+### Bug Fixes
+
+* pull oci artifact from proper tags ([#660](https://github.com/defenseunicorns/uds-common/issues/660)) ([a10bd99](https://github.com/defenseunicorns/uds-common/commit/a10bd99108e7b3a265788b72ed82068777ae6af6))
+
+
+### Miscellaneous
+
+* **deps:** update uds common foundation dependencies to v1.3.0 ([#659](https://github.com/defenseunicorns/uds-common/issues/659)) ([d99e231](https://github.com/defenseunicorns/uds-common/commit/d99e23129301ff06ddf2c6be3e9ac5467eb44b44))
+
+## [1.24.6](https://github.com/defenseunicorns/uds-common/compare/v1.24.5...v1.24.6) (2026-04-28)
+
+
+### Bug Fixes
+
+* downgrade oras cli version ([#658](https://github.com/defenseunicorns/uds-common/issues/658)) ([448dc8c](https://github.com/defenseunicorns/uds-common/commit/448dc8c745aa640a1bc3db3d73ba9c3011df40b1))
+
+
+### Miscellaneous
+
+* **deps:** update uds common foundation dependencies ([#650](https://github.com/defenseunicorns/uds-common/issues/650)) ([295d464](https://github.com/defenseunicorns/uds-common/commit/295d464d6c3e3c449131b302e258a85024400c8a))
+* **deps:** update uds common foundation dependencies to v1.2.2 ([#657](https://github.com/defenseunicorns/uds-common/issues/657)) ([13d6ea5](https://github.com/defenseunicorns/uds-common/commit/13d6ea52d8a1c53d19e13fa784d35f53ac3ebffa))
+* **deps:** update uds common package dependencies ([#651](https://github.com/defenseunicorns/uds-common/issues/651)) ([0a0046f](https://github.com/defenseunicorns/uds-common/commit/0a0046f7ff0d3ef2fbb58485ddefdc9a5488a2e2))
+* **deps:** update uds common support dependencies ([#653](https://github.com/defenseunicorns/uds-common/issues/653)) ([45de06c](https://github.com/defenseunicorns/uds-common/commit/45de06c2d5b8dca0cb7622b50ba77479098dc062))
+
+## [1.24.5](https://github.com/defenseunicorns/uds-common/compare/v1.24.4...v1.24.5) (2026-04-14)
+
+
+### Bug Fixes
+
+* handle v prefix in tags for test-upgrade ([#649](https://github.com/defenseunicorns/uds-common/issues/649)) ([b074243](https://github.com/defenseunicorns/uds-common/commit/b07424388c2eb9e88d70e37b050fd5629ef0f106))
+* remove prCreation from common renovate config ([#647](https://github.com/defenseunicorns/uds-common/issues/647)) ([681baac](https://github.com/defenseunicorns/uds-common/commit/681baaccfba9188c706025472240c5ec44441c91))
+
+
+### Miscellaneous
+
+* add our defenseunicorns org prefix for npm ([#641](https://github.com/defenseunicorns/uds-common/issues/641)) ([e4b9cf0](https://github.com/defenseunicorns/uds-common/commit/e4b9cf010fd71281844210e43a84a8b5ca36c943))
+* **deps:** update uds common foundation dependencies ([#643](https://github.com/defenseunicorns/uds-common/issues/643)) ([abcefcf](https://github.com/defenseunicorns/uds-common/commit/abcefcf0179e9d51be562e2426e2906e3d0341a5))
+* **deps:** update uds common package dependencies ([#644](https://github.com/defenseunicorns/uds-common/issues/644)) ([1371aa8](https://github.com/defenseunicorns/uds-common/commit/1371aa8d5e65b77397870eec5582d946768348d8))
+* **deps:** update uds common support dependencies ([#646](https://github.com/defenseunicorns/uds-common/issues/646)) ([d3ae37b](https://github.com/defenseunicorns/uds-common/commit/d3ae37b74e83e21ebd6e984902f65af6e2007577))
+
+## [1.24.4](https://github.com/defenseunicorns/uds-common/compare/v1.24.3...v1.24.4) (2026-04-07)
+
+
+### Bug Fixes
+
+* **ci:** proper github env setup for maru auth ([#642](https://github.com/defenseunicorns/uds-common/issues/642)) ([0f28072](https://github.com/defenseunicorns/uds-common/commit/0f280721588af60ebaaa6b0a90945c5be8eea70e))
+
+
+### Miscellaneous
+
+* add a minimum release age to common renovate ([#639](https://github.com/defenseunicorns/uds-common/issues/639)) ([ac85223](https://github.com/defenseunicorns/uds-common/commit/ac8522378dfc193ac9b972b8a914d56e38b45a08))
+* **deps:** update uds common support dependencies ([#630](https://github.com/defenseunicorns/uds-common/issues/630)) ([2e3c999](https://github.com/defenseunicorns/uds-common/commit/2e3c9991a7bcd977f7e01c519318103d920844c8))
+* downgrade oras cli dep ([#645](https://github.com/defenseunicorns/uds-common/issues/645)) ([31a0fce](https://github.com/defenseunicorns/uds-common/commit/31a0fcec229d1202f057764947c350818c799471))
+
 ## [1.24.3](https://github.com/defenseunicorns/uds-common/compare/v1.24.2...v1.24.3) (2026-04-01)
 
 

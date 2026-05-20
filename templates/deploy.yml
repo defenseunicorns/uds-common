@@ -1,4 +1,4 @@
-# Copyright 2024 Defense Unicorns
+# Copyright 2024-2026 Defense Unicorns
 # SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
 
 spec:
@@ -19,6 +19,8 @@ spec:
       default: ${RAPIDFORT_USERNAME}
     rapidfort-password:
       default: ${RAPIDFORT_PASSWORD}
+    chainguard-identity:
+      default: ${CHAINGUARD_IDENTITY}
 ---
 deploy:$[[ inputs.environment ]]:
   script:
@@ -28,6 +30,8 @@ deploy:$[[ inputs.environment ]]:
                                               --set REGISTRY1_PASSWORD="$[[ inputs.registry1-password ]]" \
                                               --set RAPIDFORT_USERNAME="$[[ inputs.rapidfort-username ]]" \
                                               --set RAPIDFORT_PASSWORD="$[[ inputs.rapidfort-password ]]" \
+                                              --set CHAINGUARD_IDENTITY="$[[ inputs.chainguard-identity ]]" \
+                                              --set CHAINGUARD_TOKEN="$CHAINGUARD_TOKEN" \
                                               --set GITLAB_REGISTRY_URL="$CI_REGISTRY" \
                                               --set GITLAB_REGISTRY_USER="$[[ inputs.ci-registry-user ]]" \
                                               --set GITLAB_REGISTRY_TOKEN="$[[ inputs.ci-registry-password ]]" \
