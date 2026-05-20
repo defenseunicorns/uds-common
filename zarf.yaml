@@ -8,10 +8,14 @@ metadata:
   description: UDS nginx package
   version: dev
 
-
 variables:
   - name: DOMAIN
     default: uds.dev
+
+values:
+  files:
+    - zarf-default-values.yaml
+  schema: zarf-default-values.schema.json
 
 components:
   - name: nginx

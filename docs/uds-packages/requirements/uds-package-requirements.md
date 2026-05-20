@@ -35,8 +35,8 @@ UDS Packages may make use of the [UDS Exemption custom resource](https://github.
 - [ ] **Should** consider security options during implementation to provide the most secure default possible (i.e. SAML w/SCIM vs OIDC).
 - [ ] **Should** name the Keycloak client `<App> Login` (i.e. `Mattermost Login`) to provide login UX consistency.
 - [ ] **Should** clearly mark the Keycloak client id with the group and app name `uds-<group>-<application>` (i.e. `uds-swf-mattermost`) to provide consistency in the Keycloak UI.
-- [ ] **Should** limit the use of Zarf variable templates and prioritize configuring packages via Helm value overrides.
-  > This ensures that the package is configured the same way that the bundle would be and avoids any side effect issues of Zarf's `###` templating.
+- [ ] **Should** limit the use of [Zarf variables](https://docs.zarf.dev/ref/examples/variables/) and prioritize configuring packages via [Zarf values](https://docs.zarf.dev/ref/examples/values-templating/).
+  > This ensures that the package has more flexibility and avoids any side effect issues of Zarf's `###` templating (which is likely to be deprecated and removed in the future).  For more information on this topic, see the [Values Guidelines](../guidelines/values-guidelines.md).
 - [ ] **May** template network policy keys to provide flexibility for delivery customers to configure.
 - [ ] **May** end any generated Keycloak client secrets with `-sso` to easily locate them when querying the cluster.
 - [ ] **May** template Keycloak fields to provide flexibility for delivery customers to configure.
