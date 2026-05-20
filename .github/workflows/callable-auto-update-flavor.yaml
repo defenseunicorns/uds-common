@@ -131,7 +131,7 @@ jobs:
           for arch in $PACKAGE_ARCHS; do
             SBOM_PATH="${PACKAGE_NAME}-${arch}"
 
-            uds zarf package inspect sbom "oci://ghcr.io/${REPO_OWNER}/${PACKAGE_URL}:${TAG}" -a "$arch" --output "$SBOM_PATH"
+            uds zarf package inspect sbom "oci://ghcr.io/${REPO_OWNER}/${PACKAGE_URL}:${TAG}" -a "$arch" --output "$SBOM_PATH" --features values=true
 
             mkdir -p "${SBOM_PATH}/sboms"
             mv "${SBOM_PATH}"/"${PACKAGE_NAME}"/*.json "${SBOM_PATH}"/sboms/

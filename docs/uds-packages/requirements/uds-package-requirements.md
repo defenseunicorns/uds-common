@@ -26,22 +26,7 @@ UDS Packages may make use of the [UDS Exemption custom resource](https://github.
 - [ ] **Must** (except if the application provides no end user login) use and create a Keycloak client through the `sso` key. [UDS Package Custom Resource](https://uds.defenseunicorns.com/reference/configuration/uds-operator/package/#example-uds-package-cr)
 - [ ] **Must** (except if the application provides no application metrics) implement monitors for each application metrics endpoint using it's built-in chart monitors, `monitor` key, or manual monitors in the config chart.
 - [ ] **Must** integrate declaratively (i.e. no clickops) with the UDS Operator
-- [ ] **Should** expose all configuration (`uds.dev` CRs, additional `Secrets`/`ConfigMap`s, etc) through a Helm chart (ideally in a `chart` or `charts` directory).
-  > This allows UDS bundles to override configuration with Helm overrides and enables downstream teams to fully control their bundle configurations.
-- [ ] **Should** implement or allow for multiple flavors (ideally with common definitions in a common directory).
-  > This allows for different images or configurations to be delivered consistently to customers.
-- [ ] **Should** avoid workarounds with Istio such as disabling strict mTLS peer authentication.
-- [ ] **Should** minimize network policies to specific selectors needed for Ingress/Egress traffic.
-- [ ] **Should** consider security options during implementation to provide the most secure default possible (i.e. SAML w/SCIM vs OIDC).
-- [ ] **Should** name the Keycloak client `<App> Login` (i.e. `Mattermost Login`) to provide login UX consistency.
-- [ ] **Should** clearly mark the Keycloak client id with the group and app name `uds-<group>-<application>` (i.e. `uds-swf-mattermost`) to provide consistency in the Keycloak UI.
-- [ ] **Should** limit the use of Zarf variable templates and prioritize configuring packages via Helm value overrides.
-  > This ensures that the package is configured the same way that the bundle would be and avoids any side effect issues of Zarf's `###` templating.
-- [ ] **May** template network policy keys to provide flexibility for delivery customers to configure.
-- [ ] **May** end any generated Keycloak client secrets with `-sso` to easily locate them when querying the cluster.
-- [ ] **May** template Keycloak fields to provide flexibility for delivery customers to configure.
-- [ ] **Should** be created from the [UDS Package Template](https://github.com/uds-packages/template)
-- [ ] **Must** be declaratively bundled in a [Zarf package](https://docs.zarf.dev/ref/create/)
+- [ ] **Must** be declaratively packaged in a [Zarf package](https://docs.zarf.dev/ref/create/) that is deployable via [`zarf package deploy`](https://docs.zarf.dev/ref/deploy/) (not another tool).
 - [ ] **Must** define any external interfaces under the `expose` key in the [UDS Package Custom Resource](https://uds.defenseunicorns.com/reference/configuration/uds-operator/package/#example-uds-package-cr)
 - [ ] **Must** deploy and operate successfully with Istio injection enabled in the namespace.
 - [ ] **Must** implement Journey testing, covering the basic user flows and features of the application (see [Testing Guidelines](https://github.com/defenseunicorns/uds-common/blob/main/docs/uds-packages/guidelines/testing-guidelines.md))
@@ -57,8 +42,23 @@ UDS Packages may make use of the [UDS Exemption custom resource](https://github.
   > If web requests need to be made they should be done through a `Job` or `./zarf tools kubectl exec` as appropriate.
 - [ ] **Must** not use local commands outside of `coreutils` or `./zarf` self references within `actions`.
 - [ ] **Must** include application [metadata for UDS Registry](https://github.com/defenseunicorns/uds-common/blob/main/docs/uds-packages/guidelines/metadata-guidelines.md) publishing
+- [ ] **Should** expose all configuration (`uds.dev` CRs, additional `Secrets`/`ConfigMap`s, etc) through a Helm chart (ideally in a `chart` or `charts` directory).
+  > This allows this configuration to be easily exposed via [Zarf Values](https://docs.zarf.dev/ref/examples/values-templating/).  For more information on this topic, see the [Values Guidelines](../guidelines/values-guidelines.md).
+- [ ] **Should** implement or allow for multiple flavors (ideally with common definitions in a common directory).
+  > This allows for different images or configurations to be delivered consistently to customers.
+- [ ] **Should** avoid workarounds with Istio such as disabling strict mTLS peer authentication.
+- [ ] **Should** minimize network policies to specific selectors needed for Ingress/Egress traffic.
+- [ ] **Should** consider security options during implementation to provide the most secure default possible (i.e. SAML w/SCIM vs OIDC).
+- [ ] **Should** name the Keycloak client `<App> Login` (i.e. `Mattermost Login`) to provide login UX consistency.
+- [ ] **Should** clearly mark the Keycloak client id with the group and app name `uds-<group>-<application>` (i.e. `uds-swf-mattermost`) to provide consistency in the Keycloak UI.
+- [ ] **Should** limit the use of [Zarf Variables](https://docs.zarf.dev/ref/examples/variables/) and prioritize configuring packages via [Zarf Values](https://docs.zarf.dev/ref/examples/values-templating/).
+  > This ensures that the package has more flexibility and avoids any side effect issues of Zarf's `###` templating (which is likely to be deprecated and removed in the future).  For more information on this topic, see the [Values Guidelines](../guidelines/values-guidelines.md).
+- [ ] **Should** be created from the [UDS Package Template](https://github.com/uds-packages/template)
 - [ ] **Should** lint their configurations with appropriate tooling, such as [`yamllint`](https://github.com/adrienverge/yamllint) and [`zarf dev lint`](https://docs.zarf.dev/commands/zarf_dev_lint/).
 - [ ] **Should** release a unicorn flavor package, providing a minimal CVE baseline
+- [ ] **May** template network policy keys to provide flexibility for delivery customers to configure.
+- [ ] **May** end any generated Keycloak client secrets with `-sso` to easily locate them when querying the cluster.
+- [ ] **May** template Keycloak fields to provide flexibility for delivery customers to configure.
 
 ## Exceptions
 
