@@ -16,8 +16,8 @@ components:
         version: 0.1.0
         localPath: ../chart
         values:
-          - sourcePath: ".uds-nginx-config"
-            targetPath: "."
+          - sourcePath: .uds-nginx-config
+            targetPath: .
       - name: nginx
         version: 0.1.0
         namespace: nginx
@@ -25,31 +25,31 @@ components:
         valuesFiles:
           - ../values/common-values.yaml
         values:
-          - sourcePath: ".nginx.replicaCount"
-            targetPath: "replicaCount"
-          - sourcePath: ".nginx.nameOverride"
-            targetPath: "nameOverride"
-          - sourcePath: ".nginx.fullnameOverride"
-            targetPath: "fullnameOverride"
-          - sourcePath: ".nginx.serviceAccount"
-            targetPath: "serviceAccount"
-          - sourcePath: ".nginx.podAnnotations"
-            targetPath: "podAnnotations"
-          - sourcePath: ".nginx.podLabels"
-            targetPath: "podLabels"
-          - sourcePath: ".nginx.service"
-            targetPath: "service"
-          - sourcePath: ".nginx.resources"
-            targetPath: "resources"
-          - sourcePath: ".nginx.autoscaling"
-            targetPath: "autoscaling"
-          - sourcePath: ".nginx.volumes"
-            targetPath: "volumes"
-          - sourcePath: ".nginx.volumeMounts"
-            targetPath: "volumeMounts"
-          - sourcePath: ".nginx.nodeSelector"
-            targetPath: "nodeSelector"
-          - sourcePath: ".nginx.tolerations"
-            targetPath: "tolerations"
-          - sourcePath: ".nginx.affinity"
-            targetPath: "affinity"
+          - sourcePath: .nginx.replicaCount
+            targetPath: replicaCount
+          - sourcePath: .nginx.nameOverride
+            targetPath: nameOverride
+          - sourcePath: .nginx.fullnameOverride
+            targetPath: fullnameOverride
+          - sourcePath: .nginx.serviceAccount
+            targetPath: serviceAccount
+          - sourcePath: .nginx.podAnnotations
+            targetPath: podAnnotations
+          - sourcePath: .nginx.podLabels
+            targetPath: podLabels
+          - sourcePath: .nginx.service
+            targetPath: service
+          - sourcePath: .nginx.resources
+            targetPath: resources
+          - sourcePath: .nginx.autoscaling
+            targetPath: autoscaling
+          - sourcePath: .nginx.volumes
+            targetPath: volumes
+          - sourcePath: .nginx.volumeMounts
+            targetPath: volumeMounts
+          - sourcePath: .nginx.nodeSelector
+            targetPath: nodeSelector
+          - sourcePath: .nginx.tolerations
+            targetPath: tolerations
+          - sourcePath: .nginx.affinity
+            targetPath: affinity
