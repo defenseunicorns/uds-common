@@ -41,33 +41,33 @@ components:
           - ../values/common-values.yaml
         values:
           - sourcePath: .nginx.replicaCount
-            targetPath: replicaCount
+            targetPath: .replicaCount
           - sourcePath: .nginx.nameOverride
-            targetPath: nameOverride
+            targetPath: .nameOverride
           - sourcePath: .nginx.fullnameOverride
-            targetPath: fullnameOverride
+            targetPath: .fullnameOverride
           - sourcePath: .nginx.serviceAccount
-            targetPath: serviceAccount
+            targetPath: .serviceAccount
           - sourcePath: .nginx.podAnnotations
-            targetPath: podAnnotations
+            targetPath: .podAnnotations
           - sourcePath: .nginx.podLabels
-            targetPath: podLabels
+            targetPath: .podLabels
           - sourcePath: .nginx.service
-            targetPath: service
+            targetPath: .service
           - sourcePath: .nginx.resources
-            targetPath: resources
+            targetPath: .resources
           - sourcePath: .nginx.autoscaling
-            targetPath: autoscaling
+            targetPath: .autoscaling
           - sourcePath: .nginx.volumes
-            targetPath: volumes
+            targetPath: .volumes
           - sourcePath: .nginx.volumeMounts
-            targetPath: volumeMounts
+            targetPath: .volumeMounts
           - sourcePath: .nginx.nodeSelector
-            targetPath: nodeSelector
+            targetPath: .nodeSelector
           - sourcePath: .nginx.tolerations
-            targetPath: tolerations
+            targetPath: .tolerations
           - sourcePath: .nginx.affinity
-            targetPath: affinity
+            targetPath: .affinity
 ```
 
 Within the root `zarf.yaml` the top-level `values` key maps to a `zarf-default-values.yaml` file that contains the default values for the package and a `zarf-dev-values.schema.json` file that contains the schema for those values.  The schema has specific types for common options (i.e. `replicaCount`), but looser schema for other options (i.e. `affinity`, `tolerations`, `nodeSelector`, etc.) to reduce the complexity of the schema and make it easier to understand and maintain.
