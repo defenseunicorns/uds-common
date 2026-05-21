@@ -6,9 +6,9 @@ This means that for any given UDS Package most of the values from the underlying
 
 ## Implementation
 
-The top-level `values` key for a UDS Package should be defined in the parent `zarf.yaml` of the UDS Package repository and should reference a `zarf-default-values.yaml` file and a `zarf-default-values.schema.json` file located in the root of the repository to handle defaults and validation respectively.
+The top-level `values` key for a UDS Package should be defined in the parent `zarf.yaml` of the UDS Package repository and should reference a `zarf-values.yaml` file and a `zarf-values.schema.json` file located in the root of the repository to handle defaults and validation respectively.
 
-The schema file should follow the [JSON Schema](https://json-schema.org/) specification and should be best effort to validate the common values that a consumer of the UDS Package would reasonably expect to have configured.  For deeply nested values the UDS Package should seek to keep the schema simple and avoid over-complicating it as this could cause unexpected breakages as the underlying Helm chart or Kubernetes API changes.
+The schema file should follow the [JSON Schema](https://json-schema.org/) specification and should be best effort to validate the common values that a consumer of the UDS Package would reasonably expect to have configured.  For deeply nested values the UDS Package should seek to keep the schema simple and avoid over-complicating it as this could cause unexpected breakages as the underlying Helm chart or Kubernetes API changes. There is an [open issue in Zarf](https://github.com/zarf-dev/zarf/issues/4918) to implement a generate command for this schema and once that is available, UDS Package authors are encouraged to use it to generate the schema.
 
 The `values` mappings (`source` and `target`) to Helm charts should be added alongside the initial Helm chart definition (i.e. in the `common/zarf.yaml` file).  These should be kept as flat as possible, exposing the highest order node in the values tree that makes sense for the package.  Given most UDS Packages are single-component, the top level mapping should be the chart's name and should exclude the component name for simplicity (if a multi-component package needs it component name can be added as necessary).  If values are shared across charts (i.e. `domain`) then a common `shared` key should be wired up to both to reduce the likelihood of configuration errors.
 
@@ -70,7 +70,7 @@ components:
             targetPath: .affinity
 ```
 
-Within the root `zarf.yaml` the top-level `values` key maps to a `zarf-default-values.yaml` file that contains the default values for the package and a `zarf-dev-values.schema.json` file that contains the schema for those values.  The schema has specific types for common options (i.e. `replicaCount`), but looser schema for other options (i.e. `affinity`, `tolerations`, `nodeSelector`, etc.) to reduce the complexity of the schema and make it easier to understand and maintain.
+Within the root `zarf.yaml` the top-level `values` key maps to a `zarf-values.yaml` file that contains the default values for the package and a `zarf-values.schema.json` file that contains the schema for those values.  The schema has specific types for common options (i.e. `replicaCount`), but looser schema for other options (i.e. `affinity`, `tolerations`, `nodeSelector`, etc.) to reduce the complexity of the schema and make it easier to understand and maintain.
 
 ```yaml
 uds-nginx-config:

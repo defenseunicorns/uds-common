@@ -14,8 +14,8 @@ variables:
 
 values:
   files:
-    - zarf-default-values.yaml
-  schema: zarf-default-values.schema.json
+    - zarf-values.yaml
+  schema: zarf-values.schema.json
 
 components:
   - name: nginx
