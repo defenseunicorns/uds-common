@@ -10,7 +10,7 @@ The top-level `values` key for a UDS Package should be defined in the parent `za
 
 The schema file should follow the [JSON Schema](https://json-schema.org/) specification and should be best effort to validate the common values that a consumer of the UDS Package would reasonably expect to have configured.  For deeply nested values the UDS Package should seek to keep the schema simple and avoid over-complicating it as this could cause unexpected breakages as the underlying Helm chart or Kubernetes API changes.
 
-The `values` mappings (`source` and `target`) to Helm charts should be added alongside the initial Helm chart definition (i.e. in the `common/zarf.yaml` file).  These should be kept as flat as possible, exposing the highest order node in the values tree that makes sense for the package.  Given most UDS Packages are single-component, the top level mapping should be the chart's name and should exclude the component name for simplicity (if a multi-component package needs it component name can be added as necessary).
+The `values` mappings (`source` and `target`) to Helm charts should be added alongside the initial Helm chart definition (i.e. in the `common/zarf.yaml` file).  These should be kept as flat as possible, exposing the highest order node in the values tree that makes sense for the package.  Given most UDS Packages are single-component, the top level mapping should be the chart's name and should exclude the component name for simplicity (if a multi-component package needs it component name can be added as necessary).  If values are shared across charts (i.e. `domain`) then a common `shared` key should be wired up to both to reduce the likelihood of configuration errors.
 
 ## Example
 

@@ -26,7 +26,7 @@ UDS Packages may make use of the [UDS Exemption custom resource](https://github.
 - [ ] **Must** (except if the application provides no end user login) use and create a Keycloak client through the `sso` key. [UDS Package Custom Resource](https://uds.defenseunicorns.com/reference/configuration/uds-operator/package/#example-uds-package-cr)
 - [ ] **Must** (except if the application provides no application metrics) implement monitors for each application metrics endpoint using it's built-in chart monitors, `monitor` key, or manual monitors in the config chart.
 - [ ] **Must** integrate declaratively (i.e. no clickops) with the UDS Operator
-- [ ] **Must** be declaratively packaged in a [Zarf package](https://docs.zarf.dev/ref/create/) that is deployable via [`zarf package deploy`](https://docs.zarf.dev/ref/deploy/) (not another tool).
+- [ ] **Must** be declaratively packaged in a [Zarf package](https://docs.zarf.dev/ref/create/) that is production-deployable via a vanilla [`zarf package deploy`](https://docs.zarf.dev/ref/deploy/) (i.e. doesn't require extensions provided by tooling that wraps Zarf as a library).
 - [ ] **Must** define any external interfaces under the `expose` key in the [UDS Package Custom Resource](https://uds.defenseunicorns.com/reference/configuration/uds-operator/package/#example-uds-package-cr)
 - [ ] **Must** deploy and operate successfully with Istio injection enabled in the namespace.
 - [ ] **Must** implement Journey testing, covering the basic user flows and features of the application (see [Testing Guidelines](https://github.com/defenseunicorns/uds-common/blob/main/docs/uds-packages/guidelines/testing-guidelines.md))
