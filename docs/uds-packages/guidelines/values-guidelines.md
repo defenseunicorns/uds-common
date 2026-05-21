@@ -96,8 +96,23 @@ nginx:
     minReplicas: 1
     maxReplicas: 100
     targetCPUUtilizationPercentage: 80
-  volumes: []
-  volumeMounts: []
+  volumes:
+    - name: nginx-cache
+      emptyDir: {}
+    - name: run
+      emptyDir: {}
+    - name: nginx-tmp
+      emptyDir: {}
+  volumeMounts:
+    - name: nginx-cache
+      mountPath: /var/cache/nginx
+      readOnly: false
+    - name: run
+      mountPath: /var/run
+      readOnly: false
+    - name: nginx-tmp
+      mountPath: /var/lib/nginx/tmp
+      readOnly: false
   nodeSelector: {}
   tolerations: []
   affinity: {}
