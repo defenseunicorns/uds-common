@@ -19,7 +19,7 @@ variables:
 
 tasks:
   - name: verify-badge
-    description: Verifies that a UDS Package implements UDS Package Practices flagging things that are out of compliance
+    description: "Deprecated: Verify Badge"
     actions:
       - description: "Deprecated: Verify Badge"
         cmd: echo "Skipping badge verification. This task's functionality will be removed or replaced in a future release."
