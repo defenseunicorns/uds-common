@@ -22,6 +22,10 @@ on:
       flavor:
         required: true
         type: string
+      package:
+        type: string
+        description: Name of the package (from the `packages` section in releaser.yaml) to release. Leave empty to use the top-level flavors entry (single-package mode).
+        default: ""
       options:
         type: string
         description: Additional options to set when running the test
@@ -133,17 +137,31 @@ jobs:
           fi
           echo "base-repo=${resolved_base_repo}" >> "$GITHUB_OUTPUT"
 
+          # Compute package args: when a package name is provided, pass --package to uds-pk
+          # and surface the name to downstream tasks via --set PACKAGE=<name>. When empty,
+          # both expand to nothing and behavior matches single-package mode.
+          if [ -n "${{ inputs.package }}" ]; then
+            package_flag="--package ${{ inputs.package }}"
+            package_set="--set PACKAGE=${{ inputs.package }}"
+          else
+            package_flag=""
+            package_set=""
+          fi
+          echo "package-flag=${package_flag}" >> "$GITHUB_OUTPUT"
+          echo "package-set=${package_set}" >> "$GITHUB_OUTPUT"
+
           # Debug output
           echo "Resolved arch: ${resolved_arch}"
           echo "Resolved base-repo: ${resolved_base_repo}"
+          echo "Resolved package: ${{ inputs.package }}"
 
       - name: Publish Packages/Bundles - release-please
         if: ${{ steps.parse-inputs.outputs.uds-pk == 'false' }}
         run: |
           if uds run --list | grep -wq 'publish-package'; then
-            uds run publish-package --set USE_CHECKPOINT=false --set FLAVOR=${{ inputs.flavor }} --no-progress ${{ inputs.options }}
+            uds run publish-package --set USE_CHECKPOINT=false --set FLAVOR=${{ inputs.flavor }} ${{ steps.parse-inputs.outputs.package-set }} --no-progress ${{ inputs.options }}
           else
-            uds run publish-release --set USE_CHECKPOINT=false --set FLAVOR=${{ inputs.flavor }} --no-progress ${{ inputs.options }}
+            uds run publish-release --set USE_CHECKPOINT=false --set FLAVOR=${{ inputs.flavor }} ${{ steps.parse-inputs.outputs.package-set }} --no-progress ${{ inputs.options }}
           fi
 
       - name: Publish Packages/Bundles - uds-pk
@@ -151,13 +169,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if uds-pk release check "${{ inputs.flavor }}" --arch "${{ steps.parse-inputs.outputs.arch }}" --base-repo "${{ steps.parse-inputs.outputs.base-repo }}" --verbose; then
-            uds-pk release update-yaml ${{ inputs.flavor }}
+          if uds-pk release check "${{ inputs.flavor }}" --arch "${{ steps.parse-inputs.outputs.arch }}" --base-repo "${{ steps.parse-inputs.outputs.base-repo }}" ${{ steps.parse-inputs.outputs.package-flag }} --verbose; then
+            uds-pk release update-yaml ${{ inputs.flavor }} ${{ steps.parse-inputs.outputs.package-flag }}
             if uds run --list | grep -wq 'publish-package'; then
               uds run publish-package \
                 --set USE_CHECKPOINT=false \
                 --set FLAVOR=${{ inputs.flavor }} \
                 --set ENABLE_UDS_PK=true \
+                ${{ steps.parse-inputs.outputs.package-set }} \
                 --no-progress ${{ inputs.options }} \
                 --set LICENSE_KEY=${{ secrets.LICENSE_KEY }}
             else
@@ -165,6 +184,7 @@ jobs:
                 --set USE_CHECKPOINT=false \
                 --set FLAVOR=${{ inputs.flavor }} \
                 --set ENABLE_UDS_PK=true \
+                ${{ steps.parse-inputs.outputs.package-set }} \
                 --no-progress ${{ inputs.options }} \
                 --set LICENSE_KEY=${{ secrets.LICENSE_KEY }}
             fi
@@ -177,6 +197,7 @@ jobs:
         run: |
           uds run publish:repo \
             --set FLAVOR=${{ inputs.flavor }} \
+            ${{ steps.parse-inputs.outputs.package-set }} \
             --no-progress ${{ inputs.options }}
 
       - name: Debug Output
@@ -192,7 +213,7 @@ jobs:
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: ${{ always() }}
         with:
-          name: debug-log-${{ inputs.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ runner.arch }}
+          name: debug-log-${{ inputs.package != '' && format('{0}-', inputs.package) || '' }}${{ inputs.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ runner.arch }}
           path: |
             /tmp/zarf-*.log
             /tmp/uds-*.log
@@ -204,6 +225,6 @@ jobs:
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: ${{ always() && inputs.reports-path != '' }}
         with:
-          name: ${{ inputs.reports-name }}-${{ inputs.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ runner.arch }}
+          name: ${{ inputs.reports-name }}-${{ inputs.package != '' && format('{0}-', inputs.package) || '' }}${{ inputs.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ runner.arch }}
           path: ${{ inputs.reports-path }}
           retention-days: 30
