@@ -13,6 +13,8 @@ variables:
     default: "false"
   - name: BASE_REPO
   - name: PUBLISH_PATH
+  - name: PACKAGE
+    default: ""
 
 tasks:
   - name: package
@@ -33,6 +35,9 @@ tasks:
       name:
         description: The name of the package to publish
         default: ${PACKAGE_NAME}
+      package:
+        description: Optional uds-pk package name (from releaser.yaml `packages` section) for multi-package repos. Leave empty in single-package mode.
+        default: ${PACKAGE}
     actions:
       - if: ${{ eq .variables.ENABLE_UDS_PK "false" }}
         task: release-please-publish
@@ -49,6 +54,7 @@ tasks:
           architecture: ${{ .inputs.architecture }}
           team: ${{ .inputs.team }}
           name: ${{ .inputs.name }}
+          package: ${{ .inputs.package }}
 
   - name: release-please-publish
     description: Publish the UDS package using release-please based workflows
@@ -110,6 +116,9 @@ tasks:
       flavor:
         description: The flavor of the package to build
         default: ${FLAVOR}
+      package:
+        description: Optional uds-pk package name (from releaser.yaml `packages` section) for multi-package repos. Leave empty in single-package mode.
+        default: ${PACKAGE}
     actions:
       - task: utils:determine-repo
         with:
@@ -122,12 +131,21 @@ tasks:
           - name: PACKAGE_NAME
       - description: publish using uds-pk
         cmd: |
-          ./uds zarf package publish "${{ .inputs.path }}/zarf-package-${{ .inputs.name }}-${{ .inputs.architecture }}-$(uds-pk release show ${{ .inputs.flavor }}).tar.zst" "oci://${TARGET_REPO}"
+          PKG_FLAG=""
+          if [ -n "${{ .inputs.package }}" ]; then
+            PKG_FLAG="--package ${{ .inputs.package }}"
+          fi
+
+          # shellcheck disable=SC2086
+          VERSION=$(uds-pk release show ${{ .inputs.flavor }} ${PKG_FLAG})
+          ./uds zarf package publish "${{ .inputs.path }}/zarf-package-${{ .inputs.name }}-${{ .inputs.architecture }}-${VERSION}.tar.zst" "oci://${TARGET_REPO}"
 
           if [ -n "${GITLAB_CI}" ]; then
-            uds-pk release gitlab "${{ .inputs.flavor }}"
+            # shellcheck disable=SC2086
+            uds-pk release gitlab "${{ .inputs.flavor }}" ${PKG_FLAG}
           elif [ -n "${GITHUB_ACTION}" ]; then
-            uds-pk release github "${{ .inputs.flavor }}"
+            # shellcheck disable=SC2086
+            uds-pk release github "${{ .inputs.flavor }}" ${PKG_FLAG}
           else
             echo "Unsupported platform"
             exit 11
@@ -151,6 +169,9 @@ tasks:
       flavor:
         description: The flavor of the package to publish
         default: ${FLAVOR}
+      package:
+        description: Optional uds-pk package name (from releaser.yaml `packages` section) for multi-package repos. Leave empty in single-package mode.
+        default: ${PACKAGE}
     actions:
       - task: utils:determine-repo
         with:
@@ -163,7 +184,13 @@ tasks:
           - name: PACKAGE_NAME
       - description: Checkout latest tag and re-publish
         cmd: |
-          ./uds zarf package publish "${{ .inputs.path }}/zarf-package-${{ .inputs.name }}-${{ .inputs.architecture }}-$(uds-pk release show ${{ .inputs.flavor }}).tar.zst" "oci://${TARGET_REPO}"
+          PKG_FLAG=""
+          if [ -n "${{ .inputs.package }}" ]; then
+            PKG_FLAG="--package ${{ .inputs.package }}"
+          fi
+          # shellcheck disable=SC2086
+          VERSION=$(uds-pk release show ${{ .inputs.flavor }} ${PKG_FLAG})
+          ./uds zarf package publish "${{ .inputs.path }}/zarf-package-${{ .inputs.name }}-${{ .inputs.architecture }}-${VERSION}.tar.zst" "oci://${TARGET_REPO}"
 
   - name: test-bundle
     description: Publish the test bundle for the supplied architecture
