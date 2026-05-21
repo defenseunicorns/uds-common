@@ -22,4 +22,4 @@ tasks:
     description: Verifies that a UDS Package implements UDS Package Practices flagging things that are out of compliance
     actions:
       - description: "Deprecated: Verify Badge"
-        cmd: eco "Skipping badge verification. This task's functionality will be removed or replaced in a future release."
+        cmd: echo "Skipping badge verification. This task's functionality will be removed or replaced in a future release."
