@@ -26,6 +26,10 @@ on:
         type: string
         description: Name of the package (from the `packages` section in releaser.yaml) to release. Leave empty to use the top-level flavors entry (single-package mode).
         default: ""
+      working-directory:
+        type: string
+        description: Directory to run uds-pk from. Set this to the per-package subdirectory (e.g. `pkgs/postgres`) when each package has its own releaser.yaml. Leave empty to run from the repo root.
+        default: ""
       options:
         type: string
         description: Additional options to set when running the test
@@ -137,12 +141,13 @@ jobs:
           fi
           echo "base-repo=${resolved_base_repo}" >> "$GITHUB_OUTPUT"
 
-          # Compute package args: when a package name is provided, pass --package to uds-pk
-          # and surface the name to downstream tasks via --set PACKAGE=<name>. When empty,
-          # both expand to nothing and behavior matches single-package mode.
+          # `package` adds --package + sets PACKAGE; `working-directory` cd's uds-pk in and auto-derives PACKAGE.
           if [ -n "${{ inputs.package }}" ]; then
             package_flag="--package ${{ inputs.package }}"
             package_set="--set PACKAGE=${{ inputs.package }}"
+          elif [ -n "${{ inputs.working-directory }}" ]; then
+            package_flag=""
+            package_set="--set PACKAGE=$(basename "${{ inputs.working-directory }}")"
           else
             package_flag=""
             package_set=""
@@ -150,10 +155,17 @@ jobs:
           echo "package-flag=${package_flag}" >> "$GITHUB_OUTPUT"
           echo "package-set=${package_set}" >> "$GITHUB_OUTPUT"
 
-          # Debug output
+          if [ -n "${{ inputs.working-directory }}" ]; then
+            workdir="${{ inputs.working-directory }}"
+          else
+            workdir="."
+          fi
+          echo "workdir=${workdir}" >> "$GITHUB_OUTPUT"
+
           echo "Resolved arch: ${resolved_arch}"
           echo "Resolved base-repo: ${resolved_base_repo}"
           echo "Resolved package: ${{ inputs.package }}"
+          echo "Resolved working-directory: ${workdir}"
 
       - name: Publish Packages/Bundles - release-please
         if: ${{ steps.parse-inputs.outputs.uds-pk == 'false' }}
@@ -169,8 +181,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          REPO_ROOT="$(pwd)"
+          cd "${{ steps.parse-inputs.outputs.workdir }}"
           if uds-pk release check "${{ inputs.flavor }}" --arch "${{ steps.parse-inputs.outputs.arch }}" --base-repo "${{ steps.parse-inputs.outputs.base-repo }}" ${{ steps.parse-inputs.outputs.package-flag }} --verbose; then
             uds-pk release update-yaml ${{ inputs.flavor }} ${{ steps.parse-inputs.outputs.package-flag }}
+            cd "${REPO_ROOT}"
             if uds run --list | grep -wq 'publish-package'; then
               uds run publish-package \
                 --set USE_CHECKPOINT=false \

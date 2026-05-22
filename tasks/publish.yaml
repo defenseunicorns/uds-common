@@ -137,15 +137,15 @@ tasks:
           fi
 
           # shellcheck disable=SC2086
-          VERSION=$(uds-pk release show ${{ .inputs.flavor }} ${PKG_FLAG})
+          VERSION=$(uds-pk release show ${{ .inputs.flavor }} --dir "${{ .inputs.path }}" ${PKG_FLAG})
           ./uds zarf package publish "${{ .inputs.path }}/zarf-package-${{ .inputs.name }}-${{ .inputs.architecture }}-${VERSION}.tar.zst" "oci://${TARGET_REPO}"
 
           if [ -n "${GITLAB_CI}" ]; then
             # shellcheck disable=SC2086
-            uds-pk release gitlab "${{ .inputs.flavor }}" ${PKG_FLAG}
+            uds-pk release gitlab "${{ .inputs.flavor }}" --dir "${{ .inputs.path }}" ${PKG_FLAG}
           elif [ -n "${GITHUB_ACTION}" ]; then
             # shellcheck disable=SC2086
-            uds-pk release github "${{ .inputs.flavor }}" ${PKG_FLAG}
+            uds-pk release github "${{ .inputs.flavor }}" --dir "${{ .inputs.path }}" ${PKG_FLAG}
           else
             echo "Unsupported platform"
             exit 11
@@ -189,7 +189,7 @@ tasks:
             PKG_FLAG="--package ${{ .inputs.package }}"
           fi
           # shellcheck disable=SC2086
-          VERSION=$(uds-pk release show ${{ .inputs.flavor }} ${PKG_FLAG})
+          VERSION=$(uds-pk release show ${{ .inputs.flavor }} --dir "${{ .inputs.path }}" ${PKG_FLAG})
           ./uds zarf package publish "${{ .inputs.path }}/zarf-package-${{ .inputs.name }}-${{ .inputs.architecture }}-${VERSION}.tar.zst" "oci://${TARGET_REPO}"
 
   - name: test-bundle
