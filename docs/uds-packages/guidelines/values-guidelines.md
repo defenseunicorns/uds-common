@@ -70,7 +70,7 @@ components:
             targetPath: .affinity
 ```
 
-Within the root `zarf.yaml` the top-level `values` key maps to a `zarf-values.yaml` file that contains the default values for the package and a `zarf-values.schema.json` file that contains the schema for those values.  The schema has specific types for common options (i.e. `replicaCount`), but looser schema for other options (i.e. `affinity`, `tolerations`, `nodeSelector`, etc.) to reduce the complexity of the schema and make it easier to understand and maintain.
+Within the root `zarf.yaml` the top-level `values` key maps to a `zarf-values.yaml` file that contains the default values for the package and a `zarf-values.schema.json` file that contains the schema for those values.  The schema has specific types for common options (e.g. `replicaCount`), but looser schema for other options (e.g. `affinity`, `tolerations`, `nodeSelector`, etc.) to reduce the complexity of the schema and make it easier to understand and maintain.
 
 ```yaml
 uds-nginx-config:
