@@ -2,7 +2,7 @@
 
 When implementing UDS Packages, it is important to consider how [Zarf Values](https://docs.zarf.dev/ref/examples/values-templating/) will be exposed from the package and what the implications are for downstream consumers.  UDS Packages are expected to be deployed in a variety of environments, and the values exposed through to Helm charts should be flexible enough to accommodate different deployment scenarios while also being secure and easy to use.
 
-This means that for any given UDS Package most of the values from the underlying Helm chart should be exposed as Zarf Values with only values that would inherently break the UDS Package (i.e. `image` references, or `ingress` configurations) or compromise the security of the package (i.e. `podSecurityContext`) being restricted.
+This means that for any given UDS Package most of the values from the underlying Helm chart should be exposed as Zarf Values. Only values that would inherently break the UDS Package (e.g. `image` references, or `ingress` configurations) or compromise its security (e.g. `podSecurityContext`) should be restricted.
 
 ## Implementation
 
