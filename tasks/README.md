@@ -121,7 +121,7 @@ ignore: [] # an array of paths to ignore
 
 | Name | Description |
 |------|-------------|
-| **verify-badge** | Verifies that a UDS Package implements UDS Package Practices flagging things that are out of compliance |
+| **verify-badge** | Task Removed: Verify Badge |
 
 ### [actions.yaml](./tasks/actions.yaml)
 
