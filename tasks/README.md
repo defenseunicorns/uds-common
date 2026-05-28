@@ -121,7 +121,7 @@ ignore: [] # an array of paths to ignore
 
 | Name | Description |
 |------|-------------|
-| **verify-badge** | Deprecated: Verify Badge |
+| **verify-badge** | Task Removed: Verify Badge |
 
 ### [actions.yaml](./tasks/actions.yaml)
 
