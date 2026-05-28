@@ -19,7 +19,7 @@ variables:
 
 tasks:
   - name: verify-badge
-    description: "Deprecated: Verify Badge"
+    description: "Task Removed: Verify Badge"
     actions:
-      - description: "Deprecated: Verify Badge"
-        cmd: echo "Skipping badge verification. This task's functionality will be removed or replaced in a future release."
+      - description: "Task Removed: Verify Badge"
+        cmd: echo "Skipping badge verification. This task's functionality has been removed without deleting the task itself for compatibility, but will be removed or replaced in a future release"

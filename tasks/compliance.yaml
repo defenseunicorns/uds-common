@@ -14,7 +14,7 @@ tasks:
       options:
         description: For setting additional flags
     actions:
-      - cmd: echo "Skipping OSCAL Validation. This task's functionality will be removed or replaced in a future release."
+      - cmd: echo "Skipping OSCAL Validation. This task's functionality has been removed without deleting the task itself for compatibility, but will be removed or replaced in a future release"
 
   - name: evaluate
     description: "Deprecated: Lula Evaluate multiple OSCAL Assessment Results"
@@ -25,4 +25,4 @@ tasks:
       options:
         description: For setting additional flags
     actions:
-      - cmd: echo "Skipping OSCAL Evaluation. This task's functionality will be removed or replaced in a future release."
+      - cmd: echo "Skipping OSCAL Evaluation. This task's functionality has been removed without deleting the task itself for compatibility, but will be removed or replaced in a future release"
