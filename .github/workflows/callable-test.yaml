@@ -54,7 +54,6 @@ on:
           renovate.json
           .release-please-manifest.json
           release-please-config.json
-          oscal-component.yaml
           CODEOWNERS
           LICENSE
           CONTRIBUTING.md
@@ -156,11 +155,6 @@ jobs:
       - name: Test
         run: uds run actions:test-deploy --set FLAVOR="${{ inputs.flavor }}" --set TYPE="${{ inputs.type }}" --set OPTIONS="${{ inputs.options }}" --set LICENSE_KEY="${{ secrets.LICENSE_KEY }}"
         shell: bash
-
-      - name: UDS Badge Verification
-        run: uds run actions:verify-badge
-        shell: bash
-        continue-on-error: true
 
       - name: Debug Output
         if: ${{ always() }}
