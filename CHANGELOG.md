@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.24.12](https://github.com/defenseunicorns/uds-common/compare/v1.24.11...v1.24.12) (2026-05-29)
+
+
+### Miscellaneous
+
+* **deps:** update uds common foundation dependencies to v1.5.0 ([#684](https://github.com/defenseunicorns/uds-common/issues/684)) ([69baa44](https://github.com/defenseunicorns/uds-common/commit/69baa44b4bcd43104d44791e21ea0b921ea2c2d2))
+* **deps:** update uds common support dependencies ([#678](https://github.com/defenseunicorns/uds-common/issues/678)) ([fc11b2c](https://github.com/defenseunicorns/uds-common/commit/fc11b2c1369a6974e1a08bffd24d963a93b17a57))
+* remove verify badge ([#683](https://github.com/defenseunicorns/uds-common/issues/683)) ([5d26c78](https://github.com/defenseunicorns/uds-common/commit/5d26c782d5e5be1e0bb082cb463d9c65b27a7bde))
+* swap from oras setup task to shell ([#680](https://github.com/defenseunicorns/uds-common/issues/680)) ([df4991b](https://github.com/defenseunicorns/uds-common/commit/df4991bddd885fb1fab0e4d4ce6c304d44d61c0f))
+
 ## [1.24.11](https://github.com/defenseunicorns/uds-common/compare/v1.24.10...v1.24.11) (2026-05-18)
 
 
