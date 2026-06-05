@@ -11,7 +11,7 @@ Pinning to a specific tag of a task (rather than `main`) with renovate watching 
 
 ## Supported Tool Versions
 
-- UDS CLI: 0.31.0
+- UDS CLI: 0.32.0
 - UDS Core: 1.5.0
 - K3D: 5.8.3
 
