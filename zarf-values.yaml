@@ -1,0 +1,46 @@
+# Copyright 2026 Defense Unicorns
+# SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
+
+uds-nginx-config:
+  domain: uds.dev
+
+nginx:
+  replicaCount: 1
+  nameOverride: ""
+  fullnameOverride: ""
+  serviceAccount:
+    create: true
+    automount: true
+    annotations: {}
+    name: ""
+  podAnnotations: {}
+  podLabels: {}
+  service:
+    type: ClusterIP
+    port: 8080
+  resources: {}
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 100
+    targetCPUUtilizationPercentage: 80
+  volumes:
+    - name: nginx-cache
+      emptyDir: {}
+    - name: run
+      emptyDir: {}
+    - name: nginx-tmp
+      emptyDir: {}
+  volumeMounts:
+    - name: nginx-cache
+      mountPath: /var/cache/nginx
+      readOnly: false
+    - name: run
+      mountPath: /var/run
+      readOnly: false
+    - name: nginx-tmp
+      mountPath: /var/lib/nginx/tmp
+      readOnly: false
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}

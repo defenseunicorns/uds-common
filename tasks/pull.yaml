@@ -39,7 +39,7 @@ tasks:
         setVariables:
           - name: LATEST_VERSION
       - description: Pull the latest package release
-        cmd: ./uds zarf package pull "oci://${TARGET_REPO}/${PACKAGE_NAME}:${LATEST_VERSION}" --no-progress -o ${{ .inputs.path }}
+        cmd: ./uds zarf package pull "oci://${TARGET_REPO}/${PACKAGE_NAME}:${LATEST_VERSION}" --no-progress -o ${{ .inputs.path }} --features values=true
       - description: Get the current Zarf package flavor suffix
         cmd: |
           # shellcheck disable=SC2157

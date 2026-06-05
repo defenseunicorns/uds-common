@@ -38,7 +38,7 @@ tasks:
       - description: Deploy the UDS Zarf Package
         env:
           - ZARF_CONFIG=${{ .inputs.config }}
-        cmd: ./uds zarf package deploy "${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${{ .inputs.architecture }}-${PACKAGE_VERSION}${FLAVOR_SUFFIX}.tar.zst" --confirm --no-progress ${{ .inputs.options }}
+        cmd: ./uds zarf package deploy "${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${{ .inputs.architecture }}-${PACKAGE_VERSION}${FLAVOR_SUFFIX}.tar.zst" --confirm --no-progress  --features values=true ${{ .inputs.options }}
 
   - name: test-bundle
     description: Deploy the created test bundle (deploying package + dependencies for testing)
