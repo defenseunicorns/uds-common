@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.24.13](https://github.com/defenseunicorns/uds-common/compare/v1.24.12...v1.24.13) (2026-06-05)
+
+
+### Miscellaneous
+
+* add Zarf values guidelines for UDS Packages ([#679](https://github.com/defenseunicorns/uds-common/issues/679)) ([51ab81f](https://github.com/defenseunicorns/uds-common/commit/51ab81f2cad524152026e8b683a3599d3ed60a25))
+* **deps:** update uds common foundation dependencies to v0.32.0 ([#688](https://github.com/defenseunicorns/uds-common/issues/688)) ([3b5803a](https://github.com/defenseunicorns/uds-common/commit/3b5803a6d432f94fd20642b4b220648cb73e7d12))
+* rename LICENSE.md to LICENSE and add SECURITY.md ([#682](https://github.com/defenseunicorns/uds-common/issues/682)) ([0e2f075](https://github.com/defenseunicorns/uds-common/commit/0e2f075babc1f36cd76244b57524659848749177))
+
 ## [1.24.12](https://github.com/defenseunicorns/uds-common/compare/v1.24.11...v1.24.12) (2026-05-29)
 
 
