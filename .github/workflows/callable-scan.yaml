@@ -23,6 +23,11 @@ on:
         description: The prefix for private packages
         default: private
         type: string
+      grypeVersion:
+        description: The uds-cli version to install
+        # renovate: datasource=github-tags depName=anchore/grype versioning=semver
+        default: 0.112.0
+        type: string
 
 # Permissions for the GITHUB_TOKEN used by the workflow.
 permissions:
@@ -72,8 +77,11 @@ jobs:
           REPO_OWNER: ${{ github.repository_owner }}
           PACKAGE_PREFIX: ${{ inputs.packagePrefix }}
           PRIVATE_PACKAGE_PREFIX: ${{ inputs.privatePackagePrefix }}
+          GRYPE_VERSION: ${{ inputs.grypeVersion }}
         run: |
-          curl -sSfL https://get.anchore.io/grype | sudo sh -s -- -b /usr/local/bin
+          GRYPE_VERSION=
+
+          curl -sSfL https://get.anchore.io/grype | sudo sh -s -- -b /usr/local/bin "${GRYPE_VERSION}"
 
           uds-pk scan compare \
             --public-packages-prefix "${PACKAGE_PREFIX}" \
