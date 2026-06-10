@@ -79,8 +79,6 @@ jobs:
           PRIVATE_PACKAGE_PREFIX: ${{ inputs.privatePackagePrefix }}
           GRYPE_VERSION: ${{ inputs.grypeVersion }}
         run: |
-          GRYPE_VERSION=
-
           curl -sSfL https://get.anchore.io/grype | sudo sh -s -- -b /usr/local/bin "${GRYPE_VERSION}"
 
           uds-pk scan compare \
