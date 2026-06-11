@@ -112,7 +112,7 @@ ignore: [] # an array of paths to ignore
 | **deps** | Install linting tool dependencies |
 | **all** | Run all linting commands |
 | **yaml** | Run YAML linting checks |
-| **shell** | Run shellcheck on all Maru tasks, GitHub workflows, and local shell scripts |
+| **shell** | Run shellcheck on all Maru tasks, GitHub workflows, Zarf packages, and local shell scripts |
 | **license** | Lint for the SPDX license identifier being in source files |
 | **fix-license** | Add the SPDX license identifier to source files |
 | **tasks** | Dry run all tasks in the base tasks file |
