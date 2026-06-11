@@ -60,4 +60,4 @@ components:
         valuesFiles:
           - values/unicorn-values.yaml
     images:
-      - cgr.dev/defenseunicorns.com/nginx:v1.31.1
+      - cgr.dev/defenseunicorns.com/nginx:1.31.1 # renovate: extractVersion=^v?(?<version>.*)$
