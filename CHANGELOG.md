@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.24.14](https://github.com/defenseunicorns/uds-common/compare/v1.24.13...v1.24.14) (2026-06-11)
+
+
+### Bug Fixes
+
+* base repo for release conditional ([#692](https://github.com/defenseunicorns/uds-common/issues/692)) ([c6e353b](https://github.com/defenseunicorns/uds-common/commit/c6e353b57fdd7ed39050364a8ff3077592f7548c))
+* pin grype version in scan job ([#693](https://github.com/defenseunicorns/uds-common/issues/693)) ([9ce53b4](https://github.com/defenseunicorns/uds-common/commit/9ce53b4b4e5f33b97bac6ee84ca1efa236571858))
+
+
+### Miscellaneous
+
+* **deps:** update uds common foundation dependencies to v1.6.0 ([#689](https://github.com/defenseunicorns/uds-common/issues/689)) ([4bcdb0a](https://github.com/defenseunicorns/uds-common/commit/4bcdb0adb43a1036786806bfa3bcd901617936af))
+
 ## [1.24.13](https://github.com/defenseunicorns/uds-common/compare/v1.24.12...v1.24.13) (2026-06-05)
 
 

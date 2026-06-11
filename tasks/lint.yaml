@@ -48,13 +48,16 @@ tasks:
         cmd: yamllint . -c .yamllint --no-warnings
 
   - name: shell
-    description: Run shellcheck on all Maru tasks, GitHub workflows, and local shell scripts
+    description: Run shellcheck on all Maru tasks, GitHub workflows, Zarf packages, and local shell scripts
     inputs:
       task_globs:
         description: Globs to match to Maru task files in the repo
         default: tasks.yaml tasks/*.yaml
+      zarf_globs:
+        description: Globs to match to Zarf package files in the repo
+        default: zarf.yaml **/zarf.yaml **/**/zarf.yaml
     actions:
-      - description: Lint shell scripts in Maru tasks, GitHub workflows and .sh files
+      - description: Lint shell scripts in Maru tasks, GitHub workflows, Zarf packages, and .sh files
         shell:
           linux: bash
           darwin: bash
@@ -138,6 +141,28 @@ tasks:
             # Strip any \$\{\{ \}\} templates with the word "github-expression" for compatibility
             github_expr_pattern=$'\x24\x7b\x7b[^}]*\x7d\x7d'
             raw_scripts=$(printf '%s' "$raw_runs" | sed "s|$github_expr_pattern|github-expression|g")
+
+            # If this file has scripts, lint them
+            if [ -n "$raw_scripts" ]; then
+              lint_scripts "$yaml_file" "$raw_scripts"
+            fi
+          done
+          shopt -u nullglob #reset nullglob behavior
+
+          shopt -s nullglob # if nothing matches the glob expand to nothing
+          # Lint all scripts in Zarf packages
+          # shellcheck disable=SC2043
+          for yaml_file in ${{ .inputs.zarf_globs }}; do
+
+            # Look through all component action lifecycle lists and format .cmd entries with a dynamic shebang based on .shell.linux
+            yaml_query='.components[].actions | (.onCreate,.onDeploy,.onRemove) | (.before,.after,.onSuccess,.onFailure)[]? | select(.cmd) | "---\n#!/bin/"+(.shell.linux // "sh")+"\n"+.cmd'
+
+            # Query the actual YAML file for the commands
+            raw_cmds=$(uds zarf tools yq -r "$yaml_query" "$yaml_file")
+
+            # Strip any {{ }} templates with the word "zarf-expression" for compatibility
+            zarf_expr_pattern='{{[^}]*}}'
+            raw_scripts=$(printf '%s' "$raw_cmds" | sed "s|$zarf_expr_pattern|zarf-expression|g")
 
             # If this file has scripts, lint them
             if [ -n "$raw_scripts" ]; then
