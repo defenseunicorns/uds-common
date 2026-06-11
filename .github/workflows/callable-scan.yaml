@@ -26,7 +26,7 @@ on:
       grypeVersion:
         description: The grype version to install
         # renovate: datasource=github-tags depName=anchore/grype versioning=semver
-        default: v0.112.0
+        default: v0.114.0
         type: string
 
 # Permissions for the GITHUB_TOKEN used by the workflow.
@@ -48,7 +48,7 @@ jobs:
       sboms: ${{ steps.get-sboms.outputs.sboms }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
       - name: Install UDS CLI
         uses: defenseunicorns/setup-uds@ab842abcad1f7a3305c2538e3dd1950d0daacfa5 # v1.0.1
