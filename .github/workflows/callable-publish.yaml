@@ -48,6 +48,10 @@ on:
         type: boolean
         default: false
         description: "DEPRECATED: Whether to use the UDS Releaser for publishing"
+      team:
+        type: string
+        default: ""
+        description: "Team path segment inserted between 'private' and the package name (e.g. 'uds'). Required when the registry uses a team subdirectory (non-uds-packages orgs)."
     secrets:
       LICENSE_KEY:
         required: false
@@ -149,7 +153,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if uds-pk release check "${{ inputs.flavor }}" --arch "${{ steps.parse-inputs.outputs.arch }}" --base-repo "${{ steps.parse-inputs.outputs.base-repo }}" --verbose; then
+          team_flag=""
+          if [ -n "${{ inputs.team }}" ]; then
+            team_flag="--team ${{ inputs.team }}"
+          fi
+          # shellcheck disable=SC2086
+          if uds-pk release check "${{ inputs.flavor }}" --arch "${{ steps.parse-inputs.outputs.arch }}" --base-repo "${{ steps.parse-inputs.outputs.base-repo }}" ${team_flag} --verbose; then
             uds-pk release update-yaml ${{ inputs.flavor }}
             if uds run --list | grep -wq 'publish-package'; then
               uds run publish-package \
