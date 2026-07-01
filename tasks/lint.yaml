@@ -177,6 +177,9 @@ tasks:
       fix:
         default: "false"
         description: Whether to fix SPDX headers automatically
+      paths:
+        default: .
+        description: Space-separated roots to scan (e.g. "cmd internal pkg"). Scoping roots is dramatically faster than relying on -ignore for large vendored trees (vendor/, node_modules/), which addlicense walks before evaluating ignore globs.
     actions:
       - description: Checking for SPDX headers using YAML config with defaults
         shell:
@@ -235,16 +238,23 @@ tasks:
           if [ "${{ .inputs.fix }}" != "true" ]; then
             check_flag="-check"
           fi
-          cmd="$ADDLICENSE_CMD -l \"$LICENSE\" $check_flag -s=only -v -c \"$COPYRIGHT\" ${ignore_flags[*]} . 2>/dev/null"
+          paths='${{ .inputs.paths }}'
+          [ -z "$paths" ] && paths="."
+          cmd="$ADDLICENSE_CMD -l \"$LICENSE\" $check_flag -s=only -v -c \"$COPYRIGHT\" ${ignore_flags[*]} $paths 2>/dev/null"
           echo "Running: $cmd"
           eval "$cmd"
 
   - name: fix-license
     description: Add the SPDX license identifier to source files
+    inputs:
+      paths:
+        default: .
+        description: Space-separated roots to scan. Forwarded to the license task.
     actions:
       - task: license
         with:
           fix: "true"
+          paths: ${{ .inputs.paths }}
 
   - name: tasks
     description: Dry run all tasks in the base tasks file
