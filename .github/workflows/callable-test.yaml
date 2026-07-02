@@ -35,7 +35,7 @@ on:
       udsCliVersion:
         description: The uds-cli version to install
         # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
-        default: 0.32.0
+        default: 0.34.0
         type: string
       file-filter:
         type: string
@@ -123,7 +123,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           fetch-depth: 0
 

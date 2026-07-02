@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.25.0](https://github.com/defenseunicorns/uds-common/compare/v1.24.14...v1.25.0) (2026-06-30)
+
+
+### ⚠ BREAKING CHANGES
+
+* lint Zarf actions shell cmds ([#696](https://github.com/defenseunicorns/uds-common/issues/696))
+
+### Features
+
+* update k3d-test-cluster to default to checkpoint deploy ([#697](https://github.com/defenseunicorns/uds-common/issues/697)) ([5c8164f](https://github.com/defenseunicorns/uds-common/commit/5c8164f088c113aca03a344f5da612942476962a))
+
+
+### Miscellaneous
+
+* **deps:** update uds common foundation dependencies ([#700](https://github.com/defenseunicorns/uds-common/issues/700)) ([ca2f9e9](https://github.com/defenseunicorns/uds-common/commit/ca2f9e91609b091b778c7891e8199fcacdeeaf0c))
+* **deps:** update uds common package dependencies ([#673](https://github.com/defenseunicorns/uds-common/issues/673)) ([5fb35c7](https://github.com/defenseunicorns/uds-common/commit/5fb35c704a41a1c2f5ab02b1da3736fcbb39bd5d))
+* lint Zarf actions shell cmds ([#696](https://github.com/defenseunicorns/uds-common/issues/696)) ([d0c9630](https://github.com/defenseunicorns/uds-common/commit/d0c96307354f8fc97098463aabe3cb7a5b32fc00))
+* remove the original content to make the move warning more noticeable ([#690](https://github.com/defenseunicorns/uds-common/issues/690)) ([79a6de1](https://github.com/defenseunicorns/uds-common/commit/79a6de1cfee723e48ae2c99591f57a39b69bbc86))
+* small docs fix for links and missed README ([#699](https://github.com/defenseunicorns/uds-common/issues/699)) ([f114ab5](https://github.com/defenseunicorns/uds-common/commit/f114ab52aef8a5757bf34f963eca64ccd610a92b))
+
 ## [1.24.14](https://github.com/defenseunicorns/uds-common/compare/v1.24.13...v1.24.14) (2026-06-11)
 
 
