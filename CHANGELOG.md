@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.26.1](https://github.com/defenseunicorns/uds-common/compare/v1.25.0...v1.26.1) (2026-07-02)
+
+
+### Features
+
+* **license:** add `paths` input to scope addlicense walk ([#691](https://github.com/defenseunicorns/uds-common/issues/691)) ([ef26a64](https://github.com/defenseunicorns/uds-common/commit/ef26a641580949699135fa118cdc9b3c1e9f4494))
+
+
+### Miscellaneous
+
+* **deps:** update uds common package dependencies ([#703](https://github.com/defenseunicorns/uds-common/issues/703)) ([af95b73](https://github.com/defenseunicorns/uds-common/commit/af95b731178a83d0192eb20f43b8899b37a893da))
+* **deps:** update uds common support dependencies ([#686](https://github.com/defenseunicorns/uds-common/issues/686)) ([3244206](https://github.com/defenseunicorns/uds-common/commit/32442069963d261ffc0c036ee1edc9ff7327127f))
+* remove deprecated --no-progress from zarf commands ([#707](https://github.com/defenseunicorns/uds-common/issues/707)) ([cb02504](https://github.com/defenseunicorns/uds-common/commit/cb02504e33d6ebe938ae31fd4ed58c3f79f68f65))
+
 ## [1.25.0](https://github.com/defenseunicorns/uds-common/compare/v1.24.14...v1.25.0) (2026-06-30)
 
 
