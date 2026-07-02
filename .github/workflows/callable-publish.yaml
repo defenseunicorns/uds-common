@@ -153,12 +153,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          team_flag=""
-          if [ -n "${{ inputs.team }}" ]; then
-            team_flag="--team ${{ inputs.team }}"
-          fi
-          # shellcheck disable=SC2086
-          if uds-pk release check "${{ inputs.flavor }}" --arch "${{ steps.parse-inputs.outputs.arch }}" --base-repo "${{ steps.parse-inputs.outputs.base-repo }}" ${team_flag} --verbose; then
+          if uds-pk release check "${{ inputs.flavor }}" --arch "${{ steps.parse-inputs.outputs.arch }}" --base-repo "${{ steps.parse-inputs.outputs.base-repo }}" --team "${{ inputs.team }}" --verbose; then
             uds-pk release update-yaml ${{ inputs.flavor }}
             if uds run --list | grep -wq 'publish-package'; then
               uds run publish-package \
