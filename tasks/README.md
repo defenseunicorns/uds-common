@@ -41,7 +41,6 @@ There are multiple task files available in this repository with different object
 | Name | Description |
 |------|-------------|
 | **package** | Create the UDS Zarf Package in the repository |
-| **recreate-latest-tag-package** | Recreate the UDS Zarf Package in the repository |
 | **test-bundle** | Create the test bundle (bundling package + dependencies for testing) |
 
 ### [deploy.yaml](./tasks/deploy.yaml)
