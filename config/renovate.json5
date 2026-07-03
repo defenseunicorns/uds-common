@@ -180,6 +180,22 @@
             "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver-coerced{{/if}}",
             "extractVersionTemplate": "{{#if extractVersion}}{{{extractVersion}}}{{else}}^(?<version>.*)${{/if}}"
         },
+        // Matches specified datasources where a slash separates the version at the end of the following line (i.e. a certificateIdentity URL like https://github.com/zarf-dev/zarf/.github/workflows/release.yml@refs/tags/v0.78.0)
+        {
+            "customType": "regex",
+            "fileMatch": [
+                ".*\\.ya?ml$",
+                ".*\\.md$"
+            ],
+            "matchStrings": [
+                // Test: https://regex101.com/r/OJIxfQ/1
+                "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( extractVersion=(?<extractVersion>.*?))?( registryUrl=(?<registryUrl>.*?))?\\s.*\\/(?<currentValue>[^\\/'\"\\s]*)['\"]?(\\s|$)",
+                // Test: https://regex101.com/r/K9vN3r/1
+                "<!-- renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( extractVersion=(?<extractVersion>.*?))?( registryUrl=(?<registryUrl>.*?))? -->\\s.*\\/(?<currentValue>[^\\/'\"\\s]*)['\"]?(\\s|$)"
+            ],
+            "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver-coerced{{/if}}",
+            "extractVersionTemplate": "{{#if extractVersion}}{{{extractVersion}}}{{else}}^(?<version>.*)${{/if}}"
+        },
         // Matches specified datasources where a Go variable assignment (:= or =) separates the version on the following line
         {
             "customType": "regex",
