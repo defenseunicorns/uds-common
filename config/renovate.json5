@@ -188,10 +188,10 @@
                 ".*\\.md$"
             ],
             "matchStrings": [
-                // Test: https://regex101.com/r/OJIxfQ/1
-                "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( extractVersion=(?<extractVersion>.*?))?( registryUrl=(?<registryUrl>.*?))?\\s.*\\/(?<currentValue>[^\\/'\"\\s]*)['\"]?(\\s|$)",
-                // Test: https://regex101.com/r/K9vN3r/1
-                "<!-- renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( extractVersion=(?<extractVersion>.*?))?( registryUrl=(?<registryUrl>.*?))? -->\\s.*\\/(?<currentValue>[^\\/'\"\\s]*)['\"]?(\\s|$)"
+                // Test: https://regex101.com/r/VJP7jP/1
+                "# renovate-slash: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( extractVersion=(?<extractVersion>.*?))?( registryUrl=(?<registryUrl>.*?))?\\s.*\\/(?<currentValue>[^\\/'\"\\s]*)['\"]?(\\s|$)",
+                // Test: https://regex101.com/r/EEN8mM/1
+                "<!-- renovate-slash: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( extractVersion=(?<extractVersion>.*?))?( registryUrl=(?<registryUrl>.*?))? -->\\s.*\\/(?<currentValue>[^\\/'\"\\s]*)['\"]?(\\s|$)"
             ],
             "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver-coerced{{/if}}",
             "extractVersionTemplate": "{{#if extractVersion}}{{{extractVersion}}}{{else}}^(?<version>.*)${{/if}}"
