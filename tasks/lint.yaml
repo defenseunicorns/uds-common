@@ -52,10 +52,10 @@ tasks:
     inputs:
       task_globs:
         description: Globs to match to Maru task files in the repo
-        default: tasks.yaml tasks/*.yaml
+        default: tasks.y[a]ml tasks/*.yaml
       zarf_globs:
         description: Globs to match to Zarf package files in the repo
-        default: zarf.yaml **/zarf.yaml **/**/zarf.yaml
+        default: zarf.y[a]ml **/zarf.yaml **/**/zarf.yaml
     actions:
       - description: Lint shell scripts in Maru tasks, GitHub workflows, Zarf packages, and .sh files
         shell:
