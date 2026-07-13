@@ -145,7 +145,7 @@ tasks:
       - description: Install ORAS CLI
         env:
           # renovate: datasource=github-tags depName=oras-project/oras versioning=semver
-          - ORAS_VERSION=v1.3.2
+          - ORAS_VERSION=v1.3.3
         cmd: |
           OS=$(uname -s | tr '[:upper:]' '[:lower:]')
           curl -fsSL \
