@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.26.3](https://github.com/defenseunicorns/uds-common/compare/v1.26.2...v1.26.3) (2026-07-16)
+
+
+### Miscellaneous
+
+* **deps:** update support-deps to v0.1.9 ([#719](https://github.com/defenseunicorns/uds-common/issues/719)) ([d479f5e](https://github.com/defenseunicorns/uds-common/commit/d479f5e1e091d080f2113a3d27f7114318128d9c))
+* **deps:** update support-deps to v1.3.3 ([#716](https://github.com/defenseunicorns/uds-common/issues/716)) ([c19976c](https://github.com/defenseunicorns/uds-common/commit/c19976c53fe5f558473ec3e8fb769988455d7374))
+* **deps:** update uds common foundation dependencies to v0.34.1 ([#717](https://github.com/defenseunicorns/uds-common/issues/717)) ([ae4b729](https://github.com/defenseunicorns/uds-common/commit/ae4b7299f8a6b76e1fdd28bc26b325a5c9589611))
+* **deps:** update uds common support dependencies ([#713](https://github.com/defenseunicorns/uds-common/issues/713)) ([d312343](https://github.com/defenseunicorns/uds-common/commit/d312343c7b4ea68b6cf1c236b645ed2993ae5bd3))
+* update globs in shellcheck linting task to support more usecases ([#714](https://github.com/defenseunicorns/uds-common/issues/714)) ([695b0cf](https://github.com/defenseunicorns/uds-common/commit/695b0cf63b82daeb992fcf00a2908f865d637772))
+
 ## [1.26.2](https://github.com/defenseunicorns/uds-common/compare/v1.26.1...v1.26.2) (2026-07-09)
 
 
