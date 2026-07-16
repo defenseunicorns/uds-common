@@ -7,10 +7,8 @@ includes:
   - deploy: ./tasks/deploy.yaml
   - lint: ./tasks/lint.yaml
   - publish: ./tasks/publish.yaml
-  - compliance: ./tasks/compliance.yaml
   - pull: ./tasks/pull.yaml
   - upgrade: ./tasks/upgrade.yaml
-  - badge: ./tasks/badge.yaml
   - actions: ./tasks/actions.yaml
 
 tasks:
@@ -120,20 +118,14 @@ tasks:
       - description: Create deploy and test the bundle
         task: create-deploy-test-bundle
 
-      - description: Validate OSCAL compliance
-        task: compliance:validate
-
   - name: test-upgrade
     description: Test an upgrade from the latest released package to the current branch
     actions:
       - task: upgrade:create-latest-tag-bundle
       - task: setup:k3d-test-cluster
       - task: deploy:test-bundle
-      - task: compliance:validate
       - task: create-dev-package
       - task: create-deploy-test-bundle
-      - task: compliance:validate
-      - task: compliance:evaluate
 
   - name: publish-release
     description: Build and publish the packages

@@ -35,7 +35,7 @@ on:
       udsCliVersion:
         description: The uds-cli version to install
         # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
-        default: 0.31.0
+        default: 0.34.1
         type: string
       file-filter:
         type: string
@@ -54,7 +54,6 @@ on:
           renovate.json
           .release-please-manifest.json
           release-please-config.json
-          oscal-component.yaml
           CODEOWNERS
           LICENSE
           CONTRIBUTING.md
@@ -124,7 +123,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           fetch-depth: 0
 
@@ -156,11 +155,6 @@ jobs:
       - name: Test
         run: uds run actions:test-deploy --set FLAVOR="${{ inputs.flavor }}" --set TYPE="${{ inputs.type }}" --set OPTIONS="${{ inputs.options }}" --set LICENSE_KEY="${{ secrets.LICENSE_KEY }}"
         shell: bash
-
-      - name: UDS Badge Verification
-        run: uds run actions:verify-badge
-        shell: bash
-        continue-on-error: true
 
       - name: Debug Output
         if: ${{ always() }}

@@ -48,13 +48,16 @@ tasks:
         cmd: yamllint . -c .yamllint --no-warnings
 
   - name: shell
-    description: Run shellcheck on all Maru tasks, GitHub workflows, and local shell scripts
+    description: Run shellcheck on all Maru tasks, GitHub workflows, Zarf packages, and local shell scripts
     inputs:
       task_globs:
         description: Globs to match to Maru task files in the repo
-        default: tasks.yaml tasks/*.yaml
+        default: tasks.y[a]ml tasks/*.yaml
+      zarf_globs:
+        description: Globs to match to Zarf package files in the repo
+        default: zarf.y[a]ml **/zarf.yaml **/**/zarf.yaml
     actions:
-      - description: Lint shell scripts in Maru tasks, GitHub workflows and .sh files
+      - description: Lint shell scripts in Maru tasks, GitHub workflows, Zarf packages, and .sh files
         shell:
           linux: bash
           darwin: bash
@@ -146,12 +149,37 @@ tasks:
           done
           shopt -u nullglob #reset nullglob behavior
 
+          shopt -s nullglob # if nothing matches the glob expand to nothing
+          # Lint all scripts in Zarf packages
+          # shellcheck disable=SC2043
+          for yaml_file in ${{ .inputs.zarf_globs }}; do
+
+            # Look through all component action lifecycle lists and format .cmd entries with a dynamic shebang based on .shell.linux
+            yaml_query='.components[].actions | (.onCreate,.onDeploy,.onRemove) | (.before,.after,.onSuccess,.onFailure)[]? | select(.cmd) | "---\n#!/bin/"+(.shell.linux // "sh")+"\n"+.cmd'
+
+            # Query the actual YAML file for the commands
+            raw_cmds=$(uds zarf tools yq -r "$yaml_query" "$yaml_file")
+
+            # Strip any {{ }} templates with the word "zarf-expression" for compatibility
+            zarf_expr_pattern='{{[^}]*}}'
+            raw_scripts=$(printf '%s' "$raw_cmds" | sed "s|$zarf_expr_pattern|zarf-expression|g")
+
+            # If this file has scripts, lint them
+            if [ -n "$raw_scripts" ]; then
+              lint_scripts "$yaml_file" "$raw_scripts"
+            fi
+          done
+          shopt -u nullglob #reset nullglob behavior
+
   - name: license
     description: Lint for the SPDX license identifier being in source files
     inputs:
       fix:
         default: "false"
         description: Whether to fix SPDX headers automatically
+      paths:
+        default: .
+        description: Space-separated roots to scan (e.g. "cmd internal pkg"). Scoping roots is dramatically faster than relying on -ignore for large vendored trees (vendor/, node_modules/), which addlicense walks before evaluating ignore globs.
     actions:
       - description: Checking for SPDX headers using YAML config with defaults
         shell:
@@ -210,7 +238,9 @@ tasks:
           if [ "${{ .inputs.fix }}" != "true" ]; then
             check_flag="-check"
           fi
-          cmd="$ADDLICENSE_CMD -l \"$LICENSE\" $check_flag -s=only -v -c \"$COPYRIGHT\" ${ignore_flags[*]} . 2>/dev/null"
+          paths='${{ .inputs.paths }}'
+          [ -z "$paths" ] && paths="."
+          cmd="$ADDLICENSE_CMD -l \"$LICENSE\" $check_flag -s=only -v -c \"$COPYRIGHT\" ${ignore_flags[*]} $paths 2>/dev/null"
           echo "Running: $cmd"
           eval "$cmd"
 
@@ -249,10 +279,15 @@ tasks:
 
   - name: fix-license
     description: Add the SPDX license identifier to source files
+    inputs:
+      paths:
+        default: .
+        description: Space-separated roots to scan. Forwarded to the license task.
     actions:
       - task: license
         with:
           fix: "true"
+          paths: ${{ .inputs.paths }}
 
   - name: tasks
     description: Dry run all tasks in the base tasks file

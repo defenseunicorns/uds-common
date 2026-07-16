@@ -121,7 +121,7 @@ tasks:
       - description: Install k3d
         env:
           # renovate: datasource=github-tags depName=k3d-io/k3d versioning=semver-coerced
-          - K3D_VERSION=v5.8.3
+          - K3D_VERSION=v5.9.0
         cmd: |
           echo "Installing k3d version $K3D_VERSION"
           curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | TAG="${K3D_VERSION}" bash
@@ -131,12 +131,27 @@ tasks:
       - description: Install uds-pk
         env:
           # renovate: datasource=github-tags depName=defenseunicorns/uds-pk versioning=semver-coerced
-          - UDS_PK_VERSION=v0.1.6
+          - UDS_PK_VERSION=v0.1.9
         cmd: |
           echo "Installing uds-pk version $UDS_PK_VERSION"
           curl -o /usr/local/bin/uds-pk -L \
           "https://github.com/defenseunicorns/uds-pk/releases/download/${UDS_PK_VERSION}/uds-pk_${UDS_PK_VERSION}_$(uname -s)_${{ .variables.ARCH }}" \
           && chmod +x /usr/local/bin/uds-pk
+
+  - name: install-oras
+    description: Install ORAS CLI for OCI artifact operations
+    actions:
+      - task: determine-arch
+      - description: Install ORAS CLI
+        env:
+          # renovate: datasource=github-tags depName=oras-project/oras versioning=semver
+          - ORAS_VERSION=v1.3.3
+        cmd: |
+          OS=$(uname -s | tr '[:upper:]' '[:lower:]')
+          curl -fsSL \
+            "https://github.com/oras-project/oras/releases/download/${ORAS_VERSION}/oras_${ORAS_VERSION#v}_${OS}_${{ .variables.ARCH }}.tar.gz" \
+            | tar -xz -C /usr/local/bin oras
+          chmod +x /usr/local/bin/oras
 
   - name: authenticate-registries
     description: Log in to the registries for testing and publishing UDS Packages
@@ -228,28 +243,6 @@ tasks:
       - description: Test upgrading the package/bundle
         if: ${{ eq .variables.TYPE "upgrade" }}
         cmd: ./uds run test-upgrade --set FLAVOR=${{ .variables.FLAVOR }} ${{ .variables.OPTIONS }} --no-progress
-
-  - name: verify-badge
-    description: Perform verification to assist with UDS badge certification
-    actions:
-      - task: determine-arch
-
-      - description: Setup Go environment
-        cmd: |
-          PLATFORM=$(uname -s | tr '[:upper:]' '[:lower:]')
-          curl  -OL "https://go.dev/dl/go${{ .variables.GO_VERSION }}.${PLATFORM}-${{ .variables.ARCH }}.tar.gz" && \
-          sudo tar -C /usr/local -xzf "go${{ .variables.GO_VERSION }}.${PLATFORM}-${{ .variables.ARCH }}.tar.gz"
-          echo 'export PATH="$PATH:/usr/local/go/bin"' >> ~/.bashrc
-
-      - description: Setup Helm
-        cmd: curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
-
-      - description: Test installing the package
-        cmd: |
-          uds run badge:verify-badge \
-            --set CHART_PATH="${{ .variables.CHART_PATH }}" \
-            --set GROUP_NAME="${{ .variables.GROUP_NAME }}" \
-            --set COMMON_ZARF="${{ .variables.COMMON_ZARF }}"
 
   # Common tasks
   - name: determine-arch

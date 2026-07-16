@@ -11,9 +11,9 @@ Pinning to a specific tag of a task (rather than `main`) with renovate watching 
 
 ## Supported Tool Versions
 
-- UDS CLI: 0.31.0
-- UDS Core: 1.4.0
-- K3D: 5.8.3
+- UDS CLI: 0.34.1
+- UDS Core: 1.8.0
+- K3D: 5.9.0
 
 > [!NOTE]
 > Zarf is not required for tasks in this repo, the vendored zarf (`uds zarf`) included with UDS CLI is used instead to prevent version mismatches.
@@ -112,7 +112,7 @@ ignore: [] # an array of paths to ignore
 | **deps** | Install linting tool dependencies |
 | **all** | Run all linting commands |
 | **yaml** | Run YAML linting checks |
-| **shell** | Run shellcheck on all Maru tasks, GitHub workflows, and local shell scripts |
+| **shell** | Run shellcheck on all Maru tasks, GitHub workflows, Zarf packages, and local shell scripts |
 | **license** | Lint for the SPDX license identifier being in source files |
 | **fix-license** | Add the SPDX license identifier to source files |
 | **tasks** | Dry run all tasks in the base tasks file |
@@ -121,7 +121,7 @@ ignore: [] # an array of paths to ignore
 
 | Name | Description |
 |------|-------------|
-| **verify-badge** | Verifies that a UDS Package implements UDS Package Practices flagging things that are out of compliance |
+| **verify-badge** | Task Removed: Verify Badge |
 
 ### [actions.yaml](./tasks/actions.yaml)
 
@@ -131,6 +131,7 @@ ignore: [] # an array of paths to ignore
 | **debug-output** | Print debug output from a k8s cluster |
 | **clean-gh-runner** | Cleanup unneeded files to free space on a GitHub runner |
 | **install-deps** | Install the runner dependencies for testing UDS Packages |
+| **install-oras** | Install ORAS CLI for OCI artifact operations |
 | **save-logs** | Save Pod and Node logs from a cluster and fix permissions |
 | **setup-environment** | Setup the runner environment for testing UDS Packages |
 | **test-deploy** | Test a deployment of a UDS package/bundle |

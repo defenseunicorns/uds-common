@@ -24,7 +24,7 @@ tasks:
     actions:
       - env:
           - ZARF_CONFIG=${{ .inputs.config }}
-        cmd: ./uds zarf package create ${{ .inputs.path }} --confirm --no-progress --architecture="${{ .inputs.architecture }}" --flavor "${FLAVOR}" ${{ .inputs.options }}
+        cmd: ./uds zarf package create ${{ .inputs.path }} --confirm --architecture="${{ .inputs.architecture }}" --flavor "${FLAVOR}" --features values=true ${{ .inputs.options }}
 
   - name: recreate-latest-tag-package
     description: Recreate the UDS Zarf Package in the repository
@@ -89,7 +89,7 @@ tasks:
 
           uds-pk release update-yaml ${{ .inputs.flavor }}
 
-          ./uds zarf package create ${{ .inputs.path }} --confirm --no-progress --architecture="${{ .inputs.architecture }}" --flavor "${{ .inputs.flavor }}" ${{ .inputs.options }}
+          ./uds zarf package create ${{ .inputs.path }} --confirm --architecture="${{ .inputs.architecture }}" --flavor "${{ .inputs.flavor }}" --features values=true ${{ .inputs.options }}
 
           PACKAGE_NAME=$(cat ${{ .inputs.path }}/zarf.yaml | ./uds zarf tools yq .metadata.name)
           LOCAL_VERSION=$(cat ${{ .inputs.path }}/zarf.yaml | ./uds zarf tools yq .metadata.version)

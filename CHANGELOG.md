@@ -1,5 +1,92 @@
 # Changelog
 
+## [1.26.3](https://github.com/defenseunicorns/uds-common/compare/v1.26.2...v1.26.3) (2026-07-16)
+
+
+### Miscellaneous
+
+* **deps:** update support-deps to v0.1.9 ([#719](https://github.com/defenseunicorns/uds-common/issues/719)) ([d479f5e](https://github.com/defenseunicorns/uds-common/commit/d479f5e1e091d080f2113a3d27f7114318128d9c))
+* **deps:** update support-deps to v1.3.3 ([#716](https://github.com/defenseunicorns/uds-common/issues/716)) ([c19976c](https://github.com/defenseunicorns/uds-common/commit/c19976c53fe5f558473ec3e8fb769988455d7374))
+* **deps:** update uds common foundation dependencies to v0.34.1 ([#717](https://github.com/defenseunicorns/uds-common/issues/717)) ([ae4b729](https://github.com/defenseunicorns/uds-common/commit/ae4b7299f8a6b76e1fdd28bc26b325a5c9589611))
+* **deps:** update uds common support dependencies ([#713](https://github.com/defenseunicorns/uds-common/issues/713)) ([d312343](https://github.com/defenseunicorns/uds-common/commit/d312343c7b4ea68b6cf1c236b645ed2993ae5bd3))
+* update globs in shellcheck linting task to support more usecases ([#714](https://github.com/defenseunicorns/uds-common/issues/714)) ([695b0cf](https://github.com/defenseunicorns/uds-common/commit/695b0cf63b82daeb992fcf00a2908f865d637772))
+
+## [1.26.2](https://github.com/defenseunicorns/uds-common/compare/v1.26.1...v1.26.2) (2026-07-09)
+
+
+### Miscellaneous
+
+* add a renovate rule to check for versions afer a slash ([#708](https://github.com/defenseunicorns/uds-common/issues/708)) ([0772f11](https://github.com/defenseunicorns/uds-common/commit/0772f11c6f861b54627c652a46e1b596a168521c))
+* **deps:** update support-deps to v0.1.8 ([#711](https://github.com/defenseunicorns/uds-common/issues/711)) ([7e9bc74](https://github.com/defenseunicorns/uds-common/commit/7e9bc7430c181ea9b5559ff28f2e0cfe4ab91586))
+* **deps:** update uds common foundation dependencies to v1.8.0 ([#712](https://github.com/defenseunicorns/uds-common/issues/712)) ([275d768](https://github.com/defenseunicorns/uds-common/commit/275d768cc77003661d0ff1b1ca082eca1cb31b55))
+* **deps:** update uds common support dependencies ([#709](https://github.com/defenseunicorns/uds-common/issues/709)) ([2ef9ddf](https://github.com/defenseunicorns/uds-common/commit/2ef9ddfa50800fb9a171ac4a5d2203c81ceeed9d))
+
+## [1.26.1](https://github.com/defenseunicorns/uds-common/compare/v1.25.0...v1.26.1) (2026-07-02)
+
+
+### Features
+
+* **license:** add `paths` input to scope addlicense walk ([#691](https://github.com/defenseunicorns/uds-common/issues/691)) ([ef26a64](https://github.com/defenseunicorns/uds-common/commit/ef26a641580949699135fa118cdc9b3c1e9f4494))
+
+
+### Miscellaneous
+
+* **deps:** update uds common package dependencies ([#703](https://github.com/defenseunicorns/uds-common/issues/703)) ([af95b73](https://github.com/defenseunicorns/uds-common/commit/af95b731178a83d0192eb20f43b8899b37a893da))
+* **deps:** update uds common support dependencies ([#686](https://github.com/defenseunicorns/uds-common/issues/686)) ([3244206](https://github.com/defenseunicorns/uds-common/commit/32442069963d261ffc0c036ee1edc9ff7327127f))
+* remove deprecated --no-progress from zarf commands ([#707](https://github.com/defenseunicorns/uds-common/issues/707)) ([cb02504](https://github.com/defenseunicorns/uds-common/commit/cb02504e33d6ebe938ae31fd4ed58c3f79f68f65))
+
+## [1.25.0](https://github.com/defenseunicorns/uds-common/compare/v1.24.14...v1.25.0) (2026-06-30)
+
+
+### ⚠ BREAKING CHANGES
+
+* lint Zarf actions shell cmds ([#696](https://github.com/defenseunicorns/uds-common/issues/696))
+
+### Features
+
+* update k3d-test-cluster to default to checkpoint deploy ([#697](https://github.com/defenseunicorns/uds-common/issues/697)) ([5c8164f](https://github.com/defenseunicorns/uds-common/commit/5c8164f088c113aca03a344f5da612942476962a))
+
+
+### Miscellaneous
+
+* **deps:** update uds common foundation dependencies ([#700](https://github.com/defenseunicorns/uds-common/issues/700)) ([ca2f9e9](https://github.com/defenseunicorns/uds-common/commit/ca2f9e91609b091b778c7891e8199fcacdeeaf0c))
+* **deps:** update uds common package dependencies ([#673](https://github.com/defenseunicorns/uds-common/issues/673)) ([5fb35c7](https://github.com/defenseunicorns/uds-common/commit/5fb35c704a41a1c2f5ab02b1da3736fcbb39bd5d))
+* lint Zarf actions shell cmds ([#696](https://github.com/defenseunicorns/uds-common/issues/696)) ([d0c9630](https://github.com/defenseunicorns/uds-common/commit/d0c96307354f8fc97098463aabe3cb7a5b32fc00))
+* remove the original content to make the move warning more noticeable ([#690](https://github.com/defenseunicorns/uds-common/issues/690)) ([79a6de1](https://github.com/defenseunicorns/uds-common/commit/79a6de1cfee723e48ae2c99591f57a39b69bbc86))
+* small docs fix for links and missed README ([#699](https://github.com/defenseunicorns/uds-common/issues/699)) ([f114ab5](https://github.com/defenseunicorns/uds-common/commit/f114ab52aef8a5757bf34f963eca64ccd610a92b))
+
+## [1.24.14](https://github.com/defenseunicorns/uds-common/compare/v1.24.13...v1.24.14) (2026-06-11)
+
+
+### Bug Fixes
+
+* base repo for release conditional ([#692](https://github.com/defenseunicorns/uds-common/issues/692)) ([c6e353b](https://github.com/defenseunicorns/uds-common/commit/c6e353b57fdd7ed39050364a8ff3077592f7548c))
+* pin grype version in scan job ([#693](https://github.com/defenseunicorns/uds-common/issues/693)) ([9ce53b4](https://github.com/defenseunicorns/uds-common/commit/9ce53b4b4e5f33b97bac6ee84ca1efa236571858))
+
+
+### Miscellaneous
+
+* **deps:** update uds common foundation dependencies to v1.6.0 ([#689](https://github.com/defenseunicorns/uds-common/issues/689)) ([4bcdb0a](https://github.com/defenseunicorns/uds-common/commit/4bcdb0adb43a1036786806bfa3bcd901617936af))
+
+## [1.24.13](https://github.com/defenseunicorns/uds-common/compare/v1.24.12...v1.24.13) (2026-06-05)
+
+
+### Miscellaneous
+
+* add Zarf values guidelines for UDS Packages ([#679](https://github.com/defenseunicorns/uds-common/issues/679)) ([51ab81f](https://github.com/defenseunicorns/uds-common/commit/51ab81f2cad524152026e8b683a3599d3ed60a25))
+* **deps:** update uds common foundation dependencies to v0.32.0 ([#688](https://github.com/defenseunicorns/uds-common/issues/688)) ([3b5803a](https://github.com/defenseunicorns/uds-common/commit/3b5803a6d432f94fd20642b4b220648cb73e7d12))
+* rename LICENSE.md to LICENSE and add SECURITY.md ([#682](https://github.com/defenseunicorns/uds-common/issues/682)) ([0e2f075](https://github.com/defenseunicorns/uds-common/commit/0e2f075babc1f36cd76244b57524659848749177))
+
+## [1.24.12](https://github.com/defenseunicorns/uds-common/compare/v1.24.11...v1.24.12) (2026-05-29)
+
+
+### Miscellaneous
+
+* **deps:** update uds common foundation dependencies to v1.5.0 ([#684](https://github.com/defenseunicorns/uds-common/issues/684)) ([69baa44](https://github.com/defenseunicorns/uds-common/commit/69baa44b4bcd43104d44791e21ea0b921ea2c2d2))
+* **deps:** update uds common support dependencies ([#678](https://github.com/defenseunicorns/uds-common/issues/678)) ([fc11b2c](https://github.com/defenseunicorns/uds-common/commit/fc11b2c1369a6974e1a08bffd24d963a93b17a57))
+* remove verify badge ([#683](https://github.com/defenseunicorns/uds-common/issues/683)) ([5d26c78](https://github.com/defenseunicorns/uds-common/commit/5d26c782d5e5be1e0bb082cb463d9c65b27a7bde))
+* swap from oras setup task to shell ([#680](https://github.com/defenseunicorns/uds-common/issues/680)) ([df4991b](https://github.com/defenseunicorns/uds-common/commit/df4991bddd885fb1fab0e4d4ce6c304d44d61c0f))
+
 ## [1.24.11](https://github.com/defenseunicorns/uds-common/compare/v1.24.10...v1.24.11) (2026-05-18)
 
 

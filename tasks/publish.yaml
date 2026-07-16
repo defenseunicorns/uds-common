@@ -89,7 +89,7 @@ tasks:
           - name: FLAVOR_SUFFIX
       - description: Publish package for the supplied architecture
         cmd: |
-          ./uds zarf package publish "${{ .inputs.path }}/zarf-package-${{ .inputs.name }}-${{ .inputs.architecture }}-${{ .inputs.version }}${FLAVOR_SUFFIX}.tar.zst" "oci://${TARGET_REPO}"
+          ./uds zarf package publish "${{ .inputs.path }}/zarf-package-${{ .inputs.name }}-${{ .inputs.architecture }}-${{ .inputs.version }}${FLAVOR_SUFFIX}.tar.zst" "oci://${TARGET_REPO}" --features values=true
 
 
   - name: uds-pk-publish
@@ -122,7 +122,7 @@ tasks:
           - name: PACKAGE_NAME
       - description: publish using uds-pk
         cmd: |
-          ./uds zarf package publish "${{ .inputs.path }}/zarf-package-${{ .inputs.name }}-${{ .inputs.architecture }}-$(uds-pk release show ${{ .inputs.flavor }}).tar.zst" "oci://${TARGET_REPO}"
+          ./uds zarf package publish "${{ .inputs.path }}/zarf-package-${{ .inputs.name }}-${{ .inputs.architecture }}-$(uds-pk release show ${{ .inputs.flavor }}).tar.zst" "oci://${TARGET_REPO}" --features values=true
 
           if [ -n "${GITLAB_CI}" ]; then
             uds-pk release gitlab "${{ .inputs.flavor }}"
@@ -163,7 +163,7 @@ tasks:
           - name: PACKAGE_NAME
       - description: Checkout latest tag and re-publish
         cmd: |
-          ./uds zarf package publish "${{ .inputs.path }}/zarf-package-${{ .inputs.name }}-${{ .inputs.architecture }}-$(uds-pk release show ${{ .inputs.flavor }}).tar.zst" "oci://${TARGET_REPO}"
+          ./uds zarf package publish "${{ .inputs.path }}/zarf-package-${{ .inputs.name }}-${{ .inputs.architecture }}-$(uds-pk release show ${{ .inputs.flavor }}).tar.zst" "oci://${TARGET_REPO}" --features values=true
 
   - name: test-bundle
     description: Publish the test bundle for the supplied architecture
