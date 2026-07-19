@@ -26,7 +26,7 @@ on:
       grypeVersion:
         description: The grype version to install
         # renovate: datasource=github-tags depName=anchore/grype versioning=semver
-        default: v0.115.0
+        default: v0.116.0
         type: string
 
 # Permissions for the GITHUB_TOKEN used by the workflow.
