@@ -264,6 +264,11 @@ tasks:
           # shellcheck disable=SC2086
           charts=$(find $paths -name "Chart.yaml" -exec dirname {} \;)
 
+          if [ -z "$charts" ]; then
+            printf "\033[0;33mNo Helm charts found under: %s\033[0m\n" "$paths"
+            exit 0
+          fi
+
           # Loop through each chart and run helm lint with strict mode
           for chart_dir in $charts; do
             echo "Linting $chart_dir..."
@@ -287,6 +292,11 @@ tasks:
           # word-split $paths intentionally to support multiple space-separated roots
           # shellcheck disable=SC2086
           charts=$(find $paths -name "Chart.yaml" -exec dirname {} \;)
+
+          if [ -z "$charts" ]; then
+            printf "\033[0;33mNo Helm charts found under: %s\033[0m\n" "$paths"
+            exit 0
+          fi
 
           # Loop through each chart and do a dry-run render
           for chart_dir in $charts; do
