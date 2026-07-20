@@ -39,6 +39,8 @@ tasks:
       - task: license
         if: ${{ eq .variables.RUN_LICENSE_CHECKS "true" }}
       - task: tasks
+      - task: helm
+      - task: helm-template
 
   - name: yaml
     description: Run YAML linting checks
@@ -243,6 +245,65 @@ tasks:
           cmd="$ADDLICENSE_CMD -l \"$LICENSE\" $check_flag -s=only -v -c \"$COPYRIGHT\" ${ignore_flags[*]} $paths 2>/dev/null"
           echo "Running: $cmd"
           eval "$cmd"
+
+  - name: helm
+    description: Run helm lint on all Helm charts in the repository
+    inputs:
+      paths:
+        default: .
+        description: Space-separated roots to search for Chart.yaml files.
+    actions:
+      - description: Lint Helm charts
+        shell:
+          linux: bash
+          darwin: bash
+        cmd: |
+          paths='${{ .inputs.paths }}'
+          [ -z "$paths" ] && paths="."
+          # word-split $paths intentionally to support multiple space-separated roots
+          # shellcheck disable=SC2086
+          charts=$(find $paths -name "Chart.yaml" -exec dirname {} \;)
+
+          if [ -z "$charts" ]; then
+            printf "\033[0;33mNo Helm charts found under: %s\033[0m\n" "$paths"
+            exit 0
+          fi
+
+          # Loop through each chart and run helm lint with strict mode
+          for chart_dir in $charts; do
+            echo "Linting $chart_dir..."
+            uds zarf tools helm lint --strict "$chart_dir"
+          done
+
+  - name: helm-template
+    description: Dry run render all Helm charts to catch template execution errors
+    inputs:
+      paths:
+        default: .
+        description: Space-separated roots to search for Chart.yaml files.
+    actions:
+      - description: Render Helm charts via helm template
+        shell:
+          linux: bash
+          darwin: bash
+        cmd: |
+          paths='${{ .inputs.paths }}'
+          [ -z "$paths" ] && paths="."
+          # word-split $paths intentionally to support multiple space-separated roots
+          # shellcheck disable=SC2086
+          charts=$(find $paths -name "Chart.yaml" -exec dirname {} \;)
+
+          if [ -z "$charts" ]; then
+            printf "\033[0;33mNo Helm charts found under: %s\033[0m\n" "$paths"
+            exit 0
+          fi
+
+          # Loop through each chart and do a dry-run render
+          for chart_dir in $charts; do
+            release_name=$(basename "$chart_dir")
+            echo "Rendering $chart_dir..."
+            uds zarf tools helm template "$release_name" "$chart_dir" > /dev/null
+          done
 
   - name: fix-license
     description: Add the SPDX license identifier to source files

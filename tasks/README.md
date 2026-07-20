@@ -116,6 +116,8 @@ ignore: [] # an array of paths to ignore
 | **license** | Lint for the SPDX license identifier being in source files |
 | **fix-license** | Add the SPDX license identifier to source files |
 | **tasks** | Dry run all tasks in the base tasks file |
+| **helm** | Run helm lint on all Helm charts in the repository |
+| **helm-template** | Dry run render all Helm charts to catch template execution errors |
 
 ### [badge.yaml](./tasks/badge.yaml)
 
