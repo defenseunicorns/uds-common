@@ -4,7 +4,7 @@
 flavors:
   - name: upstream
     # renovate-uds: datasource=docker depName=nginx
-    version: 1.31.2-uds.0
+    version: 1.31.3-uds.0
   - name: registry1
     # renovate-uds: datasource=docker depName=registry1.dso.mil/ironbank/opensource/nginx/nginx
     version: 1.30.3-uds.0
