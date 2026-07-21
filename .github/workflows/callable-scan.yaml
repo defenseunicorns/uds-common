@@ -9,7 +9,7 @@ on:
       udsCliVersion:
         description: The uds-cli version to install
         # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
-        default: 0.34.1
+        default: 0.34.2
         type: string
       zarfYamlPath:
         description: The path to the zarf.yaml file
@@ -26,7 +26,7 @@ on:
       grypeVersion:
         description: The grype version to install
         # renovate: datasource=github-tags depName=anchore/grype versioning=semver
-        default: v0.115.0
+        default: v0.116.0
         type: string
 
 # Permissions for the GITHUB_TOKEN used by the workflow.
