@@ -11,9 +11,9 @@ Pinning to a specific tag of a task (rather than `main`) with renovate watching 
 
 ## Supported Tool Versions
 
-- UDS CLI: 0.32.0
-- UDS Core: 1.6.0
-- K3D: 5.8.3
+- UDS CLI: 0.34.2
+- UDS Core: 1.8.0
+- K3D: 5.9.0
 
 > [!NOTE]
 > Zarf is not required for tasks in this repo, the vendored zarf (`uds zarf`) included with UDS CLI is used instead to prevent version mismatches.
@@ -116,6 +116,8 @@ ignore: [] # an array of paths to ignore
 | **license** | Lint for the SPDX license identifier being in source files |
 | **fix-license** | Add the SPDX license identifier to source files |
 | **tasks** | Dry run all tasks in the base tasks file |
+| **helm** | Run helm lint on all Helm charts in the repository |
+| **helm-template** | Dry run render all Helm charts to catch template execution errors |
 
 ### [badge.yaml](./tasks/badge.yaml)
 
