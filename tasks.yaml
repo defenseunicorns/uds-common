@@ -61,7 +61,7 @@ tasks:
       - description: Test the bundle
         task: test
 
-# CI will execute the following for uds-common specific checks so they need to be here with these names
+  # CI will execute the following for uds-common specific checks so they need to be here with these names
 
   - name: check-tasks-README
     description: Test that `uds run --list=md` output is present in tasks/README.md
@@ -104,7 +104,7 @@ tasks:
             exit 1
           fi
 
-# CI will execute the following (via .github/workflows/callable-test.yaml and .github/workflows/callable-publish.yaml) so they need to be here with these names
+  # CI will execute the following (via .github/workflows/callable-test.yaml and .github/workflows/callable-publish.yaml) so they need to be here with these names
 
   - name: test-install
     description: Test an install of the nginx package from the current branch
@@ -141,18 +141,3 @@ tasks:
 
       - description: Publish the packages
         task: publish:package
-
-  - name: republish-package
-    description: Build and publish the republish package
-    actions:
-      - description: Create the republish package
-        task: create:recreate-latest-tag-package
-
-      - description: Setup the cluster
-        task: setup:k3d-test-cluster
-
-      - description: Create deploy and test the bundle
-        task: create-deploy-test-bundle
-
-      - description: Republish publish task
-        task: publish:republish-package
