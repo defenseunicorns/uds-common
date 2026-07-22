@@ -46,7 +46,7 @@ components:
         valuesFiles:
           - values/registry1-values.yaml
     images:
-      - registry1.dso.mil/ironbank/opensource/nginx/nginx:1.30.3
+      - registry1.dso.mil/ironbank/opensource/nginx/nginx:1.30.4
 
   - name: nginx
     required: true
@@ -60,4 +60,4 @@ components:
         valuesFiles:
           - values/unicorn-values.yaml
     images:
-      - cgr.dev/defenseunicorns.com/nginx:v1.31.2
+      - cgr.dev/defenseunicorns.com/nginx:v1.31.3
