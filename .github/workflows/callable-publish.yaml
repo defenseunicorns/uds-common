@@ -51,7 +51,7 @@ on:
       team:
         type: string
         default: ""
-        description: "Team path segment inserted between 'private' and the package name (e.g. 'uds'). Required when the registry uses a team subdirectory (non-uds-packages orgs)."
+        description: Team path segment inserted between 'private' and the package name (e.g. 'uds'). Required when the registry uses a team subdirectory (non-uds-packages orgs).
     secrets:
       LICENSE_KEY:
         required: false
