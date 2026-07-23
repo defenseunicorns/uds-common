@@ -35,11 +35,11 @@ tasks:
         setVariables:
           - name: PACKAGE_NAME
       - description: Get latest tag version from OCI
-        cmd: ./uds zarf tools registry ls "${TARGET_REPO}/${PACKAGE_NAME}" | grep "${FLAVOR}" | sort -V | tail -1
+        cmd: ./zarf tools registry ls "${TARGET_REPO}/${PACKAGE_NAME}" | grep "${FLAVOR}" | sort -V | tail -1
         setVariables:
           - name: LATEST_VERSION
       - description: Pull the latest package release
-        cmd: ./uds zarf package pull "oci://${TARGET_REPO}/${PACKAGE_NAME}:${LATEST_VERSION}" -o ${{ .inputs.path }} --features values=true
+        cmd: ./zarf package pull "oci://${TARGET_REPO}/${PACKAGE_NAME}:${LATEST_VERSION}" -o ${{ .inputs.path }} --features values=true
       - description: Get the current Zarf package flavor suffix
         cmd: |
           # shellcheck disable=SC2157
@@ -75,7 +75,7 @@ tasks:
         setVariables:
           - name: BUNDLE_NAME
       - description: Get latest tag version from OCI
-        cmd: ./uds zarf tools registry ls "${TARGET_REPO}/bundles/${BUNDLE_NAME}" | sort -V | tail -1
+        cmd: ./zarf tools registry ls "${TARGET_REPO}/bundles/${BUNDLE_NAME}" | sort -V | tail -1
         setVariables:
           - name: LATEST_VERSION
       - description: Pull the latest bundle release

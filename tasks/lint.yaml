@@ -55,9 +55,12 @@ tasks:
       task_globs:
         description: Globs to match to Maru task files in the repo
         default: tasks.y[a]ml tasks/*.yaml
+      shell_globs:
+        description: Globs to match to shell script files in the repo
+        default: "*.sh **/*.sh **/**/*.sh **/**/**/*.sh **/**/**/**/*.sh **/**/**/**/**/*.sh **/**/**/**/**/**/*.sh **/**/**/**/**/**/**/*.sh"
       zarf_globs:
         description: Globs to match to Zarf package files in the repo
-        default: zarf.y[a]ml **/zarf.yaml **/**/zarf.yaml
+        default: zarf.y[a]ml **/zarf.yaml **/**/zarf.yaml **/**/**/zarf.yaml **/**/**/**/zarf.yaml  **/**/**/**/**/zarf.yaml
     actions:
       - description: Lint shell scripts in Maru tasks, GitHub workflows, Zarf packages, and .sh files
         shell:
@@ -105,6 +108,7 @@ tasks:
           }
 
           shopt -s nullglob # if nothing matches the glob expand to nothing
+          shopt -s extglob # support extended glob patterns as well
           # Lint all scripts in Maru tasks
           # shellcheck disable=SC2043
           for yaml_file in ${{ .inputs.task_globs }}; do
@@ -113,7 +117,7 @@ tasks:
             yaml_query='.tasks[].actions[] | "---\n#!/bin/"+(.shell.linux // "sh")+"\n"+.cmd'
 
             # Query the actual YAML file for the commands
-            raw_cmds=$(uds zarf tools yq -r "$yaml_query" "$yaml_file")
+            raw_cmds=$(./zarf tools yq -r "$yaml_query" "$yaml_file")
 
             # Strip any \$\{\{ \}\} templates with the word "maru-expression" for compatibility
             maru_expr_pattern=$'\x24\x7b\x7b[^}]*\x7d\x7d'
@@ -125,12 +129,21 @@ tasks:
             fi
           done
           shopt -u nullglob #reset nullglob behavior
-
-          # Lint all .sh files in the current directory
-          echo "Processing .sh files..."
-          find . -type f -name "*.sh" -exec shellcheck {} +
+          shopt -u extglob #reset extglob behavior
 
           shopt -s nullglob # if nothing matches the glob expand to nothing
+          shopt -s extglob # support extended glob patterns as well
+          # Lint all shell scripts
+          # shellcheck disable=SC2043
+          for shell_file in ${{ .inputs.shell_globs }}; do
+            echo "Processing $shell_file..."
+            shellcheck "$shell_file"
+          done
+          shopt -u nullglob #reset nullglob behavior
+          shopt -u extglob #reset extglob behavior
+
+          shopt -s nullglob # if nothing matches the glob expand to nothing
+          shopt -s extglob # support extended glob patterns as well
           # Lint all scripts in GitHub workflows
           for yaml_file in .github/workflows/*.yaml; do
 
@@ -138,7 +151,7 @@ tasks:
             yaml_query='"---\n#!/bin/"+(.shell // "sh")+"\n"+.run'
 
             # Query the actual YAML file for the commands
-            raw_runs=$(uds zarf tools yq -r '.jobs[].steps[]' "$yaml_file" | uds zarf tools yq -r "$yaml_query")
+            raw_runs=$(./zarf tools yq -r '.jobs[].steps[]' "$yaml_file" | ./zarf tools yq -r "$yaml_query")
 
             # Strip any \$\{\{ \}\} templates with the word "github-expression" for compatibility
             github_expr_pattern=$'\x24\x7b\x7b[^}]*\x7d\x7d'
@@ -150,8 +163,10 @@ tasks:
             fi
           done
           shopt -u nullglob #reset nullglob behavior
+          shopt -u extglob #reset extglob behavior
 
           shopt -s nullglob # if nothing matches the glob expand to nothing
+          shopt -s extglob # support extended glob patterns as well
           # Lint all scripts in Zarf packages
           # shellcheck disable=SC2043
           for yaml_file in ${{ .inputs.zarf_globs }}; do
@@ -160,7 +175,7 @@ tasks:
             yaml_query='.components[].actions | (.onCreate,.onDeploy,.onRemove) | (.before,.after,.onSuccess,.onFailure)[]? | select(.cmd) | "---\n#!/bin/"+(.shell.linux // "sh")+"\n"+.cmd'
 
             # Query the actual YAML file for the commands
-            raw_cmds=$(uds zarf tools yq -r "$yaml_query" "$yaml_file")
+            raw_cmds=$(./zarf tools yq -r "$yaml_query" "$yaml_file")
 
             # Strip any {{ }} templates with the word "zarf-expression" for compatibility
             zarf_expr_pattern='{{[^}]*}}'
@@ -172,6 +187,7 @@ tasks:
             fi
           done
           shopt -u nullglob #reset nullglob behavior
+          shopt -u extglob #reset extglob behavior
 
   - name: license
     description: Lint for the SPDX license identifier being in source files
@@ -192,8 +208,8 @@ tasks:
 
           # If the config file exists, parse its values; otherwise, use default values.
           if [ -f "$CONFIG_FILE" ]; then
-            LICENSE=$(uds zarf tools yq e '.license' "$CONFIG_FILE")
-            COPYRIGHT=$(uds zarf tools yq e '.copyright' "$CONFIG_FILE")
+            LICENSE=$(./zarf tools yq e '.license' "$CONFIG_FILE")
+            COPYRIGHT=$(./zarf tools yq e '.copyright' "$CONFIG_FILE")
           else
             LICENSE="AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial"
             COPYRIGHT="Defense Unicorns"
@@ -232,7 +248,7 @@ tasks:
             while IFS= read -r pattern; do
               [ -z "$pattern" ] && continue
               ignore_flags+=("-ignore" "\"$pattern\"")
-            done < <(uds zarf tools yq e '.ignore[]' "$CONFIG_FILE")
+            done < <(./zarf tools yq e '.ignore[]' "$CONFIG_FILE")
           fi
 
           # Construct the addlicense command with conditional -check flag
@@ -272,7 +288,7 @@ tasks:
           # Loop through each chart and run helm lint with strict mode
           for chart_dir in $charts; do
             echo "Linting $chart_dir..."
-            uds zarf tools helm lint --strict "$chart_dir"
+            ./zarf tools helm lint --strict "$chart_dir"
           done
 
   - name: helm-template
@@ -302,7 +318,7 @@ tasks:
           for chart_dir in $charts; do
             release_name=$(basename "$chart_dir")
             echo "Rendering $chart_dir..."
-            uds zarf tools helm template "$release_name" "$chart_dir" > /dev/null
+            ./zarf tools helm template "$release_name" "$chart_dir" > /dev/null
           done
 
   - name: fix-license

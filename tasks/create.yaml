@@ -24,7 +24,7 @@ tasks:
     actions:
       - env:
           - ZARF_CONFIG=${{ .inputs.config }}
-        cmd: ./uds zarf package create ${{ .inputs.path }} --confirm --architecture="${{ .inputs.architecture }}" --flavor "${FLAVOR}" --features values=true ${{ .inputs.options }}
+        cmd: ./zarf package create ${{ .inputs.path }} --confirm --architecture="${{ .inputs.architecture }}" --flavor "${FLAVOR}" --features values=true ${{ .inputs.options }}
 
   - name: test-bundle
     description: Create the test bundle (bundling package + dependencies for testing)

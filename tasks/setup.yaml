@@ -29,7 +29,7 @@ tasks:
       - description: Create k3d cluster with slim UDS Core
         cmd: |
           if [ "${{ .inputs.use_checkpoint }}" = "true" ] && [ "${{ .inputs.snapshots }}" = "false" ]; then
-            ./uds zarf package deploy oci://ghcr.io/defenseunicorns/dev/uds/checkpoints/k3d-core-slim-dev:${{ .inputs.version }} --confirm ${{ .inputs.options }} --features values=true
+            ./zarf package deploy oci://ghcr.io/defenseunicorns/dev/uds/checkpoints/k3d-core-slim-dev:${{ .inputs.version }} --confirm ${{ .inputs.options }} --features values=true
           else
             ./uds deploy oci://defenseunicorns/uds/${{ if eq .inputs.snapshots "true" }}snapshots/${{ end }}bundles/k3d-core-slim-dev:${{ .inputs.version }} --set INSECURE_ADMIN_PASSWORD_GENERATION=${{ .inputs.insecure_keycloak_admin }} --confirm --no-progress ${{ .inputs.options }}
           fi
@@ -64,8 +64,8 @@ tasks:
     actions:
       - description: Print the default keycloak admin password to standard out (if available)
         cmd: |
-          USERNAME=$(./uds zarf tools kubectl get secret keycloak-admin-password -n keycloak -o jsonpath='{.data.username}' | base64 --decode)
-          PASSWORD=$(./uds zarf tools kubectl get secret keycloak-admin-password -n keycloak -o jsonpath='{.data.password}' | base64 --decode)
+          USERNAME=$(./zarf tools kubectl get secret keycloak-admin-password -n keycloak -o jsonpath='{.data.username}' | base64 --decode)
+          PASSWORD=$(./zarf tools kubectl get secret keycloak-admin-password -n keycloak -o jsonpath='{.data.password}' | base64 --decode)
 
           printf "\033[31m!!! Please ensure you're not running this in CI !!!\033[0m\n"
           printf "Keycloak Admin Username: \033[31m %s \033[0m\n" "$USERNAME"
@@ -82,11 +82,11 @@ tasks:
       - description: Create Keycloak Admin User
         cmd: |
           # Check if the secret exists
-          if ./uds zarf tools kubectl get secret keycloak-admin-password -n keycloak > /dev/null 2>&1; then
+          if ./zarf tools kubectl get secret keycloak-admin-password -n keycloak > /dev/null 2>&1; then
             echo "Admin user exists, skipping..."
           else
             # Start port-forward with zarf
-            ./uds zarf tools kubectl port-forward -n keycloak svc/keycloak-http ${{ .inputs.port }}:8080 &
+            ./zarf tools kubectl port-forward -n keycloak svc/keycloak-http ${{ .inputs.port }}:8080 &
             PF_PID=$!
 
             # Wait a bit to ensure port-forward is ready
@@ -106,7 +106,7 @@ tasks:
             # Kill the port-forward
             kill $PF_PID
 
-            ./uds zarf tools kubectl create secret generic keycloak-admin-password \
+            ./zarf tools kubectl create secret generic keycloak-admin-password \
               --from-literal=username=admin \
               --from-literal=password="${PASSWORD}" \
               -n keycloak
@@ -151,18 +151,18 @@ tasks:
           KEYCLOAK_USER_LAST_NAME="${{ .inputs.last_name }}"
           KEYCLOAK_USER_PASSWORD="${{ .inputs.password }}"
 
-          KEYCLOAK_ADMIN_PASSWORD=$(./uds zarf tools kubectl get secret -n keycloak keycloak-admin-password -o jsonpath='{.data.password}' | base64 -d)
+          KEYCLOAK_ADMIN_PASSWORD=$(./zarf tools kubectl get secret -n keycloak keycloak-admin-password -o jsonpath='{.data.password}' | base64 -d)
           KEYCLOAK_ADMIN_ACCESS_TOKEN=$(curl -sSf --location "https://keycloak.admin.uds.dev/realms/master/protocol/openid-connect/token" \
             --header "Content-Type: application/x-www-form-urlencoded" \
             --data-urlencode "username=admin" \
             --data-urlencode "password=${KEYCLOAK_ADMIN_PASSWORD}" \
             --data-urlencode "client_id=admin-cli" \
-            --data-urlencode "grant_type=password" | ./uds zarf tools yq .access_token)
+            --data-urlencode "grant_type=password" | ./zarf tools yq .access_token)
 
           # Check for existing user
           EXISTING_USER=$(curl -sS "https://keycloak.admin.uds.dev/admin/realms/uds/users?username=${KEYCLOAK_USER_NAME}" \
             -H "Authorization: Bearer ${KEYCLOAK_ADMIN_ACCESS_TOKEN}" \
-            | ./uds zarf tools yq '.[0].id // ""')
+            | ./zarf tools yq '.[0].id // ""')
 
           if [ "$EXISTING_USER" ]; then
             echo "User ${KEYCLOAK_USER_NAME} already exists. Skipping create."
@@ -197,7 +197,7 @@ tasks:
 
             # Disable 2FA
             CONDITIONAL_OTP_ID=$(curl -sSf --location "https://keycloak.admin.uds.dev/admin/realms/uds/authentication/flows/Authentication/executions" \
-              --header "Authorization: Bearer ${KEYCLOAK_ADMIN_ACCESS_TOKEN}" | ./uds zarf tools yq '.[] | select(.displayName == "Conditional OTP") | .id')
+              --header "Authorization: Bearer ${KEYCLOAK_ADMIN_ACCESS_TOKEN}" | ./zarf tools yq '.[] | select(.displayName == "Conditional OTP") | .id')
 
             curl -sSf -o /dev/null --location --request PUT "https://keycloak.admin.uds.dev/admin/realms/uds/authentication/flows/Authentication/executions" \
             --header "Content-Type: application/json" \
