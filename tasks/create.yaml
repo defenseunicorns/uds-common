@@ -91,8 +91,8 @@ tasks:
 
           ./zarf package create ${{ .inputs.path }} --confirm --architecture="${{ .inputs.architecture }}" --flavor "${{ .inputs.flavor }}" --features values=true ${{ .inputs.options }}
 
-          PACKAGE_NAME=$(cat ${{ .inputs.path }}/zarf.yaml | ././zarf tools yq .metadata.name)
-          LOCAL_VERSION=$(cat ${{ .inputs.path }}/zarf.yaml | ././zarf tools yq .metadata.version)
+          PACKAGE_NAME=$(cat ${{ .inputs.path }}/zarf.yaml | ./zarf tools yq .metadata.name)
+          LOCAL_VERSION=$(cat ${{ .inputs.path }}/zarf.yaml | ./zarf tools yq .metadata.version)
           # shellcheck disable=SC2157
           FLAVOR_SUFFIX=$(if [ -z "${{ .inputs.flavor }}" ]; then echo ""; else echo "-${{ .inputs.flavor }}"; fi)
 
