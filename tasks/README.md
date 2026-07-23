@@ -11,8 +11,8 @@ Pinning to a specific tag of a task (rather than `main`) with renovate watching 
 
 ## Supported Tool Versions
 
-- UDS CLI: 0.34.0
-- UDS Core: 1.7.0
+- UDS CLI: 0.34.2
+- UDS Core: 1.9.0
 - K3D: 5.9.0
 
 > [!NOTE]
@@ -41,7 +41,6 @@ There are multiple task files available in this repository with different object
 | Name | Description |
 |------|-------------|
 | **package** | Create the UDS Zarf Package in the repository |
-| **recreate-latest-tag-package** | Recreate the UDS Zarf Package in the repository |
 | **test-bundle** | Create the test bundle (bundling package + dependencies for testing) |
 
 ### [deploy.yaml](./tasks/deploy.yaml)
@@ -72,7 +71,6 @@ There are multiple task files available in this repository with different object
 | **release-please-publish** | Publish the UDS package using release-please based workflows |
 | **uds-pk-publish** | Publish the UDS package using uds-pk based workflows |
 | **test-bundle** | Publish the test bundle for the supplied architecture |
-| **republish-package** | Republish the UDS package |
 | **repo** | Publish point in time repo snapshot to OCI |
 | **git-to-oci** | Package git repo as OCI artifact with release notes |
 
@@ -116,6 +114,8 @@ ignore: [] # an array of paths to ignore
 | **license** | Lint for the SPDX license identifier being in source files |
 | **fix-license** | Add the SPDX license identifier to source files |
 | **tasks** | Dry run all tasks in the base tasks file |
+| **helm** | Run helm lint on all Helm charts in the repository |
+| **helm-template** | Dry run render all Helm charts to catch template execution errors |
 
 ### [badge.yaml](./tasks/badge.yaml)
 
