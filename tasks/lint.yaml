@@ -111,7 +111,7 @@ tasks:
             yaml_query='.tasks[].actions[] | "---\n#!/bin/"+(.shell.linux // "sh")+"\n"+.cmd'
 
             # Query the actual YAML file for the commands
-            raw_cmds=$(uds zarf tools yq -r "$yaml_query" "$yaml_file")
+            raw_cmds=$(./zarf tools yq -r "$yaml_query" "$yaml_file")
 
             # Strip any \$\{\{ \}\} templates with the word "maru-expression" for compatibility
             maru_expr_pattern=$'\x24\x7b\x7b[^}]*\x7d\x7d'
@@ -136,7 +136,7 @@ tasks:
             yaml_query='"---\n#!/bin/"+(.shell // "sh")+"\n"+.run'
 
             # Query the actual YAML file for the commands
-            raw_runs=$(uds zarf tools yq -r '.jobs[].steps[]' "$yaml_file" | uds zarf tools yq -r "$yaml_query")
+            raw_runs=$(./zarf tools yq -r '.jobs[].steps[]' "$yaml_file" | ./zarf tools yq -r "$yaml_query")
 
             # Strip any \$\{\{ \}\} templates with the word "github-expression" for compatibility
             github_expr_pattern=$'\x24\x7b\x7b[^}]*\x7d\x7d'
@@ -158,7 +158,7 @@ tasks:
             yaml_query='.components[].actions | (.onCreate,.onDeploy,.onRemove) | (.before,.after,.onSuccess,.onFailure)[]? | select(.cmd) | "---\n#!/bin/"+(.shell.linux // "sh")+"\n"+.cmd'
 
             # Query the actual YAML file for the commands
-            raw_cmds=$(uds zarf tools yq -r "$yaml_query" "$yaml_file")
+            raw_cmds=$(./zarf tools yq -r "$yaml_query" "$yaml_file")
 
             # Strip any {{ }} templates with the word "zarf-expression" for compatibility
             zarf_expr_pattern='{{[^}]*}}'
@@ -190,8 +190,8 @@ tasks:
 
           # If the config file exists, parse its values; otherwise, use default values.
           if [ -f "$CONFIG_FILE" ]; then
-            LICENSE=$(uds zarf tools yq e '.license' "$CONFIG_FILE")
-            COPYRIGHT=$(uds zarf tools yq e '.copyright' "$CONFIG_FILE")
+            LICENSE=$(./zarf tools yq e '.license' "$CONFIG_FILE")
+            COPYRIGHT=$(./zarf tools yq e '.copyright' "$CONFIG_FILE")
           else
             LICENSE="AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial"
             COPYRIGHT="Defense Unicorns"
@@ -230,7 +230,7 @@ tasks:
             while IFS= read -r pattern; do
               [ -z "$pattern" ] && continue
               ignore_flags+=("-ignore" "\"$pattern\"")
-            done < <(uds zarf tools yq e '.ignore[]' "$CONFIG_FILE")
+            done < <(./zarf tools yq e '.ignore[]' "$CONFIG_FILE")
           fi
 
           # Construct the addlicense command with conditional -check flag

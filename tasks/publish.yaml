@@ -78,7 +78,7 @@ tasks:
           base_repo: ${{ .variables.BASE_REPO }}
           publish_path: ${{ .variables.PUBLISH_PATH }}
       - description: Get the current Zarf package name
-        cmd: cat ${{ .inputs.path }}/zarf.yaml | ./uds zarf tools yq .metadata.name
+        cmd: cat ${{ .inputs.path }}/zarf.yaml | ./zarf tools yq .metadata.name
         setVariables:
           - name: PACKAGE_NAME
       - description: Get the current Zarf package flavor suffix
@@ -89,7 +89,7 @@ tasks:
           - name: FLAVOR_SUFFIX
       - description: Publish package for the supplied architecture
         cmd: |
-          ./uds zarf package publish "${{ .inputs.path }}/zarf-package-${{ .inputs.name }}-${{ .inputs.architecture }}-${{ .inputs.version }}${FLAVOR_SUFFIX}.tar.zst" "oci://${TARGET_REPO}" --features values=true
+          ./zarf package publish "${{ .inputs.path }}/zarf-package-${{ .inputs.name }}-${{ .inputs.architecture }}-${{ .inputs.version }}${FLAVOR_SUFFIX}.tar.zst" "oci://${TARGET_REPO}" --features values=true
 
 
   - name: uds-pk-publish
@@ -117,12 +117,12 @@ tasks:
           base_repo: ${{ .variables.BASE_REPO }}
           publish_path: ${{ .variables.PUBLISH_PATH }}
       - description: Get the current Zarf package name
-        cmd: cat ${{ .inputs.path }}/zarf.yaml | ./uds zarf tools yq .metadata.name
+        cmd: cat ${{ .inputs.path }}/zarf.yaml | ./zarf tools yq .metadata.name
         setVariables:
           - name: PACKAGE_NAME
       - description: publish using uds-pk
         cmd: |
-          ./uds zarf package publish "${{ .inputs.path }}/zarf-package-${{ .inputs.name }}-${{ .inputs.architecture }}-$(uds-pk release show ${{ .inputs.flavor }}).tar.zst" "oci://${TARGET_REPO}" --features values=true
+          ./zarf package publish "${{ .inputs.path }}/zarf-package-${{ .inputs.name }}-${{ .inputs.architecture }}-$(uds-pk release show ${{ .inputs.flavor }}).tar.zst" "oci://${TARGET_REPO}" --features values=true
 
           if [ -n "${GITLAB_CI}" ]; then
             uds-pk release gitlab "${{ .inputs.flavor }}"
@@ -158,12 +158,12 @@ tasks:
           base_repo: ${{ .variables.BASE_REPO }}
           publish_path: ${{ .variables.PUBLISH_PATH }}
       - description: Get the current Zarf package name
-        cmd: cat ${{ .inputs.path }}/zarf.yaml | ./uds zarf tools yq .metadata.name
+        cmd: cat ${{ .inputs.path }}/zarf.yaml | ./zarf tools yq .metadata.name
         setVariables:
           - name: PACKAGE_NAME
       - description: Checkout latest tag and re-publish
         cmd: |
-          ./uds zarf package publish "${{ .inputs.path }}/zarf-package-${{ .inputs.name }}-${{ .inputs.architecture }}-$(uds-pk release show ${{ .inputs.flavor }}).tar.zst" "oci://${TARGET_REPO}" --features values=true
+          ./zarf package publish "${{ .inputs.path }}/zarf-package-${{ .inputs.name }}-${{ .inputs.architecture }}-$(uds-pk release show ${{ .inputs.flavor }}).tar.zst" "oci://${TARGET_REPO}" --features values=true
 
   - name: test-bundle
     description: Publish the test bundle for the supplied architecture
@@ -186,11 +186,11 @@ tasks:
           base_repo: ${{ .variables.BASE_REPO }}
           publish_path: ${{ .variables.PUBLISH_PATH }}
       - description: Get the current UDS Bundle name
-        cmd: cat ${{ .inputs.path }}/uds-bundle.yaml | ./uds zarf tools yq .metadata.name
+        cmd: cat ${{ .inputs.path }}/uds-bundle.yaml | ./zarf tools yq .metadata.name
         setVariables:
           - name: BUNDLE_NAME
       - description: Get the current UDS Bundle version
-        cmd: cat ${{ .inputs.path }}/uds-bundle.yaml | ./uds zarf tools yq .metadata.version
+        cmd: cat ${{ .inputs.path }}/uds-bundle.yaml | ./zarf tools yq .metadata.version
         setVariables:
           - name: BUNDLE_VERSION
       - description: Publish bundle for the supplied architecture
