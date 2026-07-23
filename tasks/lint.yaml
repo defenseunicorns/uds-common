@@ -56,11 +56,11 @@ tasks:
         description: Globs to match to Maru task files in the repo
         default: tasks.y[a]ml tasks/*.yaml
       shell_globs:
-        description: Filename globs to match to shell scripts in the repo (matched recursively from the repo root)
-        default: "*.sh"
+        description: Globs to match to shell script files in the repo
+        default: "*.sh **/*.sh **/**/*.sh **/**/**/*.sh **/**/**/**/*.sh **/**/**/**/**/*.sh **/**/**/**/**/**/*.sh **/**/**/**/**/**/**/*.sh"
       zarf_globs:
         description: Globs to match to Zarf package files in the repo
-        default: zarf.y[a]ml **/zarf.yaml **/**/zarf.yaml
+        default: zarf.y[a]ml **/zarf.yaml **/**/zarf.yaml **/**/**/zarf.yaml **/**/**/**/zarf.yaml  **/**/**/**/**/zarf.yaml
     actions:
       - description: Lint shell scripts in Maru tasks, GitHub workflows, Zarf packages, and .sh files
         shell:
@@ -129,22 +129,14 @@ tasks:
           done
           shopt -u nullglob #reset nullglob behavior
 
-          # Lint all shell script files in the current directory
-          echo "Processing shell script files..."
-
-          # Read the globs into an array without letting the shell expand them (find does the matching)
-          read -r -a shell_globs <<< '${{ .inputs.shell_globs }}'
-
-          if [ ${#shell_globs[@]} -gt 0 ]; then
-            # Build an OR'd list of -name predicates, one per glob
-            find_expr=()
-            for shell_glob in "${shell_globs[@]}"; do
-              [ ${#find_expr[@]} -gt 0 ] && find_expr+=(-o)
-              find_expr+=(-name "$shell_glob")
-            done
-
-            find . -type f \( "${find_expr[@]}" \) -exec shellcheck {} +
-          fi
+          shopt -s nullglob # if nothing matches the glob expand to nothing
+          # Lint all shell scripts
+          # shellcheck disable=SC2043
+          for shell_file in ${{ .inputs.shell_globs }}; do
+            echo "Processing $shell_file..."
+            shellcheck "$shell_file"
+          done
+          shopt -u nullglob #reset nullglob behavior
 
           shopt -s nullglob # if nothing matches the glob expand to nothing
           # Lint all scripts in GitHub workflows
