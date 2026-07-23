@@ -272,7 +272,7 @@ tasks:
           # Loop through each chart and run helm lint with strict mode
           for chart_dir in $charts; do
             echo "Linting $chart_dir..."
-            uds zarf tools helm lint --strict "$chart_dir"
+            ./zarf tools helm lint --strict "$chart_dir"
           done
 
   - name: helm-template
@@ -302,7 +302,7 @@ tasks:
           for chart_dir in $charts; do
             release_name=$(basename "$chart_dir")
             echo "Rendering $chart_dir..."
-            uds zarf tools helm template "$release_name" "$chart_dir" > /dev/null
+            ./zarf tools helm template "$release_name" "$chart_dir" > /dev/null
           done
 
   - name: fix-license
