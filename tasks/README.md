@@ -16,7 +16,7 @@ Pinning to a specific tag of a task (rather than `main`) with renovate watching 
 - K3D: 5.9.0
 
 > [!NOTE]
-> Zarf is not required for tasks in this repo, the vendored zarf (`uds zarf`) included with UDS CLI is used instead to prevent version mismatches.
+> Zarf is not required for tasks in this repo when using `uds` CLI, the vendored zarf (`uds zarf`) included with UDS CLI is used instead to prevent version mismatches.  If using `maru` directly you will need to look at the tasks you are including and determine whether you need to install `zarf` and/or `uds`.
 
 ## Task Files
 
