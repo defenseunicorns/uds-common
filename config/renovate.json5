@@ -5,7 +5,8 @@
     "extends": [
         ":dependencyDashboard",
         "config:base",
-        "helpers:pinGitHubActionDigests"
+        "helpers:pinGitHubActionDigests",
+        "helpers:pinGitHubActionDigestsToSemver"
     ],
     // Include test folders in checks
     "ignorePresets": [
