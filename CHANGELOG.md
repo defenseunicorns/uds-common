@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.27.1](https://github.com/defenseunicorns/uds-common/compare/v1.27.0...v1.27.1) (2026-07-27)
+
+
+### Miscellaneous
+
+* add full semver comment to release-please-action ([#728](https://github.com/defenseunicorns/uds-common/issues/728)) ([cd17c8c](https://github.com/defenseunicorns/uds-common/commit/cd17c8c8fd4f173fb7f9ce8b932f0175262be027))
+* **deps:** update uds common foundation dependencies to v0.34.3 ([#733](https://github.com/defenseunicorns/uds-common/issues/733)) ([bc6627c](https://github.com/defenseunicorns/uds-common/commit/bc6627c45ccfa31fbc8c9dfb8f0c98dc747e2b74))
+* **deps:** update uds common support dependencies ([#732](https://github.com/defenseunicorns/uds-common/issues/732)) ([85f03d7](https://github.com/defenseunicorns/uds-common/commit/85f03d7b3250188cae44f39849f43c3b9e5898d7))
+* have renovate pin actions to full semver ([#731](https://github.com/defenseunicorns/uds-common/issues/731)) ([e2d9247](https://github.com/defenseunicorns/uds-common/commit/e2d9247dda92c4edf0e2f474ae4d585c24158293))
+* make the tasks more compatible with maru runner ([#730](https://github.com/defenseunicorns/uds-common/issues/730)) ([1b0c233](https://github.com/defenseunicorns/uds-common/commit/1b0c23314df0fbc002e0ad28ac1debf40e43002f))
+
 ## [1.27.0](https://github.com/defenseunicorns/uds-common/compare/v1.26.3...v1.27.0) (2026-07-22)
 
 
