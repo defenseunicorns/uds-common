@@ -27,18 +27,17 @@ runs:
 
     - name: Test latest tag deployment for flavor
       id: set-required
+      env:
+        GH_TOKEN: ${{ github.token }}
       run: |
-        # Check if any tag exists
-        TAG="$(git describe --tags "$(git rev-list --tags --max-count=1)" 2>/dev/null || echo '')"
+        # Use the latest published release tag, not bare git tags, to avoid pointing at failed releases
+        TAG="$(gh release list --limit 1 --exclude-drafts --exclude-pre-releases --json tagName --jq '.[0].tagName' 2>/dev/null || echo '')"
 
         if [ -z "$TAG" ]; then
-          echo "No Git tags found. Skipping step."
+          echo "No releases found. Skipping step."
           exit 0
         fi
 
-        # Checkout the repository at the latest tag
-        git checkout "$TAG"
-
         # Extract upgrade flavors and set output
-        echo "upgrade-flavors=$(cat ${{ inputs.check-flavor-zarf-yaml }} | yq '.components[] | select(.only | has("flavor")) | .only.flavor' | paste -s -d, - || echo '')" >> "$GITHUB_OUTPUT"
+        echo "upgrade-flavors=$(git show "$TAG:${{ inputs.check-flavor-zarf-yaml }}" | yq '.components[] | select(.only | has("flavor")) | .only.flavor' | paste -s -d, - || echo '')" >> "$GITHUB_OUTPUT"
       shell: bash
