@@ -128,14 +128,15 @@ jobs:
           for attempt in $(seq 1 "$max_attempts"); do
             echo "Running test attempt ${attempt}/${max_attempts}"
 
-            # SIMULATED FAILURE: fail the first attempt only
+            # Simulate a failure on attempt 1
             if [ "$attempt" -eq 1 ]; then
               echo "Simulating failure on attempt 1"
-              false
-            else
-              echo "Simulated retry succeeded"
-              exit 0
+              continue
             fi
+
+            echo "Running attempt ${attempt}"
+            echo "Simulated test passed"
+            exit 0
           done
 
           echo "Test failed after ${max_attempts} attempts"
