@@ -74,7 +74,7 @@ jobs:
   doc-shim-check:
     runs-on: ubuntu-latest
     outputs:
-      test: "true"
+      test: ${{ steps.check-files.outputs.test }}
     steps:
       - name: Check for non-documentation changes
         id: check-files
@@ -83,12 +83,43 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           FILE_FILTER_INPUT: ${{ inputs.file-filter }}
         run: |
-          echo "test=true" >> "$GITHUB_OUTPUT"
+          # allow ** for recursive globs
+          shopt -s globstar
+
+          MODIFIED_FILES=$(gh pr view ${{ github.event.pull_request.number }} \
+            --repo ${{ github.repository }} --json files \
+            --jq '.files[].path')
+
+          # load glob patterns as an array from FILE_FILTER_INPUT
+          readarray -t FILE_FILTERS <<<"${FILE_FILTER_INPUT}"
+
+          # Print the patterns for debugging
+          echo "File filters: ${FILE_FILTERS[*]}"
+
+          for FILE in $MODIFIED_FILES; do
+            matched=false
+            for pattern in "${FILE_FILTERS[@]}"; do
+              # use bash glob matching, not regex
+              if [[ "$FILE" == $pattern ]]; then
+                matched=true
+                break
+              fi
+            done
+            if [ "$matched" = false ]; then
+              echo "Non-documentation file changed: $FILE"
+              echo "test=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            echo "File $FILE matches pattern $pattern"
+          done
+
+          echo "test=false" >> "$GITHUB_OUTPUT"
+
   run:
     needs: doc-shim-check
     runs-on: ${{ inputs.runsOn }}
     timeout-minutes: ${{ inputs.timeout }}
-    if: ${{ (contains(inputs.upgrade-flavors, inputs.flavor) || inputs.type == 'install') }}
+    if: ${{ (contains(inputs.upgrade-flavors, inputs.flavor) || inputs.type == 'install') && (needs.doc-shim-check.outputs.test == 'true') }}
 
     steps:
       - name: Checkout repository
