@@ -82,7 +82,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           FILE_FILTER_INPUT: ${{ inputs.file-filter }}
-        run: echo "hello!"
+        run: |
+          echo "test=true" >> "$GITHUB_OUTPUT"
   run:
     needs: doc-shim-check
     runs-on: ${{ inputs.runsOn }}
