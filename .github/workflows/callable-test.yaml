@@ -121,26 +121,8 @@ jobs:
         shell: bash
 
       - name: Test
+        run: uds run actions:test-deploy --set FLAVOR="${{ inputs.flavor }}" --set TYPE="${{ inputs.type }}" --set OPTIONS="${{ inputs.options }}" --set LICENSE_KEY="${{ secrets.LICENSE_KEY }}"
         shell: bash
-        run: |
-          max_attempts=2
-
-          for attempt in $(seq 1 "$max_attempts"); do
-            echo "Running test attempt ${attempt}/${max_attempts}"
-
-            # Simulate a failure on attempt 1
-            if [ "$attempt" -eq 1 ]; then
-              echo "Simulating failure on attempt 1"
-              continue
-            fi
-
-            echo "Running attempt ${attempt}"
-            echo "Simulated test passed"
-            exit 0
-          done
-
-          echo "Test failed after ${max_attempts} attempts"
-          exit 1
 
       - name: Debug Output
         if: ${{ always() }}
