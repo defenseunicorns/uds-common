@@ -1,0 +1,52 @@
+# Copyright 2024-2026 Defense Unicorns
+# SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
+
+name: Retry failed jobs
+
+on:
+  workflow_call:
+    inputs:
+      max_attempts:
+        description: Maximum number of attempts
+        required: false
+        type: number
+        default: 3
+
+      run_id:
+        description: Workflow run ID
+        required: true
+        type: string
+
+      run_attempt:
+        description: Current workflow attempt
+        required: true
+        type: number
+
+      conclusion:
+        description: Workflow conclusion
+        required: true
+        type: string
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  retry:
+    name: Retry failed jobs
+
+    if: >-
+      inputs.conclusion == 'failure' &&
+      inputs.run_attempt < inputs.max_attempts
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Re-run failed jobs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ inputs.run_id }}
+        run: |
+          gh api \
+            --method POST \
+            "repos/${GITHUB_REPOSITORY}/actions/runs/${RUN_ID}/rerun-failed-jobs"
