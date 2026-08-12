@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.27.2](https://github.com/defenseunicorns/uds-common/compare/v1.27.1...v1.27.2) (2026-08-12)
+
+
+### Bug Fixes
+
+* fix renovate regex for postgres operator ([#738](https://github.com/defenseunicorns/uds-common/issues/738)) ([be4d493](https://github.com/defenseunicorns/uds-common/commit/be4d49305ad1dfc0f3eebed460b6776b52b57ca7))
+
+
+### Miscellaneous
+
+* **deps:** update support-deps to v0.1.12 ([#741](https://github.com/defenseunicorns/uds-common/issues/741)) ([fea04fa](https://github.com/defenseunicorns/uds-common/commit/fea04fa83e149df0cc1e1b2f2d994c21770ddd06))
+* **deps:** update uds common foundation dependencies ([#737](https://github.com/defenseunicorns/uds-common/issues/737)) ([ee7ae12](https://github.com/defenseunicorns/uds-common/commit/ee7ae12cad1bf2d4e61b63e33cec56f2ef5cdb94))
+* **deps:** update uds common support dependencies ([#735](https://github.com/defenseunicorns/uds-common/issues/735)) ([8dcd067](https://github.com/defenseunicorns/uds-common/commit/8dcd0679a617f0e72c7d7a4049ede7e3f031c085))
+
 ## [1.27.1](https://github.com/defenseunicorns/uds-common/compare/v1.27.0...v1.27.1) (2026-07-27)
 
 
