@@ -117,6 +117,14 @@ ignore: [] # an array of paths to ignore
 | **helm** | Run helm lint on all Helm charts in the repository |
 | **helm-template** | Dry run render all Helm charts to catch template execution errors |
 
+The `shell` task accepts a space-separated `exclusion` input for directories that should be skipped by shellcheck:
+
+```yaml
+- task: lint:shell
+  with:
+    exclusion: ".husky vendor"
+```
+
 ### [badge.yaml](./tasks/badge.yaml)
 
 | Name | Description |

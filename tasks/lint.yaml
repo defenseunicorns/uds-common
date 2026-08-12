@@ -61,6 +61,9 @@ tasks:
       zarf_globs:
         description: Globs to match to Zarf package files in the repo
         default: zarf.y[a]ml **/zarf.yaml **/**/zarf.yaml **/**/**/zarf.yaml **/**/**/**/zarf.yaml  **/**/**/**/**/zarf.yaml
+      exclusion:
+        description: Space-separated directories to exclude from shellcheck
+        default: ""
     actions:
       - description: Lint shell scripts in Maru tasks, GitHub workflows, Zarf packages, and .sh files
         shell:
@@ -75,6 +78,26 @@ tasks:
           # -e SC2002 Ignore rejection of `cat |` (redirection syntax is not always familiar to developers and while cat _could_ not exist that is extremely unlikely)
           # -e SC2181 Ignore rejection of $? ($? can be confusing in some circumstances but also more readable in others with more complex commands)
           export SHELLCHECK_OPTS="-x -e SC2016 -e SC2050 -e SC2001 -e SC2002 -e SC2181"
+          read -r -a shellcheck_exclusions <<< "${{ .inputs.exclusion }}"
+
+          is_excluded_path() {
+            local path="$1"
+            local exclusion
+
+            for exclusion in "${shellcheck_exclusions[@]}"; do
+              exclusion="${exclusion%/}"
+
+              if [ -z "$exclusion" ]; then
+                continue
+              fi
+
+              if [[ "$path" == "$exclusion" || "$path" == "$exclusion"/* || "$path" == ./"$exclusion" || "$path" == ./"$exclusion"/* ]]; then
+                return 0
+              fi
+            done
+
+            return 1
+          }
 
           # Function to lint scripts inside `---` delimited files
           lint_scripts() {
@@ -112,6 +135,10 @@ tasks:
           # Lint all scripts in Maru tasks
           # shellcheck disable=SC2043
           for yaml_file in ${{ .inputs.task_globs }}; do
+            if is_excluded_path "$yaml_file"; then
+              echo "Skipping excluded path $yaml_file..."
+              continue
+            fi
 
             # Look through all of the task actions and format .cmd entries with a dynamic shebang based on .shell.linux
             yaml_query='.tasks[].actions[] | "---\n#!/bin/"+(.shell.linux // "sh")+"\n"+.cmd'
@@ -136,6 +163,11 @@ tasks:
           # Lint all shell scripts
           # shellcheck disable=SC2043
           for shell_file in ${{ .inputs.shell_globs }}; do
+            if is_excluded_path "$shell_file"; then
+              echo "Skipping excluded path $shell_file..."
+              continue
+            fi
+
             echo "Processing $shell_file..."
             shellcheck "$shell_file"
           done
@@ -146,6 +178,10 @@ tasks:
           shopt -s extglob # support extended glob patterns as well
           # Lint all scripts in GitHub workflows
           for yaml_file in .github/workflows/*.yaml; do
+            if is_excluded_path "$yaml_file"; then
+              echo "Skipping excluded path $yaml_file..."
+              continue
+            fi
 
             # Look through all of the job steps and format .run entries with a dynamic shebang based on .shell
             yaml_query='"---\n#!/bin/"+(.shell // "sh")+"\n"+.run'
@@ -170,6 +206,10 @@ tasks:
           # Lint all scripts in Zarf packages
           # shellcheck disable=SC2043
           for yaml_file in ${{ .inputs.zarf_globs }}; do
+            if is_excluded_path "$yaml_file"; then
+              echo "Skipping excluded path $yaml_file..."
+              continue
+            fi
 
             # Look through all component action lifecycle lists and format .cmd entries with a dynamic shebang based on .shell.linux
             yaml_query='.components[].actions | (.onCreate,.onDeploy,.onRemove) | (.before,.after,.onSuccess,.onFailure)[]? | select(.cmd) | "---\n#!/bin/"+(.shell.linux // "sh")+"\n"+.cmd'
