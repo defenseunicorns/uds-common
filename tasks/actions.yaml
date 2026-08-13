@@ -103,8 +103,8 @@ tasks:
 
       - description: Fix log permissions
         cmd: |
-          sudo chown "$USER" ${{ .variables.LOG_DIR }}/zarf-*.log || echo ""
-          sudo chown "$USER" ${{ .variables.LOG_DIR }}/uds-*.log || echo ""
+          timeout 30s sudo -n chown "$USER" ${{ .variables.LOG_DIR }}/zarf-*.log || echo ""
+          timeout 30s sudo -n chown "$USER" ${{ .variables.LOG_DIR }}/uds-*.log || echo ""
 
   - name: setup-environment
     description: Setup the runner environment for testing UDS Packages
