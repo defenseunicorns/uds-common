@@ -165,6 +165,7 @@ jobs:
         if: ${{ always() }}
         run: uds run actions:save-logs
         shell: bash
+        timeout-minutes: 2
 
       - name: Generate unique suffix
         id: uniq
