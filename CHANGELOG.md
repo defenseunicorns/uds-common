@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.28.0](https://github.com/defenseunicorns/uds-common/compare/v1.27.2...v1.28.0) (2026-08-19)
+
+
+### Features
+
+* allow shellcheck directory exclusions ([#742](https://github.com/defenseunicorns/uds-common/issues/742)) ([8522bee](https://github.com/defenseunicorns/uds-common/commit/8522beef16f099637e97d756b9be510f099a6260))
+
+
+### Bug Fixes
+
+* add a timeout sudo for save logs ([#745](https://github.com/defenseunicorns/uds-common/issues/745)) ([a421226](https://github.com/defenseunicorns/uds-common/commit/a42122679e706e0fd68859515c14367402a22800))
+
+
+### Miscellaneous
+
+* **deps:** update support-deps to v0.117.0 ([#744](https://github.com/defenseunicorns/uds-common/issues/744)) ([a6eb132](https://github.com/defenseunicorns/uds-common/commit/a6eb13286258dbc4c5e6452071e421d2e03b30d4))
+* **deps:** update uds common foundation dependencies to v1.11.0 ([#748](https://github.com/defenseunicorns/uds-common/issues/748)) ([4dc1b74](https://github.com/defenseunicorns/uds-common/commit/4dc1b742d88cbd7d9e84f611eebc4efe8f069c1c))
+* **deps:** update uds common support dependencies ([#746](https://github.com/defenseunicorns/uds-common/issues/746)) ([d663905](https://github.com/defenseunicorns/uds-common/commit/d663905384dd034eea3010586a7291f77e55114f))
+
 ## [1.27.2](https://github.com/defenseunicorns/uds-common/compare/v1.27.1...v1.27.2) (2026-08-12)
 
 
