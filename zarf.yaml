@@ -30,7 +30,7 @@ components:
         valuesFiles:
           - values/upstream-values.yaml
     images:
-      - nginx:1.31.4
+      - nginx:1.31.5
 
   - name: nginx
     required: true
@@ -60,4 +60,4 @@ components:
         valuesFiles:
           - values/unicorn-values.yaml
     images:
-      - cgr.dev/defenseunicorns.com/nginx:v1.31.4
+      - cgr.dev/defenseunicorns.com/nginx:v1.31.5
