@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.28.3](https://github.com/defenseunicorns/uds-common/compare/v1.28.2...v1.28.3) (2026-09-09)
+
+
+### Miscellaneous
+
+* pass version input for commitlint ([#761](https://github.com/defenseunicorns/uds-common/issues/761)) ([facd2bb](https://github.com/defenseunicorns/uds-common/commit/facd2bb4c2a31d20d80c9f2b90e78d0d6651f3f3))
+
 ## [1.28.2](https://github.com/defenseunicorns/uds-common/compare/v1.28.1...v1.28.2) (2026-09-09)
 
 
