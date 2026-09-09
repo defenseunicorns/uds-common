@@ -12,6 +12,11 @@ on:
 
   # This allows other repositories to call this workflow in a reusable way
   workflow_call:
+    inputs:
+      node-version:
+        description: Node.js version to use for commitlint
+        required: false
+        type: string
 
 # Permissions for the GITHUB_TOKEN used by the workflow.
 permissions:
@@ -33,6 +38,8 @@ jobs:
 
       - name: Setup Node.js
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: ${{ inputs.node-version }}
 
       - name: Install commitlint
         run: |
