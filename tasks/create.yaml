@@ -21,7 +21,15 @@ tasks:
         description: Optionally provide a path to a Zarf config file
         default: ""
         required: false
+      cpe:
+        description: Complete CPE 2.3 application binding with a wildcard version for the primary product
+        default: ""
+        required: false
     actions:
+      - task: sbom-shim
+        if: ${{ ne .inputs.cpe "" }}
+        with:
+          cpe: ${{ .inputs.cpe }}
       - env:
           - ZARF_CONFIG=${{ .inputs.config }}
         cmd: ./zarf package create ${{ .inputs.path }} --confirm --architecture="${{ .inputs.architecture }}" --flavor "${FLAVOR}" --features values=true ${{ .inputs.options }}
@@ -61,3 +69,160 @@ tasks:
 
           # Proceed with bundle creation regardless of package file status
           ./uds create ${{ .inputs.path }} --confirm --no-progress --architecture="${{ .inputs.architecture }}" ${{ .inputs.options }}
+
+  - name: sbom-shim
+    description: Builds a scan-only image that adds a primary product CPE to the Zarf package SBOM
+    inputs:
+      cpe:
+        description: Complete CPE 2.3 application binding with a wildcard version for the primary product
+        required: true
+    actions:
+      - description: Build the SBOM shim declared by the active Zarf flavor
+        shell:
+          darwin: bash
+          linux: bash
+        env:
+          - SBOM_CPE_TEMPLATE=${{ .inputs.cpe }}
+          - SBOM_FLAVOR=${FLAVOR}
+        cmd: |
+          set -euo pipefail
+
+          package_metadata="$(
+            uds zarf tools yq -r '
+              .metadata as $metadata
+              | [
+                  $metadata.name,
+                  ($metadata.annotations["dev.uds.title"] // $metadata.name)
+                ]
+              | @tsv
+            ' zarf.yaml
+          )"
+          IFS=$'\t' read -r SBOM_PRODUCT_SLUG SBOM_PRODUCT_NAME <<< "${package_metadata}"
+          export SBOM_PRODUCT_NAME SBOM_PRODUCT_SLUG
+
+          if [[ ! "${SBOM_PRODUCT_SLUG}" =~ ^[a-z0-9]+([._-][a-z0-9]+)*$ ]]; then
+            echo "metadata.name must contain only lowercase letters, numbers, periods, underscores, and hyphens." >&2
+            exit 1
+          fi
+
+          if [[ ! "${SBOM_CPE_TEMPLATE}" =~ ^cpe:2\.3:a:([^:[:space:]]+:){9}[^:[:space:]]+$ ]]; then
+            echo "CPE must be a complete CPE 2.3 application binding with all ten attributes (cpe:2.3:a:vendor:product:version:update:edition:language:sw_edition:target_sw:target_hw:other)." >&2
+            exit 1
+          fi
+          IFS=':' read -r -a cpe_fields <<< "${SBOM_CPE_TEMPLATE}"
+          if [[ "${cpe_fields[5]}" != "*" ]]; then
+            echo "CPE version must be '*' so the active flavor can supply its exact product version." >&2
+            exit 1
+          fi
+
+          export SBOM_IMAGE_REPOSITORY="zarf.internal/sbom/${SBOM_PRODUCT_SLUG}"
+          matches="$(
+            uds zarf tools yq -r '
+              .components[]
+              | select((.only.flavor // strenv(SBOM_FLAVOR)) == strenv(SBOM_FLAVOR))
+              | .imageArchives[]?
+              | . as $archive
+              | .images[]?
+              | select(split(":")[0] == strenv(SBOM_IMAGE_REPOSITORY))
+              | [$archive.path, .]
+              | @tsv
+            ' zarf.yaml
+          )"
+
+          match_count="$(printf '%s\n' "${matches}" | sed '/^$/d' | wc -l | tr -d '[:space:]')"
+          if [[ "${match_count}" != "1" ]]; then
+            echo "Expected exactly one ${SBOM_IMAGE_REPOSITORY}:* image archive for flavor '${SBOM_FLAVOR}', found ${match_count}." >&2
+            exit 1
+          fi
+
+          IFS=$'\t' read -r archive_path image_ref <<< "${matches}"
+          product_version="${image_ref#"${SBOM_IMAGE_REPOSITORY}:"}"
+          if [[ -z "${archive_path}" || -z "${product_version}" || "${product_version}" == "${image_ref}" ]]; then
+            echo "Could not derive the SBOM archive path and product version from '${image_ref}'." >&2
+            exit 1
+          fi
+          if [[ "${product_version}" == "dev" || "${product_version}" == "latest" ]]; then
+            echo "SBOM shim image '${image_ref}' must use the exact upstream product version, not a mutable tag." >&2
+            exit 1
+          fi
+
+          cpe_fields[5]="${product_version}"
+          SBOM_CPE="$(IFS=':'; printf '%s' "${cpe_fields[*]}")"
+          export SBOM_CPE
+
+          build_context="$(mktemp -d)"
+          temporary_archive="${archive_path}.tmp.$$"
+          cleanup() {
+            rm -rf "${build_context}"
+            rm -f "${temporary_archive}"
+          }
+          trap cleanup EXIT
+
+          mkdir -p "$(dirname "${archive_path}")"
+
+          SBOM_CREATED="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          export SBOM_CREATED
+          namespace_timestamp="${SBOM_CREATED//[-:]/}"
+          export SBOM_DOCUMENT_NAMESPACE="https://spdx.org/spdxdocs/uds-${SBOM_PRODUCT_SLUG}-${product_version}-${SBOM_FLAVOR}-${namespace_timestamp}"
+          export SBOM_PACKAGE_ID="SPDXRef-Package-${SBOM_PRODUCT_SLUG}"
+          # Syft's Bitnami cataloger requires both this PURL prefix and the /opt/bitnami SPDX path below.
+          export SBOM_PURL="pkg:bitnami-uds/${SBOM_PRODUCT_SLUG}@${product_version}-0"
+          export SBOM_PRODUCT_VERSION="${product_version}"
+
+          uds zarf tools yq -n -o=json '
+            {
+              "spdxVersion": "SPDX-2.3",
+              "dataLicense": "CC0-1.0",
+              "SPDXID": "SPDXRef-DOCUMENT",
+              "name": strenv(SBOM_PRODUCT_NAME) + " " + strenv(SBOM_PRODUCT_VERSION),
+              "documentNamespace": strenv(SBOM_DOCUMENT_NAMESPACE),
+              "creationInfo": {
+                "created": strenv(SBOM_CREATED),
+                "creators": ["Tool: uds-common"]
+              },
+              "packages": [
+                {
+                  "SPDXID": strenv(SBOM_PACKAGE_ID),
+                  "name": strenv(SBOM_PRODUCT_NAME),
+                  "versionInfo": strenv(SBOM_PRODUCT_VERSION),
+                  "supplier": "NOASSERTION",
+                  "downloadLocation": "NOASSERTION",
+                  "filesAnalyzed": false,
+                  "licenseConcluded": "NOASSERTION",
+                  "licenseDeclared": "NOASSERTION",
+                  "copyrightText": "NOASSERTION",
+                  "externalRefs": [
+                    {
+                      "referenceCategory": "SECURITY",
+                      "referenceType": "cpe23Type",
+                      "referenceLocator": strenv(SBOM_CPE)
+                    },
+                    {
+                      "referenceCategory": "PACKAGE-MANAGER",
+                      "referenceType": "purl",
+                      "referenceLocator": strenv(SBOM_PURL)
+                    }
+                  ]
+                }
+              ]
+            }
+          ' > "${build_context}/sbom.spdx"
+
+          printf '%s\n' \
+            '# syntax=docker/dockerfile:1' \
+            'FROM scratch' \
+            "COPY sbom.spdx /opt/bitnami/${SBOM_PRODUCT_SLUG}/.spdx-${SBOM_PRODUCT_SLUG}.spdx" \
+            > "${build_context}/Dockerfile"
+
+          docker buildx inspect uds-builder >/dev/null 2>&1 \
+            || docker buildx create \
+                 --driver docker-container \
+                 --name uds-builder >/dev/null
+
+          docker buildx build "${build_context}" \
+            --builder=uds-builder \
+            --output="type=oci,dest=${temporary_archive}" \
+            --platform=linux/amd64,linux/arm64 \
+            --tag="${image_ref}"
+
+          mv -f "${temporary_archive}" "${archive_path}"
