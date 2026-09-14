@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.28.4](https://github.com/defenseunicorns/uds-common/compare/v1.28.3...v1.28.4) (2026-09-14)
+
+
+### Miscellaneous
+
+* **deps:** update support-deps to v4.38.0 ([#764](https://github.com/defenseunicorns/uds-common/issues/764)) ([d8e2c94](https://github.com/defenseunicorns/uds-common/commit/d8e2c94e9f97d322618381c2f9dc0d6329f5f0d2))
+
 ## [1.28.3](https://github.com/defenseunicorns/uds-common/compare/v1.28.2...v1.28.3) (2026-09-09)
 
 
