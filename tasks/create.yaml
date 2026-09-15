@@ -22,9 +22,30 @@ tasks:
         default: ""
         required: false
     actions:
+      - description: Resolve the Zarf package definition path
+        cmd: |
+          if [ -f "${{ .inputs.path }}/compose.yaml" ]; then
+            echo "${{ .inputs.path }}/build"
+          else
+            echo "${{ .inputs.path }}"
+          fi
+        mute: true
+        setVariables:
+          - name: CREATE_PACKAGE_PATH
+
+      - description: Convert the Docker Compose application to a UDS package definition
+        if: ${{ ne .variables.CREATE_PACKAGE_PATH .inputs.path }}
+        cmd: >-
+          docker compose
+          -f "${{ .inputs.path }}/compose.yaml"
+          bridge convert
+          --transformation "ghcr.io/defenseunicorns/compose-bridge-uds:1.0.1"
+          --output "${CREATE_PACKAGE_PATH}"
+          --yes
+
       - env:
           - ZARF_CONFIG=${{ .inputs.config }}
-        cmd: ./zarf package create ${{ .inputs.path }} --confirm --architecture="${{ .inputs.architecture }}" --flavor "${FLAVOR}" --features values=true ${{ .inputs.options }}
+        cmd: ./zarf package create "${CREATE_PACKAGE_PATH}" --confirm --architecture="${{ .inputs.architecture }}" --flavor "${FLAVOR}" --features values=true ${{ .inputs.options }}
 
   - name: test-bundle
     description: Create the test bundle (bundling package + dependencies for testing)

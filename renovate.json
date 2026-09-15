@@ -59,6 +59,17 @@
       ],
       "datasourceTemplate": "github-tags",
       "extractVersionTemplate": "^v(?<version>.*)$"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/tasks/create\\.yaml/"
+      ],
+      "matchStrings": [
+        "--transformation\\s+[\"']?(?<depName>ghcr\\.io/defenseunicorns/compose-bridge-uds):(?<currentValue>[^\"'\\s]+)[\"']?"
+      ],
+      "datasourceTemplate": "docker",
+      "versioningTemplate": "docker"
     }
   ],
   "packageRules": [
