@@ -90,13 +90,7 @@ tasks:
       - description: Get the current Zarf package name
         cmd: |
           if [ -f "${{ .inputs.path }}/compose.yaml" ]; then
-            PACKAGE_NAME=$(./zarf tools yq -r '.metadata.name' "${PUBLISH_PACKAGE_DEFINITION}")
-            RELEASE_PACKAGE_NAME=$(./zarf tools yq -r '.metadata.name' "${{ .inputs.path }}/zarf.yaml")
-            if [ "${PACKAGE_NAME}" != "${RELEASE_PACKAGE_NAME}" ]; then
-              echo "Generated package name ${PACKAGE_NAME} does not match release package name ${RELEASE_PACKAGE_NAME}." >&2
-              exit 1
-            fi
-            echo "${PACKAGE_NAME}"
+            ./zarf tools yq -r '.metadata.name' "${PUBLISH_PACKAGE_DEFINITION}"
           else
             echo "${{ .inputs.name }}"
           fi
@@ -157,16 +151,7 @@ tasks:
         setVariables:
           - name: PUBLISH_PACKAGE_DEFINITION
       - description: Get the current Zarf package name
-        cmd: |
-          PACKAGE_NAME=$(./zarf tools yq -r '.metadata.name' "${PUBLISH_PACKAGE_DEFINITION}")
-          if [ -f "${{ .inputs.path }}/compose.yaml" ]; then
-            RELEASE_PACKAGE_NAME=$(./zarf tools yq -r '.metadata.name' "${{ .inputs.path }}/zarf.yaml")
-            if [ "${PACKAGE_NAME}" != "${RELEASE_PACKAGE_NAME}" ]; then
-              echo "Generated package name ${PACKAGE_NAME} does not match release package name ${RELEASE_PACKAGE_NAME}." >&2
-              exit 1
-            fi
-          fi
-          echo "${PACKAGE_NAME}"
+        cmd: ./zarf tools yq -r '.metadata.name' "${PUBLISH_PACKAGE_DEFINITION}"
         setVariables:
           - name: PACKAGE_NAME
       - description: Get the current Zarf package version
