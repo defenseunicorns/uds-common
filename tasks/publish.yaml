@@ -77,10 +77,34 @@ tasks:
           team: ${{ .variables.TEAM }}
           base_repo: ${{ .variables.BASE_REPO }}
           publish_path: ${{ .variables.PUBLISH_PATH }}
+      - description: Resolve the Zarf package definition
+        cmd: |
+          if [ -f "${{ .inputs.path }}/compose.yaml" ]; then
+            echo "${{ .inputs.path }}/build/zarf.yaml"
+          else
+            echo "${{ .inputs.path }}/zarf.yaml"
+          fi
+        mute: true
+        setVariables:
+          - name: PUBLISH_PACKAGE_DEFINITION
       - description: Get the current Zarf package name
-        cmd: cat ${{ .inputs.path }}/zarf.yaml | ./zarf tools yq .metadata.name
+        cmd: |
+          if [ -f "${{ .inputs.path }}/compose.yaml" ]; then
+            ./zarf tools yq -r '.metadata.name' "${PUBLISH_PACKAGE_DEFINITION}"
+          else
+            echo "${{ .inputs.name }}"
+          fi
         setVariables:
           - name: PACKAGE_NAME
+      - description: Get the current Zarf package version
+        cmd: |
+          if [ -f "${{ .inputs.path }}/compose.yaml" ]; then
+            ./zarf tools yq -r '.metadata.version' "${PUBLISH_PACKAGE_DEFINITION}"
+          else
+            echo "${{ .inputs.version }}"
+          fi
+        setVariables:
+          - name: PACKAGE_VERSION
       - description: Get the current Zarf package flavor suffix
         cmd: |
           # shellcheck disable=SC2157
@@ -89,7 +113,7 @@ tasks:
           - name: FLAVOR_SUFFIX
       - description: Publish package for the supplied architecture
         cmd: |
-          ./zarf package publish "${{ .inputs.path }}/zarf-package-${{ .inputs.name }}-${{ .inputs.architecture }}-${{ .inputs.version }}${FLAVOR_SUFFIX}.tar.zst" "oci://${TARGET_REPO}" --features values=true
+          ./zarf package publish "${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${{ .inputs.architecture }}-${PACKAGE_VERSION}${FLAVOR_SUFFIX}.tar.zst" "oci://${TARGET_REPO}" --features values=true
 
 
   - name: uds-pk-publish
@@ -116,13 +140,36 @@ tasks:
           team: ${{ .variables.TEAM }}
           base_repo: ${{ .variables.BASE_REPO }}
           publish_path: ${{ .variables.PUBLISH_PATH }}
+      - description: Resolve the Zarf package definition
+        cmd: |
+          if [ -f "${{ .inputs.path }}/compose.yaml" ]; then
+            echo "${{ .inputs.path }}/build/zarf.yaml"
+          else
+            echo "${{ .inputs.path }}/zarf.yaml"
+          fi
+        mute: true
+        setVariables:
+          - name: PUBLISH_PACKAGE_DEFINITION
       - description: Get the current Zarf package name
-        cmd: cat ${{ .inputs.path }}/zarf.yaml | ./zarf tools yq .metadata.name
+        cmd: ./zarf tools yq -r '.metadata.name' "${PUBLISH_PACKAGE_DEFINITION}"
         setVariables:
           - name: PACKAGE_NAME
+      - description: Get the current Zarf package version
+        cmd: ./zarf tools yq -r '.metadata.version' "${PUBLISH_PACKAGE_DEFINITION}"
+        setVariables:
+          - name: PACKAGE_VERSION
       - description: publish using uds-pk
         cmd: |
-          ./zarf package publish "${{ .inputs.path }}/zarf-package-${{ .inputs.name }}-${{ .inputs.architecture }}-$(uds-pk release show ${{ .inputs.flavor }}).tar.zst" "oci://${TARGET_REPO}" --features values=true
+          set -e
+          RELEASE_PACKAGE_VERSION=$(uds-pk release show "${{ .inputs.flavor }}" --version-only)
+          RELEASE_PACKAGE_REF=$(uds-pk release show "${{ .inputs.flavor }}")
+
+          if [ "${PACKAGE_VERSION}" != "${RELEASE_PACKAGE_VERSION}" ]; then
+            echo "Generated package version ${PACKAGE_VERSION} does not match release version ${RELEASE_PACKAGE_VERSION}."
+            exit 1
+          fi
+
+          ./zarf package publish "${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${{ .inputs.architecture }}-${RELEASE_PACKAGE_REF}.tar.zst" "oci://${TARGET_REPO}" --features values=true
 
           if [ -n "${GITLAB_CI}" ]; then
             uds-pk release gitlab "${{ .inputs.flavor }}"
