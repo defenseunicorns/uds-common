@@ -112,6 +112,13 @@ tasks:
       - description: Create a dev version of the package
         task: create-dev-package
 
+      - description: Create a dev version of the compose-based package
+        if: ${{ eq .variables.FLAVOR "upstream" }}
+        task: create:package
+        with:
+          path: src
+          options: --skip-sbom --output src
+
       - description: Setup the cluster
         task: setup:k3d-test-cluster
 
@@ -133,6 +140,13 @@ tasks:
       - description: Create the package
         task: create:package
 
+      - description: Create the compose-based package
+        if: ${{ eq .variables.FLAVOR "upstream" }}
+        task: create:package
+        with:
+          path: src
+          options: --output src
+
       - description: Setup the cluster
         task: setup:k3d-test-cluster
 
@@ -141,3 +155,9 @@ tasks:
 
       - description: Publish the packages
         task: publish:package
+
+      - description: Publish the compose-based package
+        if: ${{ eq .variables.FLAVOR "upstream" }}
+        task: publish:package
+        with:
+          path: src

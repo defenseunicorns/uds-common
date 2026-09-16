@@ -37,6 +37,11 @@ on:
         # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
         default: 0.37.0
         type: string
+      dockerComposeVersion:
+        description: The Docker Compose version to install
+        # renovate: datasource=github-tags depName=docker/compose versioning=semver
+        default: 5.5.1
+        type: string
       file-filter:
         type: string
         description: |
@@ -126,6 +131,11 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+
+      - name: Install Docker Compose
+        uses: docker/setup-compose-action@4eb059ff7f16592f9c84d5ca339c53cb7c5064e2 # v2.3.0
+        with:
+          version: v${{ inputs.dockerComposeVersion }}
 
       - name: Install UDS CLI
         uses: defenseunicorns/setup-uds@d6add59d4c2ca789ed7c92741e91bd340b4e950b # v1.0.2
