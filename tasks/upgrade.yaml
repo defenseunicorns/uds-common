@@ -77,7 +77,18 @@ tasks:
           git checkout "$TAG"
 
           # VARIABLES
-          PACKAGE_NAME=$(cat ${{ .inputs.path }}/zarf.yaml | ./zarf tools yq .metadata.name)
+          PACKAGE_DEFINITION="${{ .inputs.path }}/zarf.yaml"
+          if [ -f "${{ .inputs.path }}/compose.yaml" ]; then
+            docker compose \
+              -f "${{ .inputs.path }}/compose.yaml" \
+              bridge convert \
+              --transformation "ghcr.io/defenseunicorns/compose-bridge-uds:1.0.1" \
+              --output "${{ .inputs.path }}/build" \
+              --yes
+            PACKAGE_DEFINITION="${{ .inputs.path }}/build/zarf.yaml"
+          fi
+
+          PACKAGE_NAME=$(./zarf tools yq -r '.metadata.name' "${PACKAGE_DEFINITION}")
           export PACKAGE_NAME
           LOCAL_VERSION=$(cat ../${{ .inputs.bundle_path }}/uds-bundle.yaml | ./zarf tools yq '.packages[] | select(.name == env(PACKAGE_NAME)) | .ref' | uniq )
 
