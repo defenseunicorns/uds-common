@@ -13,6 +13,13 @@ inputs:
   check-flavor-zarf-yaml:
     default: zarf.yaml
     description: Relative path of a zarf.yaml containing flavors to check
+  package-path:
+    default: .
+    description: Relative path of the package source
+  docker-compose-version:
+    # renovate: datasource=github-tags depName=docker/compose versioning=semver
+    default: 5.5.1
+    description: The Docker Compose version to install
 
 runs:
   using: composite
@@ -24,6 +31,11 @@ runs:
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         fetch-depth: 0
+
+    - name: Install Docker Compose
+      uses: docker/setup-compose-action@4eb059ff7f16592f9c84d5ca339c53cb7c5064e2 # v2.3.0
+      with:
+        version: v${{ inputs.docker-compose-version }}
 
     - name: Test latest tag deployment for flavor
       id: set-required
@@ -39,6 +51,22 @@ runs:
         # Checkout the repository at the latest tag
         git checkout "$TAG"
 
+        PACKAGE_DEFINITION="${{ inputs.check-flavor-zarf-yaml }}"
+        if [ -f "${{ inputs.package-path }}/compose.yaml" ]; then
+          docker compose \
+            -f "${{ inputs.package-path }}/compose.yaml" \
+            bridge convert \
+            --transformation "ghcr.io/defenseunicorns/compose-bridge-uds:1.0.1" \
+            --output "${{ inputs.package-path }}/build" \
+            --yes
+          PACKAGE_DEFINITION="${{ inputs.package-path }}/build/zarf.yaml"
+        fi
+
+        if [ ! -f "${PACKAGE_DEFINITION}" ]; then
+          echo "No Zarf package definition found at ${PACKAGE_DEFINITION}."
+          exit 1
+        fi
+
         # Extract upgrade flavors and set output
-        echo "upgrade-flavors=$(cat ${{ inputs.check-flavor-zarf-yaml }} | yq '.components[] | select(.only | has("flavor")) | .only.flavor' | paste -s -d, - || echo '')" >> "$GITHUB_OUTPUT"
+        echo "upgrade-flavors=$(yq '.components[] | select(.only | has("flavor")) | .only.flavor' "${PACKAGE_DEFINITION}" | paste -s -d, - || echo '')" >> "$GITHUB_OUTPUT"
       shell: bash
