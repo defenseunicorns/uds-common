@@ -3,4 +3,4 @@
 
 image:
   repository: cgr.dev/defenseunicorns.com/nginx
-  tag: v1.31.5
+  tag: v1.31.6
