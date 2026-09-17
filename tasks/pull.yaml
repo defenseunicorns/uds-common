@@ -92,7 +92,7 @@ tasks:
           base_repo: ${{ .variables.BASE_REPO }}
       - description: Get the current legacy UDS Bundle name
         if: ${{ ne .variables.NEXT_MODE "true" }}
-        cmd: cat ${{ .inputs.path }}/uds-bundle.yaml | yq .metadata.name
+        cmd: cat ${{ .inputs.path }}/uds-bundle.yaml | ./zarf tools yq .metadata.name
         setVariables:
           - name: BUNDLE_NAME
       - description: Get the current Next UDS Bundle name
@@ -112,7 +112,7 @@ tasks:
         if: ${{ ne .variables.NEXT_MODE "true" }}
         cmd: |
           if [ "${{ .inputs.spoof_release }}" != "false" ]; then
-            CURRENT_VERSION=$(cat ${{ .inputs.path }}/uds-bundle.yaml | yq .metadata.version)
+            CURRENT_VERSION=$(cat ${{ .inputs.path }}/uds-bundle.yaml | ./zarf tools yq .metadata.version)
             test -f "${{ .inputs.path }}/uds-bundle-${BUNDLE_NAME}-${UDS_ARCH}-${CURRENT_VERSION}.tar.zst" || mv "${{ .inputs.path }}/uds-bundle-${BUNDLE_NAME}-${UDS_ARCH}-${LATEST_VERSION}.tar.zst" "${{ .inputs.path }}/uds-bundle-${BUNDLE_NAME}-${UDS_ARCH}-${CURRENT_VERSION}.tar.zst"
           fi
 

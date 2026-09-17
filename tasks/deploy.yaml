@@ -62,32 +62,43 @@ tasks:
       options:
         description: For setting deploy time variables and flags
       next_mode:
-        description: Whether to use UDS CLI Next mode bundle deploy
-        default: ${NEXT_MODE}
+        description: Override whether to use UDS CLI Next mode bundle deploy. Defaults to NEXT_MODE when empty.
+        default: ""
     actions:
+      - description: Resolve requested bundle deploy mode
+        cmd: |
+          NEXT_MODE_OVERRIDE="${{ .inputs.next_mode }}"
+          if [ -n "${NEXT_MODE_OVERRIDE}" ]; then
+            echo "${NEXT_MODE_OVERRIDE}"
+          else
+            echo "${{ .variables.NEXT_MODE }}"
+          fi
+        setVariables:
+          - name: REQUESTED_NEXT_MODE
+
       - description: Get the current legacy UDS Bundle name
-        if: ${{ ne .inputs.next_mode "true" }}
+        if: ${{ ne .variables.REQUESTED_NEXT_MODE "true" }}
         cmd: cat ${{ .inputs.path }}/uds-bundle.yaml | ./zarf tools yq .metadata.name
         setVariables:
           - name: BUNDLE_NAME
       - description: Get the current Next UDS Bundle name
-        if: ${{ eq .inputs.next_mode "true" }}
+        if: ${{ eq .variables.REQUESTED_NEXT_MODE "true" }}
         cmd: ./zarf tools yq -r .metadata.name ${{ .inputs.path }}/bundle.uds.hcl
         setVariables:
           - name: BUNDLE_NAME
       - description: Get the current legacy UDS Bundle version
-        if: ${{ ne .inputs.next_mode "true" }}
+        if: ${{ ne .variables.REQUESTED_NEXT_MODE "true" }}
         cmd: cat ${{ .inputs.path }}/uds-bundle.yaml | ./zarf tools yq .metadata.version
         setVariables:
           - name: BUNDLE_VERSION
       - description: Get the current Next UDS Bundle version
-        if: ${{ eq .inputs.next_mode "true" }}
+        if: ${{ eq .variables.REQUESTED_NEXT_MODE "true" }}
         cmd: ./zarf tools yq -r .metadata.version ${{ .inputs.path }}/bundle.uds.hcl
         setVariables:
           - name: BUNDLE_VERSION
       - description: Resolve bundle deploy mode
         cmd: |
-          if [ "${{ .inputs.next_mode }}" = "auto" ]; then
+          if [ "${REQUESTED_NEXT_MODE}" = "auto" ]; then
             BUNDLE="${{ .inputs.path }}/uds-bundle-${BUNDLE_NAME}-${{ .inputs.architecture }}-${BUNDLE_VERSION}.tar.zst"
             if CLI_FEATURES=NextMode=true ./uds bundle inspect "${BUNDLE}" -o json >/dev/null 2>&1; then
               echo "true"
@@ -95,7 +106,7 @@ tasks:
               echo "false"
             fi
           else
-            echo "${{ .inputs.next_mode }}"
+            echo "${REQUESTED_NEXT_MODE}"
           fi
         setVariables:
           - name: DEPLOY_NEXT_BUNDLE
