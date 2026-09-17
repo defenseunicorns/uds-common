@@ -41,18 +41,14 @@ jobs:
       matrix:
         type: [install, upgrade]
         flavor: [upstream, unicorn, registry1]
-        mode:
-          - name: legacy
-            options: ""
-          - name: next
-            options: --set NEXT_MODE=true
+        mode: [legacy, next]
     uses: ./.github/workflows/callable-test.yaml
     with:
       upgrade-flavors: ${{ needs.check-flavor.outputs.upgrade-flavors }}
       flavor: ${{ matrix.flavor }}
       type: ${{ matrix.type }}
       runsOn: uds-swf-ubuntu-big-boy-4-core
-      options: ${{ matrix.mode.options }}
+      options: ${{ matrix.mode == 'next' && '--set NEXT_MODE=true' || '' }}
     secrets: inherit # Inherits all secrets from the parent workflow.
 
   verify-test:

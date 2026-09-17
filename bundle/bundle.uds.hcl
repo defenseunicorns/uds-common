@@ -12,7 +12,7 @@ metadata {
 }
 
 package "nginx" {
-  source       = "../"
+  source       = "../zarf-package-nginx-${sys.arch}-dev.tar.zst"
   values_files = ["values/nginx.yaml"]
 
   signature_verification {
