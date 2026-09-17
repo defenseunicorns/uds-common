@@ -90,8 +90,14 @@ tasks:
       - task: utils:determine-repo
         with:
           base_repo: ${{ .variables.BASE_REPO }}
-      - description: Get the current UDS Bundle name
+      - description: Get the current legacy UDS Bundle name
+        if: ${{ ne .variables.NEXT_MODE "true" }}
         cmd: cat ${{ .inputs.path }}/uds-bundle.yaml | yq .metadata.name
+        setVariables:
+          - name: BUNDLE_NAME
+      - description: Get the current Next UDS Bundle name
+        if: ${{ eq .variables.NEXT_MODE "true" }}
+        cmd: ./zarf tools yq -r .metadata.name ${{ .inputs.path }}/bundle.uds.hcl
         setVariables:
           - name: BUNDLE_NAME
       - description: Get latest bundle tag version from OCI

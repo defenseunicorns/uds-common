@@ -61,22 +61,41 @@ tasks:
         default: ${UDS_ARCH}
       options:
         description: For setting deploy time variables and flags
+      next_mode:
+        description: Whether to use UDS CLI Next mode bundle deploy
+        default: ${NEXT_MODE}
     actions:
-      - description: Get the current UDS Bundle name
+      - description: Get the current legacy UDS Bundle name
+        if: ${{ ne .inputs.next_mode "true" }}
         cmd: cat ${{ .inputs.path }}/uds-bundle.yaml | ./zarf tools yq .metadata.name
         setVariables:
           - name: BUNDLE_NAME
-      - description: Get the current UDS Bundle version
+      - description: Get the current Next UDS Bundle name
+        if: ${{ eq .inputs.next_mode "true" }}
+        cmd: ./zarf tools yq -r .metadata.name ${{ .inputs.path }}/bundle.uds.hcl
+        setVariables:
+          - name: BUNDLE_NAME
+      - description: Get the current legacy UDS Bundle version
+        if: ${{ ne .inputs.next_mode "true" }}
         cmd: cat ${{ .inputs.path }}/uds-bundle.yaml | ./zarf tools yq .metadata.version
+        setVariables:
+          - name: BUNDLE_VERSION
+      - description: Get the current Next UDS Bundle version
+        if: ${{ eq .inputs.next_mode "true" }}
+        cmd: ./zarf tools yq -r .metadata.version ${{ .inputs.path }}/bundle.uds.hcl
         setVariables:
           - name: BUNDLE_VERSION
       - description: Resolve bundle deploy mode
         cmd: |
-          BUNDLE="${{ .inputs.path }}/uds-bundle-${BUNDLE_NAME}-${{ .inputs.architecture }}-${BUNDLE_VERSION}.tar.zst"
-          if [ "${{ .variables.NEXT_MODE }}" = "true" ] && CLI_FEATURES=NextMode=true ./uds bundle inspect "${BUNDLE}" -o json >/dev/null 2>&1; then
-            echo "true"
+          if [ "${{ .inputs.next_mode }}" = "auto" ]; then
+            BUNDLE="${{ .inputs.path }}/uds-bundle-${BUNDLE_NAME}-${{ .inputs.architecture }}-${BUNDLE_VERSION}.tar.zst"
+            if CLI_FEATURES=NextMode=true ./uds bundle inspect "${BUNDLE}" -o json >/dev/null 2>&1; then
+              echo "true"
+            else
+              echo "false"
+            fi
           else
-            echo "false"
+            echo "${{ .inputs.next_mode }}"
           fi
         setVariables:
           - name: DEPLOY_NEXT_BUNDLE

@@ -131,6 +131,8 @@ tasks:
       - task: upgrade:create-latest-tag-bundle
       - task: setup:k3d-test-cluster
       - task: deploy:test-bundle
+        with:
+          next_mode: auto
       - task: create-dev-package
       - task: create-deploy-test-bundle
 
