@@ -35,6 +35,9 @@ spec:
       default: ${MIRROR_PROJECT_ID}
     publish-path:
       default: ""
+    docker-compose-version:
+      # renovate: datasource=github-tags depName=docker/compose versioning=semver
+      default: 5.5.1
 ---
 publish:
   variables:
@@ -72,6 +75,38 @@ publish:
         sudo uds run actions:install-deps
       fi
 
+    # Prepare the generated definition for Compose-based packages
+    - |
+      if [ -f compose.yaml ]; then
+        DOCKER_CONFIG="${DOCKER_CONFIG:-$HOME/.docker}"
+        case "$(uname -m)" in
+          x86_64) COMPOSE_ARCH=x86_64 ;;
+          aarch64|arm64) COMPOSE_ARCH=aarch64 ;;
+          *) echo "Unsupported Docker Compose architecture: $(uname -m)"; exit 1 ;;
+        esac
+
+        mkdir -p "${DOCKER_CONFIG}/cli-plugins"
+        curl -fsSL \
+          "https://github.com/docker/compose/releases/download/v$[[ inputs.docker-compose-version ]]/docker-compose-linux-${COMPOSE_ARCH}" \
+          -o "${DOCKER_CONFIG}/cli-plugins/docker-compose"
+        chmod +x "${DOCKER_CONFIG}/cli-plugins/docker-compose"
+
+        RELEASE_PACKAGE_VERSION=$(uds-pk release show "$[[ inputs.flavor ]]" --version-only)
+        RELEASE_PACKAGE_VERSION="${RELEASE_PACKAGE_VERSION}" ./uds zarf tools yq -i \
+          '."x-uds".metadata.version = strenv(RELEASE_PACKAGE_VERSION)' compose.yaml
+
+        docker compose \
+          -f compose.yaml \
+          bridge convert \
+          --transformation "ghcr.io/defenseunicorns/compose-bridge-uds:1.0.1" \
+          --output build \
+          --yes
+
+        if [ ! -f zarf.yaml ]; then
+          cp build/zarf.yaml zarf.yaml
+        fi
+      fi
+
     # Check if release is necessary for flavor and exit early if not
     - |
       if ! uds-pk check "$[[ inputs.flavor ]]"; then
@@ -79,8 +114,8 @@ publish:
         [[ "$DRY_RUN" != "true" ]] && exit 0
       fi
 
-    # Modify zarf package and uds bundle to have the correct version
-    - uds-pk update-yaml $[[ inputs.flavor ]]
+    # Modify the package and bundle definitions to have the correct version
+    - uds-pk update-yaml "$[[ inputs.flavor ]]"
 
     # Publish Package
     - |
@@ -113,7 +148,12 @@ publish:
     - |
         if [[ "$[[ inputs.mirror ]]" == "true" ]]; then
           export PKG_VERSION="$(uds-pk release show $[[ inputs.flavor ]] --version-only)"
-          export PKG_NAME="$(./uds zarf tools yq '.metadata.name' zarf.yaml)"
+          if [ -f compose.yaml ]; then
+            PACKAGE_DEFINITION=build/zarf.yaml
+          else
+            PACKAGE_DEFINITION=zarf.yaml
+          fi
+          export PKG_NAME="$(./uds zarf tools yq '.metadata.name' "${PACKAGE_DEFINITION}")"
           curl -sS --request POST \
             --form "token=${CI_JOB_TOKEN}" \
             --form "variables[VERSION]=${PKG_VERSION}" \
