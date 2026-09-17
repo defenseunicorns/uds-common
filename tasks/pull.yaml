@@ -8,6 +8,8 @@ variables:
   - name: FLAVOR
     default: upstream
   - name: BASE_REPO
+  - name: NEXT_MODE
+    default: "false"
 
 tasks:
   - name: latest-package-release
@@ -88,20 +90,26 @@ tasks:
       - task: utils:determine-repo
         with:
           base_repo: ${{ .variables.BASE_REPO }}
-      - description: Get the current uds bundle name
+      - description: Get the current UDS Bundle name
         cmd: cat ${{ .inputs.path }}/uds-bundle.yaml | yq .metadata.name
         setVariables:
           - name: BUNDLE_NAME
-      - description: Get latest tag version from OCI
+      - description: Get latest bundle tag version from OCI
         cmd: ./zarf tools registry ls "${TARGET_REPO}/bundles/${BUNDLE_NAME}" | sort -V | tail -1
         setVariables:
           - name: LATEST_VERSION
-      - description: Pull the latest bundle release
+      - description: Pull the latest legacy bundle release
+        if: ${{ ne .variables.NEXT_MODE "true" }}
         cmd: ./uds pull "oci://${TARGET_REPO}/bundles/${BUNDLE_NAME}:${LATEST_VERSION}" --no-progress -o ${{ .inputs.path }}
       # TODO (@ZMILLER): This is currently needed to get around the chicken+egg condition when release please updates the version in GH
-      - description: Spoof the latest release to the current version
+      - description: Spoof the latest legacy bundle release to the current version
+        if: ${{ ne .variables.NEXT_MODE "true" }}
         cmd: |
           if [ "${{ .inputs.spoof_release }}" != "false" ]; then
             CURRENT_VERSION=$(cat ${{ .inputs.path }}/uds-bundle.yaml | yq .metadata.version)
             test -f "${{ .inputs.path }}/uds-bundle-${BUNDLE_NAME}-${UDS_ARCH}-${CURRENT_VERSION}.tar.zst" || mv "${{ .inputs.path }}/uds-bundle-${BUNDLE_NAME}-${UDS_ARCH}-${LATEST_VERSION}.tar.zst" "${{ .inputs.path }}/uds-bundle-${BUNDLE_NAME}-${UDS_ARCH}-${CURRENT_VERSION}.tar.zst"
           fi
+
+      - description: Pull the latest Next bundle release
+        if: ${{ eq .variables.NEXT_MODE "true" }}
+        cmd: CLI_FEATURES=NextMode=true ./uds bundle pull "oci://${TARGET_REPO}/bundles/${BUNDLE_NAME}:${LATEST_VERSION}" --skip-signature-verification --output-dir "${{ .inputs.path }}"

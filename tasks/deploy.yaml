@@ -1,6 +1,10 @@
 # Copyright 2024 Defense Unicorns
 # SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
 
+variables:
+  - name: NEXT_MODE
+    default: "false"
+
 tasks:
   - name: package
     description: Deploy the created UDS Zarf Package
@@ -44,11 +48,14 @@ tasks:
     description: Deploy the created test bundle (deploying package + dependencies for testing)
     inputs:
       path:
-        description: Path relative to the repositories root where the uds-bundle.yaml and .tar.zst lives
+        description: Path relative to the repositories root where the bundle definition and .tar.zst live
         default: bundle
       config:
-        description: Path to the bundle config file. Defaults to bundle/uds-config.yaml.
+        description: Path to the legacy bundle config file. Defaults to bundle/uds-config.yaml.
         default: bundle/uds-config.yaml
+      next_config:
+        description: Path to the Next mode bundle config file. Defaults to bundle/config.uds.hcl.
+        default: bundle/config.uds.hcl
       architecture:
         description: The architecture of the bundle to deploy
         default: ${UDS_ARCH}
@@ -63,7 +70,23 @@ tasks:
         cmd: cat ${{ .inputs.path }}/uds-bundle.yaml | ./zarf tools yq .metadata.version
         setVariables:
           - name: BUNDLE_VERSION
-      - description: Deploy the UDS bundle with the package and its dependencies
+      - description: Resolve bundle deploy mode
+        cmd: |
+          BUNDLE="${{ .inputs.path }}/uds-bundle-${BUNDLE_NAME}-${{ .inputs.architecture }}-${BUNDLE_VERSION}.tar.zst"
+          if [ "${{ .variables.NEXT_MODE }}" = "true" ] && CLI_FEATURES=NextMode=true ./uds bundle inspect "${BUNDLE}" -o json >/dev/null 2>&1; then
+            echo "true"
+          else
+            echo "false"
+          fi
+        setVariables:
+          - name: DEPLOY_NEXT_BUNDLE
+
+      - description: Deploy the legacy UDS bundle with the package and its dependencies
+        if: ${{ ne .variables.DEPLOY_NEXT_BUNDLE "true" }}
         env:
           - UDS_CONFIG=${{ .inputs.config }}
         cmd: ./uds deploy "${{ .inputs.path }}/uds-bundle-${BUNDLE_NAME}-${{ .inputs.architecture }}-${BUNDLE_VERSION}.tar.zst" --confirm --no-progress ${{ .inputs.options }}
+
+      - description: Deploy the Next mode UDS bundle with the package and its dependencies
+        if: ${{ eq .variables.DEPLOY_NEXT_BUNDLE "true" }}
+        cmd: CLI_FEATURES=NextMode=true ./uds bundle deploy "${{ .inputs.path }}/uds-bundle-${BUNDLE_NAME}-${{ .inputs.architecture }}-${BUNDLE_VERSION}.tar.zst" --skip-signature-verification --config "${{ .inputs.next_config }}" ${{ .inputs.options }}
