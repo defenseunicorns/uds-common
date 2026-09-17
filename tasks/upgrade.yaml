@@ -82,7 +82,7 @@ tasks:
             docker compose \
               -f "${{ .inputs.path }}/compose.yaml" \
               bridge convert \
-              --transformation "ghcr.io/defenseunicorns/compose-bridge-uds:1.0.1" \
+              --transformation "ghcr.io/defenseunicorns/compose-bridge-uds:1.1.0" \
               --output "${{ .inputs.path }}/build" \
               --yes
             PACKAGE_DEFINITION="${{ .inputs.path }}/build/zarf.yaml"
