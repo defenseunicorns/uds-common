@@ -61,52 +61,32 @@ tasks:
         default: ${UDS_ARCH}
       options:
         description: For setting deploy time variables and flags
-      next_mode:
-        description: Override whether to use UDS CLI Next mode bundle deploy. Defaults to NEXT_MODE when empty.
-        default: ""
     actions:
-      - description: Resolve requested bundle deploy mode
+      - description: Get the current UDS Bundle name
         cmd: |
-          NEXT_MODE_OVERRIDE="${{ .inputs.next_mode }}"
-          if [ -n "${NEXT_MODE_OVERRIDE}" ]; then
-            echo "${NEXT_MODE_OVERRIDE}"
+          if [ "${{ .variables.NEXT_MODE }}" = "true" ] && [ -f "${{ .inputs.path }}/bundle.uds.hcl" ]; then
+            ./zarf tools yq -r .metadata.name ${{ .inputs.path }}/bundle.uds.hcl
           else
-            echo "${{ .variables.NEXT_MODE }}"
+            ./zarf tools yq -r .metadata.name ${{ .inputs.path }}/uds-bundle.yaml
           fi
         setVariables:
-          - name: REQUESTED_NEXT_MODE
-
-      - description: Get the current legacy UDS Bundle name
-        if: ${{ ne .variables.REQUESTED_NEXT_MODE "true" }}
-        cmd: cat ${{ .inputs.path }}/uds-bundle.yaml | ./zarf tools yq .metadata.name
-        setVariables:
           - name: BUNDLE_NAME
-      - description: Get the current Next UDS Bundle name
-        if: ${{ eq .variables.REQUESTED_NEXT_MODE "true" }}
-        cmd: ./zarf tools yq -r .metadata.name ${{ .inputs.path }}/bundle.uds.hcl
-        setVariables:
-          - name: BUNDLE_NAME
-      - description: Get the current legacy UDS Bundle version
-        if: ${{ ne .variables.REQUESTED_NEXT_MODE "true" }}
-        cmd: cat ${{ .inputs.path }}/uds-bundle.yaml | ./zarf tools yq .metadata.version
-        setVariables:
-          - name: BUNDLE_VERSION
-      - description: Get the current Next UDS Bundle version
-        if: ${{ eq .variables.REQUESTED_NEXT_MODE "true" }}
-        cmd: ./zarf tools yq -r .metadata.version ${{ .inputs.path }}/bundle.uds.hcl
+      - description: Get the current UDS Bundle version
+        cmd: |
+          if [ "${{ .variables.NEXT_MODE }}" = "true" ] && [ -f "${{ .inputs.path }}/bundle.uds.hcl" ]; then
+            ./zarf tools yq -r .metadata.version ${{ .inputs.path }}/bundle.uds.hcl
+          else
+            ./zarf tools yq -r .metadata.version ${{ .inputs.path }}/uds-bundle.yaml
+          fi
         setVariables:
           - name: BUNDLE_VERSION
       - description: Resolve bundle deploy mode
         cmd: |
-          if [ "${REQUESTED_NEXT_MODE}" = "auto" ]; then
-            BUNDLE="${{ .inputs.path }}/uds-bundle-${BUNDLE_NAME}-${{ .inputs.architecture }}-${BUNDLE_VERSION}.tar.zst"
-            if CLI_FEATURES=NextMode=true ./uds bundle inspect "${BUNDLE}" -o json >/dev/null 2>&1; then
-              echo "true"
-            else
-              echo "false"
-            fi
+          BUNDLE="${{ .inputs.path }}/uds-bundle-${BUNDLE_NAME}-${{ .inputs.architecture }}-${BUNDLE_VERSION}.tar.zst"
+          if CLI_FEATURES=NextMode=true ./uds bundle inspect "${BUNDLE}" -o json >/dev/null 2>&1; then
+            echo "true"
           else
-            echo "${REQUESTED_NEXT_MODE}"
+            echo "false"
           fi
         setVariables:
           - name: DEPLOY_NEXT_BUNDLE
