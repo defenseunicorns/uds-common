@@ -13,6 +13,8 @@ variables:
     default: "false"
   - name: BASE_REPO
   - name: PUBLISH_PATH
+  - name: NEXT_MODE
+    default: "false"
 
 tasks:
   - name: package
@@ -200,17 +202,34 @@ tasks:
         with:
           base_repo: ${{ .variables.BASE_REPO }}
           publish_path: ${{ .variables.PUBLISH_PATH }}
-      - description: Get the current UDS Bundle name
+      - description: Get the current legacy UDS Bundle name
+        if: ${{ ne .variables.NEXT_MODE "true" }}
         cmd: cat ${{ .inputs.path }}/uds-bundle.yaml | ./zarf tools yq .metadata.name
         setVariables:
           - name: BUNDLE_NAME
-      - description: Get the current UDS Bundle version
+      - description: Get the current Next UDS Bundle name
+        if: ${{ eq .variables.NEXT_MODE "true" }}
+        cmd: ./zarf tools yq -r .metadata.name ${{ .inputs.path }}/bundle.uds.hcl
+        setVariables:
+          - name: BUNDLE_NAME
+      - description: Get the current legacy UDS Bundle version
+        if: ${{ ne .variables.NEXT_MODE "true" }}
         cmd: cat ${{ .inputs.path }}/uds-bundle.yaml | ./zarf tools yq .metadata.version
         setVariables:
           - name: BUNDLE_VERSION
-      - description: Publish bundle for the supplied architecture
+      - description: Get the current Next UDS Bundle version
+        if: ${{ eq .variables.NEXT_MODE "true" }}
+        cmd: ./zarf tools yq -r .metadata.version ${{ .inputs.path }}/bundle.uds.hcl
+        setVariables:
+          - name: BUNDLE_VERSION
+      - description: Publish legacy bundle for the supplied architecture
+        if: ${{ ne .variables.NEXT_MODE "true" }}
         cmd: |
-          ./uds publish "${{ .inputs.path }}/uds-bundle-${{ .inputs.name }}-${{ .inputs.architecture }}-${{ .inputs.version }}.tar.zst" "oci://${TARGET_REPO}/bundles" --no-progress
+          ./uds publish "${{ .inputs.path }}/uds-bundle-${BUNDLE_NAME}-${{ .inputs.architecture }}-${BUNDLE_VERSION}.tar.zst" "oci://${TARGET_REPO}/bundles" --no-progress
+
+      - description: Publish Next mode bundle for the supplied architecture
+        if: ${{ eq .variables.NEXT_MODE "true" }}
+        cmd: CLI_FEATURES=NextMode=true ./uds bundle push "${{ .inputs.path }}/uds-bundle-${BUNDLE_NAME}-${{ .inputs.architecture }}-${BUNDLE_VERSION}.tar.zst" "oci://${TARGET_REPO}/bundles/${BUNDLE_NAME}:${BUNDLE_VERSION}"
 
   - name: repo
     description: Publish point in time repo snapshot to OCI

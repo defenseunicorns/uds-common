@@ -8,6 +8,8 @@ variables:
   - name: FLAVOR
     default: upstream
   - name: BASE_REPO
+  - name: NEXT_MODE
+    default: "false"
 
 tasks:
   - name: create-latest-tag-bundle
@@ -71,6 +73,7 @@ tasks:
           darwin: bash
         dir: upgrade-test
         cmd: |
+          set -e
           git reset --hard HEAD
           BUNDLE_VERSION=$(cat ../${{ .inputs.bundle_path }}/uds-bundle.yaml | ./zarf tools yq .metadata.version)
           TAG="$(git describe --tags "$(git rev-list --tags --max-count=1)" 2>/dev/null || echo '')"
@@ -124,14 +127,30 @@ tasks:
           # Run any dependency commands (i.e. uds run dependencies:create)
           sh -c "${{ .inputs.dep_commands }}"
 
-          # Creates and moves the bundle into the correct spot
-          ./uds create ${{ .inputs.bundle_path }} \
-            --architecture=${{ .inputs.architecture }} \
-            --confirm \
-            --no-progress \
-            ${{ .inputs.options }}
+          # Baseline upgrade bridge:
+          # The old checked-out tag may predate Next bundle files. Auto-detect the old tag's bundle
+          # definition and create the baseline artifact in the matching mode. This lets the first
+          # NEXT_MODE=true migration upgrade from a legacy release instead of getting stuck waiting
+          # for a prior Next-mode release.
+          rm -f ../${{ .inputs.bundle_path }}/uds-bundle-*.tar.zst
+          if [ -f "${{ .inputs.bundle_path }}/bundle.uds.hcl" ]; then
+            CREATE_OUTPUT=$(CLI_FEATURES=NextMode=true ./uds bundle create ${{ .inputs.bundle_path }} \
+              --unsigned \
+              --architecture=${{ .inputs.architecture }} \
+              -o json \
+              ${{ .inputs.options }})
+            printf '%s\n' "${CREATE_OUTPUT}"
 
-          mv "${{ .inputs.bundle_path }}/uds-bundle-${BUNDLE_NAME}-${{ .inputs.architecture }}-${PREVIOUS_BUNDLE_VERSION}.tar.zst" "../${{ .inputs.bundle_path }}/uds-bundle-${BUNDLE_NAME}-${{ .inputs.architecture }}-${BUNDLE_VERSION}.tar.zst"
+            mv "$(printf '%s' "${CREATE_OUTPUT}" | ./zarf tools yq -r '.outputPath')" ../${{ .inputs.bundle_path }}/
+          else
+            ./uds create ${{ .inputs.bundle_path }} \
+              --architecture=${{ .inputs.architecture }} \
+              --confirm \
+              --no-progress \
+              ${{ .inputs.options }}
+
+            mv "${{ .inputs.bundle_path }}/uds-bundle-${BUNDLE_NAME}-${{ .inputs.architecture }}-${PREVIOUS_BUNDLE_VERSION}.tar.zst" "../${{ .inputs.bundle_path }}/uds-bundle-${BUNDLE_NAME}-${{ .inputs.architecture }}-${BUNDLE_VERSION}.tar.zst"
+          fi
 
       - description: Remove the upgrade-test folder
         cmd: rm -rf upgrade-test
