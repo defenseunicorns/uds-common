@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.29.1](https://github.com/defenseunicorns/uds-common/compare/v1.29.0...v1.29.1) (2026-09-18)
+
+
+### Miscellaneous
+
+* limit permissions in release-common workflow ([#773](https://github.com/defenseunicorns/uds-common/issues/773)) ([fafd30f](https://github.com/defenseunicorns/uds-common/commit/fafd30f5d64fa825053d3c9ae1a18900c9ec1a97))
+
 ## [1.29.0](https://github.com/defenseunicorns/uds-common/compare/v1.28.3...v1.29.0) (2026-09-17)
 
 
