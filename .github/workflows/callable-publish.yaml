@@ -52,6 +52,11 @@ on:
         type: string
         default: ""
         description: Team path segment inserted between 'private' and the package name (e.g. 'uds'). Required when the registry uses a team subdirectory (non-uds-packages orgs).
+      dockerComposeVersion:
+        description: The Docker Compose version to install
+        # renovate: datasource=github-tags depName=docker/compose versioning=semver
+        default: 5.5.1
+        type: string
     secrets:
       LICENSE_KEY:
         required: false
@@ -75,6 +80,11 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+
+      - name: Install Docker Compose
+        uses: docker/setup-compose-action@4eb059ff7f16592f9c84d5ca339c53cb7c5064e2 # v2.3.0
+        with:
+          version: v${{ inputs.dockerComposeVersion }}
 
       - name: Install UDS CLI
         uses: defenseunicorns/setup-uds@d6add59d4c2ca789ed7c92741e91bd340b4e950b # v1.0.2
@@ -143,7 +153,17 @@ jobs:
         if: ${{ steps.parse-inputs.outputs.uds-pk == 'false' }}
         run: |
           if uds run --list | grep -wq 'publish-package'; then
-            uds run publish-package --set USE_CHECKPOINT=false --set FLAVOR=${{ inputs.flavor }} --no-progress ${{ inputs.options }}
+            if [ -f compose.yaml ]; then
+              RELEASE_PACKAGE_VERSION=$(uds zarf tools yq -r '."."' .release-please-manifest.json)
+              RELEASE_PACKAGE_VERSION="${RELEASE_PACKAGE_VERSION}" uds zarf tools yq -i \
+                '."x-uds".metadata.version = strenv(RELEASE_PACKAGE_VERSION)' compose.yaml
+            else
+              RELEASE_PACKAGE_VERSION=$(uds zarf tools yq -r '.metadata.version' zarf.yaml)
+            fi
+            uds run publish-package \
+              --set USE_CHECKPOINT=false \
+              --set FLAVOR=${{ inputs.flavor }} \
+              --no-progress ${{ inputs.options }}
           else
             uds run publish-release --set USE_CHECKPOINT=false --set FLAVOR=${{ inputs.flavor }} --no-progress ${{ inputs.options }}
           fi
@@ -153,8 +173,26 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          if [ -f compose.yaml ]; then
+            RELEASE_PACKAGE_VERSION=$(uds-pk release show "${{ inputs.flavor }}" --version-only)
+            RELEASE_PACKAGE_VERSION="${RELEASE_PACKAGE_VERSION}" uds zarf tools yq -i \
+              '."x-uds".metadata.version = strenv(RELEASE_PACKAGE_VERSION)' compose.yaml
+
+            docker compose \
+              -f compose.yaml \
+              bridge convert \
+              --transformation "ghcr.io/defenseunicorns/compose-bridge-uds:1.1.0" \
+              --output build \
+              --yes
+
+            if [ ! -f zarf.yaml ]; then
+              cp build/zarf.yaml zarf.yaml
+            fi
+          fi
+
           if uds-pk release check "${{ inputs.flavor }}" --arch "${{ steps.parse-inputs.outputs.arch }}" --base-repo "${{ steps.parse-inputs.outputs.base-repo }}" --team "${{ inputs.team }}" --verbose; then
             uds-pk release update-yaml ${{ inputs.flavor }}
+
             if uds run --list | grep -wq 'publish-package'; then
               uds run publish-package \
                 --set USE_CHECKPOINT=false \

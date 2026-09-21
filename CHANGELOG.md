@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.29.0](https://github.com/defenseunicorns/uds-common/compare/v1.28.3...v1.29.0) (2026-09-17)
+
+
+### Features
+
+* add support for building and publishing compose bridge packages ([#766](https://github.com/defenseunicorns/uds-common/issues/766)) ([05bab10](https://github.com/defenseunicorns/uds-common/commit/05bab10eb4398a433986d934f586301956a6e226))
+* expand support compose packages across CI workflows ([#769](https://github.com/defenseunicorns/uds-common/issues/769)) ([ad016c0](https://github.com/defenseunicorns/uds-common/commit/ad016c0ae85ef66a19111f67c0e095d163b41855))
+
+
+### Miscellaneous
+
+* **deps:** update support-deps to v0.1.15 ([#772](https://github.com/defenseunicorns/uds-common/issues/772)) ([7e89a13](https://github.com/defenseunicorns/uds-common/commit/7e89a136cc679a436713a3a92bd671eee23810c1))
+* **deps:** update support-deps to v1.1.0 ([#768](https://github.com/defenseunicorns/uds-common/issues/768)) ([eebeb48](https://github.com/defenseunicorns/uds-common/commit/eebeb487dfd3211d571b463754903d3bebd71d46))
+* **deps:** update support-deps to v1.1.0 ([#771](https://github.com/defenseunicorns/uds-common/issues/771)) ([b75b0d3](https://github.com/defenseunicorns/uds-common/commit/b75b0d3684e7005a03681428aca0d0345fb269c6))
+* **deps:** update support-deps to v4.38.0 ([#764](https://github.com/defenseunicorns/uds-common/issues/764)) ([d8e2c94](https://github.com/defenseunicorns/uds-common/commit/d8e2c94e9f97d322618381c2f9dc0d6329f5f0d2))
+* **deps:** update uds common foundation dependencies to v1.13.0 ([#770](https://github.com/defenseunicorns/uds-common/issues/770)) ([5b26566](https://github.com/defenseunicorns/uds-common/commit/5b26566ec19acac92ff63bf834c7187fe4a63233))
+* **deps:** update uds common package dependencies to v1.31.6 ([#767](https://github.com/defenseunicorns/uds-common/issues/767)) ([081ae7d](https://github.com/defenseunicorns/uds-common/commit/081ae7de2dafcb5bb1268a4693314c84dfede34a))
+
 ## [1.28.3](https://github.com/defenseunicorns/uds-common/compare/v1.28.2...v1.28.3) (2026-09-09)
 
 

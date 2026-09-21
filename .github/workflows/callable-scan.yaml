@@ -15,6 +15,15 @@ on:
         description: The path to the zarf.yaml file
         default: zarf.yaml
         type: string
+      packagePath:
+        description: The path to the package source
+        default: .
+        type: string
+      dockerComposeVersion:
+        description: The Docker Compose version to install
+        # renovate: datasource=github-tags depName=docker/compose versioning=semver
+        default: 5.5.1
+        type: string
       packagePrefix:
         description: The prefix for public packages
         default: ""
@@ -50,6 +59,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
+      - name: Install Docker Compose
+        uses: docker/setup-compose-action@4eb059ff7f16592f9c84d5ca339c53cb7c5064e2 # v2.3.0
+        with:
+          version: v${{ inputs.dockerComposeVersion }}
+
       - name: Install UDS CLI
         uses: defenseunicorns/setup-uds@d6add59d4c2ca789ed7c92741e91bd340b4e950b # v1.0.2
         with:
@@ -69,6 +83,29 @@ jobs:
           uds run actions:install-deps
         shell: bash
 
+      - name: Resolve Zarf package definition
+        id: package-definition
+        shell: bash
+        run: |
+          PACKAGE_DEFINITION="${{ inputs.zarfYamlPath }}"
+
+          if [ -f "${{ inputs.packagePath }}/compose.yaml" ]; then
+            docker compose \
+              -f "${{ inputs.packagePath }}/compose.yaml" \
+              bridge convert \
+              --transformation "ghcr.io/defenseunicorns/compose-bridge-uds:1.1.0" \
+              --output "${{ inputs.packagePath }}/build" \
+              --yes
+            PACKAGE_DEFINITION="${{ inputs.packagePath }}/build/zarf.yaml"
+          fi
+
+          if [ ! -f "${PACKAGE_DEFINITION}" ]; then
+            echo "No Zarf package definition found at ${PACKAGE_DEFINITION}."
+            exit 1
+          fi
+
+          echo "path=${PACKAGE_DEFINITION}" >> "$GITHUB_OUTPUT"
+
       - name: Compare scans
         id: compare-scans
         shell: bash
@@ -84,7 +121,7 @@ jobs:
           uds-pk scan compare \
             --public-packages-prefix "${PACKAGE_PREFIX}" \
             --private-packages-prefix "${PRIVATE_PACKAGE_PREFIX}" \
-            --zarf-yaml-path ${{ inputs.zarfYamlPath }} --verbose \
+            --zarf-yaml-path "${{ steps.package-definition.outputs.path }}" --verbose \
             --allow-different-images --repo-owner "$REPO_OWNER" --allow-different-images > comment.md
 
           echo "----" >> comment.md

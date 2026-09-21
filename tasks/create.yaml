@@ -26,13 +26,33 @@ tasks:
         default: ""
         required: false
     actions:
+      - description: Resolve the Zarf package definition path
+        cmd: |
+          if [ -f "${{ .inputs.path }}/compose.yaml" ]; then
+            echo "${{ .inputs.path }}/build"
+          else
+            echo "${{ .inputs.path }}"
+          fi
+        mute: true
+        setVariables:
+          - name: CREATE_PACKAGE_PATH
+
+      - description: Convert the Docker Compose application to a UDS package definition
+        if: ${{ ne .variables.CREATE_PACKAGE_PATH .inputs.path }}
+        cmd: >-
+          docker compose
+          -f "${{ .inputs.path }}/compose.yaml"
+          bridge convert
+          --transformation "ghcr.io/defenseunicorns/compose-bridge-uds:1.1.0"
+          --output "${CREATE_PACKAGE_PATH}"
+          --yes
       - task: sbom-shim
         if: ${{ ne .inputs.cpe "" }}
         with:
           cpe: ${{ .inputs.cpe }}
       - env:
           - ZARF_CONFIG=${{ .inputs.config }}
-        cmd: ./zarf package create ${{ .inputs.path }} --confirm --architecture="${{ .inputs.architecture }}" --flavor "${FLAVOR}" --features values=true ${{ .inputs.options }}
+        cmd: ./zarf package create "${CREATE_PACKAGE_PATH}" --confirm --architecture="${{ .inputs.architecture }}" --flavor "${FLAVOR}" --features values=true ${{ .inputs.options }}
 
   - name: test-bundle
     description: Create the test bundle (bundling package + dependencies for testing)
@@ -55,8 +75,8 @@ tasks:
           # Find any flavored packages in the target directory
           echo "Looking for ${FLAVOR} flavored packages in '.'"
 
-          # Find all flavored packages (with -flavor suffix before .tar.zst)
-          for FLAVORED_PACKAGE in $(find . -maxdepth 1 -name "zarf-package-*-${{ .inputs.architecture }}-dev-${FLAVOR}.tar.zst" 2>/dev/null || echo ""); do
+          # Find all flavored packages, regardless of package version
+          for FLAVORED_PACKAGE in $(find . -maxdepth 1 -name "zarf-package-*-${{ .inputs.architecture }}-*-${FLAVOR}.tar.zst" 2>/dev/null || echo ""); do
             # Extract the base name without flavor
             BASE_NAME=$(echo "${FLAVORED_PACKAGE}" | sed "s/-${FLAVOR}\.tar\.zst/.tar.zst/")
 

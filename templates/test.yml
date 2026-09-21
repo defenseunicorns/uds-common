@@ -26,6 +26,11 @@ spec:
       default: ${CHAINGUARD_IDENTITY}
     check-flavor-zarf-yaml:
       default: zarf.yaml
+    package-path:
+      default: .
+    docker-compose-version:
+      # renovate: datasource=github-tags depName=docker/compose versioning=semver
+      default: 5.5.1
     options:
       default: ""
     run-verify-package:
@@ -42,6 +47,20 @@ test:
     exit_codes: 222 # using something here to exit with a warning
   script:
     - |
+      DOCKER_CONFIG="${DOCKER_CONFIG:-$HOME/.docker}"
+      case "$(uname -m)" in
+        x86_64) COMPOSE_ARCH=x86_64 ;;
+        aarch64|arm64) COMPOSE_ARCH=aarch64 ;;
+        *) echo "Unsupported Docker Compose architecture: $(uname -m)"; exit 1 ;;
+      esac
+
+      mkdir -p "${DOCKER_CONFIG}/cli-plugins"
+      curl -fsSL \
+        "https://github.com/docker/compose/releases/download/v$[[ inputs.docker-compose-version ]]/docker-compose-linux-${COMPOSE_ARCH}" \
+        -o "${DOCKER_CONFIG}/cli-plugins/docker-compose"
+      chmod +x "${DOCKER_CONFIG}/cli-plugins/docker-compose"
+
+    - |
       # Check if any tag exists
       TAG="$(git describe --tags "$(git rev-list --tags --max-count=1)" 2>/dev/null || echo '')"
 
@@ -51,8 +70,24 @@ test:
         # Checkout the repository at the latest tag
         git checkout "$TAG"
 
+        PACKAGE_DEFINITION="$[[ inputs.check-flavor-zarf-yaml ]]"
+        if [ -f "$[[ inputs.package-path ]]/compose.yaml" ]; then
+          docker compose \
+            -f "$[[ inputs.package-path ]]/compose.yaml" \
+            bridge convert \
+            --transformation "ghcr.io/defenseunicorns/compose-bridge-uds:1.1.0" \
+            --output "$[[ inputs.package-path ]]/build" \
+            --yes
+          PACKAGE_DEFINITION="$[[ inputs.package-path ]]/build/zarf.yaml"
+        fi
+
+        if [ ! -f "${PACKAGE_DEFINITION}" ]; then
+          echo "No Zarf package definition found at ${PACKAGE_DEFINITION}."
+          exit 1
+        fi
+
         # Extract upgrade flavors and set UPGRADE_FLAVORS
-        UPGRADE_FLAVORS=$(cat $[[ inputs.check-flavor-zarf-yaml ]] | ./uds zarf tools yq '.components[] | select(.only | has("flavor")) | .only.flavor' | paste -s -d, - || echo "")
+        UPGRADE_FLAVORS=$(./uds zarf tools yq '.components[] | select(.only | has("flavor")) | .only.flavor' "${PACKAGE_DEFINITION}" | paste -s -d, - || echo "")
 
         # change back to the commit branch for the rest of the job
         git checkout -
