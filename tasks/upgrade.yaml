@@ -141,7 +141,7 @@ tasks:
               ${{ .inputs.options }})
             printf '%s\n' "${CREATE_OUTPUT}"
 
-            mv "$(printf '%s' "${CREATE_OUTPUT}" | ./zarf tools yq -r '.outputPath')" ../${{ .inputs.bundle_path }}/
+            mv "$(printf '%s' "${CREATE_OUTPUT}" | ./zarf tools yq -r '.outputPath')" "../${{ .inputs.bundle_path }}/uds-bundle-${BUNDLE_NAME}-${{ .inputs.architecture }}-${BUNDLE_VERSION}.tar.zst"
           else
             ./uds create ${{ .inputs.bundle_path }} \
               --architecture=${{ .inputs.architecture }} \

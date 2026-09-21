@@ -43,7 +43,7 @@ tasks:
           - name: BUNDLE_VERSION
       - description: Remove the legacy UDS bundle with the package and its dependencies
         if: ${{ ne .variables.NEXT_MODE "true" }}
-        cmd: UDS_CONFIG=${{ .inputs.path }}/${{ .inputs.config }} ./uds remove "${{ .inputs.path }}/uds-bundle-${BUNDLE_NAME}-${UDS_ARCH}-${BUNDLE_VERSION}.tar.zst" --confirm --no-progress ${{ .inputs.options }}
+        cmd: UDS_CONFIG=${{ .inputs.config }} ./uds remove "${{ .inputs.path }}/uds-bundle-${BUNDLE_NAME}-${UDS_ARCH}-${BUNDLE_VERSION}.tar.zst" --confirm --no-progress ${{ .inputs.options }}
 
       - description: Remove the Next mode UDS bundle with the package and its dependencies
         if: ${{ eq .variables.NEXT_MODE "true" }}

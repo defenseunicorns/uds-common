@@ -119,3 +119,11 @@ tasks:
       - description: Pull the latest Next bundle release
         if: ${{ eq .variables.NEXT_MODE "true" }}
         cmd: CLI_FEATURES=NextMode=true ./uds bundle pull "oci://${TARGET_REPO}/bundles/${BUNDLE_NAME}:${LATEST_VERSION}" --skip-signature-verification --output-dir "${{ .inputs.path }}"
+      # TODO (@ZMILLER): This is currently needed to get around the chicken+egg condition when release please updates the version in GH
+      - description: Spoof the latest Next bundle release to the current version
+        if: ${{ eq .variables.NEXT_MODE "true" }}
+        cmd: |
+          if [ "${{ .inputs.spoof_release }}" != "false" ]; then
+            CURRENT_VERSION=$(./zarf tools yq -r .metadata.version ${{ .inputs.path }}/bundle.uds.hcl)
+            test -f "${{ .inputs.path }}/uds-bundle-${BUNDLE_NAME}-${UDS_ARCH}-${CURRENT_VERSION}.tar.zst" || mv "${{ .inputs.path }}/uds-bundle-${BUNDLE_NAME}-${UDS_ARCH}-${LATEST_VERSION}.tar.zst" "${{ .inputs.path }}/uds-bundle-${BUNDLE_NAME}-${UDS_ARCH}-${CURRENT_VERSION}.tar.zst"
+          fi

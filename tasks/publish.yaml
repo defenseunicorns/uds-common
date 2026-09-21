@@ -222,14 +222,22 @@ tasks:
         cmd: ./zarf tools yq -r .metadata.version ${{ .inputs.path }}/bundle.uds.hcl
         setVariables:
           - name: BUNDLE_VERSION
+      - description: Resolve UDS Bundle name to publish
+        cmd: echo "${{ .inputs.name }}"
+        setVariables:
+          - name: PUBLISH_BUNDLE_NAME
+      - description: Resolve UDS Bundle version to publish
+        cmd: echo "${{ .inputs.version }}"
+        setVariables:
+          - name: PUBLISH_BUNDLE_VERSION
       - description: Publish legacy bundle for the supplied architecture
         if: ${{ ne .variables.NEXT_MODE "true" }}
         cmd: |
-          ./uds publish "${{ .inputs.path }}/uds-bundle-${BUNDLE_NAME}-${{ .inputs.architecture }}-${BUNDLE_VERSION}.tar.zst" "oci://${TARGET_REPO}/bundles" --no-progress
+          ./uds publish "${{ .inputs.path }}/uds-bundle-${PUBLISH_BUNDLE_NAME}-${{ .inputs.architecture }}-${PUBLISH_BUNDLE_VERSION}.tar.zst" "oci://${TARGET_REPO}/bundles" --no-progress
 
       - description: Publish Next mode bundle for the supplied architecture
         if: ${{ eq .variables.NEXT_MODE "true" }}
-        cmd: CLI_FEATURES=NextMode=true ./uds bundle push "${{ .inputs.path }}/uds-bundle-${BUNDLE_NAME}-${{ .inputs.architecture }}-${BUNDLE_VERSION}.tar.zst" "oci://${TARGET_REPO}/bundles/${BUNDLE_NAME}:${BUNDLE_VERSION}"
+        cmd: CLI_FEATURES=NextMode=true ./uds bundle push "${{ .inputs.path }}/uds-bundle-${PUBLISH_BUNDLE_NAME}-${{ .inputs.architecture }}-${PUBLISH_BUNDLE_VERSION}.tar.zst" "oci://${TARGET_REPO}/bundles/${PUBLISH_BUNDLE_NAME}:${PUBLISH_BUNDLE_VERSION}"
 
   - name: repo
     description: Publish point in time repo snapshot to OCI
