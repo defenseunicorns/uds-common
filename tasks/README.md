@@ -42,6 +42,7 @@ There are multiple task files available in this repository with different object
 |------|-------------|
 | **package** | Create the UDS Zarf Package in the repository |
 | **test-bundle** | Create the test bundle (bundling package + dependencies for testing) |
+| **sbom-shim** | Builds a scan-only image that adds a primary product CPE to the Zarf package SBOM |
 
 ### [deploy.yaml](./tasks/deploy.yaml)
 
