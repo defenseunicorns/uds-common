@@ -8,6 +8,8 @@ variables:
   - name: FLAVOR
     default: upstream
   - name: BASE_REPO
+  - name: NEXT_MODE
+    default: "false"
 
 tasks:
   - name: create-latest-tag-bundle
@@ -71,8 +73,13 @@ tasks:
           darwin: bash
         dir: upgrade-test
         cmd: |
+          set -e
           git reset --hard HEAD
-          BUNDLE_VERSION=$(cat ../${{ .inputs.bundle_path }}/uds-bundle.yaml | ./zarf tools yq .metadata.version)
+          if [ -f ../${{ .inputs.bundle_path }}/bundle.uds.hcl ]; then
+            BUNDLE_VERSION=$(./zarf tools yq -r .metadata.version ../${{ .inputs.bundle_path }}/bundle.uds.hcl)
+          else
+            BUNDLE_VERSION=$(./zarf tools yq -r .metadata.version ../${{ .inputs.bundle_path }}/uds-bundle.yaml)
+          fi
           TAG="$(git describe --tags "$(git rev-list --tags --max-count=1)" 2>/dev/null || echo '')"
           git checkout "$TAG"
 
@@ -90,7 +97,12 @@ tasks:
 
           PACKAGE_NAME=$(./zarf tools yq -r '.metadata.name' "${PACKAGE_DEFINITION}")
           export PACKAGE_NAME
-          LOCAL_VERSION=$(cat ${{ .inputs.bundle_path }}/uds-bundle.yaml | ./zarf tools yq '.packages[] | select(.name == env(PACKAGE_NAME)) | .ref' | uniq )
+          if [ -f "${{ .inputs.bundle_path }}/bundle.uds.hcl" ]; then
+            PACKAGE_SOURCE=$(grep -A20 "package \"${PACKAGE_NAME}\"" "${{ .inputs.bundle_path }}/bundle.uds.hcl" | grep -m1 'source' | cut -d '"' -f2)
+            LOCAL_VERSION=$(basename "${PACKAGE_SOURCE}" | sed -E "s/^zarf-package-${PACKAGE_NAME}-[^-]+-//; s/\.tar\.zst$//")
+          else
+            LOCAL_VERSION=$(./zarf tools yq -r '.packages[] | select(.name == env(PACKAGE_NAME)) | .ref' "${{ .inputs.bundle_path }}/uds-bundle.yaml" | uniq)
+          fi
           VERSION_FILTER="${LOCAL_VERSION}"
           if [ "${VERSION_FILTER}" = "dev" ]; then
             VERSION_FILTER=""
@@ -105,8 +117,13 @@ tasks:
           else
             LATEST_VERSION=$(./zarf tools registry ls "${TARGET_REPO}/${PACKAGE_NAME}" | grep -v "${{ .inputs.ignored_versions }}" | grep -F "${VERSION_FILTER}" | grep "${{ .inputs.flavor }}" | awk '{ orig=$0; sub(/^v/, "", $0); print $0"\t"orig }' | sort -V | tail -1 | cut -f2)
           fi
-          BUNDLE_NAME=$(cat ${{ .inputs.bundle_path }}/uds-bundle.yaml | ./zarf tools yq .metadata.name)
-          PREVIOUS_BUNDLE_VERSION=$(cat ${{ .inputs.bundle_path }}/uds-bundle.yaml | ./zarf tools yq .metadata.version)
+          if [ -f "${{ .inputs.bundle_path }}/bundle.uds.hcl" ]; then
+            BUNDLE_NAME=$(./zarf tools yq -r .metadata.name "${{ .inputs.bundle_path }}/bundle.uds.hcl")
+            PREVIOUS_BUNDLE_VERSION=$(./zarf tools yq -r .metadata.version "${{ .inputs.bundle_path }}/bundle.uds.hcl")
+          else
+            BUNDLE_NAME=$(./zarf tools yq -r .metadata.name "${{ .inputs.bundle_path }}/uds-bundle.yaml")
+            PREVIOUS_BUNDLE_VERSION=$(./zarf tools yq -r .metadata.version "${{ .inputs.bundle_path }}/uds-bundle.yaml")
+          fi
 
           # Pulls latest published zarf package
           ./zarf package pull \
@@ -124,14 +141,30 @@ tasks:
           # Run any dependency commands (i.e. uds run dependencies:create)
           sh -c "${{ .inputs.dep_commands }}"
 
-          # Creates and moves the bundle into the correct spot
-          ./uds create ${{ .inputs.bundle_path }} \
-            --architecture=${{ .inputs.architecture }} \
-            --confirm \
-            --no-progress \
-            ${{ .inputs.options }}
+          # Baseline upgrade bridge:
+          # The old checked-out tag may predate Next bundle files. Auto-detect the old tag's bundle
+          # definition and create the baseline artifact in the matching mode. This lets the first
+          # NEXT_MODE=true migration upgrade from a legacy release instead of getting stuck waiting
+          # for a prior Next-mode release.
+          rm -f ../${{ .inputs.bundle_path }}/uds-bundle-*.tar.zst
+          if [ -f "${{ .inputs.bundle_path }}/bundle.uds.hcl" ]; then
+            CREATE_OUTPUT=$(CLI_FEATURES=NextMode=true ./uds bundle create ${{ .inputs.bundle_path }} \
+              --unsigned \
+              --architecture=${{ .inputs.architecture }} \
+              -o json \
+              ${{ .inputs.options }})
+            printf '%s\n' "${CREATE_OUTPUT}"
 
-          mv "${{ .inputs.bundle_path }}/uds-bundle-${BUNDLE_NAME}-${{ .inputs.architecture }}-${PREVIOUS_BUNDLE_VERSION}.tar.zst" "../${{ .inputs.bundle_path }}/uds-bundle-${BUNDLE_NAME}-${{ .inputs.architecture }}-${BUNDLE_VERSION}.tar.zst"
+            mv "$(printf '%s' "${CREATE_OUTPUT}" | ./zarf tools yq -r '.outputPath')" "../${{ .inputs.bundle_path }}/uds-bundle-${BUNDLE_NAME}-${{ .inputs.architecture }}-${BUNDLE_VERSION}.tar.zst"
+          else
+            ./uds create ${{ .inputs.bundle_path }} \
+              --architecture=${{ .inputs.architecture }} \
+              --confirm \
+              --no-progress \
+              ${{ .inputs.options }}
+
+            mv "${{ .inputs.bundle_path }}/uds-bundle-${BUNDLE_NAME}-${{ .inputs.architecture }}-${PREVIOUS_BUNDLE_VERSION}.tar.zst" "../${{ .inputs.bundle_path }}/uds-bundle-${BUNDLE_NAME}-${{ .inputs.architecture }}-${BUNDLE_VERSION}.tar.zst"
+          fi
 
       - description: Remove the upgrade-test folder
         cmd: rm -rf upgrade-test

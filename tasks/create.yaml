@@ -4,6 +4,8 @@
 variables:
   - name: FLAVOR
     default: upstream
+  - name: NEXT_MODE
+    default: "false"
 
 tasks:
   - name: package
@@ -53,7 +55,7 @@ tasks:
       options:
         description: For setting create time variables and flags
       path:
-        description: Path relative to the repositories root where the uds-bundle.yaml lives
+        description: Path relative to the repositories root where the bundle definition lives
         default: bundle
       config:
         description: Path to the bundle config file. Defaults to bundle/uds-config.yaml.
@@ -62,9 +64,13 @@ tasks:
         description: The architecture of the bundle to create
         default: ${UDS_ARCH}
     actions:
-      - env:
+      - description: Create the legacy test bundle
+        if: ${{ ne .variables.NEXT_MODE "true" }}
+        env:
           - UDS_CONFIG=${{ .inputs.config }}
         cmd: |
+          set -e
+
           # Find any flavored packages in the target directory
           echo "Looking for ${FLAVOR} flavored packages in '.'"
 
@@ -82,3 +88,29 @@ tasks:
 
           # Proceed with bundle creation regardless of package file status
           ./uds create ${{ .inputs.path }} --confirm --no-progress --architecture="${{ .inputs.architecture }}" ${{ .inputs.options }}
+
+      - description: Create the Next mode test bundle
+        if: ${{ eq .variables.NEXT_MODE "true" }}
+        cmd: |
+          set -e
+          BUNDLE_DIR="${{ .inputs.path }}"
+          ARCH="${{ .inputs.architecture }}"
+
+          if [ ! -f "${BUNDLE_DIR}/bundle.uds.hcl" ]; then
+            echo "NEXT_MODE=true requires ${BUNDLE_DIR}/bundle.uds.hcl. Add a Next bundle definition or remove --set NEXT_MODE=true."
+            exit 1
+          fi
+
+          # Next bundles reference the local package artifact. Keep the same unflavored filename
+          # compatibility that legacy uds-bundle.yaml expects for flavor-gated packages.
+          for FLAVORED_PACKAGE in $(find . -maxdepth 1 -name "zarf-package-*-${ARCH}-*-${FLAVOR}.tar.zst" 2>/dev/null || echo ""); do
+            BASE_NAME=$(echo "${FLAVORED_PACKAGE}" | sed "s/-${FLAVOR}\.tar\.zst/.tar.zst/")
+            cp "${FLAVORED_PACKAGE}" "${BASE_NAME}"
+          done
+
+          # Create an unsigned artifact for common test/dev workflows. Signature knobs can be added later
+          # without changing the caller-facing NEXT_MODE toggle.
+          CREATE_OUTPUT=$(CLI_FEATURES=NextMode=true ./uds bundle create "${BUNDLE_DIR}" --unsigned --architecture="${ARCH}" -o json ${{ .inputs.options }})
+          printf '%s\n' "${CREATE_OUTPUT}"
+          ARTIFACT=$(printf '%s' "${CREATE_OUTPUT}" | ./zarf tools yq -r '.outputPath')
+          echo "Created Next bundle artifact: ${ARTIFACT}"
