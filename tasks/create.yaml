@@ -21,6 +21,10 @@ tasks:
         description: Optionally provide a path to a Zarf config file
         default: ""
         required: false
+      compose_bridge_version:
+        description: The version of compose-bridge-uds to use
+        # renovate: datasource=github-tags depName=defenseunicorns/compose-bridge-uds versioning=semver
+        default: 1.2.0
     actions:
       - description: Resolve the Zarf package definition path
         cmd: |
@@ -39,7 +43,7 @@ tasks:
           docker compose
           -f "${{ .inputs.path }}/compose.yaml"
           bridge convert
-          --transformation "ghcr.io/defenseunicorns/compose-bridge-uds:1.1.0"
+          --transformation "ghcr.io/defenseunicorns/compose-bridge-uds:${{ .inputs.compose_bridge_version }}"
           --output "${CREATE_PACKAGE_PATH}"
           --yes
 

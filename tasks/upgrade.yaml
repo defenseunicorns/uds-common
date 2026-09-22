@@ -45,6 +45,11 @@ tasks:
         description: The flavor of the package to build
         default: ${FLAVOR}
 
+      compose_bridge_version:
+        description: The version of compose-bridge-uds to use
+        # renovate: datasource=github-tags depName=defenseunicorns/compose-bridge-uds versioning=semver
+        default: 1.2.0
+
     actions:
       - task: utils:determine-repo
         with:
@@ -82,7 +87,7 @@ tasks:
             docker compose \
               -f "${{ .inputs.path }}/compose.yaml" \
               bridge convert \
-              --transformation "ghcr.io/defenseunicorns/compose-bridge-uds:1.1.0" \
+              --transformation "ghcr.io/defenseunicorns/compose-bridge-uds:${{ .inputs.compose_bridge_version }}" \
               --output "${{ .inputs.path }}/build" \
               --yes
             PACKAGE_DEFINITION="${{ .inputs.path }}/build/zarf.yaml"
