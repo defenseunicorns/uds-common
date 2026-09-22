@@ -75,7 +75,7 @@ test:
           docker compose \
             -f "$[[ inputs.package-path ]]/compose.yaml" \
             bridge convert \
-            --transformation "ghcr.io/defenseunicorns/compose-bridge-uds:1.0.1" \
+            --transformation "ghcr.io/defenseunicorns/compose-bridge-uds:1.1.0" \
             --output "$[[ inputs.package-path ]]/build" \
             --yes
           PACKAGE_DEFINITION="$[[ inputs.package-path ]]/build/zarf.yaml"

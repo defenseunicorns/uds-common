@@ -98,7 +98,7 @@ publish:
         docker compose \
           -f compose.yaml \
           bridge convert \
-          --transformation "ghcr.io/defenseunicorns/compose-bridge-uds:1.0.1" \
+          --transformation "ghcr.io/defenseunicorns/compose-bridge-uds:1.1.0" \
           --output build \
           --yes
 
