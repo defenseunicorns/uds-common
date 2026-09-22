@@ -75,7 +75,11 @@ tasks:
         cmd: |
           set -e
           git reset --hard HEAD
-          BUNDLE_VERSION=$(cat ../${{ .inputs.bundle_path }}/uds-bundle.yaml | ./zarf tools yq .metadata.version)
+          if [ -f ../${{ .inputs.bundle_path }}/bundle.uds.hcl ]; then
+            BUNDLE_VERSION=$(./zarf tools yq -r .metadata.version ../${{ .inputs.bundle_path }}/bundle.uds.hcl)
+          else
+            BUNDLE_VERSION=$(./zarf tools yq -r .metadata.version ../${{ .inputs.bundle_path }}/uds-bundle.yaml)
+          fi
           TAG="$(git describe --tags "$(git rev-list --tags --max-count=1)" 2>/dev/null || echo '')"
           git checkout "$TAG"
 
@@ -93,7 +97,12 @@ tasks:
 
           PACKAGE_NAME=$(./zarf tools yq -r '.metadata.name' "${PACKAGE_DEFINITION}")
           export PACKAGE_NAME
-          LOCAL_VERSION=$(cat ${{ .inputs.bundle_path }}/uds-bundle.yaml | ./zarf tools yq '.packages[] | select(.name == env(PACKAGE_NAME)) | .ref' | uniq )
+          if [ -f "${{ .inputs.bundle_path }}/bundle.uds.hcl" ]; then
+            PACKAGE_SOURCE=$(grep -A20 "package \"${PACKAGE_NAME}\"" "${{ .inputs.bundle_path }}/bundle.uds.hcl" | grep -m1 'source' | cut -d '"' -f2)
+            LOCAL_VERSION=$(basename "${PACKAGE_SOURCE}" | sed -E "s/^zarf-package-${PACKAGE_NAME}-[^-]+-//; s/\.tar\.zst$//")
+          else
+            LOCAL_VERSION=$(./zarf tools yq -r '.packages[] | select(.name == env(PACKAGE_NAME)) | .ref' "${{ .inputs.bundle_path }}/uds-bundle.yaml" | uniq)
+          fi
           VERSION_FILTER="${LOCAL_VERSION}"
           if [ "${VERSION_FILTER}" = "dev" ]; then
             VERSION_FILTER=""
@@ -108,8 +117,13 @@ tasks:
           else
             LATEST_VERSION=$(./zarf tools registry ls "${TARGET_REPO}/${PACKAGE_NAME}" | grep -v "${{ .inputs.ignored_versions }}" | grep -F "${VERSION_FILTER}" | grep "${{ .inputs.flavor }}" | awk '{ orig=$0; sub(/^v/, "", $0); print $0"\t"orig }' | sort -V | tail -1 | cut -f2)
           fi
-          BUNDLE_NAME=$(cat ${{ .inputs.bundle_path }}/uds-bundle.yaml | ./zarf tools yq .metadata.name)
-          PREVIOUS_BUNDLE_VERSION=$(cat ${{ .inputs.bundle_path }}/uds-bundle.yaml | ./zarf tools yq .metadata.version)
+          if [ -f "${{ .inputs.bundle_path }}/bundle.uds.hcl" ]; then
+            BUNDLE_NAME=$(./zarf tools yq -r .metadata.name "${{ .inputs.bundle_path }}/bundle.uds.hcl")
+            PREVIOUS_BUNDLE_VERSION=$(./zarf tools yq -r .metadata.version "${{ .inputs.bundle_path }}/bundle.uds.hcl")
+          else
+            BUNDLE_NAME=$(./zarf tools yq -r .metadata.name "${{ .inputs.bundle_path }}/uds-bundle.yaml")
+            PREVIOUS_BUNDLE_VERSION=$(./zarf tools yq -r .metadata.version "${{ .inputs.bundle_path }}/uds-bundle.yaml")
+          fi
 
           # Pulls latest published zarf package
           ./zarf package pull \
