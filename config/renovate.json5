@@ -260,7 +260,7 @@
             ],
             "datasourceTemplate": "docker"
         },
-        // Matches individual images in a `zarf.yaml`'s `images:` section that are tagged with a version (allowing for # renovate overrides)
+        // Matches individual images in a `zarf.yaml`'s `images:` section that are tagged with a version and optionally pinned to a digest (i.e. `image:tag@sha256:<digest>`), allowing for # renovate overrides
         {
             "customType": "regex",
             "fileMatch": [
@@ -268,7 +268,7 @@
             ],
             "matchStrings": [
                 // Test: https://regex101.com/r/Bd8IBp/1
-                "- ['\"]?(?<depName>[^\"'\\s]+):(?<currentValue>[^\"'\\s]+)['\"]?( # renovate:( versioning=(?<versioning>.*?))?( extractVersion=(?<extractVersion>.*?))?)?(\\s|$)"
+                "- ['\"]?(?<depName>[^\"'\\s@]+):(?<currentValue>[^\"'\\s@]+)(@(?<currentDigest>sha256:[a-f0-9]{64}))?['\"]?( # renovate:( versioning=(?<versioning>.*?))?( extractVersion=(?<extractVersion>.*?))?)?(\\s|$)"
             ],
             "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}docker{{/if}}",
             "extractVersionTemplate": "{{#if extractVersion}}{{{extractVersion}}}{{else}}^(?<version>.*)${{/if}}",
