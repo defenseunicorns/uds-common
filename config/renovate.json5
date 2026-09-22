@@ -248,7 +248,7 @@
             "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver-coerced{{/if}}",
             "extractVersionTemplate": "^v(?<version>.*)$"
         },
-        // Matches images where you need to override the image reference in a Helm Value (i.e. https://github.com/defenseunicorns/uds-capability-rook-ceph/blob/f190c32688e80ad72df6389bcb150b35d779d0f0/values/cluster-values.yaml#L3-L4)
+        // Matches images where you need to override the image reference in a Helm Value, optionally pinned to a digest (i.e. https://github.com/defenseunicorns/uds-capability-rook-ceph/blob/f190c32688e80ad72df6389bcb150b35d779d0f0/values/cluster-values.yaml#L3-L4)
         {
             "customType": "regex",
             "fileMatch": [
@@ -256,7 +256,7 @@
             ],
             "matchStrings": [
                 // Test: https://regex101.com/r/k5ebjz/1
-                "# renovate: image=(?<depName>.*?)\\s*image:\\s.*:(?<currentValue>[^\\s\"]*)"
+                "# renovate: image=(?<depName>.*?)\\s*image:\\s+['\"]?[^\\s\"'@]+:(?<currentValue>[^\\s\"'@]+)(@(?<currentDigest>sha256:[a-f0-9]{64}))?"
             ],
             "datasourceTemplate": "docker"
         },
@@ -377,7 +377,7 @@
             // Match versioning used on UDS packages. Test: https://regex101.com/r/BGkYHX/4
             "versioningTemplate": "regex:^v?(?<major>\\d+)(\\.(?<minor>\\d+))?(\\.(?<patch>\\d+))?(-uds\\.(?<build>\\d+))?(-(?<compatibility>\\w+)?)?(.*?)?$"
         },
-        // Matches playwright docker image tags, set by default for packages in package template: https://github.com/uds-packages/template/blob/3df17ca97a778dd3acb25fab47b3d38e59b663ea/tasks/test.yaml#L71
+        // Matches playwright docker image tags, optionally pinned to a digest, set by default for packages in package template: https://github.com/uds-packages/template/blob/3df17ca97a778dd3acb25fab47b3d38e59b663ea/tasks/test.yaml#L71
         {
             "customType": "regex",
             "fileMatch": [
@@ -385,7 +385,7 @@
                 ],
             "matchStrings": [
                 // Test: https://regex101.com/r/SRZycH/2
-                "(?<depName>mcr\\.microsoft\\.com/playwright):(?<currentValue>v[\\w.-]+)"
+                "(?<depName>mcr\\.microsoft\\.com/playwright):(?<currentValue>v[\\w.-]+)(@(?<currentDigest>sha256:[a-f0-9]{64}))?"
             ],
             "datasourceTemplate": "docker",
             "versioningTemplate": "docker"
@@ -428,6 +428,16 @@
             "minimumReleaseAge": "3 days",
             "internalChecksFilter": "strict",
             "minimumReleaseAgeBehaviour": "timestamp-required"
+        },
+        // Replaces only the first occurrence of the version for docker images matched by custom regex managers so a hex-only tag (i.e. `17`) doesn't also rewrite matching characters inside a pinned `@sha256:` digest
+        {
+            "matchManagers": [
+                "custom.regex"
+            ],
+            "matchDatasources": [
+                "docker"
+            ],
+            "autoReplaceGlobalMatch": false
         }
     ]
 }
