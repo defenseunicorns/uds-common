@@ -57,6 +57,11 @@ on:
         # renovate: datasource=github-tags depName=docker/compose versioning=semver
         default: 5.5.1
         type: string
+      composeBridgeVersion:
+        description: The Compose Bridge version to use
+        # renovate: datasource=github-tags depName=defenseunicorns/compose-bridge-uds versioning=semver
+        default: 1.2.0
+        type: string
     secrets:
       LICENSE_KEY:
         required: false
@@ -181,7 +186,7 @@ jobs:
             docker compose \
               -f compose.yaml \
               bridge convert \
-              --transformation "ghcr.io/defenseunicorns/compose-bridge-uds:1.1.0" \
+              --transformation "ghcr.io/defenseunicorns/compose-bridge-uds:${{ inputs.composeBridgeVersion }}" \
               --output build \
               --yes
 
