@@ -63,7 +63,7 @@
     {
       "customType": "regex",
       "managerFilePatterns": [
-        "/(tasks/(create|pull|upgrade)\\.yaml|\\.github/(actions/test-flavor/action|workflows/callable-(publish|scan))\\.yaml|templates/(test|publish)\\.yml)/"
+        "/(\\.github/(actions/test-flavor/action|workflows/callable-(publish|scan))\\.yaml|templates/(test|publish)\\.yml)/"
       ],
       "matchStrings": [
         "--transformation\\s+[\"']?(?<depName>ghcr\\.io/defenseunicorns/compose-bridge-uds):(?<currentValue>[^\"'\\s]+)[\"']?"
