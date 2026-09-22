@@ -1,26 +1,50 @@
 # Copyright 2024 Defense Unicorns
 # SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
 
+variables:
+  - name: NEXT_MODE
+    default: "false"
+
 tasks:
   - name: test-bundle
     description: Remove the deployed test bundle
     inputs:
       path:
-        description: Path relative to the repositories root where the uds-bundle.yaml and .tar.zst lives
+        description: Path relative to the repositories root where the bundle definition and .tar.zst live
         default: bundle
       config:
-        description: File name of the bundle config file. Defaults to uds-config.yaml. Path is relative to the path input.
-        default: uds-config.yaml
+        description: Path to the legacy bundle config file. Defaults to bundle/uds-config.yaml.
+        default: bundle/uds-config.yaml
+      next_config:
+        description: Path to the Next mode bundle config file. Defaults to bundle/config.uds.hcl.
+        default: bundle/config.uds.hcl
       options:
         description: For setting deploy time variables and flags
     actions:
-      - description: Get the current UDS Bundle name
+      - description: Get the current legacy UDS Bundle name
+        if: ${{ ne .variables.NEXT_MODE "true" }}
         cmd: cat ${{ .inputs.path }}/uds-bundle.yaml | ./zarf tools yq .metadata.name
         setVariables:
           - name: BUNDLE_NAME
-      - description: Get the current UDS Bundle version
+      - description: Get the current Next UDS Bundle name
+        if: ${{ eq .variables.NEXT_MODE "true" }}
+        cmd: ./zarf tools yq -r .metadata.name ${{ .inputs.path }}/bundle.uds.hcl
+        setVariables:
+          - name: BUNDLE_NAME
+      - description: Get the current legacy UDS Bundle version
+        if: ${{ ne .variables.NEXT_MODE "true" }}
         cmd: cat ${{ .inputs.path }}/uds-bundle.yaml | ./zarf tools yq .metadata.version
         setVariables:
           - name: BUNDLE_VERSION
-      - description: Remove the UDS bundle with the package and its dependencies
-        cmd: UDS_CONFIG=${{ .inputs.path }}/${{ .inputs.config }} ./uds remove "${{ .inputs.path }}/uds-bundle-${BUNDLE_NAME}-${UDS_ARCH}-${BUNDLE_VERSION}.tar.zst" --confirm --no-progress ${{ .inputs.options }}
+      - description: Get the current Next UDS Bundle version
+        if: ${{ eq .variables.NEXT_MODE "true" }}
+        cmd: ./zarf tools yq -r .metadata.version ${{ .inputs.path }}/bundle.uds.hcl
+        setVariables:
+          - name: BUNDLE_VERSION
+      - description: Remove the legacy UDS bundle with the package and its dependencies
+        if: ${{ ne .variables.NEXT_MODE "true" }}
+        cmd: UDS_CONFIG=${{ .inputs.config }} ./uds remove "${{ .inputs.path }}/uds-bundle-${BUNDLE_NAME}-${UDS_ARCH}-${BUNDLE_VERSION}.tar.zst" --confirm --no-progress ${{ .inputs.options }}
+
+      - description: Remove the Next mode UDS bundle with the package and its dependencies
+        if: ${{ eq .variables.NEXT_MODE "true" }}
+        cmd: CLI_FEATURES=NextMode=true ./uds bundle remove "${{ .inputs.path }}/uds-bundle-${BUNDLE_NAME}-${UDS_ARCH}-${BUNDLE_VERSION}.tar.zst" --skip-signature-verification --config "${{ .inputs.next_config }}" ${{ .inputs.options }}

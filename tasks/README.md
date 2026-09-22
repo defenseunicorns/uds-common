@@ -18,6 +18,21 @@ Pinning to a specific tag of a task (rather than `main`) with renovate watching 
 > [!NOTE]
 > Zarf is not required for tasks in this repo when using `uds` CLI, the vendored zarf (`uds zarf`) included with UDS CLI is used instead to prevent version mismatches.  If using `maru` directly you will need to look at the tasks you are including and determine whether you need to install `zarf` and/or `uds`.
 
+## Next Mode Bundle Tasks
+
+Set `NEXT_MODE=true` once on the outer `uds run` invocation to use UDS CLI Next bundle commands for bundle create/deploy/remove/publish/pull tasks:
+
+```bash
+uds run test-install --set NEXT_MODE=true
+```
+
+For the reusable GitHub workflows, pass it through the existing `options` input:
+
+```yaml
+with:
+  options: --set NEXT_MODE=true
+```
+
 ## Task Files
 
 There are multiple task files available in this repository with different objectives and required variables.
