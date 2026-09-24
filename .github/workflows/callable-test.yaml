@@ -35,7 +35,7 @@ on:
       udsCliVersion:
         description: The uds-cli version to install
         # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
-        default: 0.37.0
+        default: 0.38.0
         type: string
       dockerComposeVersion:
         description: The Docker Compose version to install
@@ -133,7 +133,7 @@ jobs:
           fetch-depth: 0
 
       - name: Install Docker Compose
-        uses: docker/setup-compose-action@4eb059ff7f16592f9c84d5ca339c53cb7c5064e2 # v2.3.0
+        uses: docker/setup-compose-action@54042514f505b273907334ae2b9cdbb9a0213c1a # v2.4.0
         with:
           version: v${{ inputs.dockerComposeVersion }}
 

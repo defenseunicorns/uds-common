@@ -20,6 +20,10 @@ inputs:
     # renovate: datasource=github-tags depName=docker/compose versioning=semver
     default: 5.5.1
     description: The Docker Compose version to install
+  compose-bridge-version:
+    # renovate: datasource=github-tags depName=defenseunicorns/compose-bridge-uds versioning=semver
+    default: 1.2.0
+    description: The Compose Bridge version to use
 
 runs:
   using: composite
@@ -33,7 +37,7 @@ runs:
         fetch-depth: 0
 
     - name: Install Docker Compose
-      uses: docker/setup-compose-action@4eb059ff7f16592f9c84d5ca339c53cb7c5064e2 # v2.3.0
+      uses: docker/setup-compose-action@54042514f505b273907334ae2b9cdbb9a0213c1a # v2.4.0
       with:
         version: v${{ inputs.docker-compose-version }}
 
@@ -56,7 +60,7 @@ runs:
           docker compose \
             -f "${{ inputs.package-path }}/compose.yaml" \
             bridge convert \
-            --transformation "ghcr.io/defenseunicorns/compose-bridge-uds:1.1.0" \
+            --transformation "ghcr.io/defenseunicorns/compose-bridge-uds:${{ inputs.compose-bridge-version }}" \
             --output "${{ inputs.package-path }}/build" \
             --yes
           PACKAGE_DEFINITION="${{ inputs.package-path }}/build/zarf.yaml"

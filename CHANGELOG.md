@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.30.0](https://github.com/defenseunicorns/uds-common/compare/v1.29.0...v1.30.0) (2026-09-23)
+
+
+### Features
+
+* add cli next compatible workflows ([#774](https://github.com/defenseunicorns/uds-common/issues/774)) ([ed269f7](https://github.com/defenseunicorns/uds-common/commit/ed269f78ea635f88f4167172dc5d0556629fce9f))
+* configure compose bridge version for scans ([#781](https://github.com/defenseunicorns/uds-common/issues/781)) ([30938ff](https://github.com/defenseunicorns/uds-common/commit/30938ffafb04822b704d31385b0454be80add11b))
+* make compose bridge task version configurable ([#780](https://github.com/defenseunicorns/uds-common/issues/780)) ([4e629fe](https://github.com/defenseunicorns/uds-common/commit/4e629fe95049af14e929aaeda1fa84b52a34f1d3))
+
+
+### Miscellaneous
+
+* **deps:** update uds common foundation dependencies ([#777](https://github.com/defenseunicorns/uds-common/issues/777)) ([34a382e](https://github.com/defenseunicorns/uds-common/commit/34a382ef0f0971e19fe729e9b06f18597218b94c))
+* **deps:** update uds common support dependencies ([#775](https://github.com/defenseunicorns/uds-common/issues/775)) ([01ec380](https://github.com/defenseunicorns/uds-common/commit/01ec3807dbc96aa62147ed24f166810614987f31))
+* limit permissions in release-common workflow ([#773](https://github.com/defenseunicorns/uds-common/issues/773)) ([fafd30f](https://github.com/defenseunicorns/uds-common/commit/fafd30f5d64fa825053d3c9ae1a18900c9ec1a97))
+
 ## [1.29.0](https://github.com/defenseunicorns/uds-common/compare/v1.28.3...v1.29.0) (2026-09-17)
 
 
