@@ -42,6 +42,20 @@ tasks:
       - task: helm
       - task: helm-template
 
+  - name: renovate
+    description: Validate Renovate configuration
+    inputs:
+      file:
+        description: Path to the Renovate configuration file
+        default: renovate.json
+    actions:
+      - description: Validate Renovate configuration with a pinned npm package
+        env:
+          - RENOVATE_FILE=${{ .inputs.file }}
+          # renovate: datasource=npm depName=renovate
+          - RENOVATE_VERSION=44.127.0
+        cmd: npx --yes --package "renovate@$RENOVATE_VERSION" -- renovate-config-validator --no-global "$RENOVATE_FILE"
+
   - name: yaml
     description: Run YAML linting checks
     actions:
