@@ -124,6 +124,7 @@ ignore: [] # an array of paths to ignore
 |------|-------------|
 | **deps** | Install linting tool dependencies |
 | **all** | Run all linting commands |
+| **renovate** | Validate Renovate configuration |
 | **yaml** | Run YAML linting checks |
 | **shell** | Run shellcheck on all Maru tasks, GitHub workflows, Zarf packages, and local shell scripts |
 | **license** | Lint for the SPDX license identifier being in source files |
@@ -131,6 +132,14 @@ ignore: [] # an array of paths to ignore
 | **tasks** | Dry run all tasks in the base tasks file |
 | **helm** | Run helm lint on all Helm charts in the repository |
 | **helm-template** | Dry run render all Helm charts to catch template execution errors |
+
+The `renovate` task runs in `lint:all` and defaults to `renovate.json`.
+Callers must provide Node.js 24.11+ (24.x) and npm; Renovate is downloaded automatically.
+
+```bash
+uds run lint:renovate
+uds run lint:renovate --with file=config/renovate.json5
+```
 
 The `shell` task accepts a space-separated `exclusion` input for directories that should be skipped by shellcheck:
 
