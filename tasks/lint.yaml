@@ -41,7 +41,6 @@ tasks:
       - task: tasks
       - task: helm
       - task: helm-template
-      - task: renovate
 
   - name: renovate
     description: Validate Renovate configuration
