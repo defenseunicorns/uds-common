@@ -24,12 +24,14 @@ expect_failure() {
 # Default file and custom JSON5 path (including spaces).
 printf '%s\n' '{"extends": ["config:recommended"]}' > renovate.json
 validate
+printf '%s\n' '{"invalidRenovateOption": true}' > renovate.json
 printf '%s\n' '// Custom preset' '{"enabled": true}' > 'custom config.json5'
 validate --with 'file=custom config.json5'
 
 # Semantic errors must fail for both the default and custom files.
 printf '%s\n' '{"invalidRenovateOption": true}' > renovate.json
 expect_failure
+printf '%s\n' '{"enabled": true}' > renovate.json
 printf '%s\n' '{"enabled": "not-a-boolean"}' > 'custom config.json5'
 expect_failure --with 'file=custom config.json5'
 

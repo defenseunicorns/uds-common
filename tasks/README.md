@@ -133,8 +133,8 @@ ignore: [] # an array of paths to ignore
 | **helm** | Run helm lint on all Helm charts in the repository |
 | **helm-template** | Dry run render all Helm charts to catch template execution errors |
 
-The `renovate` task runs in `lint:all`, defaults to `renovate.json`, and requires npm.
-It downloads pinned Node.js and Renovate versions automatically.
+The `renovate` task runs in `lint:all` and defaults to `renovate.json`.
+Callers must provide Node.js 24.11+ (24.x) and npm; Renovate is downloaded automatically.
 
 ```bash
 uds run lint:renovate

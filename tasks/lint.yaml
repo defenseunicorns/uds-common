@@ -53,12 +53,9 @@ tasks:
       - description: Validate Renovate configuration with a pinned npm package
         env:
           - RENOVATE_FILE=${{ .inputs.file }}
-          # renovate: datasource=npm depName=node
-          - RENOVATE_NODE_VERSION=24.21.0
           # renovate: datasource=npm depName=renovate
           - RENOVATE_VERSION=44.127.0
-        # Run npm under Node 24 too, so installation works with engine-strict enabled.
-        cmd: npx --yes --package "node@$RENOVATE_NODE_VERSION" -- npx --yes --package "renovate@$RENOVATE_VERSION" -- renovate-config-validator --no-global "$RENOVATE_FILE"
+        cmd: npx --yes --package "renovate@$RENOVATE_VERSION" -- renovate-config-validator --no-global "$RENOVATE_FILE"
 
   - name: yaml
     description: Run YAML linting checks
