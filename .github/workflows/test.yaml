@@ -24,6 +24,9 @@ concurrency:
 jobs:
   renovate:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: ["22", "24"]
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -37,9 +40,11 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version: "24"
+          node-version: ${{ matrix.node-version }}
 
       - name: Test Renovate validation
+        env:
+          npm_config_engine_strict: "true"
         run: bash tests/renovate.sh
 
   check-flavor:
