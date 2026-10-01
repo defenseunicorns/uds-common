@@ -133,24 +133,12 @@ ignore: [] # an array of paths to ignore
 | **helm** | Run helm lint on all Helm charts in the repository |
 | **helm-template** | Dry run render all Helm charts to catch template execution errors |
 
-The `renovate` task validates `renovate.json` by default and runs as part of `lint:all`.
-It requires Node.js 24.11 or later in the 24.x series and npm. The pinned Renovate
-package is installed into npm's cache on first use; no global Renovate installation
-is needed. This uses npm directly, without mise's npm backend or changes to its
-dependency trust settings.
-Files are validated as repository configuration, including custom filenames.
+The `renovate` task runs in `lint:all`, defaults to `renovate.json`, and requires
+Node.js 24.11+ (24.x) and npm. It downloads pinned Renovate automatically.
 
 ```bash
 uds run lint:renovate
 uds run lint:renovate --with file=config/renovate.json5
-```
-
-Downstream tasks can select a custom file with `with`:
-
-```yaml
-- task: lint:renovate
-  with:
-    file: config/renovate.json5
 ```
 
 The `shell` task accepts a space-separated `exclusion` input for directories that should be skipped by shellcheck:
