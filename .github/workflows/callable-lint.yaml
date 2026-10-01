@@ -43,10 +43,5 @@ jobs:
       - name: Install lint deps
         run: uds run lint:deps --no-progress
 
-      - name: Setup Node.js
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
-        with:
-          node-version: "24"
-
       - name: Lint the repository
         run: uds run lint:all --no-progress
