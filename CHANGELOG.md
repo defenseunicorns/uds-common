@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.30.1](https://github.com/defenseunicorns/uds-common/compare/v1.30.0...v1.30.1) (2026-10-01)
+
+
+### Bug Fixes
+
+* **lint:** keep Renovate validation opt-in ([#788](https://github.com/defenseunicorns/uds-common/issues/788)) ([6bb2759](https://github.com/defenseunicorns/uds-common/commit/6bb275964d86e80b95385d87ed726dd32067be46))
+
+
+### Miscellaneous
+
+* **deps:** update support-deps to v0.87.0 ([#787](https://github.com/defenseunicorns/uds-common/issues/787)) ([6d68c4e](https://github.com/defenseunicorns/uds-common/commit/6d68c4e1619864a563d703a14c65901e5b5bc8a7))
+* **deps:** update support-deps to v4.38.2 ([#782](https://github.com/defenseunicorns/uds-common/issues/782)) ([6492088](https://github.com/defenseunicorns/uds-common/commit/6492088709bbc43a1062874c392dc3dad88a95f7))
+* **deps:** update uds common foundation dependencies to v1.14.0 ([#784](https://github.com/defenseunicorns/uds-common/issues/784)) ([0ea6174](https://github.com/defenseunicorns/uds-common/commit/0ea6174acaea5c382867f1de7ad5ba57589a9e53))
+* **lint:** add Renovate config validation ([#785](https://github.com/defenseunicorns/uds-common/issues/785)) ([e309c58](https://github.com/defenseunicorns/uds-common/commit/e309c58d8056f916f8075ecc769288a93a3fa752))
+
 ## [1.30.0](https://github.com/defenseunicorns/uds-common/compare/v1.29.0...v1.30.0) (2026-09-23)
 
 
