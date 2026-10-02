@@ -18,6 +18,14 @@ values:
   schema: zarf-values.schema.json
 
 components:
+  - name: sbom
+    required: true
+    description: Scan-only primary product identity; no workloads are deployed
+    imageArchives:
+      - path: tmp/nginx-sbom.tar
+        images:
+          - zarf.internal/sbom/nginx:dev
+
   - name: nginx
     required: true
     description: Deploy nginx with upstream images

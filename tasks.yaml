@@ -32,6 +32,7 @@ tasks:
       - task: create:package
         with:
           options: --skip-sbom
+          cpe: cpe:2.3:a:f5:nginx:*:*:*:*:*:*:*:*
 
   - name: dev
     description: Create and deploy the bundle against an existing cluster
@@ -139,6 +140,8 @@ tasks:
     actions:
       - description: Create the package
         task: create:package
+        with:
+          cpe: cpe:2.3:a:f5:nginx:*:*:*:*:*:*:*:*
 
       - description: Create the compose-based package
         if: ${{ eq .variables.FLAVOR "upstream" }}
