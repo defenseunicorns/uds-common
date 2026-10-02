@@ -57,6 +57,7 @@ tasks:
         if: ${{ ne .inputs.cpe "" }}
         with:
           cpe: ${{ .inputs.cpe }}
+          path: ${CREATE_PACKAGE_PATH}
 
       - env:
           - ZARF_CONFIG=${{ .inputs.config }}
@@ -134,6 +135,9 @@ tasks:
       cpe:
         description: Complete CPE 2.3 application binding with a wildcard version for the primary product
         required: true
+      path:
+        description: Path to the Zarf package definition being created
+        default: .
     actions:
       - description: Build the SBOM shim declared by the active Zarf flavor
         shell:
@@ -142,8 +146,34 @@ tasks:
         env:
           - SBOM_CPE_TEMPLATE=${{ .inputs.cpe }}
           - SBOM_FLAVOR=${FLAVOR}
+          - SBOM_PACKAGE_PATH=${{ .inputs.path }}
         cmd: |
           set -euo pipefail
+
+          definition="${SBOM_PACKAGE_PATH}/zarf.yaml"
+          releaser="${SBOM_PACKAGE_PATH}/releaser.yaml"
+
+          if [[ ! -f "${releaser}" ]]; then
+            echo "SBOM shim requires ${releaser} to resolve the active flavor's product version." >&2
+            exit 1
+          fi
+          release_versions="$(
+            uds zarf tools yq -r '
+              .flavors[]
+              | select(.name == strenv(SBOM_FLAVOR))
+              | .version
+            ' "${releaser}"
+          )"
+          release_count="$(printf '%s\n' "${release_versions}" | sed '/^$/d' | wc -l | tr -d '[:space:]')"
+          if [[ "${release_count}" != "1" ]]; then
+            echo "Expected exactly one releaser version for flavor '${SBOM_FLAVOR}', found ${release_count}." >&2
+            exit 1
+          fi
+          product_version="$(printf '%s' "${release_versions}" | sed -E 's/-uds\.[0-9]+$//')"
+          if [[ ! "${product_version}" =~ ^[a-zA-Z0-9_][a-zA-Z0-9_.-]{0,127}$ || "${product_version}" == "null" || "${product_version}" == "dev" || "${product_version}" == "latest" ]]; then
+            echo "Invalid SBOM product version '${product_version}' for flavor '${SBOM_FLAVOR}'." >&2
+            exit 1
+          fi
 
           package_metadata="$(
             uds zarf tools yq -r '
@@ -153,7 +183,7 @@ tasks:
                   ($metadata.annotations["dev.uds.title"] // $metadata.name)
                 ]
               | @tsv
-            ' zarf.yaml
+            ' "${definition}"
           )"
           IFS=$'\t' read -r SBOM_PRODUCT_SLUG SBOM_PRODUCT_NAME <<< "${package_metadata}"
           export SBOM_PRODUCT_NAME SBOM_PRODUCT_SLUG
@@ -184,7 +214,7 @@ tasks:
               | select(split(":")[0] == strenv(SBOM_IMAGE_REPOSITORY))
               | [$archive.path, .]
               | @tsv
-            ' zarf.yaml
+            ' "${definition}"
           )"
 
           match_count="$(printf '%s\n' "${matches}" | sed '/^$/d' | wc -l | tr -d '[:space:]')"
@@ -194,15 +224,20 @@ tasks:
           fi
 
           IFS=$'\t' read -r archive_path image_ref <<< "${matches}"
-          product_version="${image_ref#"${SBOM_IMAGE_REPOSITORY}:"}"
-          if [[ -z "${archive_path}" || -z "${product_version}" || "${product_version}" == "${image_ref}" ]]; then
-            echo "Could not derive the SBOM archive path and product version from '${image_ref}'." >&2
+          if [[ -z "${archive_path}" ]]; then
+            echo "Could not derive the SBOM archive path from '${image_ref}'." >&2
             exit 1
           fi
-          if [[ "${product_version}" == "dev" || "${product_version}" == "latest" ]]; then
-            echo "SBOM shim image '${image_ref}' must use the exact upstream product version, not a mutable tag." >&2
-            exit 1
-          fi
+          image_ref="${SBOM_IMAGE_REPOSITORY}:${product_version}"
+          export SBOM_IMAGE_REF="${image_ref}"
+          uds zarf tools yq -i '
+            (.components[]
+              | select((.only.flavor // strenv(SBOM_FLAVOR)) == strenv(SBOM_FLAVOR))
+              | .imageArchives[]?
+              | .images[]?
+              | select(split(":")[0] == strenv(SBOM_IMAGE_REPOSITORY))) = strenv(SBOM_IMAGE_REF)
+          ' "${definition}"
+          archive_path="${SBOM_PACKAGE_PATH}/${archive_path}"
 
           cpe_fields[5]="${product_version}"
           SBOM_CPE="$(IFS=':'; printf '%s' "${cpe_fields[*]}")"

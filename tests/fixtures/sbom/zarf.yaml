@@ -1,0 +1,29 @@
+# Copyright 2026 Defense Unicorns
+# SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
+
+kind: ZarfPackageConfig
+metadata:
+  name: sbom-fixture
+  description: Scan-only package for SBOM integration tests
+  version: dev
+  annotations:
+    dev.uds.title: SBOM Fixture
+
+components:
+  - name: sbom-shim
+    required: true
+    only:
+      flavor: upstream
+    imageArchives:
+      - path: tmp/sbom-upstream.tar
+        images:
+          - zarf.internal/sbom/sbom-fixture:dev
+
+  - name: sbom-shim
+    required: true
+    only:
+      flavor: alternate
+    imageArchives:
+      - path: tmp/sbom-alternate.tar
+        images:
+          - zarf.internal/sbom/sbom-fixture:dev

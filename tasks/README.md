@@ -59,6 +59,26 @@ There are multiple task files available in this repository with different object
 | **test-bundle** | Create the test bundle (bundling package + dependencies for testing) |
 | **sbom-shim** | Builds a scan-only image that adds a primary product CPE to the Zarf package SBOM |
 
+To include a primary-product CPE, pass a complete CPE 2.3 application binding
+with a wildcard version to `create:package`, for example:
+
+```sh
+uds run create:package --with 'cpe=cpe:2.3:a:f5:nginx:*:*:*:*:*:*:*:*'
+```
+
+The package definition must declare one `imageArchives` image named
+`zarf.internal/sbom/<metadata.name>:dev` for the active flavor (or shared across
+flavors). The shim reads that flavor's version from `releaser.yaml` beside the
+package definition, removes only the trailing `-uds.NUMBER`, and rewrites the
+archive tag to match the product version used in the CPE and PURL. No separate
+Renovate rule is needed for the shim tag. Missing or duplicate flavor versions
+are rejected. The nginx release task supplies its CPE automatically; development
+packages still skip SBOM scanning.
+
+Run `bash tests/sbom.sh` to create packages and verify the product identity in
+their extracted SBOMs. Like `tests/renovate.sh`, this uses temporary workspaces
+and runs in the `Common-Specific Checks` PR workflow, as an independent SBOM job.
+
 ### [deploy.yaml](./tasks/deploy.yaml)
 
 | Name | Description |

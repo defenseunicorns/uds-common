@@ -1,0 +1,8 @@
+# Copyright 2026 Defense Unicorns
+# SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
+
+flavors:
+  - name: upstream
+    version: 1.2.3-uds.4
+  - name: alternate
+    version: 2.4.0-rc.1-uds.12
