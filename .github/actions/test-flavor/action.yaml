@@ -18,11 +18,11 @@ inputs:
     description: Relative path of the package source
   docker-compose-version:
     # renovate: datasource=github-tags depName=docker/compose versioning=semver
-    default: 5.5.1
+    default: 5.6.0
     description: The Docker Compose version to install
   compose-bridge-version:
     # renovate: datasource=github-tags depName=defenseunicorns/compose-bridge-uds versioning=semver
-    default: 1.2.0
+    default: 1.3.0
     description: The Compose Bridge version to use
 
 runs:

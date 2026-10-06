@@ -40,7 +40,7 @@ on:
       dockerComposeVersion:
         description: The Docker Compose version to install
         # renovate: datasource=github-tags depName=docker/compose versioning=semver
-        default: 5.5.1
+        default: 5.6.0
         type: string
       file-filter:
         type: string
