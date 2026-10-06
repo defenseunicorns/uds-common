@@ -26,7 +26,7 @@ tasks:
       compose_bridge_version:
         description: The version of compose-bridge-uds to use
         # renovate: datasource=github-tags depName=defenseunicorns/compose-bridge-uds versioning=semver
-        default: 1.2.0
+        default: 1.3.0
     actions:
       - description: Resolve the Zarf package definition path
         cmd: |
