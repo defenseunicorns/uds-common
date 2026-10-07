@@ -298,7 +298,7 @@ tasks:
                         name = names[i]
                         call = "(/?[[:alnum:]_.-]+/)*" name boundary
                         if (script ~ (start call) || script ~ (start prefix call)) {
-                          printf "%s:%s: direct %s call in a package action; use Zarf tools\n", file, line, name
+                          printf "%s:%s: direct %s call in a package action. Use './zarf tools %s'.\n", file, line, name, name
                           failed = 1
                         }
                       }
