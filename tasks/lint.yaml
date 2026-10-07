@@ -290,7 +290,7 @@ tasks:
                       count = split(commands, names, /[[:space:]]+/)
                     }
 
-                    function check(script,    i, name, boundary, start, prefix, call, uds_call, detected_call) {
+                    function check(script,    i, name, boundary, start, prefix, call, uds_call, zarf_call, detected_call) {
                       boundary = "([[:space:];|&)`]|$)"
                       start = "(^|[;&|(`])[[:space:]]*"
                       prefix = "(if|then|do|while|until|!|time|command|exec|env|sudo)[[:space:]]+"
@@ -298,11 +298,14 @@ tasks:
                         name = names[i]
                         call = "(/?[[:alnum:]_.-]+/)*" name boundary
                         uds_call = "(/?[[:alnum:]_.-]+/)*uds[[:space:]]+zarf[[:space:]]+tools[[:space:]]+" name boundary
+                        zarf_call = "zarf[[:space:]]+tools[[:space:]]+" name boundary
                         detected_call = ""
                         if (script ~ (start call) || script ~ (start prefix call)) {
                           detected_call = name
                         } else if (script ~ (start uds_call) || script ~ (start prefix uds_call)) {
                           detected_call = "uds zarf tools " name
+                        } else if (script ~ (start zarf_call) || script ~ (start prefix zarf_call)) {
+                          detected_call = "zarf tools " name
                         }
                         if (detected_call != "") {
                           printf "%s:%s: Found \"%s\" call in this package action. Replace with \"%s tools %s\"\n", file, line, detected_call, "." "/zarf", name
