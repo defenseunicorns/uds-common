@@ -1,4 +1,4 @@
-# Copyright 2024 Defense Unicorns
+# Copyright 2024-2026 Defense Unicorns
 # SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
 
 variables:
@@ -36,6 +36,7 @@ tasks:
     actions:
       - task: yaml
       - task: shell
+      - task: zarf-tools
       - task: license
         if: ${{ eq .variables.RUN_LICENSE_CHECKS "true" }}
       - task: tasks
@@ -242,6 +243,92 @@ tasks:
           done
           shopt -u nullglob #reset nullglob behavior
           shopt -u extglob #reset extglob behavior
+
+  - name: zarf-tools
+    description: Reject external tool calls with Zarf equivalents in package actions
+    inputs:
+      commands:
+        default: helm kubectl yq archiver
+        description: Space-separated command names to reject in package actions.
+      paths:
+        default: .
+        description: Space-separated roots to search for zarf.yaml files.
+    actions:
+      - description: Check package action commands for external tool calls
+        shell:
+          linux: bash
+          darwin: bash
+        cmd: |
+          set -o pipefail
+          read -r -a roots <<< '${{ .inputs.paths }}'
+          [ "${#roots[@]}" -eq 0 ] && roots=(.)
+          commands='${{ .inputs.commands }}'
+          if [ -z "$commands" ]; then
+            echo "No commands provided for the zarf-tools lint task" >&2
+            exit 1
+          fi
+          read -r -a command_names <<< "$commands"
+          for name in "${command_names[@]}"; do
+            if [[ ! "$name" =~ ^[[:alnum:]_-]+$ ]]; then
+              printf 'Invalid command name: %s\n' "$name" >&2
+              exit 1
+            fi
+          done
+          query='.components[].actions | (.onCreate,.onDeploy,.onRemove) | (.before,.after,.onSuccess,.onFailure)[]? | select(.cmd) | ((.cmd | line | tostring) + "\t" + .cmd)'
+          failed=0
+
+          while IFS= read -r -d '' package_file; do
+            if ! ./zarf tools yq -r -0 "$query" "$package_file" |
+              (
+                action_failed=0
+                while IFS= read -r -d '' action; do
+                  source_line=${action%%$'\t'*}
+                  script=${action#*$'\t'}
+
+                  if ! printf '%s\n' "$script" | awk -v file="$package_file" -v line="$source_line" -v commands="${command_names[*]}" '
+                    BEGIN {
+                      count = split(commands, names, /[[:space:]]+/)
+                    }
+
+                    function check(script,    i, name, boundary, start, prefix, call) {
+                      boundary = "([[:space:];|&)`]|$)"
+                      start = "(^|[;&|(`])[[:space:]]*"
+                      prefix = "(if|then|do|while|until|!|time|command|exec|env|sudo)[[:space:]]+"
+                      for (i = 1; i <= count; i++) {
+                        name = names[i]
+                        call = "(/?[[:alnum:]_.-]+/)*" name boundary
+                        if (script ~ (start call) || script ~ (start prefix call)) {
+                          printf "%s:%s: direct %s call in a package action; use Zarf tools\n", file, line, name
+                          failed = 1
+                        }
+                      }
+                    }
+
+                    {
+                      script = script $0
+                      if (sub(/\\$/, "", script)) {
+                        script = script " "
+                        next
+                      }
+                      check(script)
+                      script = ""
+                    }
+
+                    END {
+                      if (script != "") check(script)
+                      exit failed
+                    }
+                  '; then
+                    action_failed=1
+                  fi
+                done
+                exit "$action_failed"
+              ); then
+              failed=1
+            fi
+          done < <(find "${roots[@]}" -type f -name zarf.yaml -print0)
+
+          exit "$failed"
 
   - name: license
     description: Lint for the SPDX license identifier being in source files

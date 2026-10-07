@@ -127,11 +127,18 @@ ignore: [] # an array of paths to ignore
 | **renovate** | Validate Renovate configuration |
 | **yaml** | Run YAML linting checks |
 | **shell** | Run shellcheck on all Maru tasks, GitHub workflows, Zarf packages, and local shell scripts |
+| **zarf-tools** | Reject external tool calls with Zarf equivalents in package actions |
 | **license** | Lint for the SPDX license identifier being in source files |
 | **fix-license** | Add the SPDX license identifier to source files |
 | **tasks** | Dry run all tasks in the base tasks file |
 | **helm** | Run helm lint on all Helm charts in the repository |
 | **helm-template** | Dry run render all Helm charts to catch template execution errors |
+
+The `zarf-tools` task checks `cmd` entries in Zarf component lifecycle actions. It rejects direct `helm`, `kubectl`, `yq`, and `archiver` calls by default. Use the corresponding `./zarf tools` commands in package actions.
+
+Pass a space-separated `commands` input to check a different list of tools with Zarf equivalents, such as `uds run lint:zarf-tools --with commands="kubectl yq"`. `lint:all` uses the default command list defined by `zarf-tools`. Pass the `paths` input to limit the search to specific roots.
+
+This check scans inline action commands. It does not inspect scripts called by an action or commands assembled at runtime.
 
 The `renovate` task is opt-in and defaults to `renovate.json`.
 It requires Node.js 24.11+ (24.x) and npm; Renovate is downloaded automatically.
