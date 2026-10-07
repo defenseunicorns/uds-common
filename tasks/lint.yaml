@@ -284,19 +284,29 @@ tasks:
           done
 
           query='.components[].actions | (.onCreate,.onDeploy,.onRemove) | (.before,.after,.onSuccess,.onFailure)[]? | select(.cmd) | ((.cmd | line | tostring) + "\t" + .cmd)'
+          single_quote="'"
+          unquoted_value="[^[:space:];|&()\"${single_quote}]+"
+          double_quoted_value='"[^"]*"'
+          single_quoted_value="${single_quote}[^${single_quote}]*${single_quote}"
+          assignment_value="(${unquoted_value}|${double_quoted_value}|${single_quoted_value})*"
           command_prefix='(^|[;&|()<>])[[:space:]]*'
-          command_prefix+='((if|then|do|while|until|!|time|command|exec|env|sudo)[[:space:]]+|[[:alpha:]_][[:alnum:]_]*=[^[:space:]]+[[:space:]]+)*'
+          command_prefix+="((if|then|do|while|until|!|time|command|exec|env|sudo)[[:space:]]+|[[:alpha:]_][[:alnum:]_]*=${assignment_value}[[:space:]]+)*"
           command_path='/?([[:alnum:]_.-]+/)*'
           command_end='([[:space:];|&()<>]|$)'
           # Maru resolves literal local Zarf paths before Bash runs the action.
           zarf_command='.'
           zarf_command+='/zarf'
           allowed_call="s#\\${zarf_command}[[:space:]]+tools[[:space:]]+(${command_pattern})#zarf-tool#g"
-          actions_file=$(mktemp) || exit 1
-          trap 'rm -f "$actions_file"' EXIT
+          package_files=$(mktemp) || exit 1
+          actions_file=$(mktemp) || { rm -f "$package_files"; exit 1; }
+          trap 'rm -f "$package_files" "$actions_file"' EXIT
+          if ! find "${roots[@]}" -type f -name zarf.yaml -print0 > "$package_files"; then
+            printf 'Unable to search package roots: %s\n' "${roots[*]}" >&2
+            exit 1
+          fi
           failed=0
 
-          while IFS= read -r package_file; do
+          while IFS= read -r -d '' package_file; do
             if ! ./zarf tools yq -r -0 "$query" "$package_file" > "$actions_file"; then
               printf 'Unable to read package actions from %s\n' "$package_file" >&2
               failed=1
@@ -333,7 +343,7 @@ tasks:
                 done
               done <<< "$script"
             done < "$actions_file"
-          done < <(find "${roots[@]}" -type f -name zarf.yaml)
+          done < "$package_files"
 
           exit "$failed"
 
