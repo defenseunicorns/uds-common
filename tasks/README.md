@@ -134,7 +134,7 @@ ignore: [] # an array of paths to ignore
 | **helm** | Run helm lint on all Helm charts in the repository |
 | **helm-template** | Dry run render all Helm charts to catch template execution errors |
 
-The `zarf-tools` task checks `cmd` entries in Zarf component lifecycle actions. It rejects direct `helm`, `kubectl`, `yq`, and `archiver` calls by default. Use the corresponding `./zarf tools` commands in package actions.
+The `zarf-tools` task checks `cmd` entries in Zarf component lifecycle actions. It rejects direct `helm`, `kubectl`, `yq`, and `archiver` calls by default, including calls through `uds zarf tools`. Use the corresponding `./zarf tools` commands in package actions. Calls in UDS task files are outside this check.
 
 Pass a space-separated `commands` input to check a different list of tools with Zarf equivalents, such as `uds run lint:zarf-tools --with commands="kubectl yq"`. `lint:all` uses the default command list defined by `zarf-tools`. Pass the `paths` input to limit the search to specific roots.
 

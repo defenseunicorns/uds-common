@@ -290,15 +290,22 @@ tasks:
                       count = split(commands, names, /[[:space:]]+/)
                     }
 
-                    function check(script,    i, name, boundary, start, prefix, call) {
+                    function check(script,    i, name, boundary, start, prefix, call, uds_call, detected_call) {
                       boundary = "([[:space:];|&)`]|$)"
                       start = "(^|[;&|(`])[[:space:]]*"
                       prefix = "(if|then|do|while|until|!|time|command|exec|env|sudo)[[:space:]]+"
                       for (i = 1; i <= count; i++) {
                         name = names[i]
                         call = "(/?[[:alnum:]_.-]+/)*" name boundary
+                        uds_call = "(/?[[:alnum:]_.-]+/)*uds[[:space:]]+zarf[[:space:]]+tools[[:space:]]+" name boundary
+                        detected_call = ""
                         if (script ~ (start call) || script ~ (start prefix call)) {
-                          printf "%s:%s: direct %s call in a package action. Use './zarf tools %s'.\n", file, line, name, name
+                          detected_call = name
+                        } else if (script ~ (start uds_call) || script ~ (start prefix uds_call)) {
+                          detected_call = "uds zarf tools " name
+                        }
+                        if (detected_call != "") {
+                          printf "%s:%s: Found \"%s\" call in this package action. Replace with \"%s tools %s\"\n", file, line, detected_call, "." "/zarf", name
                           failed = 1
                         }
                       }
