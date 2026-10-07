@@ -134,11 +134,11 @@ ignore: [] # an array of paths to ignore
 | **helm** | Run helm lint on all Helm charts in the repository |
 | **helm-template** | Dry run render all Helm charts to catch template execution errors |
 
-The `zarf-tools` task checks `cmd` entries in Zarf component lifecycle actions. It rejects direct `helm`, `kubectl`, `yq`, and `archiver` calls by default, including calls through `uds zarf tools` or bare `zarf tools`. Use the corresponding `./zarf tools` commands in package actions. Calls in UDS task files are outside this check.
+The `zarf-tools` task checks inline `cmd` entries in Zarf component lifecycle actions for tools with Zarf equivalents. By default, it checks `helm`, `kubectl`, `yq`, and `archiver`, including calls through `uds zarf tools` or bare `zarf tools`. For each match, it reports the package file, action line, and corresponding `./zarf tools` replacement. The task does not check UDS task files.
 
-Pass a space-separated `commands` input to check a different list of tools with Zarf equivalents, such as `uds run lint:zarf-tools --with commands="kubectl yq"`. `lint:all` uses the default command list defined by `zarf-tools`. Pass the `paths` input to limit the search to specific roots.
+Pass a space-separated `commands` input to check a different list of tools, such as `uds run lint:zarf-tools --with commands="kubectl yq"`. `lint:all` uses the default command list. Pass the `paths` input to limit the search to specific roots.
 
-This check scans inline action commands. It does not inspect scripts called by an action or commands assembled at runtime.
+The task uses pattern matching at common shell command boundaries. It does not parse full shell syntax, inspect scripts called by an action, or detect command names assembled at runtime.
 
 The `renovate` task is opt-in and defaults to `renovate.json`.
 It requires Node.js 24.11+ (24.x) and npm; Renovate is downloaded automatically.
