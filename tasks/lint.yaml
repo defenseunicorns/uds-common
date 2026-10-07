@@ -275,6 +275,12 @@ tasks:
             fi
           done
           query='.components[].actions | (.onCreate,.onDeploy,.onRemove) | (.before,.after,.onSuccess,.onFailure)[]? | select(.cmd) | ((.cmd | line | tostring) + "\t" + .cmd)'
+          package_files=$(mktemp) || exit 1
+          trap 'rm -f "$package_files"' EXIT
+          if ! find "${roots[@]}" -type f -name zarf.yaml -print0 > "$package_files"; then
+            printf 'Unable to search package roots: %s\n' "${roots[*]}" >&2
+            exit 1
+          fi
           failed=0
 
           while IFS= read -r -d '' package_file; do
@@ -290,21 +296,24 @@ tasks:
                       count = split(commands, names, /[[:space:]]+/)
                     }
 
-                    function check(script,    i, name, boundary, start, prefix, call, uds_call, zarf_call, detected_call) {
+                    function check(script,    i, name, boundary, start, prefix, single_quote, value, assignment, call, uds_call, zarf_call, detected_call) {
                       boundary = "([[:space:];|&)`]|$)"
                       start = "(^|[;&|(`])[[:space:]]*"
-                      prefix = "(if|then|do|while|until|!|time|command|exec|env|sudo)[[:space:]]+"
+                      single_quote = sprintf("%c", 39)
+                      value = "[^[:space:];|&()\"" single_quote "]|\"[^\"]*\"|" single_quote "[^" single_quote "]*" single_quote
+                      assignment = "[[:alpha:]_][[:alnum:]_]*=(" value ")*[[:space:]]+"
+                      prefix = "(" assignment "|(if|then|do|while|until|!|time|command|exec|env|sudo)[[:space:]]+)*"
                       for (i = 1; i <= count; i++) {
                         name = names[i]
                         call = "(/?[[:alnum:]_.-]+/)*" name boundary
                         uds_call = "(/?[[:alnum:]_.-]+/)*uds[[:space:]]+zarf[[:space:]]+tools[[:space:]]+" name boundary
                         zarf_call = "zarf[[:space:]]+tools[[:space:]]+" name boundary
                         detected_call = ""
-                        if (script ~ (start call) || script ~ (start prefix call)) {
+                        if (script ~ (start prefix call)) {
                           detected_call = name
-                        } else if (script ~ (start uds_call) || script ~ (start prefix uds_call)) {
+                        } else if (script ~ (start prefix uds_call)) {
                           detected_call = "uds zarf tools " name
-                        } else if (script ~ (start zarf_call) || script ~ (start prefix zarf_call)) {
+                        } else if (script ~ (start prefix zarf_call)) {
                           detected_call = "zarf tools " name
                         }
                         if (detected_call != "") {
@@ -336,7 +345,7 @@ tasks:
               ); then
               failed=1
             fi
-          done < <(find "${roots[@]}" -type f -name zarf.yaml -print0)
+          done < "$package_files"
 
           exit "$failed"
 
