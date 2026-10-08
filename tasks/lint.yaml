@@ -286,7 +286,7 @@ tasks:
           query='.components[].actions | (.onCreate,.onDeploy,.onRemove) | (.before,.after,.onSuccess,.onFailure)[]? | select(.cmd) | ((.cmd | line | tostring) + "\t" + .cmd)'
           single_quote="'"
           unquoted_value="[^[:space:];|&()\"${single_quote}]+"
-          double_quoted_value='"[^"]*"'
+          double_quoted_value='"([^"\\]|\\.)*"'
           single_quoted_value="${single_quote}[^${single_quote}]*${single_quote}"
           assignment_value="(${unquoted_value}|${double_quoted_value}|${single_quoted_value})*"
           command_prefix='(^|[;&|()<>])[[:space:]]*'
@@ -296,7 +296,7 @@ tasks:
           # Maru resolves literal local Zarf paths before Bash runs the action.
           zarf_command='.'
           zarf_command+='/zarf'
-          allowed_call="s#\\${zarf_command}[[:space:]]+tools[[:space:]]+(${command_pattern})#zarf-tool#g"
+          allowed_call="s#(^|[[:space:];|&()<>])\\${zarf_command}[[:space:]]+tools[[:space:]]+(${command_pattern})#\\1zarf-tool#g"
           package_files=$(mktemp) || exit 1
           actions_file=$(mktemp) || { rm -f "$package_files"; exit 1; }
           trap 'rm -f "$package_files" "$actions_file"' EXIT
@@ -321,17 +321,19 @@ tasks:
               script=$(printf '%s\n' "$script" | sed -E "$allowed_call")
 
               while IFS= read -r script_line; do
+                # Quoted arguments can contain shell operators without starting a command.
+                scan_line=$(printf '%s\n' "$script_line" | sed -E "s/${double_quoted_value}//g; s/${single_quoted_value}//g")
                 for name in "${command_names[@]}"; do
                   direct_call="${command_prefix}${command_path}${name}${command_end}"
                   zarf_call="${command_prefix}${command_path}zarf[[:space:]]+tools[[:space:]]+${name}${command_end}"
                   uds_call="${command_prefix}${command_path}uds[[:space:]]+zarf[[:space:]]+tools[[:space:]]+${name}${command_end}"
                   detected_call=""
 
-                  if [[ "$script_line" =~ $uds_call ]]; then
+                  if [[ "$scan_line" =~ $uds_call ]]; then
                     detected_call="uds zarf tools $name"
-                  elif [[ "$script_line" =~ $zarf_call ]]; then
+                  elif [[ "$scan_line" =~ $zarf_call ]]; then
                     detected_call="zarf tools $name"
-                  elif [[ "$script_line" =~ $direct_call ]]; then
+                  elif [[ "$scan_line" =~ $direct_call ]]; then
                     detected_call="$name"
                   fi
 

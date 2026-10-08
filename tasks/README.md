@@ -138,7 +138,7 @@ The `zarf-tools` task checks inline `cmd` entries in Zarf component lifecycle ac
 
 Pass a space-separated `commands` input to check a different list of tools, such as `uds run lint:zarf-tools --with commands="kubectl yq"`. `lint:all` uses the default command list. Pass the `paths` input to limit the search to specific roots.
 
-The task uses pattern matching at common shell command boundaries. It does not parse full shell syntax, inspect scripts called by an action, or detect command names assembled at runtime.
+The task matches common shell command positions and ignores quoted text. It may miss command substitutions inside double quotes, scripts called by an action, and command names assembled at runtime.
 
 The `renovate` task is opt-in and defaults to `renovate.json`.
 It requires Node.js 24.11+ (24.x) and npm; Renovate is downloaded automatically.
