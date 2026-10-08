@@ -261,12 +261,7 @@ tasks:
         cmd: |
           read -r -a roots <<< '${{ .inputs.paths }}'
           [ "${#roots[@]}" -eq 0 ] && roots=(.)
-          commands='${{ .inputs.commands }}'
-          if [ -z "$commands" ]; then
-            echo "No commands provided for the zarf-tools lint task" >&2
-            exit 1
-          fi
-          read -r -a command_names <<< "$commands"
+          read -r -a command_names <<< '${{ .inputs.commands }}'
           if [ "${#command_names[@]}" -eq 0 ]; then
             echo "No commands provided for the zarf-tools lint task" >&2
             exit 1
@@ -325,6 +320,62 @@ tasks:
             fi
           }
 
+          check_script_line() {
+            local script_line="$1" package_file="$2" source_line="$3"
+            local scan_line substitution_line name detected_call
+            local direct_call zarf_call uds_call
+            local line_failed=0
+
+            # Double quotes suppress command boundaries, but substitutions inside them still run.
+            scan_line=$(printf '%s\n' "$script_line" | sed -E "s/${double_quoted_value}//g; s/${single_quoted_value}//g")
+            substitution_line=$(printf '%s\n' "$script_line" | sed -E "s/${single_quoted_value}//g")
+
+            for name in "${command_names[@]}"; do
+              direct_call="${command_path}${name}${command_end}"
+              zarf_call="${command_path}zarf[[:space:]]+tools[[:space:]]+${name}${command_end}"
+              uds_call="${command_path}uds[[:space:]]+zarf[[:space:]]+tools[[:space:]]+${name}${command_end}"
+              detected_call=""
+
+              if [[ "$scan_line" =~ ${command_prefix}${uds_call} ||
+                    "$substitution_line" =~ ${substitution_prefix}${uds_call} ]]; then
+                detected_call="uds zarf tools $name"
+              elif [[ "$scan_line" =~ ${command_prefix}${zarf_call} ||
+                      "$substitution_line" =~ ${substitution_prefix}${zarf_call} ]]; then
+                detected_call="zarf tools $name"
+              elif [[ "$scan_line" =~ ${command_prefix}${direct_call} ||
+                      "$substitution_line" =~ ${substitution_prefix}${direct_call} ]]; then
+                detected_call="$name"
+              fi
+
+              if [ -n "$detected_call" ]; then
+                printf '%s:%s: Found "%s" call in this package action. Replace with "%s tools %s"\n' \
+                  "$package_file" "$source_line" "$detected_call" "$zarf_command" "$name"
+                line_failed=1
+              fi
+            done
+
+            return "$line_failed"
+          }
+
+          check_action() {
+            local action="$1" package_file="$2"
+            local source_line script script_line action_failed=0
+
+            source_line=${action%%$'\t'*}
+            script=${action#*$'\t'}
+            script=$(join_continuations <<< "$script")
+            # Keep the supported local Zarf form from matching the shorter command name.
+            script=$(printf '%s\n' "$script" | sed -E "$allowed_call")
+
+            while IFS= read -r script_line; do
+              if ! check_script_line "$script_line" "$package_file" "$source_line"; then
+                action_failed=1
+              fi
+            done <<< "$script"
+
+            return "$action_failed"
+          }
+
           package_files=$(mktemp) || exit 1
           actions_file=$(mktemp) || { rm -f "$package_files"; exit 1; }
           trap 'rm -f "$package_files" "$actions_file"' EXIT
@@ -342,41 +393,9 @@ tasks:
             fi
 
             while IFS= read -r -d '' action; do
-              source_line=${action%%$'\t'*}
-              script=${action#*$'\t'}
-
-              script=$(join_continuations <<< "$script")
-              # Keep the supported local Zarf form from matching the shorter command name.
-              script=$(printf '%s\n' "$script" | sed -E "$allowed_call")
-
-              while IFS= read -r script_line; do
-                # Quoted arguments can contain shell operators without starting a command.
-                scan_line=$(printf '%s\n' "$script_line" | sed -E "s/${double_quoted_value}//g; s/${single_quoted_value}//g")
-                substitution_line=$(printf '%s\n' "$script_line" | sed -E "s/${single_quoted_value}//g")
-                for name in "${command_names[@]}"; do
-                  direct_call="${command_prefix}${command_path}${name}${command_end}"
-                  zarf_call="${command_prefix}${command_path}zarf[[:space:]]+tools[[:space:]]+${name}${command_end}"
-                  uds_call="${command_prefix}${command_path}uds[[:space:]]+zarf[[:space:]]+tools[[:space:]]+${name}${command_end}"
-                  direct_substitution="${substitution_prefix}${command_path}${name}${command_end}"
-                  zarf_substitution="${substitution_prefix}${command_path}zarf[[:space:]]+tools[[:space:]]+${name}${command_end}"
-                  uds_substitution="${substitution_prefix}${command_path}uds[[:space:]]+zarf[[:space:]]+tools[[:space:]]+${name}${command_end}"
-                  detected_call=""
-
-                  if [[ "$scan_line" =~ $uds_call || "$substitution_line" =~ $uds_substitution ]]; then
-                    detected_call="uds zarf tools $name"
-                  elif [[ "$scan_line" =~ $zarf_call || "$substitution_line" =~ $zarf_substitution ]]; then
-                    detected_call="zarf tools $name"
-                  elif [[ "$scan_line" =~ $direct_call || "$substitution_line" =~ $direct_substitution ]]; then
-                    detected_call="$name"
-                  fi
-
-                  if [ -n "$detected_call" ]; then
-                    printf '%s:%s: Found "%s" call in this package action. Replace with "%s tools %s"\n' \
-                      "$package_file" "$source_line" "$detected_call" "$zarf_command" "$name"
-                    failed=1
-                  fi
-                done
-              done <<< "$script"
+              if ! check_action "$action" "$package_file"; then
+                failed=1
+              fi
             done < "$actions_file"
           done < "$package_files"
 
