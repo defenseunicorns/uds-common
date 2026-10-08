@@ -299,6 +299,32 @@ tasks:
           zarf_command='.'
           zarf_command+='/zarf'
           allowed_call="s#(^|[[:space:];|&()<>])\\${zarf_command}[[:space:]]+tools[[:space:]]+(${command_pattern})#\\1zarf-tool#g"
+
+          join_continuations() {
+            local line remainder backslashes pending=""
+
+            while IFS= read -r line; do
+              remainder=$line
+              backslashes=0
+              while [[ "$remainder" == *\\ ]]; do
+                remainder=${remainder%\\}
+                backslashes=$((backslashes + 1))
+              done
+
+              # Only an odd number of trailing backslashes escapes the newline.
+              if (( backslashes % 2 )); then
+                pending+="${line%\\}"
+              else
+                printf '%s\n' "$pending$line"
+                pending=""
+              fi
+            done
+
+            if [ -n "$pending" ]; then
+              printf '%s\n' "$pending"
+            fi
+          }
+
           package_files=$(mktemp) || exit 1
           actions_file=$(mktemp) || { rm -f "$package_files"; exit 1; }
           trap 'rm -f "$package_files" "$actions_file"' EXIT
@@ -319,6 +345,7 @@ tasks:
               source_line=${action%%$'\t'*}
               script=${action#*$'\t'}
 
+              script=$(join_continuations <<< "$script")
               # Keep the supported local Zarf form from matching the shorter command name.
               script=$(printf '%s\n' "$script" | sed -E "$allowed_call")
 
