@@ -261,11 +261,15 @@ tasks:
         cmd: |
           read -r -a roots <<< '${{ .inputs.paths }}'
           [ "${#roots[@]}" -eq 0 ] && roots=(.)
+
           read -r -a command_names <<< '${{ .inputs.commands }}'
           if [ "${#command_names[@]}" -eq 0 ]; then
             echo "No commands provided for the zarf-tools lint task" >&2
             exit 1
           fi
+
+          # Build a regex OR pattern (e.g., "helm|kubectl|yq").
+          # Validate each name first so it can't change the regex.
           command_pattern=""
           for name in "${command_names[@]}"; do
             if [[ ! "$name" =~ ^[[:alnum:]_-]+$ ]]; then
@@ -278,7 +282,11 @@ tasks:
             command_pattern+="$name"
           done
 
+          # Get action commands and their YAML line numbers for error messages.
           query='.components[].actions | (.onCreate,.onDeploy,.onRemove) | (.before,.after,.onSuccess,.onFailure)[]? | select(.cmd) | ((.cmd | line | tostring) + "\t" + .cmd)'
+
+          # Look for tool calls at likely command positions. These regexes try to
+          # catch `helm install` without flagging echo "run helm install".
           single_quote="'"
           unquoted_value="[^[:space:];|&()\"${single_quote}]+"
           double_quoted_value='"([^"\\]|\\.)*"'
@@ -295,6 +303,7 @@ tasks:
           zarf_command+='/zarf'
           allowed_call="s#(^|[[:space:];|&()<>])\\${zarf_command}[[:space:]]+tools[[:space:]]+(${command_pattern})#\\1zarf-tool#g"
 
+          # Helpers to prepare action commands and check each line.
           join_continuations() {
             local line remainder backslashes pending=""
 
@@ -376,6 +385,7 @@ tasks:
             return "$action_failed"
           }
 
+          # Find package files and check their action commands.
           package_files=$(mktemp) || exit 1
           actions_file=$(mktemp) || { rm -f "$package_files"; exit 1; }
           trap 'rm -f "$package_files" "$actions_file"' EXIT
