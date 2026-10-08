@@ -329,6 +329,41 @@ tasks:
             fi
           }
 
+          # Heredoc bodies are outside this lint's scope, even when Bash expands them.
+          skip_heredoc_bodies() {
+            local line candidate delimiter_line marker next=0
+            local quoted_marker="<<(-?[[:space:]]*)[\"${single_quote}]([[:alpha:]_][[:alnum:]_.-]*)[\"${single_quote}]"
+            local escaped_marker='<<(-?[[:space:]]*)\\([[:alpha:]_][[:alnum:]_.-]*)'
+            local heredoc_start='(^|[^<])<<(-?)[[:space:]]*([[:alpha:]_][[:alnum:]_.-]*)([[:space:];|&()<>]|$)'
+            local -a delimiters=() strip_tabs=()
+
+            while IFS= read -r line; do
+              if (( next < ${#delimiters[@]} )); then
+                delimiter_line=$line
+                if [ "${strip_tabs[next]}" = "-" ]; then
+                  while [[ "$delimiter_line" == $'\t'* ]]; do
+                    delimiter_line=${delimiter_line#$'\t'}
+                  done
+                fi
+                if [ "$delimiter_line" = "${delimiters[next]}" ]; then
+                  next=$((next + 1))
+                fi
+                continue
+              fi
+
+              printf '%s\n' "$line"
+              # Keep quoted delimiters while hiding strings and comments that only mention <<.
+              candidate=$(printf '%s\n' "$line" |
+                sed -E "s/${quoted_marker}/<<\\1\\2/g; s/${escaped_marker}/<<\\1\\2/g; s/${double_quoted_value}/@/g; s/${single_quoted_value}/@/g; s/(^|[[:space:];|&()])#.*$//")
+              while [[ "$candidate" =~ $heredoc_start ]]; do
+                marker=${BASH_REMATCH[0]}
+                strip_tabs+=("${BASH_REMATCH[2]}")
+                delimiters+=("${BASH_REMATCH[3]}")
+                candidate=${candidate#*"$marker"}
+              done
+            done
+          }
+
           check_script_line() {
             local script_line="$1" package_file="$2" source_line="$3"
             local scan_line substitution_line name detected_call
@@ -372,6 +407,7 @@ tasks:
 
             source_line=${action%%$'\t'*}
             script=${action#*$'\t'}
+            script=$(skip_heredoc_bodies <<< "$script")
             script=$(join_continuations <<< "$script")
             # Keep the supported local Zarf form from matching the shorter command name.
             script=$(printf '%s\n' "$script" | sed -E "$allowed_call")
