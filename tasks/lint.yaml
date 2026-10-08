@@ -292,8 +292,8 @@ tasks:
           double_quoted_value='"([^"\\]|\\.)*"'
           single_quoted_value="${single_quote}[^${single_quote}]*${single_quote}"
           assignment_value="(${unquoted_value}|${double_quoted_value}|${single_quoted_value})*"
-          command_leading="((if|then|do|while|until|!|time|command|exec|env|sudo)[[:space:]]+|[[:alpha:]_][[:alnum:]_]*=${assignment_value}[[:space:]]+)*"
-          command_prefix="(^|[;&|()<>])[[:space:]]*${command_leading}"
+          command_leading="((if|elif|then|do|while|until|!|time|command|exec|env|sudo)[[:space:]]+|[[:alpha:]_][[:alnum:]_]*=${assignment_value}[[:space:]]+)*"
+          command_prefix="(^|[;&|()])[[:space:]]*${command_leading}"
           substitution_prefix='(^|[^\\])\$\([[:space:]]*'
           substitution_prefix+="$command_leading"
           command_path='/?([[:alnum:]_.-]+/)*'
