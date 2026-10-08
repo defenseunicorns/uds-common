@@ -289,8 +289,10 @@ tasks:
           double_quoted_value='"([^"\\]|\\.)*"'
           single_quoted_value="${single_quote}[^${single_quote}]*${single_quote}"
           assignment_value="(${unquoted_value}|${double_quoted_value}|${single_quoted_value})*"
-          command_prefix='(^|[;&|()<>])[[:space:]]*'
-          command_prefix+="((if|then|do|while|until|!|time|command|exec|env|sudo)[[:space:]]+|[[:alpha:]_][[:alnum:]_]*=${assignment_value}[[:space:]]+)*"
+          command_leading="((if|then|do|while|until|!|time|command|exec|env|sudo)[[:space:]]+|[[:alpha:]_][[:alnum:]_]*=${assignment_value}[[:space:]]+)*"
+          command_prefix="(^|[;&|()<>])[[:space:]]*${command_leading}"
+          substitution_prefix='(^|[^\\])\$\([[:space:]]*'
+          substitution_prefix+="$command_leading"
           command_path='/?([[:alnum:]_.-]+/)*'
           command_end='([[:space:];|&()<>]|$)'
           # Maru resolves literal local Zarf paths before Bash runs the action.
@@ -323,17 +325,21 @@ tasks:
               while IFS= read -r script_line; do
                 # Quoted arguments can contain shell operators without starting a command.
                 scan_line=$(printf '%s\n' "$script_line" | sed -E "s/${double_quoted_value}//g; s/${single_quoted_value}//g")
+                substitution_line=$(printf '%s\n' "$script_line" | sed -E "s/${single_quoted_value}//g")
                 for name in "${command_names[@]}"; do
                   direct_call="${command_prefix}${command_path}${name}${command_end}"
                   zarf_call="${command_prefix}${command_path}zarf[[:space:]]+tools[[:space:]]+${name}${command_end}"
                   uds_call="${command_prefix}${command_path}uds[[:space:]]+zarf[[:space:]]+tools[[:space:]]+${name}${command_end}"
+                  direct_substitution="${substitution_prefix}${command_path}${name}${command_end}"
+                  zarf_substitution="${substitution_prefix}${command_path}zarf[[:space:]]+tools[[:space:]]+${name}${command_end}"
+                  uds_substitution="${substitution_prefix}${command_path}uds[[:space:]]+zarf[[:space:]]+tools[[:space:]]+${name}${command_end}"
                   detected_call=""
 
-                  if [[ "$scan_line" =~ $uds_call ]]; then
+                  if [[ "$scan_line" =~ $uds_call || "$substitution_line" =~ $uds_substitution ]]; then
                     detected_call="uds zarf tools $name"
-                  elif [[ "$scan_line" =~ $zarf_call ]]; then
+                  elif [[ "$scan_line" =~ $zarf_call || "$substitution_line" =~ $zarf_substitution ]]; then
                     detected_call="zarf tools $name"
-                  elif [[ "$scan_line" =~ $direct_call ]]; then
+                  elif [[ "$scan_line" =~ $direct_call || "$substitution_line" =~ $direct_substitution ]]; then
                     detected_call="$name"
                   fi
 
