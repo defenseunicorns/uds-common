@@ -603,3 +603,98 @@ tasks:
             printf "\n\033[0;36mChecking '\033[1;33m%s\033[0;36m' with --dry-run\033[0m\n" "$task"
             ./uds run "$task" --dry-run
           done
+
+  - name: values-generate
+    description: Regenerate the Zarf values schema after successful generation
+    inputs:
+      path:
+        description: Path to the Zarf package definition
+        default: .
+      flavor:
+        description: Package flavor used to generate the schema; empty for an unflavored package
+        default: upstream
+    actions:
+      - description: Generate and replace the values schema
+        env:
+          - VALUES_PACKAGE_PATH=${{ .inputs.path }}
+          - VALUES_FLAVOR=${{ .inputs.flavor }}
+        shell:
+          linux: bash
+          darwin: bash
+        cmd: |
+          set -euo pipefail
+          cd "$VALUES_PACKAGE_PATH"
+
+          schema=$(./zarf tools yq -r '.values.schema // ""' zarf.yaml)
+          if [ -z "$schema" ]; then
+            echo "ERROR: Declare values.schema in zarf.yaml before running this task." >&2
+            exit 1
+          fi
+          if [ ! -f "$schema" ]; then
+            echo "ERROR: Referenced schema does not exist: $schema" >&2
+            exit 1
+          fi
+
+          tmp=$(mktemp "${schema}.XXXXXX")
+          trap 'rm -f "$tmp"' EXIT
+          args=(dev generate-schema . --delete-not-found)
+          if [ -n "$VALUES_FLAVOR" ]; then
+            args+=(--flavor "$VALUES_FLAVOR")
+          fi
+          if ! ./zarf "${args[@]}" > "$tmp"; then
+            echo "ERROR: Zarf values schema generation failed." >&2
+            exit 1
+          fi
+
+          mv "$tmp" "$schema"
+          echo "Updated Zarf values schema: $schema"
+
+  - name: values-check
+    description: Check Zarf values schema freshness without changing the schema
+    inputs:
+      path:
+        description: Path to the Zarf package definition
+        default: .
+      flavor:
+        description: Package flavor used to generate the schema; empty for an unflavored package
+        default: upstream
+    actions:
+      - description: Check the values schema for drift
+        env:
+          - VALUES_PACKAGE_PATH=${{ .inputs.path }}
+          - VALUES_FLAVOR=${{ .inputs.flavor }}
+        shell:
+          linux: bash
+          darwin: bash
+        cmd: |
+          set -euo pipefail
+          cd "$VALUES_PACKAGE_PATH"
+
+          schema=$(./zarf tools yq -r '.values.schema // ""' zarf.yaml)
+          if [ -z "$schema" ]; then
+            echo "ERROR: Declare values.schema in zarf.yaml before running this task." >&2
+            exit 1
+          fi
+          if [ ! -f "$schema" ]; then
+            echo "ERROR: Referenced schema does not exist: $schema" >&2
+            exit 1
+          fi
+
+          tmp=$(mktemp "${schema}.XXXXXX")
+          trap 'rm -f "$tmp"' EXIT
+          args=(dev generate-schema . --delete-not-found)
+          if [ -n "$VALUES_FLAVOR" ]; then
+            args+=(--flavor "$VALUES_FLAVOR")
+          fi
+          if ! ./zarf "${args[@]}" > "$tmp"; then
+            echo "ERROR: Zarf values schema generation failed." >&2
+            exit 1
+          fi
+
+          if ! cmp -s "$schema" "$tmp"; then
+            echo "ERROR: Zarf values schema is out of date: $schema" >&2
+            echo "Run lint:values-generate with the same path, flavor, and UDS CLI version, then review and commit the schema." >&2
+            diff -u "$schema" "$tmp" || true
+            exit 1
+          fi
+          echo "Zarf values schema is up to date: $schema"
