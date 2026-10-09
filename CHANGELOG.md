@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.31.0](https://github.com/defenseunicorns/uds-common/compare/v1.30.1...v1.31.0) (2026-10-09)
+
+
+### Features
+
+* add optional zarf values lint tasks ([#796](https://github.com/defenseunicorns/uds-common/issues/796)) ([cb96c9f](https://github.com/defenseunicorns/uds-common/commit/cb96c9faad7f438b6c09409a38ec250be63be5bd))
+
+
+### Miscellaneous
+
+* **deps:** update support-deps to v44.132.5 ([#791](https://github.com/defenseunicorns/uds-common/issues/791)) ([1969c34](https://github.com/defenseunicorns/uds-common/commit/1969c34610ac705728bb75f02bc64457ee7bd981))
+* **deps:** update uds common foundation dependencies to v0.39.0 ([#792](https://github.com/defenseunicorns/uds-common/issues/792)) ([e1c4fab](https://github.com/defenseunicorns/uds-common/commit/e1c4fabb56afa39b5b07aa7f262a2cad6057e76d))
+* **deps:** update uds common support dependencies ([#789](https://github.com/defenseunicorns/uds-common/issues/789)) ([fc8ea11](https://github.com/defenseunicorns/uds-common/commit/fc8ea11ecba079f48a0f22ca884f23300216b39e))
+
 ## [1.30.1](https://github.com/defenseunicorns/uds-common/compare/v1.30.0...v1.30.1) (2026-10-01)
 
 
