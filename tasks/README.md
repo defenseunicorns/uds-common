@@ -132,8 +132,8 @@ ignore: [] # an array of paths to ignore
 | **tasks** | Dry run all tasks in the base tasks file |
 | **helm** | Run helm lint on all Helm charts in the repository |
 | **helm-template** | Dry run render all Helm charts to catch template execution errors |
-| **values-generate** | Regenerate the schema referenced by the package's `values.schema` |
-| **values-check** | Check the Zarf values schema for drift without modifying it |
+| **values-generate** | Regenerate the Zarf values schema after successful generation |
+| **values-check** | Check Zarf values schema freshness without changing the schema |
 
 The `renovate` task is opt-in and defaults to `renovate.json`.
 It requires Node.js 24.11+ (24.x) and npm; Renovate is downloaded automatically.
