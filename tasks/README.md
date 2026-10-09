@@ -132,6 +132,8 @@ ignore: [] # an array of paths to ignore
 | **tasks** | Dry run all tasks in the base tasks file |
 | **helm** | Run helm lint on all Helm charts in the repository |
 | **helm-template** | Dry run render all Helm charts to catch template execution errors |
+| **values-generate** | Regenerate the schema referenced by the package's `values.schema` |
+| **values-check** | Check the Zarf values schema for drift without modifying it |
 
 The `renovate` task is opt-in and defaults to `renovate.json`.
 It requires Node.js 24.11+ (24.x) and npm; Renovate is downloaded automatically.
@@ -140,6 +142,63 @@ It requires Node.js 24.11+ (24.x) and npm; Renovate is downloaded automatically.
 uds run lint:renovate
 uds run lint:renovate --with file=config/renovate.json5
 ```
+
+#### Optional Zarf values schema checks
+
+Like `renovate`, the `values-generate` and `values-check` tasks are opt-in and are
+not included in `lint:all`. Package repositories can use them through their
+existing remote include of `tasks/lint.yaml`; no local lint wrapper is needed.
+Update that include to a release containing these tasks before enabling the check.
+
+```bash
+uds run lint:values-generate
+uds run lint:values-check
+```
+
+Both tasks accept `path` (default `.`) and `flavor` (default `upstream`):
+
+```bash
+uds run lint:values-generate --with path=packages/irsa --with flavor=registry1
+uds run lint:values-check --with path=packages/irsa --with flavor=registry1
+# For a package without flavors:
+uds run lint:values-check --with flavor=""
+```
+
+The schema path is read from `values.schema` in the selected package's `zarf.yaml`,
+relative to the package directory. The schema file must already exist with a
+valid JSON Schema declaration, as required by Zarf's schema generator. Missing
+configuration, missing schema files, and generation failures fail the task rather
+than silently skipping it.
+
+`values-check` regenerates with `--delete-not-found` into a temporary file and
+compares the result with the existing schema. It runs locally as well as in CI,
+prints the full diff on drift, and leaves the schema unchanged. It does not
+require a Git checkout or a clean working tree. `values-generate` replaces the
+schema only after successful generation. Both tasks clean up temporary files.
+
+To enable the check in the existing reusable GitHub lint workflow:
+
+```yaml
+jobs:
+  lint:
+    uses: defenseunicorns/uds-common/.github/workflows/callable-lint.yaml@<release>
+    with:
+      values-check: true
+      values-path: .
+      values-flavor: upstream
+    secrets: inherit
+```
+
+The workflow defaults to `values-check: false`, preserving existing consumers'
+lint behavior. The optional check runs after the existing lint step. Pin both the
+workflow and task include to the same release containing these capabilities.
+
+Use the same UDS CLI version locally and in CI: the tasks use its embedded Zarf
+through `./zarf`, and generator versions can differ in type inference and output
+formatting. The reusable lint workflow currently installs UDS CLI v0.39.0. Use
+`values-generate` to produce the checked-in schema in the same stdout format used
+by `values-check`, then review and commit the result. A flavor-specific schema
+should be generated and checked using the same flavor.
 
 The `shell` task accepts a space-separated `exclusion` input for directories that should be skipped by shellcheck:
 
