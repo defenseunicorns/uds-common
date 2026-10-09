@@ -1,4 +1,4 @@
-# Copyright 2024 Defense Unicorns
+# Copyright 2024-2026 Defense Unicorns
 # SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
 
 variables:
@@ -36,6 +36,7 @@ tasks:
     actions:
       - task: yaml
       - task: shell
+      - task: zarf-tools
       - task: license
         if: ${{ eq .variables.RUN_LICENSE_CHECKS "true" }}
       - task: tasks
@@ -242,6 +243,209 @@ tasks:
           done
           shopt -u nullglob #reset nullglob behavior
           shopt -u extglob #reset extglob behavior
+
+  - name: zarf-tools
+    description: Reject external tool calls with Zarf equivalents in package actions
+    inputs:
+      commands:
+        default: helm kubectl yq archiver
+        description: Space-separated command names to reject in package actions.
+      paths:
+        default: .
+        description: Space-separated roots to search for zarf.yaml files.
+    actions:
+      - description: Check package action commands for external tool calls
+        shell:
+          linux: bash
+          darwin: bash
+        cmd: |
+          read -r -a roots <<< '${{ .inputs.paths }}'
+          [ "${#roots[@]}" -eq 0 ] && roots=(.)
+
+          read -r -a command_names <<< '${{ .inputs.commands }}'
+          if [ "${#command_names[@]}" -eq 0 ]; then
+            echo "No commands provided for the zarf-tools lint task" >&2
+            exit 1
+          fi
+
+          # Build a regex OR pattern (e.g., "helm|kubectl|yq").
+          # Validate each name first so it can't change the regex.
+          command_pattern=""
+          for name in "${command_names[@]}"; do
+            if [[ ! "$name" =~ ^[[:alnum:]_-]+$ ]]; then
+              printf 'Invalid command name: %s\n' "$name" >&2
+              exit 1
+            fi
+            if [ -n "$command_pattern" ]; then
+              command_pattern+="|"
+            fi
+            command_pattern+="$name"
+          done
+
+          # Get action commands and their YAML line numbers for error messages.
+          query='.components[].actions | (.onCreate,.onDeploy,.onRemove) | (.before,.after,.onSuccess,.onFailure)[]? | select(.cmd) | ((.cmd | line | tostring) + "\t" + .cmd)'
+
+          # Look for tool calls at likely command positions. These regexes try to
+          # catch `helm install` without flagging echo "run helm install".
+          single_quote="'"
+          unquoted_value="[^[:space:];|&()\"${single_quote}]+"
+          double_quoted_value='"([^"\\]|\\.)*"'
+          single_quoted_value="${single_quote}[^${single_quote}]*${single_quote}"
+          assignment_value="(${unquoted_value}|${double_quoted_value}|${single_quoted_value})*"
+          command_leading="((if|elif|then|do|while|until|!|time|command|exec|env|sudo)[[:space:]]+|[[:alpha:]_][[:alnum:]_]*=${assignment_value}[[:space:]]+)*"
+          command_prefix="(^|[;&|()])[[:space:]]*${command_leading}"
+          substitution_prefix='(^|[^\\])\$\([[:space:]]*'
+          substitution_prefix+="$command_leading"
+          command_path='/?([[:alnum:]_.-]+/)*'
+          command_end='([[:space:];|&()<>]|$)'
+          # Maru resolves literal local Zarf paths before Bash runs the action.
+          zarf_command='.'
+          zarf_command+='/zarf'
+          allowed_call="s#(^|[[:space:];|&()<>])\\${zarf_command}[[:space:]]+tools[[:space:]]+(${command_pattern})#\\1zarf-tool#g"
+
+          # Helpers to prepare action commands and check each line.
+          join_continuations() {
+            local line remainder backslashes pending=""
+
+            while IFS= read -r line; do
+              remainder=$line
+              backslashes=0
+              while [[ "$remainder" == *\\ ]]; do
+                remainder=${remainder%\\}
+                backslashes=$((backslashes + 1))
+              done
+
+              # Only an odd number of trailing backslashes escapes the newline.
+              if (( backslashes % 2 )); then
+                pending+="${line%\\}"
+              else
+                printf '%s\n' "$pending$line"
+                pending=""
+              fi
+            done
+
+            if [ -n "$pending" ]; then
+              printf '%s\n' "$pending"
+            fi
+          }
+
+          # Heredoc bodies are outside this lint's scope, even when Bash expands them.
+          skip_heredoc_bodies() {
+            local line candidate delimiter_line marker next=0
+            local quoted_marker="<<(-?[[:space:]]*)[\"${single_quote}]([[:alpha:]_][[:alnum:]_.-]*)[\"${single_quote}]"
+            local escaped_marker='<<(-?[[:space:]]*)\\([[:alpha:]_][[:alnum:]_.-]*)'
+            local heredoc_start='(^|[^<])<<(-?)[[:space:]]*([[:alpha:]_][[:alnum:]_.-]*)([[:space:];|&()<>]|$)'
+            local -a delimiters=() strip_tabs=()
+
+            while IFS= read -r line; do
+              if (( next < ${#delimiters[@]} )); then
+                delimiter_line=$line
+                if [ "${strip_tabs[next]}" = "-" ]; then
+                  while [[ "$delimiter_line" == $'\t'* ]]; do
+                    delimiter_line=${delimiter_line#$'\t'}
+                  done
+                fi
+                if [ "$delimiter_line" = "${delimiters[next]}" ]; then
+                  next=$((next + 1))
+                fi
+                continue
+              fi
+
+              printf '%s\n' "$line"
+              # Keep quoted delimiters while hiding strings and comments that only mention <<.
+              candidate=$(printf '%s\n' "$line" |
+                sed -E "s/${quoted_marker}/<<\\1\\2/g; s/${escaped_marker}/<<\\1\\2/g; s/${double_quoted_value}/@/g; s/${single_quoted_value}/@/g; s/(^|[[:space:];|&()])#.*$//")
+              while [[ "$candidate" =~ $heredoc_start ]]; do
+                marker=${BASH_REMATCH[0]}
+                strip_tabs+=("${BASH_REMATCH[2]}")
+                delimiters+=("${BASH_REMATCH[3]}")
+                candidate=${candidate#*"$marker"}
+              done
+            done
+          }
+
+          check_script_line() {
+            local script_line="$1" package_file="$2" source_line="$3"
+            local scan_line substitution_line name detected_call
+            local direct_call zarf_call uds_call
+            local line_failed=0
+
+            # Double quotes suppress command boundaries, but substitutions inside them still run.
+            scan_line=$(printf '%s\n' "$script_line" | sed -E "s/${double_quoted_value}//g; s/${single_quoted_value}//g")
+            substitution_line=$(printf '%s\n' "$script_line" | sed -E "s/${single_quoted_value}//g")
+
+            for name in "${command_names[@]}"; do
+              direct_call="${command_path}${name}${command_end}"
+              zarf_call="${command_path}zarf[[:space:]]+tools[[:space:]]+${name}${command_end}"
+              uds_call="${command_path}uds[[:space:]]+zarf[[:space:]]+tools[[:space:]]+${name}${command_end}"
+              detected_call=""
+
+              if [[ "$scan_line" =~ ${command_prefix}${uds_call} ||
+                    "$substitution_line" =~ ${substitution_prefix}${uds_call} ]]; then
+                detected_call="uds zarf tools $name"
+              elif [[ "$scan_line" =~ ${command_prefix}${zarf_call} ||
+                      "$substitution_line" =~ ${substitution_prefix}${zarf_call} ]]; then
+                detected_call="zarf tools $name"
+              elif [[ "$scan_line" =~ ${command_prefix}${direct_call} ||
+                      "$substitution_line" =~ ${substitution_prefix}${direct_call} ]]; then
+                detected_call="$name"
+              fi
+
+              if [ -n "$detected_call" ]; then
+                printf '%s:%s: Found "%s" call in this package action. Replace with "%s tools %s"\n' \
+                  "$package_file" "$source_line" "$detected_call" "$zarf_command" "$name"
+                line_failed=1
+              fi
+            done
+
+            return "$line_failed"
+          }
+
+          check_action() {
+            local action="$1" package_file="$2"
+            local source_line script script_line action_failed=0
+
+            source_line=${action%%$'\t'*}
+            script=${action#*$'\t'}
+            script=$(skip_heredoc_bodies <<< "$script")
+            script=$(join_continuations <<< "$script")
+            # Keep the supported local Zarf form from matching the shorter command name.
+            script=$(printf '%s\n' "$script" | sed -E "$allowed_call")
+
+            while IFS= read -r script_line; do
+              if ! check_script_line "$script_line" "$package_file" "$source_line"; then
+                action_failed=1
+              fi
+            done <<< "$script"
+
+            return "$action_failed"
+          }
+
+          # Find package files and check their action commands.
+          package_files=$(mktemp) || exit 1
+          actions_file=$(mktemp) || { rm -f "$package_files"; exit 1; }
+          trap 'rm -f "$package_files" "$actions_file"' EXIT
+          if ! find "${roots[@]}" -type f -name zarf.yaml -print0 > "$package_files"; then
+            printf 'Unable to search package roots: %s\n' "${roots[*]}" >&2
+            exit 1
+          fi
+          failed=0
+
+          while IFS= read -r -d '' package_file; do
+            if ! ./zarf tools yq -r -0 "$query" "$package_file" > "$actions_file"; then
+              printf 'Unable to read package actions from %s\n' "$package_file" >&2
+              failed=1
+              continue
+            fi
+
+            while IFS= read -r -d '' action; do
+              if ! check_action "$action" "$package_file"; then
+                failed=1
+              fi
+            done < "$actions_file"
+          done < "$package_files"
+
+          exit "$failed"
 
   - name: license
     description: Lint for the SPDX license identifier being in source files
