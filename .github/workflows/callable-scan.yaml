@@ -40,7 +40,7 @@ on:
       grypeVersion:
         description: The grype version to install
         # renovate: datasource=github-tags depName=anchore/grype versioning=semver
-        default: v0.120.0
+        default: v0.120.1
         type: string
 
 # Permissions for the GITHUB_TOKEN used by the workflow.
@@ -156,7 +156,7 @@ jobs:
       - name: Upload comparison results
         id: upload-comparison-results
         if: ${{ steps.compare-scans.outputs.artifact == 'true' }}
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: scan-comparison
           path: comment.md
