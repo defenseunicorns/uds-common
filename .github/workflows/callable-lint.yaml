@@ -10,6 +10,19 @@ on:
     types: [milestoned, opened, reopened, synchronize]
   # This allows other repositories to call this workflow in a reusable way
   workflow_call:
+    inputs:
+      values-check:
+        description: Opt in to the Zarf values schema freshness check
+        type: boolean
+        default: false
+      values-path:
+        description: Path to the Zarf package definition for the values check
+        type: string
+        default: .
+      values-flavor:
+        description: Package flavor used for the values check; empty for an unflavored package
+        type: string
+        default: upstream
 
 # Permissions for the GITHUB_TOKEN used by the workflow.
 permissions:
@@ -45,3 +58,14 @@ jobs:
 
       - name: Lint the repository
         run: uds run lint:all --no-progress
+
+      - name: Check Zarf values schema freshness
+        if: ${{ inputs.values-check }}
+        env:
+          VALUES_PACKAGE_PATH: ${{ inputs.values-path }}
+          VALUES_FLAVOR: ${{ inputs.values-flavor }}
+        shell: bash
+        run: |
+          uds run lint:values-check --no-progress \
+            --with path="$VALUES_PACKAGE_PATH" \
+            --with flavor="$VALUES_FLAVOR"
