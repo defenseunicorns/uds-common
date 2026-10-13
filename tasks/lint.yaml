@@ -367,7 +367,7 @@ tasks:
           check_script_line() {
             local script_line="$1" package_file="$2" source_line="$3"
             local scan_line substitution_line name detected_call
-            local direct_call zarf_call uds_call
+            local direct_call zarf_call uds_call base64_decode_call
             local line_failed=0
 
             # Double quotes suppress command boundaries, but substitutions inside them still run.
@@ -397,6 +397,15 @@ tasks:
                 line_failed=1
               fi
             done
+
+            # Base64 decoding uses yq, so it needs a different replacement message.
+            base64_decode_call="${command_path}base64[[:space:]]+(-d|--decode)${command_end}"
+            if [[ "$scan_line" =~ ${command_prefix}${base64_decode_call} ||
+                  "$substitution_line" =~ ${substitution_prefix}${base64_decode_call} ]]; then
+              printf '%s:%s: Found "base64" decode call in this package action. Replace with "%s tools yq -r %s"\n' \
+                "$package_file" "$source_line" "$zarf_command" "'@base64d'"
+              line_failed=1
+            fi
 
             return "$line_failed"
           }
