@@ -18,7 +18,7 @@ commitlint:
         npm install --save-dev @commitlint/cli@21.2.3
         echo "module.exports = {extends: ['@commitlint/config-conventional']}" > commitlint.config.js
         echo "$CI_MERGE_REQUEST_TITLE" | npx commitlint
-      elif
+      else
         echo "$CI_MERGE_REQUEST_TITLE" | npx commitlint
       fi
   tags:
