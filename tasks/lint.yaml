@@ -293,11 +293,13 @@ tasks:
           single_quoted_value="${single_quote}[^${single_quote}]*${single_quote}"
           assignment_value="(${unquoted_value}|${double_quoted_value}|${single_quoted_value})*"
           command_leading="((if|elif|then|do|while|until|!|time|command|exec|env|sudo)[[:space:]]+|[[:alpha:]_][[:alnum:]_]*=${assignment_value}[[:space:]]+)*"
-          command_prefix="(^|[;&|()])[[:space:]]*${command_leading}"
+          command_prefix="(^|[;&|)])[[:space:]]*${command_leading}"
           substitution_prefix='(^|[^\\])\$\([[:space:]]*'
           substitution_prefix+="$command_leading"
           command_path='/?([[:alnum:]_.-]+/)*'
-          command_end='([[:space:];|&()<>]|$)'
+          # A word before ')' may be a case label; only substitutions use it as an end boundary.
+          direct_command_end='([[:space:];|&(<>]|$)'
+          substitution_command_end='([[:space:];|&()<>]|$)'
           # Maru resolves literal local Zarf paths before Bash runs the action.
           zarf_command='.'
           zarf_command+='/zarf'
@@ -375,19 +377,19 @@ tasks:
             substitution_line=$(printf '%s\n' "$script_line" | sed -E "s/${single_quoted_value}//g")
 
             for name in "${command_names[@]}"; do
-              direct_call="${command_path}${name}${command_end}"
-              zarf_call="${command_path}zarf[[:space:]]+tools[[:space:]]+${name}${command_end}"
-              uds_call="${command_path}uds[[:space:]]+zarf[[:space:]]+tools[[:space:]]+${name}${command_end}"
+              direct_call="${command_path}${name}"
+              zarf_call="${command_path}zarf[[:space:]]+tools[[:space:]]+${name}"
+              uds_call="${command_path}uds[[:space:]]+zarf[[:space:]]+tools[[:space:]]+${name}"
               detected_call=""
 
-              if [[ "$scan_line" =~ ${command_prefix}${uds_call} ||
-                    "$substitution_line" =~ ${substitution_prefix}${uds_call} ]]; then
+              if [[ "$scan_line" =~ ${command_prefix}${uds_call}${direct_command_end} ||
+                    "$substitution_line" =~ ${substitution_prefix}${uds_call}${substitution_command_end} ]]; then
                 detected_call="uds zarf tools $name"
-              elif [[ "$scan_line" =~ ${command_prefix}${zarf_call} ||
-                      "$substitution_line" =~ ${substitution_prefix}${zarf_call} ]]; then
+              elif [[ "$scan_line" =~ ${command_prefix}${zarf_call}${direct_command_end} ||
+                      "$substitution_line" =~ ${substitution_prefix}${zarf_call}${substitution_command_end} ]]; then
                 detected_call="zarf tools $name"
-              elif [[ "$scan_line" =~ ${command_prefix}${direct_call} ||
-                      "$substitution_line" =~ ${substitution_prefix}${direct_call} ]]; then
+              elif [[ "$scan_line" =~ ${command_prefix}${direct_call}${direct_command_end} ||
+                      "$substitution_line" =~ ${substitution_prefix}${direct_call}${substitution_command_end} ]]; then
                 detected_call="$name"
               fi
 
@@ -398,13 +400,12 @@ tasks:
               fi
             done
 
-            # Base64 decoding uses yq, so it needs a different replacement message.
-            base64_decode_call="${command_path}base64[[:space:]]+(-d|--decode)${command_end}"
-            if [[ "$scan_line" =~ ${command_prefix}${base64_decode_call} ||
-                  "$substitution_line" =~ ${substitution_prefix}${base64_decode_call} ]]; then
-              printf '%s:%s: Found "base64" decode call in this package action. Replace with "%s tools yq -r %s"\n' \
-                "$package_file" "$source_line" "$zarf_command" "'@base64d'"
-              line_failed=1
+            # yq handles text values, but its decoded output may differ from base64 bytes.
+            base64_decode_call="${command_path}base64[[:space:]]+(-d|--decode)"
+            if [[ "$scan_line" =~ ${command_prefix}${base64_decode_call}${direct_command_end} ||
+                  "$substitution_line" =~ ${substitution_prefix}${base64_decode_call}${substitution_command_end} ]]; then
+              printf '%s:%s: WARNING: Found "base64" decode call. For text values, consider "%s tools yq -r %s"\n' \
+                "$package_file" "$source_line" "$zarf_command" "'@base64d'" >&2
             fi
 
             return "$line_failed"
