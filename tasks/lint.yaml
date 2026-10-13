@@ -248,7 +248,7 @@ tasks:
     description: Reject external tool calls with Zarf equivalents in package actions
     inputs:
       commands:
-        default: helm kubectl yq archiver
+        default: helm kubectl yq
         description: Space-separated command names to reject in package actions.
       paths:
         default: .
