@@ -4,6 +4,8 @@
 variables:
   - name: RUN_LICENSE_CHECKS
     default: "true"
+  - name: RUN_ZARF_TOOLS_CHECKS
+    default: "true"
 
 tasks:
   - name: deps
@@ -37,6 +39,7 @@ tasks:
       - task: yaml
       - task: shell
       - task: zarf-tools
+        if: ${{ eq .variables.RUN_ZARF_TOOLS_CHECKS "true" }}
       - task: license
         if: ${{ eq .variables.RUN_LICENSE_CHECKS "true" }}
       - task: tasks
