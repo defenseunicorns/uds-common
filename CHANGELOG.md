@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.32.1](https://github.com/defenseunicorns/uds-common/compare/v1.32.0...v1.32.1) (2026-10-14)
+
+
+### Bug Fixes
+
+* pull images with compose prior to transformation ([#804](https://github.com/defenseunicorns/uds-common/issues/804)) ([f56bc5e](https://github.com/defenseunicorns/uds-common/commit/f56bc5ecfdc619c30203bb43fe202b9ca910fc91))
+
 ## [1.32.0](https://github.com/defenseunicorns/uds-common/compare/v1.31.0...v1.32.0) (2026-10-14)
 
 
