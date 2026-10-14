@@ -91,6 +91,7 @@ tasks:
           # VARIABLES
           PACKAGE_DEFINITION="${{ .inputs.path }}/zarf.yaml"
           if [ -f "${{ .inputs.path }}/compose.yaml" ]; then
+            docker compose -f "${{ .inputs.path }}/compose.yaml" pull
             docker compose \
               -f "${{ .inputs.path }}/compose.yaml" \
               bridge convert \
