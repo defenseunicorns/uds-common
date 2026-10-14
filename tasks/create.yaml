@@ -46,6 +46,7 @@ tasks:
       - description: Convert the Docker Compose application to a UDS package definition
         if: ${{ ne .variables.CREATE_PACKAGE_PATH .inputs.path }}
         cmd: >-
+          docker compose -f "${{ .inputs.path }}/compose.yaml" pull &&
           docker compose
           -f "${{ .inputs.path }}/compose.yaml"
           bridge convert

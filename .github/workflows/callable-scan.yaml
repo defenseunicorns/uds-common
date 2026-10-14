@@ -95,6 +95,7 @@ jobs:
           PACKAGE_DEFINITION="${{ inputs.zarfYamlPath }}"
 
           if [ -f "${{ inputs.packagePath }}/compose.yaml" ]; then
+            docker compose -f "${{ inputs.packagePath }}/compose.yaml" pull
             docker compose \
               -f "${{ inputs.packagePath }}/compose.yaml" \
               bridge convert \

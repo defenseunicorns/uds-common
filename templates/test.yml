@@ -75,6 +75,7 @@ test:
 
         PACKAGE_DEFINITION="$[[ inputs.check-flavor-zarf-yaml ]]"
         if [ -f "$[[ inputs.package-path ]]/compose.yaml" ]; then
+          docker compose -f "$[[ inputs.package-path ]]/compose.yaml" pull
           docker compose \
             -f "$[[ inputs.package-path ]]/compose.yaml" \
             bridge convert \

@@ -98,6 +98,7 @@ publish:
         RELEASE_PACKAGE_VERSION="${RELEASE_PACKAGE_VERSION}" ./uds zarf tools yq -i \
           '."x-uds".metadata.version = strenv(RELEASE_PACKAGE_VERSION)' compose.yaml
 
+        docker compose -f compose.yaml pull
         docker compose \
           -f compose.yaml \
           bridge convert \
