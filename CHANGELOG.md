@@ -1,5 +1,28 @@
 # Changelog
 
+## [1.32.0](https://github.com/defenseunicorns/uds-common/compare/v1.31.0...v1.32.0) (2026-10-14)
+
+
+### Features
+
+* add create sbom shim task for SBOM generation ([#763](https://github.com/defenseunicorns/uds-common/issues/763)) ([e3c5d75](https://github.com/defenseunicorns/uds-common/commit/e3c5d751c301853f365681231637a86611cb0686))
+* zarf tools linting ([#794](https://github.com/defenseunicorns/uds-common/issues/794)) ([a774173](https://github.com/defenseunicorns/uds-common/commit/a774173893e8219c7f353e07c660a5b2dbed2b0d))
+
+
+### Bug Fixes
+
+* commitlint if else ([#797](https://github.com/defenseunicorns/uds-common/issues/797)) ([1c84f4b](https://github.com/defenseunicorns/uds-common/commit/1c84f4b5c2d5194cfde698b7e0a4b2a5c8cea93e))
+
+
+### Miscellaneous
+
+* **deps:** update support-deps to v0.2.0 ([#801](https://github.com/defenseunicorns/uds-common/issues/801)) ([22d95a1](https://github.com/defenseunicorns/uds-common/commit/22d95a1f0204161271f8d16853105a19fe0bb631))
+* **deps:** update support-deps to v44.149.3 ([#800](https://github.com/defenseunicorns/uds-common/issues/800)) ([ec9cb8c](https://github.com/defenseunicorns/uds-common/commit/ec9cb8c15687a5329a59edd7ccc3799069ffd092))
+* **deps:** update support-deps to v44.150.0 ([#802](https://github.com/defenseunicorns/uds-common/issues/802)) ([cb1bbb5](https://github.com/defenseunicorns/uds-common/commit/cb1bbb510dfd4eb3b2a3ea8e17d18809ff1a9633))
+* **deps:** update uds common foundation dependencies ([#799](https://github.com/defenseunicorns/uds-common/issues/799)) ([dc760d7](https://github.com/defenseunicorns/uds-common/commit/dc760d7657559470946af54d3c41a857a3f1ce5c))
+* **deps:** update uds common foundation dependencies to v1.14.1 ([#795](https://github.com/defenseunicorns/uds-common/issues/795)) ([9ddd028](https://github.com/defenseunicorns/uds-common/commit/9ddd028b29762d0a7463d5342b371c21c0c2a992))
+* **deps:** update uds common support dependencies ([#793](https://github.com/defenseunicorns/uds-common/issues/793)) ([b66eb22](https://github.com/defenseunicorns/uds-common/commit/b66eb22bb42eafcdf9d8b6ba1bc0e7d832d70e66))
+
 ## [1.31.0](https://github.com/defenseunicorns/uds-common/compare/v1.30.1...v1.31.0) (2026-10-09)
 
 
