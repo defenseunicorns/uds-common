@@ -306,6 +306,7 @@ tasks:
             '# syntax=docker/dockerfile:1' \
             'FROM scratch' \
             "COPY sbom.spdx /opt/bitnami/${SBOM_PRODUCT_SLUG}/.spdx-${SBOM_PRODUCT_SLUG}.spdx" \
+            'USER none' \
             > "${build_context}/Dockerfile"
 
           docker buildx inspect uds-builder >/dev/null 2>&1 \
