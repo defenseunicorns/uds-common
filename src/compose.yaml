@@ -5,6 +5,6 @@ name: nginx-compose
 
 services:
   nginx:
-    image: nginx:1.31.7
+    image: nginx:1.31.8
     ports:
       - 8080:80
