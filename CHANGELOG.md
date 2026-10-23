@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.32.2](https://github.com/defenseunicorns/uds-common/compare/v1.32.1...v1.32.2) (2026-10-23)
+
+
+### Miscellaneous
+
+* **deps:** update support-deps to v44.171.5 ([#813](https://github.com/defenseunicorns/uds-common/issues/813)) ([50121ff](https://github.com/defenseunicorns/uds-common/commit/50121ffdd0e82c19a9e229c5a746fe6305c4b085))
+* **deps:** update uds common foundation dependencies ([#811](https://github.com/defenseunicorns/uds-common/issues/811)) ([2592701](https://github.com/defenseunicorns/uds-common/commit/259270188b768fe0149f94ec89ff2f281ce03f9f))
+* **deps:** update uds common foundation dependencies to v1.15.1 ([#809](https://github.com/defenseunicorns/uds-common/issues/809)) ([ca0d5d0](https://github.com/defenseunicorns/uds-common/commit/ca0d5d0f244bb58e3bb3593736d8c0ccf6aa034c))
+* **deps:** update uds common package dependencies to v1.31.7 ([#806](https://github.com/defenseunicorns/uds-common/issues/806)) ([435b3d8](https://github.com/defenseunicorns/uds-common/commit/435b3d8ba67c602a79507c1cf54697f899b874f8))
+* **deps:** update uds common package dependencies to v1.31.8 ([#812](https://github.com/defenseunicorns/uds-common/issues/812)) ([405101a](https://github.com/defenseunicorns/uds-common/commit/405101a54734791cd251f1fd011680d7e3cff7ff))
+* **deps:** update uds common support dependencies ([#803](https://github.com/defenseunicorns/uds-common/issues/803)) ([1067843](https://github.com/defenseunicorns/uds-common/commit/1067843c2db43b639b740297cf555467d0fd2fe3))
+* **deps:** update uds common support dependencies ([#810](https://github.com/defenseunicorns/uds-common/issues/810)) ([9cd03dd](https://github.com/defenseunicorns/uds-common/commit/9cd03dd898ff0dda4b7088802097d622a0059d5b))
+* run SBOM shim image as `none` ([#807](https://github.com/defenseunicorns/uds-common/issues/807)) ([6a66da7](https://github.com/defenseunicorns/uds-common/commit/6a66da7f64c052e0331f06b028a29716e7911ed2))
+
 ## [1.32.1](https://github.com/defenseunicorns/uds-common/compare/v1.32.0...v1.32.1) (2026-10-14)
 
 
