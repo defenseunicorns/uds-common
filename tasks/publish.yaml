@@ -146,7 +146,6 @@ tasks:
           archive: ${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${{ .inputs.architecture }}-${PACKAGE_VERSION}${FLAVOR_SUFFIX}.tar.zst
           destination: ${TARGET_REPO}
           release_ref: ${PACKAGE_VERSION}${FLAVOR_SUFFIX}
-          mode: release-please
           architecture: ${{ .inputs.architecture }}
 
 
@@ -212,7 +211,6 @@ tasks:
           archive: ${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${{ .inputs.architecture }}-${RELEASE_PACKAGE_REF}.tar.zst
           destination: ${TARGET_REPO}
           release_ref: ${RELEASE_PACKAGE_REF}
-          mode: uds-pk
           architecture: ${{ .inputs.architecture }}
       - description: publish using uds-pk
         if: ${{ eq .variables.SIGNING "false" }}

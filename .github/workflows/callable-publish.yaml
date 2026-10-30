@@ -254,7 +254,7 @@ jobs:
             --with outcome=${{ steps.uds-pk-publish.outputs.no-release == 'true' && 'no-release' || 'prepared' }} \
             --no-progress ${{ inputs.options }}
 
-      - name: "Upload signing candidates: uds-publish-${{ inputs.flavor || 'unflavored' }}-${{ steps.parse-inputs.outputs.arch }}-${{ github.run_id }}-${{ github.run_attempt }}"
+      - name: Upload signing candidates
         if: ${{ inputs.signing }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
