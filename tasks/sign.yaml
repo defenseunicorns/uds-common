@@ -1,0 +1,338 @@
+# Copyright 2026 Defense Unicorns
+# SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
+
+tasks:
+  - name: select-artifacts
+    description: Select the preparation artifacts from each build job's latest execution
+    actions:
+      - description: Resolve the complete artifact set from successful preparation steps
+        shell:
+          linux: bash
+        cmd: |
+          set -euo pipefail
+          SIGN_WORK_DIR="${RUNNER_TEMP:?}/uds-signing-${GITHUB_RUN_ID:?}-${GITHUB_RUN_ATTEMPT:?}"
+          export GH_TOKEN="${GITHUB_TOKEN:?}"
+          mkdir -p "$SIGN_WORK_DIR"
+          endpoint="repos/${GITHUB_REPOSITORY:?}/actions/runs/${GITHUB_RUN_ID:?}"
+          gh api --paginate --slurp "$endpoint/jobs?filter=all&per_page=100" \
+            | jq -e --arg prefix 'Upload signing candidates: ' --arg sha "${GITHUB_SHA:?}" '
+                [.[].jobs[]] | group_by(.name) | map(max_by(.id)) |
+                [.[] as $job | $job.steps[]? |
+                  select(.name | startswith($prefix)) | select(.conclusion == "success") |
+                  if $job.conclusion != "success" or $job.head_sha != $sha
+                  then error("preparation job failed or belongs to another commit")
+                  else .name | ltrimstr($prefix) end] |
+                if length == 0 or length != (unique | length)
+                then error("missing or duplicate preparation jobs") else . end
+              ' > "$SIGN_WORK_DIR/expected.json"
+          gh api --paginate --slurp "$endpoint/artifacts?per_page=100" \
+            | jq -e --slurpfile expected "$SIGN_WORK_DIR/expected.json" '
+                [.[].artifacts[] | select(.name as $name | $expected[0] | index($name))] |
+                if (map(.name) | sort) != ($expected[0] | sort) or any(.[]; .expired)
+                then error("a required preparation artifact is missing or expired")
+                else map({id, name}) end
+              ' > "$SIGN_WORK_DIR/selected.json"
+          echo "artifact-ids=$(jq -r 'map(.id | tostring) | join(",")' "$SIGN_WORK_DIR/selected.json")" >> "${GITHUB_OUTPUT:?}"
+
+  - name: publish-prepared
+    description: Validate, sign, verify, and publish the complete set of prepared packages
+    actions:
+      - description: Publish signed packages before finalizing releases and source artifacts
+        shell:
+          linux: bash
+        cmd: |
+          set -euo pipefail
+          SIGN_WORK_DIR="${RUNNER_TEMP:?}/uds-signing-${GITHUB_RUN_ID:?}-${GITHUB_RUN_ATTEMPT:?}"
+          export GH_TOKEN="${GITHUB_TOKEN:?}"
+          test "${GITHUB_ACTIONS:-}" = true
+          task_file="${GITHUB_ACTION_PATH:?}/tasks.yaml"
+          identity="${GITHUB_SERVER_URL:?}/${GITHUB_WORKFLOW_REF:?}"
+          preparations=()
+          : > "$SIGN_WORK_DIR/candidates.txt"
+          artifact_count=$(jq -er 'length | select(. > 0)' "$SIGN_WORK_DIR/selected.json")
+          jq -r '.[].name' "$SIGN_WORK_DIR/selected.json" > "$SIGN_WORK_DIR/artifacts.txt"
+          while IFS= read -r artifact; do
+            artifact_dir="$SIGN_WORK_DIR/artifacts/$artifact"
+            if [ "$artifact_count" = 1 ] && [ -f "$SIGN_WORK_DIR/artifacts/preparation.json" ]; then
+              artifact_dir="$SIGN_WORK_DIR/artifacts"
+            fi
+            preparation="$artifact_dir/preparation.json"
+            test -f "$preparation" && test ! -L "$artifact_dir" && test ! -L "$preparation"
+            jq -e --arg artifact "$artifact" '
+                env as $env | .schema_version == 1 and
+                .repository == $env.GITHUB_REPOSITORY and .source_sha == $env.GITHUB_SHA and
+                .run_id == $env.GITHUB_RUN_ID and (.run_attempt | tonumber) > 0 and
+                (.run_attempt | tonumber) <= ($env.GITHUB_RUN_ATTEMPT | tonumber) and
+                ("uds-publish-\(if .flavor == "" then "unflavored" else .flavor end)-\(.architecture)-\(.run_id)-\(.run_attempt)" == $artifact) and
+                (.mode == "uds-pk" or .mode == "release-please") and
+                (.candidates | type == "array") and (.candidates | length == (unique | length)) and
+                all(.candidates[]; test("^[a-f0-9]{64}/manifest[.]json$")) and
+                ((.outcome == "prepared" and (.candidates | length) > 0) or
+                  (.outcome == "no-release" and .mode == "uds-pk" and (.candidates | length) == 0)) and
+                (if .mode == "uds-pk" then
+                  (.release.version | type == "string" and length > 0) and
+                  (.release.package_name | type == "string" and length > 0) and
+                  .release.ref == (.release.version + (if .flavor == "" then "" else "-" + .flavor end))
+                else .release == null end) and
+                (.source == null or (.source.base_repo == "ghcr.io/uds-packages" and (.source.ref | type == "string" and length > 0)))
+              ' "$preparation" > /dev/null
+            preparations+=("$preparation")
+            jq -r '.candidates[]' "$preparation" > "$SIGN_WORK_DIR/current-candidates.txt"
+            while IFS= read -r relative_manifest; do
+              manifest="$artifact_dir/$relative_manifest"
+              candidate_dir=$(dirname "$manifest")
+              test -f "$manifest" && test ! -L "$manifest" && test ! -L "$candidate_dir"
+              jq -e --slurpfile preparation "$preparation" '
+                  $preparation[0] as $job | .schema_version == 1 and
+                  .repository == $job.repository and .source_sha == $job.source_sha and
+                  .run_id == $job.run_id and .run_attempt == $job.run_attempt and
+                  .architecture == $job.architecture and .mode == $job.mode and
+                  (if .mode == "uds-pk" then .release_ref == $job.release.ref else true end) and
+                  (.archive | test("^[^/]+[.]tar([.]zst)?$")) and (.sha256 | test("^[a-f0-9]{64}$")) and
+                  (.name | type == "string" and length > 0) and (.version | type == "string" and length > 0) and
+                  (.destination | test("^[A-Za-z0-9][A-Za-z0-9._:/-]+$")) and
+                  .release_ref == (.version + (if .flavor == "" then "" else "-" + .flavor end))
+                ' "$manifest" > /dev/null
+              archive="$candidate_dir/$(jq -r '.archive' "$manifest")"
+              architecture=$(jq -r '.architecture' "$manifest")
+              test -f "$archive" && test ! -L "$archive"
+              checksum=$(shasum -a 256 < "$archive" | cut -d ' ' -f 1)
+              test "$checksum" = "$(jq -r '.sha256' "$manifest")"
+              ./zarf package inspect definition "$archive" --architecture "$architecture" --verify never --features values=true \
+                | ./zarf tools yq -o=json | jq -e --slurpfile candidate "$manifest" '
+                    .metadata.name == $candidate[0].name and .metadata.version == $candidate[0].version and
+                    .build.architecture == $candidate[0].architecture and (.build.flavor // "") == $candidate[0].flavor
+                  ' > /dev/null
+              printf '%s\n' "$manifest" >> "$SIGN_WORK_DIR/candidates.txt"
+            done < "$SIGN_WORK_DIR/current-candidates.txt"
+          done < "$SIGN_WORK_DIR/artifacts.txt"
+          jq -se 'group_by(.flavor) | all(.[]; map({mode, release, source}) | unique | length == 1)' "${preparations[@]}" > /dev/null
+          jq -sc 'group_by(.flavor)[] | .[0] + {outcome: (if any(.[]; .outcome == "prepared") then "prepared" else "no-release" end)}' \
+            "${preparations[@]}" > "$SIGN_WORK_DIR/finalize.jsonl"
+
+          while IFS= read -r manifest; do
+            archive="$(dirname "$manifest")/$(jq -r '.archive' "$manifest")"
+            architecture=$(jq -r '.architecture' "$manifest")
+            destination=$(jq -r '.destination' "$manifest")
+            reference=$(jq -r '.name + ":" + .release_ref' "$manifest")
+            ./uds run -f "$task_file" sign:package --with archive="$archive" --with architecture="$architecture" --no-progress
+            ./zarf package publish "$archive" "oci://$destination" --architecture "$architecture" --features values=true
+            ./zarf package verify "oci://$destination/$reference" --architecture "$architecture" \
+              --certificate-identity "$identity" --certificate-oidc-issuer https://token.actions.githubusercontent.com --features values=true
+            rm "$archive"
+          done < "$SIGN_WORK_DIR/candidates.txt"
+
+          release_dir=$(mktemp -d "$PWD/.uds-release-XXXXXXXX")
+          trap 'rm -rf "$release_dir"' EXIT
+          while IFS= read -r preparation; do
+            flavor=$(jq -r '.flavor' <<< "$preparation")
+            if jq -e '.mode == "uds-pk" and .outcome == "prepared"' <<< "$preparation" > /dev/null; then
+              release_ref=$(jq -r '.release.ref' <<< "$preparation")
+              tag=$(git ls-remote --tags origin "refs/tags/$release_ref")
+              if [ -z "$tag" ]; then
+                gh api "repos/$GITHUB_REPOSITORY/git/refs" --method POST \
+                  -f ref="refs/tags/$release_ref" -f sha="$GITHUB_SHA" > /dev/null
+              fi
+              jq '{metadata: {name: .release.package_name}}' <<< "$preparation" > "$release_dir/zarf.yaml"
+              jq '{flavors: [{name: .flavor, version: .release.version}]}' <<< "$preparation" > "$release_dir/releaser.yaml"
+              (cd "$release_dir"; uds-pk release github "$flavor")
+            fi
+            if jq -e '.source != null' <<< "$preparation" > /dev/null; then
+              base_repo=$(jq -r '.source.base_repo' <<< "$preparation")
+              release_ref=$(jq -r '.source.ref' <<< "$preparation")
+              ./uds run -f "$task_file" publish:git-to-oci --set BASE_REPO="$base_repo" \
+                --with flavor="$flavor" --with release_ref="$release_ref" --no-progress
+            fi
+          done < "$SIGN_WORK_DIR/finalize.jsonl"
+
+  - name: prepare-package
+    description: Stage an exact package archive and its resolved publication metadata
+    inputs:
+      archive:
+        description: Exact package archive selected for publication
+        required: true
+      destination:
+        description: Resolved OCI repository prefix used by package publish
+        required: true
+      release_ref:
+        description: Resolved release reference
+        required: true
+      mode:
+        description: Publication mode, release-please or uds-pk
+        required: true
+      architecture:
+        description: Architecture of the package archive
+        default: ${UDS_ARCH}
+      output:
+        description: Directory containing the candidates for the signing job
+        default: build/signing
+    actions:
+      - description: Copy the selected archive and record its checksum and metadata
+        shell:
+          linux: bash
+          darwin: bash
+        env:
+          - PREPARE_ARCHIVE=${{ .inputs.archive }}
+          - PREPARE_DESTINATION=${{ .inputs.destination }}
+          - PREPARE_RELEASE_REF=${{ .inputs.release_ref }}
+          - PREPARE_MODE=${{ .inputs.mode }}
+          - PREPARE_ARCH=${{ .inputs.architecture }}
+          - PREPARE_OUTPUT=${{ .inputs.output }}
+        cmd: |
+          set -euo pipefail
+          test -f "$PREPARE_ARCHIVE"
+          case "$PREPARE_MODE" in
+            release-please|uds-pk) ;;
+            *) echo "Unsupported publication mode: $PREPARE_MODE" >&2; exit 1 ;;
+          esac
+          archive_name=$(basename "$PREPARE_ARCHIVE")
+          source_archive="$(cd "$(dirname "$PREPARE_ARCHIVE")" && pwd -P)/$archive_name"
+          candidate_id=$(printf '%s\0%s' "$source_archive" "$PREPARE_DESTINATION" | shasum -a 256 | cut -d ' ' -f 1)
+          candidate_dir="$PREPARE_OUTPUT/$candidate_id"
+          mkdir -p "$PREPARE_OUTPUT"
+          mkdir "$candidate_dir"
+          prepared=false
+          trap 'if [ "$prepared" != true ]; then rm -rf "$candidate_dir"; fi' EXIT
+          cp "$source_archive" "$candidate_dir/$archive_name"
+          checksum=$(shasum -a 256 < "$candidate_dir/$archive_name" | cut -d ' ' -f 1)
+          ./zarf package inspect definition "$candidate_dir/$archive_name" \
+            --architecture "$PREPARE_ARCH" --verify never --features values=true \
+            | ./zarf tools yq -o=json \
+            | jq -e --arg archive "$archive_name" --arg source_archive "$PREPARE_ARCHIVE" \
+              --arg checksum "$checksum" --arg destination "$PREPARE_DESTINATION" \
+              --arg architecture "$PREPARE_ARCH" --arg mode "$PREPARE_MODE" \
+              --arg release_ref "$PREPARE_RELEASE_REF" --arg repository "${GITHUB_REPOSITORY:?}" \
+              --arg sha "${GITHUB_SHA:?}" --arg run "${GITHUB_RUN_ID:?}" --arg attempt "${GITHUB_RUN_ATTEMPT:?}" '
+                if .build.architecture != $architecture or (.metadata.name | length) == 0
+                  or (.metadata.version | length) == 0 then error("package identity or architecture mismatch")
+                else {schema_version: 1, archive: $archive, source_archive: $source_archive,
+                  name: .metadata.name, version: .metadata.version, architecture: $architecture,
+                  flavor: (.build.flavor // ""), destination: $destination, sha256: $checksum,
+                  release_ref: $release_ref, mode: $mode, repository: $repository,
+                  source_sha: $sha, run_id: $run, run_attempt: $attempt} end' > "$candidate_dir/manifest.json"
+          prepared=true
+          echo "Prepared $candidate_dir"
+
+  - name: complete-preparation
+    description: Record the candidate inventory and resolved release and source settings
+    inputs:
+      outcome:
+        default: prepared
+      architecture:
+        default: ${UDS_ARCH}
+      flavor:
+        default: ""
+      base_repo:
+        default: ""
+      uds_pk:
+        default: "false"
+      publish_repo:
+        default: "true"
+      output:
+        default: build/signing
+    actions:
+      - description: Complete the preparation manifest for this build job
+        shell:
+          linux: bash
+          darwin: bash
+        env:
+          - PREPARE_OUTCOME=${{ .inputs.outcome }}
+          - PREPARE_ARCH=${{ .inputs.architecture }}
+          - PREPARE_FLAVOR=${{ .inputs.flavor }}
+          - PREPARE_BASE_REPO=${{ .inputs.base_repo }}
+          - PREPARE_UDS_PK=${{ .inputs.uds_pk }}
+          - PREPARE_PUBLISH_REPO=${{ .inputs.publish_repo }}
+          - PREPARE_OUTPUT=${{ .inputs.output }}
+        cmd: |
+          set -euo pipefail
+          : "${GITHUB_REPOSITORY:?}" "${GITHUB_SHA:?}" "${GITHUB_RUN_ID:?}" "${GITHUB_RUN_ATTEMPT:?}"
+          shopt -s nullglob
+          candidates=("$PREPARE_OUTPUT"/*/manifest.json)
+          case "$PREPARE_OUTCOME" in
+            prepared) test "${#candidates[@]}" -gt 0 ;;
+            no-release) test "$PREPARE_UDS_PK" = true; test "${#candidates[@]}" = 0 ;;
+            *) echo "Unsupported preparation outcome: $PREPARE_OUTCOME" >&2; exit 1 ;;
+          esac
+          candidate_paths='[]'
+          if [ "${#candidates[@]}" -gt 0 ]; then
+            jq -se --arg repository "${GITHUB_REPOSITORY:?}" --arg sha "${GITHUB_SHA:?}" \
+              --arg run "${GITHUB_RUN_ID:?}" --arg attempt "${GITHUB_RUN_ATTEMPT:?}" \
+              --arg architecture "$PREPARE_ARCH" '
+                all(.[]; .repository == $repository and .source_sha == $sha and
+                  .run_id == $run and .run_attempt == $attempt and .architecture == $architecture)
+              ' "${candidates[@]}" > /dev/null
+            candidate_paths=$(printf '%s\n' "${candidates[@]#"$PREPARE_OUTPUT/"}" | jq -Rsc 'split("\n")[:-1]')
+          fi
+          release_ref=""
+          release_version=""
+          package_name=""
+          if [ "$PREPARE_UDS_PK" = true ] || { [ "$PREPARE_PUBLISH_REPO" = true ] && [ "$PREPARE_BASE_REPO" = ghcr.io/uds-packages ]; }; then
+            release_ref=$(uds-pk release show "$PREPARE_FLAVOR")
+          fi
+          if [ "$PREPARE_UDS_PK" = true ]; then
+            release_version=$(uds-pk release show "$PREPARE_FLAVOR" --version-only)
+            package_name=$(./zarf tools yq -r '.metadata.name' zarf.yaml)
+          fi
+          mkdir -p "$PREPARE_OUTPUT"
+          test ! -e "$PREPARE_OUTPUT/preparation.json"
+          manifest=$(mktemp "$PREPARE_OUTPUT/.preparation-XXXXXXXX")
+          trap 'rm -f "$manifest"' EXIT
+          jq -n --argjson candidates "$candidate_paths" --arg release_ref "$release_ref" \
+            --arg release_version "$release_version" --arg package_name "$package_name" '
+              env as $env | {
+                schema_version: 1, outcome: $env.PREPARE_OUTCOME, candidates: $candidates,
+                repository: $env.GITHUB_REPOSITORY, source_sha: $env.GITHUB_SHA,
+                run_id: $env.GITHUB_RUN_ID, run_attempt: $env.GITHUB_RUN_ATTEMPT,
+                architecture: $env.PREPARE_ARCH, flavor: $env.PREPARE_FLAVOR,
+                mode: (if $env.PREPARE_UDS_PK == "true" then "uds-pk" else "release-please" end),
+                release: (if $env.PREPARE_UDS_PK == "true" then
+                  {ref: $release_ref, version: $release_version, package_name: $package_name}
+                  else null end),
+                source: (if $env.PREPARE_PUBLISH_REPO == "true" and $env.PREPARE_BASE_REPO == "ghcr.io/uds-packages"
+                  then {base_repo: $env.PREPARE_BASE_REPO, ref: $release_ref} else null end)
+              }
+            ' > "$manifest"
+          mv "$manifest" "$PREPARE_OUTPUT/preparation.json"
+
+  - name: package
+    description: Keyless sign and verify a Zarf package before publication
+    inputs:
+      archive:
+        description: Exact package archive selected for publication
+        required: true
+      architecture:
+        description: Architecture of the package archive
+        default: ${UDS_ARCH}
+    actions:
+      - description: Sign and verify the current GitHub workflow identity
+        shell:
+          linux: bash
+          darwin: bash
+        env:
+          - SIGN_ARCHIVE=${{ .inputs.archive }}
+          - SIGN_ARCH=${{ .inputs.architecture }}
+        cmd: |
+          set -euo pipefail
+          test "${GITHUB_ACTIONS:-}" = true
+          : "${GITHUB_SERVER_URL:?}" "${GITHUB_WORKFLOW_REF:?}"
+          : "${ACTIONS_ID_TOKEN_REQUEST_URL:?id-token write permission is required}"
+          : "${ACTIONS_ID_TOKEN_REQUEST_TOKEN:?id-token write permission is required}"
+          test -f "$SIGN_ARCHIVE"
+          case "$SIGN_ARCHIVE" in
+            /*) ;;
+            *) SIGN_ARCHIVE="$PWD/$SIGN_ARCHIVE" ;;
+          esac
+          identity="$GITHUB_SERVER_URL/$GITHUB_WORKFLOW_REF"
+          signing_dir=$(mktemp -d "$(dirname "$SIGN_ARCHIVE")/.uds-signing-XXXXXXXX")
+          trap 'rm -rf "$signing_dir"' EXIT
+          ./zarf package sign "$SIGN_ARCHIVE" --architecture "$SIGN_ARCH" \
+            --keyless --confirm --tlog-upload --overwrite --output "$signing_dir" --features values=true
+          shopt -s nullglob
+          signed_archives=("$signing_dir"/*.tar.zst "$signing_dir"/*.tar)
+          test "${#signed_archives[@]}" = 1
+          signed_archive="${signed_archives[0]}"
+          ./zarf package verify "$signed_archive" --architecture "$SIGN_ARCH" \
+            --certificate-identity "$identity" \
+            --certificate-oidc-issuer https://token.actions.githubusercontent.com --features values=true
+          # Keep the resolved publication path and replace its contents only after verification.
+          mv "$signed_archive" "$SIGN_ARCHIVE"

@@ -1,0 +1,18 @@
+# Copyright 2026 Defense Unicorns
+# SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
+
+includes:
+  - sign: ../../../tasks/sign.yaml
+  - publish: ../../../tasks/publish.yaml
+  - actions: ../../../tasks/actions.yaml
+
+tasks:
+  - name: setup
+    actions:
+      - task: actions:install-uds-pk
+      - task: actions:install-oras
+      - task: actions:registry-login
+        with:
+          registry: ghcr.io
+          registry_username: ${GITHUB_ACTOR}
+          registry_token: ${GITHUB_TOKEN}

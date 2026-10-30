@@ -126,8 +126,12 @@ tasks:
           echo "Installing k3d version $K3D_VERSION"
           curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | TAG="${K3D_VERSION}" bash
 
-      - task: determine-arch
+      - task: install-uds-pk
 
+  - name: install-uds-pk
+    description: Install uds-pk for package release operations
+    actions:
+      - task: determine-arch
       - description: Install uds-pk
         env:
           # renovate: datasource=github-tags depName=defenseunicorns/uds-pk versioning=semver-coerced

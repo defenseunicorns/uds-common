@@ -1,8 +1,9 @@
-# Copyright 2024 Defense Unicorns
+# Copyright 2024-2026 Defense Unicorns
 # SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
 
 includes:
   - utils: ./utils.yaml
+  - sign: ./sign.yaml
 
 variables:
   - name: FLAVOR
@@ -11,12 +12,34 @@ variables:
     default: uds
   - name: ENABLE_UDS_PK
     default: "false"
+  - name: SIGNING
+    default: "false"
+    pattern: ^(true|false)$
   - name: BASE_REPO
   - name: PUBLISH_PATH
   - name: NEXT_MODE
     default: "false"
 
 tasks:
+  - name: complete-signing
+    description: Record the completed preparation outcome for the signing job
+    inputs:
+      outcome:
+        default: prepared
+      architecture:
+        default: ${UDS_ARCH}
+      publish_repo:
+        default: "true"
+    actions:
+      - task: sign:complete-preparation
+        with:
+          outcome: ${{ .inputs.outcome }}
+          architecture: ${{ .inputs.architecture }}
+          publish_repo: ${{ .inputs.publish_repo }}
+          flavor: ${{ .variables.FLAVOR }}
+          base_repo: ${{ .variables.BASE_REPO }}
+          uds_pk: ${{ .variables.ENABLE_UDS_PK }}
+
   - name: package
     description: Publish the UDS package for the supplied architecture
     inputs:
@@ -114,8 +137,17 @@ tasks:
         setVariables:
           - name: FLAVOR_SUFFIX
       - description: Publish package for the supplied architecture
+        if: ${{ eq .variables.SIGNING "false" }}
         cmd: |
           ./zarf package publish "${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${{ .inputs.architecture }}-${PACKAGE_VERSION}${FLAVOR_SUFFIX}.tar.zst" "oci://${TARGET_REPO}" --features values=true
+      - task: sign:prepare-package
+        if: ${{ eq .variables.SIGNING "true" }}
+        with:
+          archive: ${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${{ .inputs.architecture }}-${PACKAGE_VERSION}${FLAVOR_SUFFIX}.tar.zst
+          destination: ${TARGET_REPO}
+          release_ref: ${PACKAGE_VERSION}${FLAVOR_SUFFIX}
+          mode: release-please
+          architecture: ${{ .inputs.architecture }}
 
 
   - name: uds-pk-publish
@@ -160,17 +192,32 @@ tasks:
         cmd: ./zarf tools yq -r '.metadata.version' "${PUBLISH_PACKAGE_DEFINITION}"
         setVariables:
           - name: PACKAGE_VERSION
-      - description: publish using uds-pk
+      - description: Resolve the release version
+        cmd: uds-pk release show "${{ .inputs.flavor }}" --version-only
+        setVariables:
+          - name: RELEASE_PACKAGE_VERSION
+      - description: Resolve the release reference
+        cmd: uds-pk release show "${{ .inputs.flavor }}"
+        setVariables:
+          - name: RELEASE_PACKAGE_REF
+      - description: Check the package version before preparing or publishing
         cmd: |
-          set -e
-          RELEASE_PACKAGE_VERSION=$(uds-pk release show "${{ .inputs.flavor }}" --version-only)
-          RELEASE_PACKAGE_REF=$(uds-pk release show "${{ .inputs.flavor }}")
-
           if [ "${PACKAGE_VERSION}" != "${RELEASE_PACKAGE_VERSION}" ]; then
             echo "Generated package version ${PACKAGE_VERSION} does not match release version ${RELEASE_PACKAGE_VERSION}."
             exit 1
           fi
-
+      - task: sign:prepare-package
+        if: ${{ eq .variables.SIGNING "true" }}
+        with:
+          archive: ${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${{ .inputs.architecture }}-${RELEASE_PACKAGE_REF}.tar.zst
+          destination: ${TARGET_REPO}
+          release_ref: ${RELEASE_PACKAGE_REF}
+          mode: uds-pk
+          architecture: ${{ .inputs.architecture }}
+      - description: publish using uds-pk
+        if: ${{ eq .variables.SIGNING "false" }}
+        cmd: |
+          set -e
           ./zarf package publish "${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${{ .inputs.architecture }}-${RELEASE_PACKAGE_REF}.tar.zst" "oci://${TARGET_REPO}" --features values=true
 
           if [ -n "${GITLAB_CI}" ]; then
@@ -264,16 +311,26 @@ tasks:
       flavor:
         description: The flavor of the package to publish
         default: ${FLAVOR}
+      release_ref:
+        description: Resolved release reference, when supplied by the signing job
+        default: ""
     actions:
       - description: Package and push
+        env:
+          - SOURCE_RELEASE_REF=${{ .inputs.release_ref }}
         cmd: |
+          if [ -n "$SOURCE_RELEASE_REF" ]; then
+            set -e
+          fi
           WORK_DIR=".git-to-oci-tmp"
           ORIGIN_URL=$(git remote get-url origin)
           OWNER=$(echo "$ORIGIN_URL" | sed -nE 's@.*github.com[:/]([^/]+)/([^/.]+)(\.git)?$@\1@p')
           REPO=$(echo "$ORIGIN_URL" | sed -nE 's@.*github.com[:/]([^/]+)/([^/.]+)(\.git)?$@\2@p')
 
-          # # Get release tag from flavor
-          GIT_REF=$(uds-pk release show ${{ .inputs.flavor }})
+          GIT_REF="$SOURCE_RELEASE_REF"
+          if [ -z "$GIT_REF" ]; then
+            GIT_REF=$(uds-pk release show ${{ .inputs.flavor }})
+          fi
 
 
           # TARGET_REPO
