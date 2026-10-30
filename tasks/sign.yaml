@@ -97,7 +97,7 @@ tasks:
           cp "$PREPARE_ARCHIVE" "$candidate_dir/$archive_name"
           checksum=$(shasum -a 256 < "$candidate_dir/$archive_name" | cut -d ' ' -f 1)
           ./zarf package inspect definition "$candidate_dir/$archive_name" \
-            --architecture "$PREPARE_ARCH" --verify never --features values=true \
+            --architecture "$PREPARE_ARCH" --verify=never --features values=true \
             | ./zarf tools yq -o=json \
             | jq -e --arg archive "$archive_name" \
               --arg checksum "$checksum" --arg destination "$PREPARE_DESTINATION" \
