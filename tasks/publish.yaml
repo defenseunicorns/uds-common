@@ -25,10 +25,13 @@ tasks:
     description: Record the completed preparation outcome for the signing job
     inputs:
       outcome:
+        description: Preparation result, prepared or no-release
         default: prepared
       architecture:
+        description: Architecture of the prepared packages
         default: ${UDS_ARCH}
       publish_repo:
+        description: Whether to publish the repository source artifact
         default: "true"
     actions:
       - task: sign:complete-preparation

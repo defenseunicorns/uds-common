@@ -96,7 +96,7 @@ tasks:
           trap 'if [ "$prepared" != true ]; then rm -rf "$candidate_dir"; fi' EXIT
           cp "$PREPARE_ARCHIVE" "$candidate_dir/$archive_name"
           checksum=$(shasum -a 256 < "$candidate_dir/$archive_name" | cut -d ' ' -f 1)
-          ./zarf package inspect definition "$candidate_dir/$archive_name" \
+          ./zarf package inspect definition "$candidate_dir/$archive_name" --no-color \
             --architecture "$PREPARE_ARCH" --verify=never --features values=true \
             | ./zarf tools yq -o=json \
             | jq -e --arg archive "$archive_name" \
@@ -114,16 +114,22 @@ tasks:
     description: Record the candidate inventory and resolved release and source settings
     inputs:
       outcome:
+        description: Preparation result, prepared or no-release
         default: prepared
       architecture:
+        description: Architecture of the prepared packages
         default: ${UDS_ARCH}
       flavor:
+        description: Flavor used for release and source publication
         default: ""
       base_repo:
+        description: Base OCI repository used for source publication
         default: ""
       uds_pk:
+        description: Whether the packages use uds-pk for publication
         default: "false"
       publish_repo:
+        description: Whether to publish the repository source artifact
         default: "true"
     actions:
       - description: Complete the preparation manifest for this build job
