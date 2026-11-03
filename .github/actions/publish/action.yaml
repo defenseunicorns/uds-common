@@ -1,0 +1,260 @@
+# Copyright 2026 Defense Unicorns
+# SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
+
+name: Publish
+description: Build, test, keyless-sign, verify, and publish UDS packages from the caller workflow
+
+inputs:
+  arch:
+    description: The architecture to publish for (defaults to the runner architecture)
+    default: ""
+  base-repo:
+    description: The base repository to check for releases (defaults to ghcr.io/<organization>)
+    default: ""
+  flavor:
+    description: The package flavor to publish
+    required: true
+  options:
+    description: Additional options passed to UDS tasks
+    default: ""
+  reports-path:
+    description: The path to test outputs to upload
+    default: ""
+  reports-name:
+    description: The name prefix for uploaded test reports
+    default: playwright-report
+  publish-repo:
+    description: Whether to also publish repo contents as a separate artifact
+    default: "true"
+  uds-pk:
+    description: Whether to use uds-pk for publishing
+    default: "true"
+  uds-releaser:
+    description: "DEPRECATED: Whether to use the UDS Releaser for publishing"
+    default: "false"
+  team:
+    description: Team path segment for release checks outside the uds-packages organization
+    default: ""
+  dockerComposeVersion:
+    description: The Docker Compose version to install
+    # renovate: datasource=github-tags depName=docker/compose versioning=semver
+    default: 5.6.1
+  composeBridgeVersion:
+    description: The Compose Bridge version to use
+    # renovate: datasource=github-tags depName=defenseunicorns/compose-bridge-uds versioning=semver
+    default: 1.3.1
+  github-token:
+    description: GitHub token for registry authentication and release operations
+    default: ${{ github.token }}
+  registry1-username:
+    description: Optional Iron Bank registry username
+    default: ""
+  registry1-password:
+    description: Optional Iron Bank registry password
+    default: ""
+  rapidfort-username:
+    description: Optional RapidFort registry username
+    default: ""
+  rapidfort-password:
+    description: Optional RapidFort registry password
+    default: ""
+  chainguard-identity:
+    description: Optional Chainguard identity used for registry authentication
+    default: ""
+  license-key:
+    description: Optional license key passed to the package's publishing task
+    default: ""
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      with:
+        fetch-depth: 0
+        token: ${{ inputs.github-token }}
+
+    - name: Install Docker Compose
+      uses: docker/setup-compose-action@54042514f505b273907334ae2b9cdbb9a0213c1a # v2.4.0
+      with:
+        version: v${{ inputs.dockerComposeVersion }}
+
+    - name: Install UDS CLI
+      uses: defenseunicorns/setup-uds@d6add59d4c2ca789ed7c92741e91bd340b4e950b # v1.0.2
+      with:
+        # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
+        version: v0.40.0
+
+    - name: Install ORAS CLI
+      if: ${{ inputs.publish-repo == 'true' }}
+      run: uds run actions:install-oras --no-progress
+      shell: bash
+
+    - name: Environment setup
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
+        REGISTRY1_USERNAME: ${{ inputs.registry1-username }}
+        REGISTRY1_PASSWORD: ${{ inputs.registry1-password }}
+        RAPIDFORT_USERNAME: ${{ inputs.rapidfort-username }}
+        RAPIDFORT_PASSWORD: ${{ inputs.rapidfort-password }}
+        CHAINGUARD_IDENTITY: ${{ inputs.chainguard-identity }}
+      run: |
+        echo "MARU_AUTH=\"{\"raw.githubusercontent.com\": \"${GH_TOKEN}\"}\"" >> "$GITHUB_ENV"
+        uds run actions:setup-environment \
+          --set REGISTRY1_USERNAME="${REGISTRY1_USERNAME}" \
+          --set REGISTRY1_PASSWORD="${REGISTRY1_PASSWORD}" \
+          --set GH_TOKEN="${GH_TOKEN}" \
+          --set RAPIDFORT_USERNAME="${RAPIDFORT_USERNAME}" \
+          --set RAPIDFORT_PASSWORD="${RAPIDFORT_PASSWORD}" \
+          --set CHAINGUARD_IDENTITY="${CHAINGUARD_IDENTITY}"
+      shell: bash
+
+    - name: Parse inputs
+      id: parse-inputs
+      env:
+        UDS_RELEASER: ${{ inputs.uds-releaser }}
+        UDS_PK: ${{ inputs.uds-pk }}
+        PUBLISH_ARCH: ${{ inputs.arch }}
+        RUNNER_ARCHITECTURE: ${{ runner.arch }}
+        PUBLISH_BASE_REPO: ${{ inputs.base-repo }}
+      run: |
+        if [ "${UDS_RELEASER}" = "true" ]; then
+          echo "::warning title=Deprecated-Input::The uds-releaser input is deprecated, please use uds-pk instead"
+          echo "uds-pk=true" >> "$GITHUB_OUTPUT"
+        elif [ "${UDS_PK}" = "false" ]; then
+          echo "uds-pk=false" >> "$GITHUB_OUTPUT"
+        else
+          echo "uds-pk=true" >> "$GITHUB_OUTPUT"
+        fi
+
+        if [ -n "${PUBLISH_ARCH}" ]; then
+          resolved_arch="${PUBLISH_ARCH}"
+        else
+          case "${RUNNER_ARCHITECTURE}" in
+            X64)   resolved_arch="amd64" ;;
+            ARM64) resolved_arch="arm64" ;;
+            *)     resolved_arch="${RUNNER_ARCHITECTURE}" ;;
+          esac
+        fi
+        echo "arch=${resolved_arch}" >> "$GITHUB_OUTPUT"
+
+        if [ -n "${PUBLISH_BASE_REPO}" ]; then
+          resolved_base_repo="${PUBLISH_BASE_REPO}"
+        else
+          owner="${GITHUB_REPOSITORY_OWNER:-${GITHUB_REPOSITORY%%/*}}"
+          resolved_base_repo="ghcr.io/${owner}"
+        fi
+        echo "base-repo=${resolved_base_repo}" >> "$GITHUB_OUTPUT"
+
+        echo "Resolved arch: ${resolved_arch}"
+        echo "Resolved base-repo: ${resolved_base_repo}"
+      shell: bash
+
+    - name: Publish Packages/Bundles - release-please
+      if: ${{ steps.parse-inputs.outputs.uds-pk == 'false' }}
+      run: |
+        if uds run --list | grep -w 'publish-package' > /dev/null; then
+          if [ -f compose.yaml ]; then
+            RELEASE_PACKAGE_VERSION=$(uds zarf tools yq -r '."."' .release-please-manifest.json)
+            RELEASE_PACKAGE_VERSION="${RELEASE_PACKAGE_VERSION}" uds zarf tools yq -i \
+              '."x-uds".metadata.version = strenv(RELEASE_PACKAGE_VERSION)' compose.yaml
+          else
+            RELEASE_PACKAGE_VERSION=$(uds zarf tools yq -r '.metadata.version' zarf.yaml)
+          fi
+          uds run publish-package \
+            --set USE_CHECKPOINT=false \
+            --set FLAVOR=${{ inputs.flavor }} \
+            --no-progress ${{ inputs.options }} \
+            --set SIGNING=true
+        else
+          uds run publish-release --set USE_CHECKPOINT=false --set FLAVOR=${{ inputs.flavor }} --no-progress ${{ inputs.options }} --set SIGNING=true
+        fi
+      shell: bash
+
+    - name: Publish Packages/Bundles - uds-pk
+      if: ${{ steps.parse-inputs.outputs.uds-pk == 'true' }}
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+        LICENSE_KEY: ${{ inputs.license-key }}
+      run: |
+        if [ -f compose.yaml ]; then
+          RELEASE_PACKAGE_VERSION=$(uds-pk release show "${{ inputs.flavor }}" --version-only)
+          RELEASE_PACKAGE_VERSION="${RELEASE_PACKAGE_VERSION}" uds zarf tools yq -i \
+            '."x-uds".metadata.version = strenv(RELEASE_PACKAGE_VERSION)' compose.yaml
+
+          docker compose -f compose.yaml pull
+          docker compose \
+            -f compose.yaml \
+            bridge convert \
+            --transformation "ghcr.io/defenseunicorns/compose-bridge-uds:${{ inputs.composeBridgeVersion }}" \
+            --output build \
+            --yes
+
+          if [ ! -f zarf.yaml ]; then
+            cp build/zarf.yaml zarf.yaml
+          fi
+        fi
+
+        if uds-pk release check "${{ inputs.flavor }}" --arch "${{ steps.parse-inputs.outputs.arch }}" --base-repo "${{ steps.parse-inputs.outputs.base-repo }}" --team "${{ inputs.team }}" --verbose; then
+          uds-pk release update-yaml ${{ inputs.flavor }}
+
+          if uds run --list | grep -w 'publish-package' > /dev/null; then
+            uds run publish-package \
+              --set USE_CHECKPOINT=false \
+              --set FLAVOR=${{ inputs.flavor }} \
+              --set ENABLE_UDS_PK=true \
+              --no-progress ${{ inputs.options }} \
+              --set LICENSE_KEY="${LICENSE_KEY}" \
+              --set SIGNING=true
+          else
+            uds run publish-release \
+              --set USE_CHECKPOINT=false \
+              --set FLAVOR=${{ inputs.flavor }} \
+              --set ENABLE_UDS_PK=true \
+              --no-progress ${{ inputs.options }} \
+              --set LICENSE_KEY="${LICENSE_KEY}" \
+              --set SIGNING=true
+          fi
+        fi
+      shell: bash
+
+    - name: Publish Repo Contents
+      if: ${{ inputs.publish-repo == 'true' }}
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+      run: |
+        uds run publish:repo \
+          --set FLAVOR=${{ inputs.flavor }} \
+          --no-progress ${{ inputs.options }}
+      shell: bash
+
+    - name: Debug Output
+      if: ${{ always() }}
+      run: uds run actions:debug-output
+      shell: bash
+
+    - name: Save logs
+      if: ${{ always() }}
+      run: uds run actions:save-logs
+      shell: bash
+
+    - name: Upload debug logs
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+      if: ${{ always() }}
+      with:
+        name: debug-log-${{ inputs.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ runner.arch }}
+        path: |
+          /tmp/zarf-*.log
+          /tmp/uds-*.log
+          /tmp/maru-*.log
+          /tmp/debug-*.log
+          /tmp/uds-containerd-logs
+          /tmp/k3d-uds-*.log
+
+    - name: Upload test reports
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+      if: ${{ always() && inputs.reports-path != '' }}
+      with:
+        name: ${{ inputs.reports-name }}-${{ inputs.flavor }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ runner.arch }}
+        path: ${{ inputs.reports-path }}
+        retention-days: 30
