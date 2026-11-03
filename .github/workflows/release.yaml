@@ -1,4 +1,4 @@
-# Copyright 2024 Defense Unicorns
+# Copyright 2024-2026 Defense Unicorns
 # SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
 
 name: Release
@@ -16,6 +16,8 @@ permissions:
 
 jobs:
   publish:
+    runs-on: ${{ matrix.architecture == 'arm64' && 'uds-swf-ubuntu-arm64-4-core' || 'ubuntu-latest' }}
+    timeout-minutes: 40
     permissions:
       contents: write # Allows reading the content of the repository.
       packages: write # Allows reading the content of the repository's packages.
@@ -27,11 +29,22 @@ jobs:
         exclude:
           - flavor: registry1
             architecture: arm64
-    uses: ./.github/workflows/callable-publish.yaml
-    with:
-      flavor: ${{ matrix.flavor }}
-      runsOn: ${{ matrix.architecture == 'arm64' && 'uds-swf-ubuntu-arm64-4-core' || 'ubuntu-latest' }}
-      uds-pk: true
-      base-repo: ghcr.io/defenseunicorns/packages
-      team: uds
-    secrets: inherit # Inherits all secrets from the parent workflow.
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Build, test, sign, and publish
+        uses: ./.github/actions/publish
+        with:
+          flavor: ${{ matrix.flavor }}
+          arch: ${{ matrix.architecture }}
+          uds-pk: "true"
+          base-repo: ghcr.io/defenseunicorns/packages
+          team: uds
+          options: --set BASE_REPO="ghcr.io/defenseunicorns/packages" --set TEAM=uds
+          registry1-username: ${{ secrets.IRON_BANK_ROBOT_USERNAME }}
+          registry1-password: ${{ secrets.IRON_BANK_ROBOT_PASSWORD }}
+          rapidfort-username: ${{ secrets.RAPIDFORT_USERNAME }}
+          rapidfort-password: ${{ secrets.RAPIDFORT_PASSWORD }}
+          chainguard-identity: ${{ secrets.CHAINGUARD_IDENTITY }}
+          license-key: ${{ secrets.LICENSE_KEY }}
