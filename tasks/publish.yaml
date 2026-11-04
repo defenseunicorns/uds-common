@@ -12,7 +12,7 @@ variables:
   - name: ENABLE_UDS_PK
     default: "false"
   - name: SIGNING
-    default: "true"
+    default: "false"
   - name: BASE_REPO
   - name: PUBLISH_PATH
   - name: NEXT_MODE
