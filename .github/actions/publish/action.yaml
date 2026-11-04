@@ -32,9 +32,6 @@ inputs:
   uds-pk:
     description: Whether to use uds-pk for publishing
     default: "true"
-  uds-releaser:
-    description: "DEPRECATED: Whether to use the UDS Releaser for publishing"
-    default: "false"
   team:
     description: Team path segment for release checks outside the uds-packages organization
     default: ""
@@ -115,16 +112,12 @@ runs:
     - name: Parse inputs
       id: parse-inputs
       env:
-        UDS_RELEASER: ${{ inputs.uds-releaser }}
         UDS_PK: ${{ inputs.uds-pk }}
         PUBLISH_ARCH: ${{ inputs.arch }}
         RUNNER_ARCHITECTURE: ${{ runner.arch }}
         PUBLISH_BASE_REPO: ${{ inputs.base-repo }}
       run: |
-        if [ "${UDS_RELEASER}" = "true" ]; then
-          echo "::warning title=Deprecated-Input::The uds-releaser input is deprecated, please use uds-pk instead"
-          echo "uds-pk=true" >> "$GITHUB_OUTPUT"
-        elif [ "${UDS_PK}" = "false" ]; then
+        if [ "${UDS_PK}" = "false" ]; then
           echo "uds-pk=false" >> "$GITHUB_OUTPUT"
         else
           echo "uds-pk=true" >> "$GITHUB_OUTPUT"
