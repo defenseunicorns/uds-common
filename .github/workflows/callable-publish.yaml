@@ -168,9 +168,10 @@ jobs:
             uds run publish-package \
               --set USE_CHECKPOINT=false \
               --set FLAVOR=${{ inputs.flavor }} \
+              --set SIGNING=false \
               --no-progress ${{ inputs.options }}
           else
-            uds run publish-release --set USE_CHECKPOINT=false --set FLAVOR=${{ inputs.flavor }} --no-progress ${{ inputs.options }}
+            uds run publish-release --set USE_CHECKPOINT=false --set FLAVOR=${{ inputs.flavor }} --set SIGNING=false --no-progress ${{ inputs.options }}
           fi
 
       - name: Publish Packages/Bundles - uds-pk
@@ -204,6 +205,7 @@ jobs:
                 --set USE_CHECKPOINT=false \
                 --set FLAVOR=${{ inputs.flavor }} \
                 --set ENABLE_UDS_PK=true \
+                --set SIGNING=false \
                 --no-progress ${{ inputs.options }} \
                 --set LICENSE_KEY=${{ secrets.LICENSE_KEY }}
             else
@@ -211,6 +213,7 @@ jobs:
                 --set USE_CHECKPOINT=false \
                 --set FLAVOR=${{ inputs.flavor }} \
                 --set ENABLE_UDS_PK=true \
+                --set SIGNING=false \
                 --no-progress ${{ inputs.options }} \
                 --set LICENSE_KEY=${{ secrets.LICENSE_KEY }}
             fi

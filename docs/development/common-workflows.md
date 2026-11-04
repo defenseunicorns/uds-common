@@ -17,6 +17,8 @@ The [publish action](../../.github/actions/publish/action.yaml) signs each Zarf 
 
 Downstream workflows reference `defenseunicorns/uds-common/.github/actions/publish@<COMMON_REF>`. Use the same UDS Common revision for the action and imported publishing tasks. Pass registry credentials and license keys as action inputs when needed. The callable publish workflow remains available with signing disabled by default.
 
+Publishing tasks enable signing by default. Pass `--set SIGNING=false` when publishing directly without signing.
+
 #### Verify a published package
 
 Replace the placeholders with the package version, flavor, and publishing GitHub repository:
