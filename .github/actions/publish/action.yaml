@@ -14,6 +14,9 @@ inputs:
   flavor:
     description: The package flavor to publish
     required: true
+  signing:
+    description: Whether to keylessly sign and verify packages before publishing
+    default: "true"
   options:
     description: Additional options passed to UDS tasks
     default: ""
@@ -165,9 +168,9 @@ runs:
             --set USE_CHECKPOINT=false \
             --set FLAVOR=${{ inputs.flavor }} \
             --no-progress ${{ inputs.options }} \
-            --set SIGNING=true
+            --set SIGNING="${{ inputs.signing }}"
         else
-          uds run publish-release --set USE_CHECKPOINT=false --set FLAVOR=${{ inputs.flavor }} --no-progress ${{ inputs.options }} --set SIGNING=true
+          uds run publish-release --set USE_CHECKPOINT=false --set FLAVOR=${{ inputs.flavor }} --no-progress ${{ inputs.options }} --set SIGNING="${{ inputs.signing }}"
         fi
       shell: bash
 
@@ -205,7 +208,7 @@ runs:
               --set ENABLE_UDS_PK=true \
               --no-progress ${{ inputs.options }} \
               --set LICENSE_KEY="${LICENSE_KEY}" \
-              --set SIGNING=true
+              --set SIGNING="${{ inputs.signing }}"
           else
             uds run publish-release \
               --set USE_CHECKPOINT=false \
@@ -213,7 +216,7 @@ runs:
               --set ENABLE_UDS_PK=true \
               --no-progress ${{ inputs.options }} \
               --set LICENSE_KEY="${LICENSE_KEY}" \
-              --set SIGNING=true
+              --set SIGNING="${{ inputs.signing }}"
           fi
         fi
       shell: bash
