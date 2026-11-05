@@ -48,8 +48,45 @@ tasks:
 
   - name: zizmor
     description: Audit GitHub workflows and composite actions with zizmor
+    inputs:
+      collect:
+        description: Input kinds to collect (comma-separated kinds, default, or all)
+        default: workflows,actions
+      persona:
+        description: Auditing persona (regular, pedantic, or auditor); empty leaves zizmor's default
+        default: ""
+      min-severity:
+        description: Minimum reported severity (informational, low, medium, or high); empty leaves zizmor's default
+        default: ""
+      min-confidence:
+        description: Minimum reported confidence (low, medium, or high); empty leaves zizmor's default
+        default: ""
     actions:
-      - cmd: zizmor --offline --collect=workflows,actions --no-progress .
+      - shell:
+          linux: bash
+          darwin: bash
+        env:
+          - ZIZMOR_COLLECT=${{ .inputs.collect }}
+          - ZIZMOR_PERSONA=${{ .inputs.persona }}
+          - ZIZMOR_MIN_SEVERITY=${{ index .inputs "min-severity" }}
+          - ZIZMOR_MIN_CONFIDENCE=${{ index .inputs "min-confidence" }}
+        cmd: |
+          args=(--offline --strict-collection --no-progress)
+
+          if [ -n "$ZIZMOR_COLLECT" ]; then
+            args+=("--collect=$ZIZMOR_COLLECT")
+          fi
+          if [ -n "$ZIZMOR_PERSONA" ]; then
+            args+=(--persona "$ZIZMOR_PERSONA")
+          fi
+          if [ -n "$ZIZMOR_MIN_SEVERITY" ]; then
+            args+=(--min-severity "$ZIZMOR_MIN_SEVERITY")
+          fi
+          if [ -n "$ZIZMOR_MIN_CONFIDENCE" ]; then
+            args+=(--min-confidence "$ZIZMOR_MIN_CONFIDENCE")
+          fi
+
+          zizmor "${args[@]}" .
 
   - name: renovate
     description: Validate Renovate configuration

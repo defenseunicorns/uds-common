@@ -177,10 +177,30 @@ install `zizmor`.
 Install `zizmor` locally, then run:
 
 ```bash
-uds run lint:zizmor --no-progress
+uds run lint:zizmor
 ```
 
-The task runs offline and returns a failing exit status for blocking findings.
+Optional inputs control which inputs are collected and how/which findings are reported:
+
+| Input | Default | Values |
+|-------|---------|--------|
+| `collect` | `workflows,actions` | Comma-separated kinds (`all`, `default`, `workflows`, `actions`, `dependabot`, and/or `pre-commit`) |
+| `persona` | Unset (`zizmor` uses `regular`) | `regular`, `pedantic`, `auditor` |
+| `min-severity` | Unset | `informational`, `low`, `medium`, `high` |
+| `min-confidence` | Unset | `low`, `medium`, `high` |
+
+```bash
+uds run lint:zizmor \
+  --with collect=default \
+  --with persona=pedantic \
+  --with min-severity=medium \
+  --with min-confidence=high
+```
+
+Omitted persona, severity, and confidence inputs leave `zizmor` defaults unchanged.
+
+The task always audits the current directory (`.`), runs offline, and fails on blocking findings or collected files with workflow schema errors.
+
 A downstream task can invoke it with `task: lint:zizmor` through an existing include of `tasks/lint.yaml`.
 
 #### Optional Zarf values schema checks
