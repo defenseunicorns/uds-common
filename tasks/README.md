@@ -145,6 +145,7 @@ ignore: [] # an array of paths to ignore
 |------|-------------|
 | **deps** | Install linting tool dependencies |
 | **all** | Run all linting commands |
+| **zizmor** | Audit GitHub workflows and composite actions with zizmor |
 | **renovate** | Validate Renovate configuration |
 | **yaml** | Run YAML linting checks |
 | **shell** | Run shellcheck on all Maru tasks, GitHub workflows, Zarf packages, and local shell scripts |
@@ -166,6 +167,21 @@ It requires Node.js 24.11+ (24.x) and npm; Renovate is downloaded automatically.
 uds run lint:renovate
 uds run lint:renovate --with file=config/renovate.json5
 ```
+
+#### Optional GitHub Actions security lint
+
+The `zizmor` task audits GitHub workflows and composite actions. It is opt-in:
+`lint:all`, `lint:deps`, and the standard callable lint workflow do not invoke or
+install `zizmor`.
+
+Install `zizmor` locally, then run:
+
+```bash
+uds run lint:zizmor --no-progress
+```
+
+The task runs offline and returns a failing exit status for blocking findings.
+A downstream task can invoke it with `task: lint:zizmor` through an existing include of `tasks/lint.yaml`.
 
 #### Optional Zarf values schema checks
 

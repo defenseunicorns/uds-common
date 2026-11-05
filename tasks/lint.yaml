@@ -46,6 +46,11 @@ tasks:
       - task: helm
       - task: helm-template
 
+  - name: zizmor
+    description: Audit GitHub workflows and composite actions with zizmor
+    actions:
+      - cmd: zizmor --offline --collect=workflows,actions --no-progress .
+
   - name: renovate
     description: Validate Renovate configuration
     inputs:
