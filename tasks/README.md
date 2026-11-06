@@ -145,6 +145,7 @@ ignore: [] # an array of paths to ignore
 |------|-------------|
 | **deps** | Install linting tool dependencies |
 | **all** | Run all linting commands |
+| **zizmor** | Audit GitHub workflows and composite actions with zizmor |
 | **renovate** | Validate Renovate configuration |
 | **yaml** | Run YAML linting checks |
 | **shell** | Run shellcheck on all Maru tasks, GitHub workflows, Zarf packages, and local shell scripts |
@@ -166,6 +167,41 @@ It requires Node.js 24.11+ (24.x) and npm; Renovate is downloaded automatically.
 uds run lint:renovate
 uds run lint:renovate --with file=config/renovate.json5
 ```
+
+#### Optional GitHub Actions security lint
+
+The `zizmor` task audits GitHub workflows and composite actions. It is opt-in:
+`lint:all`, `lint:deps`, and the standard callable lint workflow do not invoke or
+install `zizmor`.
+
+Install `zizmor` locally, then run:
+
+```bash
+uds run lint:zizmor
+```
+
+Optional inputs control which inputs are collected and how/which findings are reported:
+
+| Input | Default | Values |
+|-------|---------|--------|
+| `collect` | `workflows,actions` | Comma-separated kinds (`all`, `default`, `workflows`, `actions`, `dependabot`, and/or `pre-commit`) |
+| `persona` | Unset (`zizmor` uses `regular`) | `regular`, `pedantic`, `auditor` |
+| `min-severity` | Unset | `informational`, `low`, `medium`, `high` |
+| `min-confidence` | Unset | `low`, `medium`, `high` |
+
+```bash
+uds run lint:zizmor \
+  --with collect=default \
+  --with persona=pedantic \
+  --with min-severity=medium \
+  --with min-confidence=high
+```
+
+Omitted persona, severity, and confidence inputs leave `zizmor` defaults unchanged.
+
+The task always audits the current directory (`.`), runs offline, and fails on blocking findings or collected files with workflow schema errors.
+
+A downstream task can invoke it with `task: lint:zizmor` through an existing include of `tasks/lint.yaml`.
 
 #### Optional Zarf values schema checks
 
