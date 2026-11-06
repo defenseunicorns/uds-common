@@ -62,7 +62,8 @@ tasks:
         description: Minimum reported confidence (low, medium, or high); empty leaves zizmor's default
         default: ""
     actions:
-      - shell:
+      - description: Audit GitHub workflows and composite actions with zizmor
+        shell:
           linux: bash
           darwin: bash
         env:
