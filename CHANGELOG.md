@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.33.0](https://github.com/defenseunicorns/uds-common/compare/v1.32.2...v1.33.0) (2026-11-06)
+
+
+### Features
+
+* **lint:** add optional zizmor task with configurable audit settings ([#824](https://github.com/defenseunicorns/uds-common/issues/824)) ([f7514c6](https://github.com/defenseunicorns/uds-common/commit/f7514c652be59f3e3cea4a17346ac199a466522a))
+
+
+### Bug Fixes
+
+* change USER directive in SBOM shim image to use UID and GID ([#823](https://github.com/defenseunicorns/uds-common/issues/823)) ([a99f337](https://github.com/defenseunicorns/uds-common/commit/a99f337a51b7bb20a53d2e7ccbe87a1dec304dea))
+
+
+### Miscellaneous
+
+* **deps:** update uds common foundation dependencies to v0.41.0 ([#821](https://github.com/defenseunicorns/uds-common/issues/821)) ([1469183](https://github.com/defenseunicorns/uds-common/commit/14691836333ceeaacc532df607d1c8afe670c86a))
+* **deps:** update uds common foundation dependencies to v1.16.0 ([#818](https://github.com/defenseunicorns/uds-common/issues/818)) ([ac7153d](https://github.com/defenseunicorns/uds-common/commit/ac7153dd962364886d76c8a1ffc45c988a914017))
+* **deps:** update uds common support dependencies ([#817](https://github.com/defenseunicorns/uds-common/issues/817)) ([175d23b](https://github.com/defenseunicorns/uds-common/commit/175d23b52604ebbc550f115ae31717f6770b8d2c))
+
 ## [1.32.2](https://github.com/defenseunicorns/uds-common/compare/v1.32.1...v1.32.2) (2026-10-27)
 
 
