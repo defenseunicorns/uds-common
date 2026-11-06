@@ -24,6 +24,8 @@ The repo itself contains:
 
 Common `tasks` can be included in downstream repositories and executed with `uds run`.  You can learn more about the common tasks in this repo on the [tasks README](./tasks/README.md).
 
+For signed releases and package verification, see [Signed package releases](docs/development/common-workflows.md#signed-package-releases).
+
 ## Configuration Usage
 
 Common configuration used between repositories is located in the `config` directory and is imported via specific tool mechanisms (like Renovate's `extends` key).
