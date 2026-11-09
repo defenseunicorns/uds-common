@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.33.1](https://github.com/defenseunicorns/uds-common/compare/v1.33.0...v1.33.1) (2026-11-09)
+
+
+### Bug Fixes
+
+* k3d setup source ([#825](https://github.com/defenseunicorns/uds-common/issues/825)) ([0739921](https://github.com/defenseunicorns/uds-common/commit/07399218fc28e9c3c4eed3b7a20487656392de68))
+
 ## [1.33.0](https://github.com/defenseunicorns/uds-common/compare/v1.32.2...v1.33.0) (2026-11-06)
 
 
