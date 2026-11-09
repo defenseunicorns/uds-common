@@ -163,6 +163,38 @@ tasks:
 
             mv "$(printf '%s' "${CREATE_OUTPUT}" | ./zarf tools yq -r '.outputPath')" "../${{ .inputs.bundle_path }}/uds-bundle-${BUNDLE_NAME}-${{ .inputs.architecture }}-${BUNDLE_VERSION}.tar.zst"
           else
+            BASELINE_PACKAGE="${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${{ .inputs.architecture }}-${LOCAL_VERSION}.tar.zst"
+            BASELINE_DEFINITION=$(./zarf package inspect definition "${BASELINE_PACKAGE}" \
+              --architecture=${{ .inputs.architecture }} \
+              --verify=never --features values=true --no-color)
+            BASELINE_SIGNED=$(printf '%s\n' "${BASELINE_DEFINITION}" | ./zarf tools yq -r '.build.signed // false')
+            BASELINE_MISSING_VERIFICATION=$(./zarf tools yq -r '
+              [.packages[] | select(.name == strenv(PACKAGE_NAME)) |
+                select(has("publicKey") == false) |
+                select(has("keylessVerification") == false)] | length
+              ' "${{ .inputs.bundle_path }}/uds-bundle.yaml")
+
+            if [ "${BASELINE_SIGNED}" = "true" ] && [ "${BASELINE_MISSING_VERIFICATION}" -gt 0 ]; then
+              SIGNER_REPOSITORY="${GITHUB_REPOSITORY:-}"
+              if [ -z "${SIGNER_REPOSITORY}" ]; then
+                ORIGIN_URL=$(git remote get-url origin)
+                SIGNER_REPOSITORY=$(printf '%s\n' "${ORIGIN_URL%.git}" | sed -nE 's#^(https://github[.]com/|git@github[.]com:)([^/]+/[^/]+)$#\2#p')
+              fi
+              : "${SIGNER_REPOSITORY:?Unable to determine the GitHub repository for baseline signature verification}"
+              export BASELINE_SIGNING_IDENTITY="${GITHUB_SERVER_URL:-https://github.com}/${SIGNER_REPOSITORY}/.github/workflows/release.yaml@refs/heads/main"
+
+              ./zarf tools yq -i '
+                (.packages[] | select(.name == strenv(PACKAGE_NAME)) |
+                  select(has("publicKey") == false) |
+                  select(has("keylessVerification") == false)) += {
+                    "keylessVerification": {
+                      "certificateIdentity": strenv(BASELINE_SIGNING_IDENTITY),
+                      "certificateOIDCIssuer": "https://token.actions.githubusercontent.com"
+                    }
+                  }
+                ' "${{ .inputs.bundle_path }}/uds-bundle.yaml"
+            fi
+
             ./uds create ${{ .inputs.bundle_path }} \
               --architecture=${{ .inputs.architecture }} \
               --confirm \

@@ -1,4 +1,4 @@
-# Copyright 2024 Defense Unicorns
+# Copyright 2024-2026 Defense Unicorns
 # SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
 
 includes:
@@ -10,6 +10,8 @@ variables:
   - name: TEAM
     default: uds
   - name: ENABLE_UDS_PK
+    default: "false"
+  - name: SIGNING
     default: "false"
   - name: BASE_REPO
   - name: PUBLISH_PATH
@@ -115,7 +117,21 @@ tasks:
           - name: FLAVOR_SUFFIX
       - description: Publish package for the supplied architecture
         cmd: |
-          ./zarf package publish "${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${{ .inputs.architecture }}-${PACKAGE_VERSION}${FLAVOR_SUFFIX}.tar.zst" "oci://${TARGET_REPO}" --features values=true
+          set -e
+          package_archive="${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${{ .inputs.architecture }}-${PACKAGE_VERSION}${FLAVOR_SUFFIX}.tar.zst"
+
+          if [ "${SIGNING}" = "true" ]; then
+            : "${GITHUB_SERVER_URL:?Keyless signing requires a GitHub server URL}"
+            : "${GITHUB_WORKFLOW_REF:?Keyless signing requires a GitHub Actions workflow ref}"
+
+            ./zarf package sign "${package_archive}" --keyless --confirm --tlog-upload
+            ./zarf package verify "${package_archive}" \
+              --certificate-identity "${GITHUB_SERVER_URL}/${GITHUB_WORKFLOW_REF}" \
+              --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
+              --insecure-ignore-tlog=false
+          fi
+
+          ./zarf package publish "${package_archive}" "oci://${TARGET_REPO}" --features values=true
 
 
   - name: uds-pk-publish
@@ -171,7 +187,20 @@ tasks:
             exit 1
           fi
 
-          ./zarf package publish "${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${{ .inputs.architecture }}-${RELEASE_PACKAGE_REF}.tar.zst" "oci://${TARGET_REPO}" --features values=true
+          package_archive="${{ .inputs.path }}/zarf-package-${PACKAGE_NAME}-${{ .inputs.architecture }}-${RELEASE_PACKAGE_REF}.tar.zst"
+
+          if [ "${SIGNING}" = "true" ]; then
+            : "${GITHUB_SERVER_URL:?Keyless signing requires a GitHub server URL}"
+            : "${GITHUB_WORKFLOW_REF:?Keyless signing requires a GitHub Actions workflow ref}"
+
+            ./zarf package sign "${package_archive}" --keyless --confirm --tlog-upload
+            ./zarf package verify "${package_archive}" \
+              --certificate-identity "${GITHUB_SERVER_URL}/${GITHUB_WORKFLOW_REF}" \
+              --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
+              --insecure-ignore-tlog=false
+          fi
+
+          ./zarf package publish "${package_archive}" "oci://${TARGET_REPO}" --features values=true
 
           if [ -n "${GITLAB_CI}" ]; then
             uds-pk release gitlab "${{ .inputs.flavor }}"
