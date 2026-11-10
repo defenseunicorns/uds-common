@@ -25,6 +25,7 @@ include:
     inputs:
       flavor: $FLAVOR
       runs-on: gitlab-runner-4c-${ARCH}
+      arch: $ARCH
   - component: $CI_SERVER_FQDN/path/to/uds-common/deploy@0.0.0
     inputs:
       environment: dev
@@ -55,6 +56,8 @@ deploy:dev:
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 ```
+
+The publish job uses GitLab's [parallel matrix](https://docs.gitlab.com/ci/jobs/job_control/#parallelize-large-jobs) to build each flavor and architecture combination in a separate job. Set `arch: $ARCH` in the component inputs and list the architectures under `publish.parallel.matrix`, as shown above. The `runs-on` tag selects the corresponding native runner. Each job uses its selected architecture for the release check, package and bundle tasks, and mirror trigger, so an existing release for one architecture does not skip another. Omitting `arch` uses the runner's architecture.
 
 ## Repo Setup
 

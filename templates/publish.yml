@@ -5,6 +5,9 @@ spec:
   inputs:
     runs-on:
     flavor:
+    arch:
+      description: Architecture to publish (for example, amd64 or arm64); defaults to the runner architecture when empty
+      default: ""
     artifact-dir:
       default: .ci_artifacts
     reports-path:
@@ -58,6 +61,18 @@ publish:
     # Dry run on non-tag runs
     - OPTIONS="--no-progress"
     - if [[ "$DRY_RUN" == "true" ]]; then OPTIONS="$OPTIONS --dry-run"; fi
+
+    # Resolve the architecture independently for each matrix job
+    - |
+      arch="$[[ inputs.arch ]]"
+      if [ -z "$arch" ]; then
+        case "$(uname -m)" in
+          x86_64) arch=amd64 ;;
+          aarch64|arm64) arch=arm64 ;;
+          *) arch="$(uname -m)" ;;
+        esac
+      fi
+      echo "Resolved architecture: $arch"
 
     # Environment setup
     - |
@@ -113,7 +128,7 @@ publish:
 
     # Check if release is necessary for flavor and exit early if not
     - |
-      if ! uds-pk check "$[[ inputs.flavor ]]"; then
+      if ! uds-pk release check "$[[ inputs.flavor ]]" --arch "$arch"; then
         echo "No release necessary"
         [[ "$DRY_RUN" != "true" ]] && exit 0
       fi
@@ -143,9 +158,9 @@ publish:
           ARGS="$ARGS --set TEAM=$[[ inputs.team ]]"
         fi
 
-        echo Running $TASK_NAME $ARGS ${OPTIONS}
+        echo Running UDS_ARCHITECTURE="$arch" $TASK_NAME $ARGS ${OPTIONS}
 
-        UDS_USE_CHECKPOINT=false uds run $TASK_NAME $ARGS ${OPTIONS}
+        UDS_ARCHITECTURE="$arch" UDS_USE_CHECKPOINT=false uds run $TASK_NAME $ARGS ${OPTIONS}
 
     # TODO: @corang - this will be removed upon deployment of uds registry
     # Mirror package to github
