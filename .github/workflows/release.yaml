@@ -37,8 +37,6 @@ jobs:
         uses: ./.github/actions/publish
         with:
           flavor: ${{ matrix.flavor }}
-          arch: ${{ matrix.architecture }}
-          uds-pk: "true"
           base-repo: ghcr.io/defenseunicorns/packages
           team: uds
           options: --set BASE_REPO="ghcr.io/defenseunicorns/packages" --set TEAM=uds
@@ -47,4 +45,3 @@ jobs:
           rapidfort-username: ${{ secrets.RAPIDFORT_USERNAME }}
           rapidfort-password: ${{ secrets.RAPIDFORT_PASSWORD }}
           chainguard-identity: ${{ secrets.CHAINGUARD_IDENTITY }}
-          license-key: ${{ secrets.LICENSE_KEY }}
