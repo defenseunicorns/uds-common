@@ -38,7 +38,7 @@ inputs:
   dockerComposeVersion:
     description: The Docker Compose version to install
     # renovate: datasource=github-tags depName=docker/compose versioning=semver
-    default: 5.6.1
+    default: 5.7.0
   composeBridgeVersion:
     description: The Compose Bridge version to use
     # renovate: datasource=github-tags depName=defenseunicorns/compose-bridge-uds versioning=semver
