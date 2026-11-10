@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.34.0](https://github.com/defenseunicorns/uds-common/compare/v1.33.1...v1.34.0) (2026-11-10)
+
+
+### Features
+
+* add new callable action for zarf keyless signing ([#822](https://github.com/defenseunicorns/uds-common/issues/822)) ([721f6f4](https://github.com/defenseunicorns/uds-common/commit/721f6f4b72699be9c90fb30cd02b3b05a461d392))
+
+
+### Miscellaneous
+
+* **deps:** update uds common support dependencies ([#820](https://github.com/defenseunicorns/uds-common/issues/820)) ([d74bc94](https://github.com/defenseunicorns/uds-common/commit/d74bc946ced25f1e9ed272ea9b90f103d0aaedfe))
+
 ## [1.33.1](https://github.com/defenseunicorns/uds-common/compare/v1.33.0...v1.33.1) (2026-11-09)
 
 
