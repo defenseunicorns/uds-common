@@ -34,6 +34,23 @@ Common configuration used between repositories is located in the `config` direct
 
 The example in this repository is based around Nginx and can be interacted with as you would in any other UDS Package repo - i.e. `uds run test-package`
 
+### Verify a Package
+
+Nginx packages are signed using [Zarf's Keyless Signing](https://docs.zarf.dev/ref/package-signing/#using-keyless-signing).
+
+Packages are signed from `1.31.8-uds.1` onwards.
+
+To verify a package, follow the below example:
+
+```bash
+uds zarf package verify "oci://ghcr.io/defenseunicorns/packages/uds/nginx:1.31.8-uds.1-upstream" \
+  --certificate-identity "https://github.com/defenseunicorns/uds-common/.github/workflows/release.yaml@refs/heads/main" \
+  --certificate-oidc-issuer "https://token.actions.githubusercontent.com"
+```
+
+For a `unicorn` package, use `oci://ghcr.io/defenseunicorns/packages/private/uds/nginx:<VERSION>-unicorn`
+as the package source.
+
 ## Contributing
 
 Please see the [CONTRIBUTING.md](./CONTRIBUTING.md)
