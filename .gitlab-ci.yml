@@ -17,6 +17,7 @@ include:
     inputs:
       runs-on: gitlab-runner-4c-${ARCH}
       flavor: $FLAVOR
+      arch: $ARCH
       # if you have additional report artifacts to add to the gitlab
       # artifact zip file you can add the path here and the entire directory
       # will be included
