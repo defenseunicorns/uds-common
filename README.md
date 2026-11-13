@@ -30,6 +30,9 @@ For signed releases and package verification, see [Signed package releases](docs
 
 Common configuration used between repositories is located in the `config` directory and is imported via specific tool mechanisms (like Renovate's `extends` key).
 
+The shared Renovate preset does not configure `quay.io` authentication. Public Quay images can be looked up anonymously; for private images, configure a host rule with your own credentials in [Mend organization or repository settings](https://docs.renovatebot.com/mend-hosted/credentials/#adding-a-host-rule-through-the-ui).
+The preset no longer requires `RAPIDFORT_USERNAME` or `RAPIDFORT_PASSWORD` secrets.
+
 ## Example Usage
 
 The example in this repository is based around Nginx and can be interacted with as you would in any other UDS Package repo - i.e. `uds run test-package`
