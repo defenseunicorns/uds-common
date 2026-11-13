@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.34.1](https://github.com/defenseunicorns/uds-common/compare/v1.34.0...v1.34.1) (2026-11-13)
+
+
+### Bug Fixes
+
+* remove obsolete RapidFort Renovate credentials ([#833](https://github.com/defenseunicorns/uds-common/issues/833)) ([8a85e67](https://github.com/defenseunicorns/uds-common/commit/8a85e67271b9c59ccc75c8fc88f7583e8c0248f3))
+* support gitlab multi arch publish ([#829](https://github.com/defenseunicorns/uds-common/issues/829)) ([e1ccadf](https://github.com/defenseunicorns/uds-common/commit/e1ccadffe6eabc61b9e41e7185c212f0c8a43418))
+
+
+### Miscellaneous
+
+* keyless signing cleanup and publish nginx ([#832](https://github.com/defenseunicorns/uds-common/issues/832)) ([42cd0d0](https://github.com/defenseunicorns/uds-common/commit/42cd0d0c5dc565cd77656e4012684da9f7517f4c))
+
 ## [1.34.0](https://github.com/defenseunicorns/uds-common/compare/v1.33.1...v1.34.0) (2026-11-10)
 
 
