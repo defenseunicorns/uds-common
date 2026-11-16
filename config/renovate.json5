@@ -338,6 +338,47 @@
             ],
             "datasourceTemplate": "docker"
         },
+        // Matches tagged images[].name in native Zarf YAML, including templates.
+        {
+            "customType": "regex",
+            "fileMatch": [
+                ".*\\.ya?ml$"
+            ],
+            "matchStringsStrategy": "recursive",
+            "matchStrings": [
+                // Match the complete native YAML file, regardless of field order.
+                // Test: https://regex101.com/r/gVQrDE/1
+                "(?m)\\A(.|\\n)*^apiVersion:\\s+[\"']?zarf\\.dev/v1beta1[\"']?(?:\\s|$)(.|\\n)*",
+                // Test: https://regex101.com/r/WhHf1S/1
+                "(?m)^\\s*images:\\s*\\r?\\n(?:\\s+(?:-\\s+)?(?:name|id|source):.*\\n?|\\s*(?:#.*)?\\r?\\n)+",
+                // Test: https://regex101.com/r/ubLiyC/1
+                "(?m)^\\s*(?:-\\s+)?name:\\s+[\"']?(?<depName>[^\"'\\s@]+):(?<currentValue>\\w[\\w.-]*)(?:@(?<currentDigest>sha256:[a-f0-9]{64}))?[\"']?( # renovate:( versioning=(?<versioning>.*?))?( extractVersion=(?<extractVersion>.*?))?)?(\\s|$)"
+            ],
+            "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}docker{{/if}}",
+            "extractVersionTemplate": "{{#if extractVersion}}{{{extractVersion}}}{{else}}^(?<version>.*)${{/if}}",
+            "datasourceTemplate": "docker"
+        },
+        // Matches native Zarf OCI chart tags in either field order.
+        {
+            "customType": "regex",
+            "fileMatch": [
+                ".*\\.ya?ml$"
+            ],
+            "matchStringsStrategy": "recursive",
+            "matchStrings": [
+                // Match the complete native YAML file, regardless of field order.
+                // Test: https://regex101.com/r/RdSqTC/1
+                "(?m)\\A(.|\\n)*^apiVersion:\\s+[\"']?zarf\\.dev/v1beta1[\"']?(?:\\s|$)(.|\\n)*",
+                // Test: https://regex101.com/r/swQdL0/1
+                "(?m)^\\s*oci:\\s*\\r?\\n(?:\\s+(?:url|ref|tag|digest):.*\\n?|\\s*(?:#.*)?\\r?\\n)+",
+                // Collect the URL and tag from the same OCI block, in either order.
+                // Test: https://regex101.com/r/btsD41/1
+                "(?m)\\A(.|\\n)*?^\\s*url:\\s+[\"']?(?:oci://)?(?<depName>[^\"'\\s]+)(.|\\n)*",
+                // Test: https://regex101.com/r/Mq6Y80/1
+                "(?m)\\A(.|\\n)*?^\\s*tag:\\s+[\"']?(?<currentValue>[^\"'\\s]+)(.|\\n)*"
+            ],
+            "datasourceTemplate": "docker"
+        },
         // Matches individual kustomizations in a `zarf.yaml`'s `manifests:` section using a github url with a ref
         {
             "customType": "regex",
