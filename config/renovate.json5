@@ -258,7 +258,7 @@
         {
             "customType": "regex",
             "fileMatch": [
-                "(^|/)zarf(?:\\.tpl)?\\.ya?ml$"
+                "(^|/)zarf\\.yaml$"
             ],
             "matchStrings": [
                 // Test: https://regex101.com/r/Bd8IBp/1
@@ -272,7 +272,7 @@
         {
             "customType": "regex",
             "fileMatch": [
-                "(^|/)zarf(?:\\.tpl)?\\.ya?ml$"
+                "(^|/)zarf\\.yaml$"
             ],
             "matchStringsStrategy": "recursive",
             "matchStrings": [
@@ -290,7 +290,7 @@
         {
             "customType": "regex",
             "fileMatch": [
-                "(^|/)zarf(?:\\.tpl)?\\.ya?ml$"
+                "(^|/)zarf\\.yaml$"
             ],
             "matchStringsStrategy": "recursive",
             "matchStrings": [
@@ -308,7 +308,7 @@
         {
             "customType": "regex",
             "fileMatch": [
-                "(^|/)zarf(?:\\.tpl)?\\.ya?ml$"
+                "(^|/)zarf\\.yaml$"
             ],
             "matchStringsStrategy": "recursive",
             "matchStrings": [
@@ -325,7 +325,7 @@
         {
             "customType": "regex",
             "fileMatch": [
-                "(^|/)zarf(?:\\.tpl)?\\.ya?ml$"
+                "(^|/)zarf\\.yaml$"
             ],
             "matchStringsStrategy": "recursive",
             "matchStrings": [
@@ -383,7 +383,7 @@
         {
             "customType": "regex",
             "fileMatch": [
-                "(^|/)zarf(?:\\.tpl)?\\.ya?ml$"
+                "(^|/)zarf\\.yaml$"
             ],
             "matchStringsStrategy": "recursive",
             "matchStrings": [
