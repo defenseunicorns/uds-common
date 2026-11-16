@@ -258,7 +258,7 @@
         {
             "customType": "regex",
             "fileMatch": [
-                "(^|/)zarf\\.yaml$"
+                "(^|/)zarf(?:\\.tpl)?\\.ya?ml$"
             ],
             "matchStrings": [
                 // Test: https://regex101.com/r/Bd8IBp/1
@@ -272,7 +272,7 @@
         {
             "customType": "regex",
             "fileMatch": [
-                "(^|/)zarf\\.yaml$"
+                "(^|/)zarf(?:\\.tpl)?\\.ya?ml$"
             ],
             "matchStringsStrategy": "recursive",
             "matchStrings": [
@@ -290,7 +290,7 @@
         {
             "customType": "regex",
             "fileMatch": [
-                "(^|/)zarf\\.yaml$"
+                "(^|/)zarf(?:\\.tpl)?\\.ya?ml$"
             ],
             "matchStringsStrategy": "recursive",
             "matchStrings": [
@@ -308,7 +308,7 @@
         {
             "customType": "regex",
             "fileMatch": [
-                "(^|/)zarf\\.yaml$"
+                "(^|/)zarf(?:\\.tpl)?\\.ya?ml$"
             ],
             "matchStringsStrategy": "recursive",
             "matchStrings": [
@@ -325,7 +325,7 @@
         {
             "customType": "regex",
             "fileMatch": [
-                "(^|/)zarf\\.yaml$"
+                "(^|/)zarf(?:\\.tpl)?\\.ya?ml$"
             ],
             "matchStringsStrategy": "recursive",
             "matchStrings": [
@@ -338,11 +338,52 @@
             ],
             "datasourceTemplate": "docker"
         },
+        // Matches tagged images[].name in native Zarf YAML, including templates.
+        {
+            "customType": "regex",
+            "fileMatch": [
+                ".*\\.ya?ml$"
+            ],
+            "matchStringsStrategy": "recursive",
+            "matchStrings": [
+                // Match the complete native YAML file, regardless of field order.
+                // Test: https://regex101.com/r/f1cPhX/1
+                "(?m)\\A[\\s\\S]*^apiVersion:[ \\t]+[\"']?zarf\\.dev/v1beta1[\"']?[ \\t]*(?:#[^\\r\\n]*)?\\r?$[\\s\\S]*",
+                // Test: https://regex101.com/r/gjhQ1d/1
+                "(?m)^[ \\t]*images:[ \\t]*\\r?\\n(?:[ \\t]+(?:-[ \\t]+)?(?:name|id|source):[^\\r\\n]*(?:\\r?\\n|$)|[ \\t]*(?:#[^\\r\\n]*)?\\r?\\n)+",
+                // Test: https://regex101.com/r/XiIFKR/1
+                "(?m)^[ \\t]*(?:-[ \\t]+)?name:[ \\t]+[\"']?(?<depName>[^\"'\\s@]+):(?<currentValue>[A-Za-z0-9_][A-Za-z0-9_.-]*)(?:@(?<currentDigest>sha256:[a-f0-9]{64}))?[\"']?( # renovate:( versioning=(?<versioning>.*?))?( extractVersion=(?<extractVersion>.*?))?)?(\\s|$)"
+            ],
+            "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}docker{{/if}}",
+            "extractVersionTemplate": "{{#if extractVersion}}{{{extractVersion}}}{{else}}^(?<version>.*)${{/if}}",
+            "datasourceTemplate": "docker"
+        },
+        // Matches native Zarf OCI chart tags in either field order.
+        {
+            "customType": "regex",
+            "fileMatch": [
+                ".*\\.ya?ml$"
+            ],
+            "matchStringsStrategy": "recursive",
+            "matchStrings": [
+                // Match the complete native YAML file, regardless of field order.
+                // Test: https://regex101.com/r/da6sGW/1
+                "(?m)\\A[\\s\\S]*^apiVersion:[ \\t]+[\"']?zarf\\.dev/v1beta1[\"']?[ \\t]*(?:#[^\\r\\n]*)?\\r?$[\\s\\S]*",
+                // Test: https://regex101.com/r/0n4KHh/1
+                "(?m)^[ \\t]*oci:[ \\t]*\\r?\\n(?:[ \\t]+(?:url|ref|tag|digest):[^\\r\\n]*(?:\\r?\\n|$)|[ \\t]*(?:#[^\\r\\n]*)?\\r?\\n)+",
+                // Collect the URL and tag from the same OCI block, in either order.
+                // Test: https://regex101.com/r/IICsQl/1
+                "(?m)\\A[\\s\\S]*?^[ \\t]*url:[ \\t]+[\"']?(?:oci://)?(?<depName>[^\"'\\s]+)[\"']?[ \\t]*(?:#[^\\r\\n]*)?\\r?$[\\s\\S]*",
+                // Test: https://regex101.com/r/XUWNnC/1
+                "(?m)\\A[\\s\\S]*?^[ \\t]*tag:[ \\t]+[\"']?(?<currentValue>[^\"'\\s]+)[\"']?[ \\t]*(?:#[^\\r\\n]*)?\\r?$[\\s\\S]*"
+            ],
+            "datasourceTemplate": "docker"
+        },
         // Matches individual kustomizations in a `zarf.yaml`'s `manifests:` section using a github url with a ref
         {
             "customType": "regex",
             "fileMatch": [
-                "(^|/)zarf\\.yaml$"
+                "(^|/)zarf(?:\\.tpl)?\\.ya?ml$"
             ],
             "matchStringsStrategy": "recursive",
             "matchStrings": [
