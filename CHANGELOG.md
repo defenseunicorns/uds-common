@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.35.0](https://github.com/defenseunicorns/uds-common/compare/v1.34.1...v1.35.0) (2026-11-18)
+
+
+### Features
+
+* **renovate:** add matchers for v1beta1 images/charts/files ([#834](https://github.com/defenseunicorns/uds-common/issues/834)) ([e0172f0](https://github.com/defenseunicorns/uds-common/commit/e0172f0949f11b74e3d624ae5e60383d47ee0289))
+
+
+### Miscellaneous
+
+* **deps:** update uds common foundation dependencies to v1.17.2 ([#831](https://github.com/defenseunicorns/uds-common/issues/831)) ([d91a79c](https://github.com/defenseunicorns/uds-common/commit/d91a79c7a8328f1e1e38fb6f2eb8c5ea35e698be))
+* **deps:** update uds common support dependencies ([#828](https://github.com/defenseunicorns/uds-common/issues/828)) ([ead3e80](https://github.com/defenseunicorns/uds-common/commit/ead3e80bcbed24b6fc1482975e5047acacb14519))
+
 ## [1.34.1](https://github.com/defenseunicorns/uds-common/compare/v1.34.0...v1.34.1) (2026-11-13)
 
 
